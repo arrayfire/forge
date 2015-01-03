@@ -1,0 +1,60 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+PROJECT(FIREWORKS)
+
+OPTION(BUILD_CPU "Build FireWorks with a CPU backend" ON)
+OPTION(BUILD_CUDA "Build FireWorks with a CUDA backend" OFF)
+OPTION(BUILD_OPENCL "Build FireWorks with a OPENCL backend" OFF)
+
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+
+INCLUDE_DIRECTORIES(
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/backend"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/api/c"
+    )
+
+IF(${UNIX})
+    ADD_DEFINITIONS(-Wall -std=c++11 -fvisibility=hidden)
+ENDIF()
+
+# OS Definitions
+IF(UNIX)
+  IF(APPLE)   #OSX
+    ADD_DEFINITIONS(-DOS_MAC)
+  ELSE(APPLE) #Linux
+    ADD_DEFINITIONS(-DOS_LNX)
+  ENDIF()
+ELSE(${UNIX}) #Windows
+  ADD_DEFINITIONS(-DOS_WIN -DNOMINMAX)
+ENDIF()
+
+# Architechture Definitions
+INCLUDE(${CMAKE_MODULE_PATH}/TargetArch.cmake)
+target_architecture(ARCH)
+IF(${ARCH} STREQUAL "x86_64")
+  ADD_DEFINITIONS(-DARCH_64)
+ELSE(${ARCH})
+  ADD_DEFINITIONS(-DARCH_32)
+ENDIF()
+
+INCLUDE(${CMAKE_MODULE_PATH}/Version.cmake)
+
+IF(${BUILD_CPU})
+  ADD_SUBDIRECTORY(src/backend/cpu)
+ENDIF()
+
+IF(${BUILD_CUDA})
+    ADD_SUBDIRECTORY(src/backend/cuda)
+ENDIF()
+
+IF(${BUILD_OPENCL})
+    ADD_SUBDIRECTORY(src/backend/opencl)
+ENDIF()
+
+## Install step
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION include
+    FILES_MATCHING
+    PATTERN "*.h"
+    PATTERN "*.hpp"
+    PATTERN ".gitignore" EXCLUDE
+)
