@@ -84,19 +84,6 @@ public:
     ~ArgumentError() throw(){}
 };
 
-class SupportError  :   public FwError
-{
-    std::string backend;
-    SupportError();
-public:
-    SupportError(const char * const funcName,
-                 const int line,
-                 const char * const back);
-    ~SupportError()throw() {}
-    const std::string&
-    getBackendName() const;
-};
-
 class DimensionError : public FwError
 {
     int argIndex;

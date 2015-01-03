@@ -70,7 +70,7 @@ const string& TypeError::getTypeName() const
 
 int TypeError::getArgIndex() const
 {
-	return argIndex;
+    return argIndex;
 }
 
 ArgumentError::ArgumentError(const char * const  funcName,
@@ -86,26 +86,14 @@ ArgumentError::ArgumentError(const char * const  funcName,
 
 const string& ArgumentError::getExpectedCondition() const
 {
-	return expected;
+    return expected;
 }
 
 int ArgumentError::getArgIndex() const
 {
-	return argIndex;
+    return argIndex;
 }
 
-
-SupportError::SupportError(const char * const funcName,
-                           const int line,
-                           const char * const back)
-    : FwError(funcName, line, "Unsupported Error", FW_ERR_NOT_SUPPORTED),
-      backend(back)
-{}
-
-const string& SupportError::getBackendName() const
-{
-	return backend;
-}
 
 DimensionError::DimensionError(const char * const  funcName,
                              const int line,
@@ -120,12 +108,12 @@ DimensionError::DimensionError(const char * const  funcName,
 
 const string& DimensionError::getExpectedCondition() const
 {
-	return expected;
+    return expected;
 }
 
 int DimensionError::getArgIndex() const
 {
-	return argIndex;
+    return argIndex;
 }
 
 
@@ -156,14 +144,6 @@ fw_err processException()
         cerr << ss.str();
         err = FW_ERR_ARG;
 
-    } catch (const SupportError &ex) {
-
-        ss << ex.getFunctionName()
-           << " not supported for " << ex.getBackendName()
-           << " backend\n";
-
-        cerr << ss.str();
-        err = FW_ERR_NOT_SUPPORTED;
     } catch (const TypeError &ex) {
 
         ss << "In function " << ex.getFunctionName()

@@ -7,10 +7,13 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#pragma once
+#include <fw/defines.h>
 
-namespace cuda
+namespace backend
 {
-    typedef unsigned int   uint;
-    typedef unsigned char uchar;
+    template<typename T>
+    WindowHandle createWindow(const unsigned height, const unsigned width, const char *title,
+                              fw_color_mode mode);
+
+    void destroyWindow(const WindowHandle window);
 }

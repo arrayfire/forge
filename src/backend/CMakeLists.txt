@@ -22,7 +22,7 @@ ENDIF()
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_INCLUDE_PATH}
-    "${CMAKE_SOURCE_DIR}/src/backend/cpu"
+    "${CMAKE_SOURCE_DIR}/src/backend"
     )
 
 IF(${GRAPHICS_FOUND})
@@ -32,42 +32,30 @@ IF(${GRAPHICS_FOUND})
         )
 ENDIF(${GRAPHICS_FOUND})
 
-FILE(GLOB cpu_headers
+FILE(GLOB backend_headers
     "*.hpp"
     "*.h")
 
-FILE(GLOB cpu_sources
-    "*.cpp")
-
-source_group(backend\\cpu\\Headers FILES ${cpu_headers})
-source_group(backend\\cpu\\Sources FILES ${cpu_sources})
-
-FILE(GLOB backend_headers
-    "../*.hpp"
-    "../*.h"
-    )
-
 FILE(GLOB backend_sources
-    "../*.cpp"
-    )
+    "*.cpp")
 
 source_group(backend\\Headers FILES ${backend_headers})
 source_group(backend\\Sources FILES ${backend_sources})
 
 FILE(GLOB c_headers
-    "../../api/c/*.hpp"
-    "../../api/c/*.h"
+    "../api/c/*.hpp"
+    "../api/c/*.h"
     )
 
 FILE(GLOB c_sources
-    "../../api/c/*.cpp"
+    "../api/c/*.cpp"
     )
 
 source_group(api\\c\\Headers FILES ${c_headers})
 source_group(api\\c\\Sources FILES ${c_sources})
 
 FILE(GLOB cpp_sources
-    "../../api/cpp/*.cpp"
+    "../api/cpp/*.cpp"
     )
 
 source_group(api\\cpp\\Sources FILES ${cpp_sources})
@@ -79,20 +67,18 @@ ELSE(${UNIX}) #Windows
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 ENDIF()
 
-ADD_LIBRARY(fwcpu SHARED
-           ${cpu_headers}
-           ${cpu_sources}
+ADD_LIBRARY(afgfx SHARED
            ${backend_headers}
            ${backend_sources}
            ${c_headers}
            ${c_sources}
            ${cpp_sources})
 
-TARGET_LINK_LIBRARIES(fwcpu
+TARGET_LINK_LIBRARIES(afgfx
                       ${GLFW_LIBRARY}
                       ${GLEWmx_LIBRARY}
                       ${OPENGL_gl_LIBRARY}
                       ${OPENGL_glu_LIBRARY}
                       )
 
-INSTALL(TARGETS fwcpu DESTINATION lib)
+INSTALL(TARGETS afgfx DESTINATION lib)

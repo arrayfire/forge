@@ -44,6 +44,9 @@ typedef enum {
     u8x4,
 } fw_dtype;
 
+typedef unsigned int            uint;
+typedef unsigned char           uchar;
+
 typedef enum {
     FW_GREY=1,
     FW_RGB =3,

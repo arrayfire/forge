@@ -10,9 +10,8 @@
 #include <fw/window.h>
 #include <window.hpp>
 #include <err_common.hpp>
-#include <backend.hpp>
 
-using namespace detail;
+using namespace backend;
 
 fw_err fw_create_window(WindowHandle *out, const unsigned height, const unsigned width, const char *title,
                         fw_color_mode mode, fw_dtype type)

@@ -7,15 +7,18 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+// Parts of this code sourced from SnopyDogy
+// https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
+
 #include <window.hpp>
-#include <err_opencl.hpp>
+#include <err_common.hpp>
 
 #include <stdexcept>
 #include <iostream>
 #include <cstring>
 #include <cstdio>
 
-namespace opencl
+namespace backend
 {
     static int g_uiWindowCounter = 0; // Window Counter
     WindowHandle current;
