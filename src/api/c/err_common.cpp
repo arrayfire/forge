@@ -57,7 +57,7 @@ FwError::~FwError() throw() {}
 
 TypeError::TypeError(const char * const  funcName,
                      const int line,
-                     const int index, const fw_dtype type)
+                     const int index, const GLenum type)
     : FwError (funcName, line, "Invalid data type", FW_ERR_INVALID_TYPE),
       argIndex(index),
       errTypeName(getName(type))

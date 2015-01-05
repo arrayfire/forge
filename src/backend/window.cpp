@@ -11,6 +11,7 @@
 // https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
 
 #include <window.hpp>
+#include <common.hpp>
 #include <err_common.hpp>
 
 #include <stdexcept>
@@ -21,13 +22,6 @@
 namespace backend
 {
     static int g_uiWindowCounter = 0; // Window Counter
-    WindowHandle current;
-
-    // Required to be defined for GLEW MX to work, along with the GLEW_MX define in the perprocessor!
-    static GLEWContext* glewGetContext()
-    {
-        return current->pGLEWContext;
-    }
 
     static void error_callback(int error, const char* description)
     {
@@ -43,26 +37,15 @@ namespace backend
         }
     }
 
-    void MakeContextCurrent(WindowHandle wh)
-    {
-        CheckGL("Before MakeContextCurrent");
-        if (wh != NULL)
-        {
-            glfwMakeContextCurrent(wh->pWindow);
-            current = wh;
-        }
-        CheckGL("In MakeContextCurrent");
-    }
-
     template<typename T>
-    WindowHandle createWindow(const char *title, const unsigned disp_w, const unsigned disp_h,
+    WindowHandle createWindow(const unsigned disp_h, const unsigned disp_w, const char *title,
                               const fw_color_mode mode)
     {
         // save current active context info so we can restore it later!
         //WindowHandle previous = current;
 
         // create new window data:
-        WindowHandle newWindow = new fw_window;
+        WindowHandle newWindow = new fw_window[1];
         if (newWindow == NULL)
             printf("Error\n");
             //Error out
@@ -72,6 +55,7 @@ namespace backend
         newWindow->uiID         = g_uiWindowCounter++;        //set ID and Increment Counter!
         newWindow->uiWidth      = disp_w;
         newWindow->uiHeight     = disp_h;
+        newWindow->mode         = mode;
 
         // Initalize GLFW
         glfwSetErrorCallback(error_callback);
@@ -129,6 +113,18 @@ namespace backend
         CheckGL("At End of Create Window");
         return newWindow;
     }
+
+#define INSTANTIATE(T)                                                                          \
+    template WindowHandle createWindow<T>(const unsigned disp_h, const unsigned disp_w,         \
+                                        const char *title, const fw_color_mode mode);
+
+    INSTANTIATE(float);
+    INSTANTIATE(int);
+    INSTANTIATE(unsigned);
+    INSTANTIATE(char);
+    INSTANTIATE(unsigned char);
+
+#undef INSTANTIATE
 
     void destroyWindow(WindowHandle window)
     {

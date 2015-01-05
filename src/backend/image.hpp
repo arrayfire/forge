@@ -7,8 +7,14 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#pragma once
-#include "fw/defines.h"
-#include "fw/window.h"
-#include "fw/image.h"
-#include "fw/version.h"
+#include <fw/image.h>
+
+namespace backend
+{
+    template<typename T>
+    ImageHandle setupImage(WindowHandle window, const unsigned height, const unsigned width);
+
+    void drawImage(const ImageHandle image);
+
+    void destroyImage(const ImageHandle image);
+}

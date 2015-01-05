@@ -9,17 +9,14 @@
 
 #include <type_util.hpp>
 
-const char *getName(fw_dtype type)
+const char *getName(GLenum type)
 {
     switch(type) {
-    case f32: return "float";
-    case f64: return "double";
-    case c32: return "complex float";
-    case c64: return "complex double";
-    case u32: return "unsigned int";
-    case s32: return "int";
-    case u8: return "unsigned char";
-    case b8: return "bool";
+    case GL_FLOAT: return "float";
+    case GL_INT: return "int";
+    case GL_UNSIGNED_INT: return "unsigned int";
+    case GL_BYTE: return "char";
+    case GL_UNSIGNED_BYTE: return "unsigned char";
     default: return "unknown type";
     }
 }

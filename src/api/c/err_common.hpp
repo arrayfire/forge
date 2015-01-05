@@ -54,7 +54,7 @@ public:
     TypeError(const char * const  funcName,
               const int line,
               const int index,
-              const fw_dtype type);
+              const GLenum type);
 
     const std::string&
     getTypeName() const;

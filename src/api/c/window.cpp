@@ -14,7 +14,7 @@
 using namespace backend;
 
 fw_err fw_create_window(WindowHandle *out, const unsigned height, const unsigned width, const char *title,
-                        fw_color_mode mode, fw_dtype type)
+                        fw_color_mode mode, GLenum type)
 {
     try {
         WindowHandle window;
@@ -22,14 +22,14 @@ fw_err fw_create_window(WindowHandle *out, const unsigned height, const unsigned
         DIM_ASSERT(2, width > 0);
 
         switch(type) {
-            case f32: window = createWindow<float  >(height, width, title, mode);  break;
-            case f64: window = createWindow<double >(height, width, title, mode);  break;
-            case b8:  window = createWindow<char   >(height, width, title, mode);  break;
-            case s32: window = createWindow<int    >(height, width, title, mode);  break;
-            case u32: window = createWindow<uint   >(height, width, title, mode);  break;
-            case u8:  window = createWindow<uchar  >(height, width, title, mode);  break;
+            case GL_FLOAT:          window = createWindow<float>(height, width, title, mode);  break;
+            case GL_INT:            window = createWindow<int  >(height, width, title, mode);  break;
+            case GL_UNSIGNED_INT:   window = createWindow<uint >(height, width, title, mode);  break;
+            case GL_BYTE:           window = createWindow<char >(height, width, title, mode);  break;
+            case GL_UNSIGNED_BYTE:  window = createWindow<uchar>(height, width, title, mode);  break;
             default:  TYPE_ERROR(1, type);
         }
+        window->type = type;
         std::swap(*out, window);
     }
     CATCHALL;

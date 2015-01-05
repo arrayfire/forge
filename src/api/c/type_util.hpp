@@ -11,7 +11,7 @@
 #include <string>
 #include <fw/defines.h>
 
-const char *getName(fw_dtype type);
+const char *getName(GLenum type);
 
 //uchar to number converters
 template<typename T>

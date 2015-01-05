@@ -7,7 +7,7 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fw/defines.h>
+#include <fw/window.h>
 
 namespace backend
 {

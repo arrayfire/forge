@@ -10,6 +10,19 @@
 #pragma once
 #include <fw/defines.h>
 
+typedef struct
+{
+    GLFWwindow*     pWindow;
+    GLEWContext*    pGLEWContext;
+    int             uiWidth;
+    int             uiHeight;
+    int             uiID;
+    GLenum          type;
+    fw_color_mode   mode;
+} fw_window;
+
+typedef fw_window* WindowHandle;
+
 #ifdef __cplusplus
 namespace fw
 {
@@ -19,10 +32,10 @@ namespace fw
 #ifdef __cplusplus
 extern "C" {
 #endif
-    fw_err fw_create_window(WindowHandle *out, const unsigned height, const unsigned width,
-                            const char *title, fw_color_mode mode);
+    FWAPI fw_err fw_create_window(WindowHandle *out, const unsigned height, const unsigned width,
+                            const char *title, fw_color_mode mode, GLenum type);
 
-    fw_err fw_destroy_window(const WindowHandle in);
+    FWAPI fw_err fw_destroy_window(const WindowHandle in);
 #ifdef __cplusplus
 }
 #endif

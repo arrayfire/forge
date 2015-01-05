@@ -32,47 +32,14 @@ typedef enum {
     FW_ERR_UNKNOWN
 } fw_err;
 
-typedef enum {
-    f32,
-    c32,
-    f64,
-    c64,
-    b8,
-    s32,
-    u32,
-    u8,
-    u8x4,
-} fw_dtype;
-
-typedef unsigned int            uint;
-typedef unsigned char           uchar;
+typedef unsigned int  uint;
+typedef unsigned char uchar;
 
 typedef enum {
     FW_GREY=1,
     FW_RGB =3,
     FW_RGBA=4,
 } fw_color_mode;
-
-typedef struct
-{
-    GLFWwindow*     pWindow;
-    GLEWContext*    pGLEWContext;
-    int             uiWidth;
-    int             uiHeight;
-    int             uiID;
-} fw_window;
-
-typedef fw_window* WindowHandle;
-
-typedef struct
-{
-    WindowHandle *window;
-
-    //OpenGL PBO and texture "names"
-    GLuint gl_PBO;
-    GLuint gl_Tex;
-    GLuint gl_Shader;
-} fw_image;
 
 // Print for OpenGL errors
 // Returns 1 if an OpenGL error occurred, 0 otherwise.
