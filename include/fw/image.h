@@ -36,7 +36,7 @@ namespace fw
 extern "C" {
 #endif
     FWAPI fw_err fw_setup_image(ImageHandle *out, const WindowHandle window,
-                                const unsigned height, const unsigned width);
+                                const unsigned width, const unsigned height);
 
     FWAPI fw_err fw_draw_image(const ImageHandle in);
 

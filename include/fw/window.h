@@ -32,7 +32,7 @@ namespace fw
 #ifdef __cplusplus
 extern "C" {
 #endif
-    FWAPI fw_err fw_create_window(WindowHandle *out, const unsigned height, const unsigned width,
+    FWAPI fw_err fw_create_window(WindowHandle *out, const unsigned width, const unsigned height,
                             const char *title, fw_color_mode mode, GLenum type);
 
     FWAPI fw_err fw_destroy_window(const WindowHandle in);

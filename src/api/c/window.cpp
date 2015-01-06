@@ -13,7 +13,7 @@
 
 using namespace backend;
 
-fw_err fw_create_window(WindowHandle *out, const unsigned height, const unsigned width, const char *title,
+fw_err fw_create_window(WindowHandle *out, const unsigned width, const unsigned height, const char *title,
                         fw_color_mode mode, GLenum type)
 {
     try {
@@ -22,11 +22,11 @@ fw_err fw_create_window(WindowHandle *out, const unsigned height, const unsigned
         DIM_ASSERT(2, width > 0);
 
         switch(type) {
-            case GL_FLOAT:          window = createWindow<float>(height, width, title, mode);  break;
-            case GL_INT:            window = createWindow<int  >(height, width, title, mode);  break;
-            case GL_UNSIGNED_INT:   window = createWindow<uint >(height, width, title, mode);  break;
-            case GL_BYTE:           window = createWindow<char >(height, width, title, mode);  break;
-            case GL_UNSIGNED_BYTE:  window = createWindow<uchar>(height, width, title, mode);  break;
+            case GL_FLOAT:          window = createWindow<float>(width, height, title, mode);  break;
+            case GL_INT:            window = createWindow<int  >(width, height, title, mode);  break;
+            case GL_UNSIGNED_INT:   window = createWindow<uint >(width, height, title, mode);  break;
+            case GL_BYTE:           window = createWindow<char >(width, height, title, mode);  break;
+            case GL_UNSIGNED_BYTE:  window = createWindow<uchar>(width, height, title, mode);  break;
             default:  TYPE_ERROR(1, type);
         }
         window->type = type;

@@ -12,7 +12,7 @@
 namespace backend
 {
     template<typename T>
-    WindowHandle createWindow(const unsigned height, const unsigned width, const char *title,
+    WindowHandle createWindow(const unsigned width, const unsigned height, const char *title,
                               fw_color_mode mode);
 
     void destroyWindow(const WindowHandle window);

@@ -14,16 +14,16 @@
 using namespace backend;
 
 fw_err fw_setup_image(ImageHandle *out, const WindowHandle window,
-                      const unsigned height, const unsigned width)
+                      const unsigned width, const unsigned height)
 {
     try {
         ImageHandle image = new fw_image[1];
         switch(window->type) {
-            case GL_FLOAT:           image = setupImage<float>(window, height, width);  break;
-            case GL_INT:             image = setupImage<int  >(window, height, width);  break;
-            case GL_UNSIGNED_INT:    image = setupImage<uint >(window, height, width);  break;
-            case GL_BYTE:            image = setupImage<char >(window, height, width);  break;
-            case GL_UNSIGNED_BYTE:   image = setupImage<uchar>(window, height, width);  break;
+            case GL_FLOAT:           image = setupImage<float>(window, width, height);  break;
+            case GL_INT:             image = setupImage<int  >(window, width, height);  break;
+            case GL_UNSIGNED_INT:    image = setupImage<uint >(window, width, height);  break;
+            case GL_BYTE:            image = setupImage<char >(window, width, height);  break;
+            case GL_UNSIGNED_BYTE:   image = setupImage<uchar>(window, width, height);  break;
             default:  TYPE_ERROR(1, window->type);
         }
         std::swap(*out, image);

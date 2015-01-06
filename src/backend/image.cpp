@@ -49,7 +49,7 @@ namespace backend
     }
 
     template<typename T>
-    ImageHandle setupImage(WindowHandle window, const unsigned height, const unsigned width)
+    ImageHandle setupImage(WindowHandle window, const unsigned width, const unsigned height)
     {
         CheckGL("Before setupImage");
         ImageHandle image = new fw_image[1];
@@ -59,8 +59,8 @@ namespace backend
         image->gl_Format = mode_to_glColor(image->window->mode);
         image->gl_Type   = window->type;
 
-        image->src_height = height;
         image->src_width = width;
+        image->src_height = height;
 
         CheckGL("Before Texture Initialization");
         // Initialize OpenGL Items
@@ -90,7 +90,7 @@ namespace backend
     }
 
 #define INSTANTIATE(T)                                                                                      \
-    template ImageHandle setupImage<T>(WindowHandle window, const unsigned height, const unsigned width);   \
+    template ImageHandle setupImage<T>(WindowHandle window, const unsigned width, const unsigned height);   \
 
     INSTANTIATE(float);
     INSTANTIATE(int);

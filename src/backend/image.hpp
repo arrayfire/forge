@@ -12,7 +12,7 @@
 namespace backend
 {
     template<typename T>
-    ImageHandle setupImage(WindowHandle window, const unsigned height, const unsigned width);
+    ImageHandle setupImage(WindowHandle window, const unsigned width, const unsigned height);
 
     void drawImage(const ImageHandle image);
 

@@ -38,7 +38,7 @@ namespace backend
     }
 
     template<typename T>
-    WindowHandle createWindow(const unsigned disp_h, const unsigned disp_w, const char *title,
+    WindowHandle createWindow(const unsigned disp_w, const unsigned disp_h, const char *title,
                               const fw_color_mode mode)
     {
         // save current active context info so we can restore it later!
