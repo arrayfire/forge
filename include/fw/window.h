@@ -35,6 +35,8 @@ extern "C" {
     FWAPI fw_err fw_create_window(WindowHandle *out, const unsigned width, const unsigned height,
                             const char *title, fw_color_mode mode, GLenum type);
 
+    FWAPI fw_err fw_make_window_current(const WindowHandle in);
+
     FWAPI fw_err fw_destroy_window(const WindowHandle in);
 #ifdef __cplusplus
 }

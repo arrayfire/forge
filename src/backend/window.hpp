@@ -15,5 +15,7 @@ namespace backend
     WindowHandle createWindow(const unsigned width, const unsigned height, const char *title,
                               fw_color_mode mode);
 
+    void makeWindowCurrent(const WindowHandle window);
+
     void destroyWindow(const WindowHandle window);
 }

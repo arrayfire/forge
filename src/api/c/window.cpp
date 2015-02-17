@@ -37,6 +37,16 @@ fw_err fw_create_window(WindowHandle *out, const unsigned width, const unsigned 
     return FW_SUCCESS;
 }
 
+fw_err fw_make_window_current(const WindowHandle in)
+{
+    try {
+        ARG_ASSERT(0, in != NULL);
+        makeWindowCurrent(in);
+    }
+    CATCHALL;
+
+    return FW_SUCCESS;
+}
 fw_err fw_destroy_window(const WindowHandle in)
 {
     try {

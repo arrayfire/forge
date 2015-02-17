@@ -126,6 +126,13 @@ namespace backend
 
 #undef INSTANTIATE
 
+    void makeWindowCurrent(const WindowHandle window)
+    {
+        CheckGL("Before Make Window Current");
+        MakeContextCurrent(window);
+        CheckGL("In Make Window Current");
+    }
+
     void destroyWindow(WindowHandle window)
     {
         CheckGL("Before Delete Window");
