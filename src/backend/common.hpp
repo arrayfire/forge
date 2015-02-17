@@ -37,8 +37,8 @@ namespace backend
     {
         GLenum color;
         switch(mode) {
-            case FW_GREY:
-            case FW_RGB : color = GL_RGB; break;
+            case FW_RED : color = GL_RED;  break;
+            case FW_RGB : color = GL_RGB;  break;
             case FW_RGBA: color = GL_RGBA; break;
         }
         return color;

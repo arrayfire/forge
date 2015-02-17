@@ -36,7 +36,7 @@ typedef unsigned int  uint;
 typedef unsigned char uchar;
 
 typedef enum {
-    FW_GREY=1,
+    FW_RED =1,
     FW_RGB =3,
     FW_RGBA=4,
 } fw_color_mode;
