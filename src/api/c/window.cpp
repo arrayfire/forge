@@ -7,14 +7,14 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fw/window.h>
+#include <afgfx/window.h>
 #include <window.hpp>
 #include <err_common.hpp>
 
 using namespace backend;
 
-fw_err fw_create_window(WindowHandle *out, const unsigned width, const unsigned height, const char *title,
-                        fw_color_mode mode, GLenum type)
+afgfx_err afgfx_create_window(WindowHandle *out, const unsigned width, const unsigned height, const char *title,
+                              afgfx_color_mode mode, GLenum type)
 {
     try {
         WindowHandle window;
@@ -34,10 +34,10 @@ fw_err fw_create_window(WindowHandle *out, const unsigned width, const unsigned 
     }
     CATCHALL;
 
-    return FW_SUCCESS;
+    return AFGFX_SUCCESS;
 }
 
-fw_err fw_make_window_current(const WindowHandle in)
+afgfx_err afgfx_make_window_current(const WindowHandle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -45,9 +45,9 @@ fw_err fw_make_window_current(const WindowHandle in)
     }
     CATCHALL;
 
-    return FW_SUCCESS;
+    return AFGFX_SUCCESS;
 }
-fw_err fw_destroy_window(const WindowHandle in)
+afgfx_err afgfx_destroy_window(const WindowHandle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -55,5 +55,5 @@ fw_err fw_destroy_window(const WindowHandle in)
     }
     CATCHALL;
 
-    return FW_SUCCESS;
+    return AFGFX_SUCCESS;
 }

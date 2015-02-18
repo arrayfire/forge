@@ -8,7 +8,7 @@
  ********************************************************/
 
 #pragma once
-#include <fw/defines.h>
+#include <afgfx/defines.h>
 
 typedef struct
 {
@@ -18,13 +18,13 @@ typedef struct
     int             uiHeight;
     int             uiID;
     GLenum          type;
-    fw_color_mode   mode;
-} fw_window;
+    afgfx_color_mode   mode;
+} afgfx_window;
 
-typedef fw_window* WindowHandle;
+typedef afgfx_window* WindowHandle;
 
 #ifdef __cplusplus
-namespace fw
+namespace afgfx
 {
 }
 #endif
@@ -32,12 +32,12 @@ namespace fw
 #ifdef __cplusplus
 extern "C" {
 #endif
-    FWAPI fw_err fw_create_window(WindowHandle *out, const unsigned width, const unsigned height,
-                            const char *title, fw_color_mode mode, GLenum type);
+    AFGFXAPI afgfx_err afgfx_create_window(WindowHandle *out, const unsigned width, const unsigned height,
+                                           const char *title, afgfx_color_mode mode, GLenum type);
 
-    FWAPI fw_err fw_make_window_current(const WindowHandle in);
+    AFGFXAPI afgfx_err afgfx_make_window_current(const WindowHandle in);
 
-    FWAPI fw_err fw_destroy_window(const WindowHandle in);
+    AFGFXAPI afgfx_err afgfx_destroy_window(const WindowHandle in);
 #ifdef __cplusplus
 }
 #endif

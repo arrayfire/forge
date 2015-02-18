@@ -33,13 +33,13 @@ namespace backend
         CheckGL("In MakeContextCurrent");
     }
 
-    static GLenum mode_to_glColor(fw_color_mode mode)
+    static GLenum mode_to_glColor(afgfx_color_mode mode)
     {
         GLenum color;
         switch(mode) {
-            case FW_RED : color = GL_RED;  break;
-            case FW_RGB : color = GL_RGB;  break;
-            case FW_RGBA: color = GL_RGBA; break;
+            case AFGFX_RED : color = GL_RED;  break;
+            case AFGFX_RGB : color = GL_RGB;  break;
+            case AFGFX_RGBA: color = GL_RGBA; break;
         }
         return color;
     }

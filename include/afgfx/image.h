@@ -8,7 +8,7 @@
  ********************************************************/
 
 #pragma once
-#include <fw/window.h>
+#include <afgfx/window.h>
 
 typedef struct
 {
@@ -22,12 +22,12 @@ typedef struct
     GLuint gl_Shader;
     GLenum gl_Format;
     GLenum gl_Type;
-} fw_image;
+} afgfx_image;
 
-typedef fw_image* ImageHandle;
+typedef afgfx_image* ImageHandle;
 
 #ifdef __cplusplus
-namespace fw
+namespace afgfx
 {
 }
 #endif
@@ -35,12 +35,12 @@ namespace fw
 #ifdef __cplusplus
 extern "C" {
 #endif
-    FWAPI fw_err fw_setup_image(ImageHandle *out, const WindowHandle window,
-                                const unsigned width, const unsigned height);
+    AFGFXAPI afgfx_err afgfx_setup_image(ImageHandle *out, const WindowHandle window,
+                                         const unsigned width, const unsigned height);
 
-    FWAPI fw_err fw_draw_image(const ImageHandle in);
+    AFGFXAPI afgfx_err afgfx_draw_image(const ImageHandle in);
 
-    FWAPI fw_err fw_destroy_image(const ImageHandle in);
+    AFGFXAPI afgfx_err afgfx_destroy_image(const ImageHandle in);
 #ifdef __cplusplus
 }
 #endif

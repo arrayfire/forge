@@ -26,7 +26,7 @@ namespace backend
     static void error_callback(int error, const char* description)
     {
         fputs(description, stderr);
-        FW_ERROR("Error in GLFW", FW_ERR_GL_ERROR);
+        AFGFX_ERROR("Error in GLFW", AFGFX_ERR_GL_ERROR);
     }
 
     static void key_callback(GLFWwindow* wind, int key, int scancode, int action, int mods)
@@ -39,13 +39,13 @@ namespace backend
 
     template<typename T>
     WindowHandle createWindow(const unsigned disp_w, const unsigned disp_h, const char *title,
-                              const fw_color_mode mode)
+                              const afgfx_color_mode mode)
     {
         // save current active context info so we can restore it later!
         //WindowHandle previous = current;
 
         // create new window data:
-        WindowHandle newWindow = new fw_window[1];
+        WindowHandle newWindow = new afgfx_window[1];
         if (newWindow == NULL)
             printf("Error\n");
             //Error out
@@ -116,7 +116,7 @@ namespace backend
 
 #define INSTANTIATE(T)                                                                          \
     template WindowHandle createWindow<T>(const unsigned disp_h, const unsigned disp_w,         \
-                                        const char *title, const fw_color_mode mode);
+                                        const char *title, const afgfx_color_mode mode);
 
     INSTANTIATE(float);
     INSTANTIATE(int);

@@ -7,17 +7,17 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fw/image.h>
+#include <afgfx/image.h>
 #include <image.hpp>
 #include <err_common.hpp>
 
 using namespace backend;
 
-fw_err fw_setup_image(ImageHandle *out, const WindowHandle window,
+afgfx_err afgfx_setup_image(ImageHandle *out, const WindowHandle window,
                       const unsigned width, const unsigned height)
 {
     try {
-        ImageHandle image = new fw_image[1];
+        ImageHandle image = new afgfx_image[1];
         switch(window->type) {
             case GL_FLOAT:           image = setupImage<float>(window, width, height);  break;
             case GL_INT:             image = setupImage<int  >(window, width, height);  break;
@@ -30,10 +30,10 @@ fw_err fw_setup_image(ImageHandle *out, const WindowHandle window,
     }
     CATCHALL;
 
-    return FW_SUCCESS;
+    return AFGFX_SUCCESS;
 }
 
-fw_err fw_draw_image(const ImageHandle in)
+afgfx_err afgfx_draw_image(const ImageHandle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -41,11 +41,11 @@ fw_err fw_draw_image(const ImageHandle in)
     }
     CATCHALL;
 
-    return FW_SUCCESS;
+    return AFGFX_SUCCESS;
 }
 
 
-fw_err fw_destroy_image(const ImageHandle in)
+afgfx_err afgfx_destroy_image(const ImageHandle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -53,6 +53,6 @@ fw_err fw_destroy_image(const ImageHandle in)
     }
     CATCHALL;
 
-    return FW_SUCCESS;
+    return AFGFX_SUCCESS;
 }
 

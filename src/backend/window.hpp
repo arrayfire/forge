@@ -7,13 +7,13 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fw/window.h>
+#include <afgfx/window.h>
 
 namespace backend
 {
     template<typename T>
     WindowHandle createWindow(const unsigned width, const unsigned height, const char *title,
-                              fw_color_mode mode);
+                              afgfx_color_mode mode);
 
     void makeWindowCurrent(const WindowHandle window);
 

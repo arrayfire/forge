@@ -9,7 +9,7 @@
 
 #pragma once
 #include <string>
-#include <fw/defines.h>
+#include <afgfx/defines.h>
 
 const char *getName(GLenum type);
 

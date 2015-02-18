@@ -7,7 +7,7 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fw/image.h>
+#include <afgfx/image.h>
 
 namespace backend
 {

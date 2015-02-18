@@ -52,7 +52,7 @@ namespace backend
     ImageHandle setupImage(WindowHandle window, const unsigned width, const unsigned height)
     {
         CheckGL("Before setupImage");
-        ImageHandle image = new fw_image[1];
+        ImageHandle image = new afgfx_image[1];
         image->window = window;
         MakeContextCurrent(image->window);
 
