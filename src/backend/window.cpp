@@ -38,14 +38,14 @@ namespace backend
     }
 
     template<typename T>
-    WindowHandle createWindow(const unsigned disp_w, const unsigned disp_h, const char *title,
+    afgfx_window createWindow(const unsigned disp_w, const unsigned disp_h, const char *title,
                               const afgfx_color_mode mode)
     {
         // save current active context info so we can restore it later!
-        //WindowHandle previous = current;
+        //afgfx_window previous = current;
 
         // create new window data:
-        WindowHandle newWindow = new afgfx_window[1];
+        afgfx_window newWindow = new afgfx_window_struct[1];
         if (newWindow == NULL)
             printf("Error\n");
             //Error out
@@ -115,7 +115,7 @@ namespace backend
     }
 
 #define INSTANTIATE(T)                                                                          \
-    template WindowHandle createWindow<T>(const unsigned disp_h, const unsigned disp_w,         \
+    template afgfx_window createWindow<T>(const unsigned disp_h, const unsigned disp_w,         \
                                         const char *title, const afgfx_color_mode mode);
 
     INSTANTIATE(float);
@@ -126,14 +126,14 @@ namespace backend
 
 #undef INSTANTIATE
 
-    void makeWindowCurrent(const WindowHandle window)
+    void makeWindowCurrent(const afgfx_window window)
     {
         CheckGL("Before Make Window Current");
         MakeContextCurrent(window);
         CheckGL("In Make Window Current");
     }
 
-    void destroyWindow(WindowHandle window)
+    void destroyWindow(afgfx_window window)
     {
         CheckGL("Before Delete Window");
         // Cleanup

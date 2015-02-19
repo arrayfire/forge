@@ -19,9 +19,9 @@ typedef struct
     int             uiID;
     GLenum          type;
     afgfx_color_mode   mode;
-} afgfx_window;
+} afgfx_window_struct;
 
-typedef afgfx_window* WindowHandle;
+typedef afgfx_window_struct* afgfx_window;
 
 #ifdef __cplusplus
 namespace afgfx
@@ -32,12 +32,12 @@ namespace afgfx
 #ifdef __cplusplus
 extern "C" {
 #endif
-    AFGFXAPI afgfx_err afgfx_create_window(WindowHandle *out, const unsigned width, const unsigned height,
+    AFGFXAPI afgfx_err afgfx_create_window(afgfx_window *out, const unsigned width, const unsigned height,
                                            const char *title, afgfx_color_mode mode, GLenum type);
 
-    AFGFXAPI afgfx_err afgfx_make_window_current(const WindowHandle in);
+    AFGFXAPI afgfx_err afgfx_make_window_current(const afgfx_window in);
 
-    AFGFXAPI afgfx_err afgfx_destroy_window(const WindowHandle in);
+    AFGFXAPI afgfx_err afgfx_destroy_window(const afgfx_window in);
 #ifdef __cplusplus
 }
 #endif

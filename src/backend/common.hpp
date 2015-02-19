@@ -14,7 +14,7 @@
 
 namespace backend
 {
-    static WindowHandle current;
+    static afgfx_window current;
 
     // Required to be defined for GLEW MX to work, along with the GLEW_MX define in the perprocessor!
     static GLEWContext* glewGetContext()
@@ -22,7 +22,7 @@ namespace backend
         return current->pGLEWContext;
     }
 
-    static void MakeContextCurrent(WindowHandle wh)
+    static void MakeContextCurrent(afgfx_window wh)
     {
         CheckGL("Before MakeContextCurrent");
         if (wh != NULL)

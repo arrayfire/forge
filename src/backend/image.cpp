@@ -49,10 +49,10 @@ namespace backend
     }
 
     template<typename T>
-    ImageHandle setupImage(WindowHandle window, const unsigned width, const unsigned height)
+    afgfx_image setupImage(afgfx_window window, const unsigned width, const unsigned height)
     {
         CheckGL("Before setupImage");
-        ImageHandle image = new afgfx_image[1];
+        afgfx_image image = new afgfx_image_struct[1];
         image->window = window;
         MakeContextCurrent(image->window);
 
@@ -90,7 +90,7 @@ namespace backend
     }
 
 #define INSTANTIATE(T)                                                                                      \
-    template ImageHandle setupImage<T>(WindowHandle window, const unsigned width, const unsigned height);   \
+    template afgfx_image setupImage<T>(afgfx_window window, const unsigned width, const unsigned height);   \
 
     INSTANTIATE(float);
     INSTANTIATE(int);
@@ -100,7 +100,7 @@ namespace backend
 
 #undef INSTANTIATE
 
-    void drawImage(const ImageHandle image)
+    void drawImage(const afgfx_image image)
     {
         CheckGL("Before drawImage");
         // Cleanup
@@ -140,7 +140,7 @@ namespace backend
         ForceCheckGL("In drawImage");
     }
 
-    void destroyImage(const ImageHandle image)
+    void destroyImage(const afgfx_image image)
     {
         CheckGL("Before destroyImage");
         // Cleanup

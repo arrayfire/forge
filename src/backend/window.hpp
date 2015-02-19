@@ -12,10 +12,10 @@
 namespace backend
 {
     template<typename T>
-    WindowHandle createWindow(const unsigned width, const unsigned height, const char *title,
+    afgfx_window createWindow(const unsigned width, const unsigned height, const char *title,
                               afgfx_color_mode mode);
 
-    void makeWindowCurrent(const WindowHandle window);
+    void makeWindowCurrent(const afgfx_window window);
 
-    void destroyWindow(const WindowHandle window);
+    void destroyWindow(const afgfx_window window);
 }

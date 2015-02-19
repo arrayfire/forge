@@ -13,11 +13,11 @@
 
 using namespace backend;
 
-afgfx_err afgfx_create_window(WindowHandle *out, const unsigned width, const unsigned height, const char *title,
+afgfx_err afgfx_create_window(afgfx_window *out, const unsigned width, const unsigned height, const char *title,
                               afgfx_color_mode mode, GLenum type)
 {
     try {
-        WindowHandle window;
+        afgfx_window window;
         DIM_ASSERT(1, height > 0);
         DIM_ASSERT(2, width > 0);
 
@@ -37,7 +37,7 @@ afgfx_err afgfx_create_window(WindowHandle *out, const unsigned width, const uns
     return AFGFX_SUCCESS;
 }
 
-afgfx_err afgfx_make_window_current(const WindowHandle in)
+afgfx_err afgfx_make_window_current(const afgfx_window in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -47,7 +47,7 @@ afgfx_err afgfx_make_window_current(const WindowHandle in)
 
     return AFGFX_SUCCESS;
 }
-afgfx_err afgfx_destroy_window(const WindowHandle in)
+afgfx_err afgfx_destroy_window(const afgfx_window in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
