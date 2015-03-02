@@ -7,17 +7,17 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <afgfx/window.h>
+#include <fg/window.h>
 #include <window.hpp>
 #include <err_common.hpp>
 
 using namespace backend;
 
-afgfx_err afgfx_create_window(afgfx_window *out, const unsigned width, const unsigned height, const char *title,
-                              afgfx_color_mode mode, GLenum type)
+fg_err fg_create_window(fg_window_handle *out, const unsigned width, const unsigned height, const char *title,
+                              fg_color_mode mode, GLenum type)
 {
     try {
-        afgfx_window window;
+        fg_window_handle window;
         DIM_ASSERT(1, height > 0);
         DIM_ASSERT(2, width > 0);
 
@@ -34,10 +34,10 @@ afgfx_err afgfx_create_window(afgfx_window *out, const unsigned width, const uns
     }
     CATCHALL;
 
-    return AFGFX_SUCCESS;
+    return FG_SUCCESS;
 }
 
-afgfx_err afgfx_make_window_current(const afgfx_window in)
+fg_err fg_make_window_current(const fg_window_handle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -45,9 +45,9 @@ afgfx_err afgfx_make_window_current(const afgfx_window in)
     }
     CATCHALL;
 
-    return AFGFX_SUCCESS;
+    return FG_SUCCESS;
 }
-afgfx_err afgfx_destroy_window(const afgfx_window in)
+fg_err fg_destroy_window(const fg_window_handle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -55,5 +55,5 @@ afgfx_err afgfx_destroy_window(const afgfx_window in)
     }
     CATCHALL;
 
-    return AFGFX_SUCCESS;
+    return FG_SUCCESS;
 }

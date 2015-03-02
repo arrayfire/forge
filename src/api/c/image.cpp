@@ -7,17 +7,17 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <afgfx/image.h>
+#include <fg/image.h>
 #include <image.hpp>
 #include <err_common.hpp>
 
 using namespace backend;
 
-afgfx_err afgfx_setup_image(afgfx_image *out, const afgfx_window window,
+fg_err fg_setup_image(fg_image_handle *out, const fg_window_handle window,
                       const unsigned width, const unsigned height)
 {
     try {
-        afgfx_image image = new afgfx_image_struct[1];
+        fg_image_handle image = new fg_image_struct[1];
         switch(window->type) {
             case GL_FLOAT:           image = setupImage<float>(window, width, height);  break;
             case GL_INT:             image = setupImage<int  >(window, width, height);  break;
@@ -30,10 +30,10 @@ afgfx_err afgfx_setup_image(afgfx_image *out, const afgfx_window window,
     }
     CATCHALL;
 
-    return AFGFX_SUCCESS;
+    return FG_SUCCESS;
 }
 
-afgfx_err afgfx_draw_image(const afgfx_image in)
+fg_err fg_draw_image(const fg_image_handle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -41,11 +41,11 @@ afgfx_err afgfx_draw_image(const afgfx_image in)
     }
     CATCHALL;
 
-    return AFGFX_SUCCESS;
+    return FG_SUCCESS;
 }
 
 
-afgfx_err afgfx_destroy_image(const afgfx_image in)
+fg_err fg_destroy_image(const fg_image_handle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -53,6 +53,6 @@ afgfx_err afgfx_destroy_image(const afgfx_image in)
     }
     CATCHALL;
 
-    return AFGFX_SUCCESS;
+    return FG_SUCCESS;
 }
 

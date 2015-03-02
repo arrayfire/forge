@@ -7,14 +7,14 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <afgfx/image.h>
+#include <fg/image.h>
 
 namespace backend
 {
     template<typename T>
-    afgfx_image setupImage(afgfx_window window, const unsigned width, const unsigned height);
+    fg_image_handle setupImage(fg_window_handle window, const unsigned width, const unsigned height);
 
-    void drawImage(const afgfx_image image);
+    void drawImage(const fg_image_handle image);
 
-    void destroyImage(const afgfx_image image);
+    void destroyImage(const fg_image_handle image);
 }

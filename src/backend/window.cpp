@@ -26,7 +26,7 @@ namespace backend
     static void error_callback(int error, const char* description)
     {
         fputs(description, stderr);
-        AFGFX_ERROR("Error in GLFW", AFGFX_ERR_GL_ERROR);
+        FG_ERROR("Error in GLFW", FG_ERR_GL_ERROR);
     }
 
     static void key_callback(GLFWwindow* wind, int key, int scancode, int action, int mods)
@@ -38,14 +38,14 @@ namespace backend
     }
 
     template<typename T>
-    afgfx_window createWindow(const unsigned disp_w, const unsigned disp_h, const char *title,
-                              const afgfx_color_mode mode)
+    fg_window_handle createWindow(const unsigned disp_w, const unsigned disp_h, const char *title,
+                              const fg_color_mode mode)
     {
         // save current active context info so we can restore it later!
-        //afgfx_window previous = current;
+        //fg_window_handle previous = current;
 
         // create new window data:
-        afgfx_window newWindow = new afgfx_window_struct[1];
+        fg_window_handle newWindow = new fg_window_struct[1];
         if (newWindow == NULL)
             printf("Error\n");
             //Error out
@@ -115,8 +115,8 @@ namespace backend
     }
 
 #define INSTANTIATE(T)                                                                          \
-    template afgfx_window createWindow<T>(const unsigned disp_h, const unsigned disp_w,         \
-                                        const char *title, const afgfx_color_mode mode);
+    template fg_window_handle createWindow<T>(const unsigned disp_h, const unsigned disp_w,         \
+                                        const char *title, const fg_color_mode mode);
 
     INSTANTIATE(float);
     INSTANTIATE(int);
@@ -126,14 +126,14 @@ namespace backend
 
 #undef INSTANTIATE
 
-    void makeWindowCurrent(const afgfx_window window)
+    void makeWindowCurrent(const fg_window_handle window)
     {
         CheckGL("Before Make Window Current");
         MakeContextCurrent(window);
         CheckGL("In Make Window Current");
     }
 
-    void destroyWindow(afgfx_window window)
+    void destroyWindow(fg_window_handle window)
     {
         CheckGL("Before Delete Window");
         // Cleanup

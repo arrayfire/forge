@@ -8,7 +8,7 @@
  ********************************************************/
 
 #pragma once
-#include "afgfx/defines.h"
-#include "afgfx/window.h"
-#include "afgfx/image.h"
-#include "afgfx/version.h"
+#include "fg/defines.h"
+#include "fg/window.h"
+#include "fg/image.h"
+#include "fg/version.h"

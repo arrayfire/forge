@@ -14,7 +14,7 @@
 
 namespace backend
 {
-    static afgfx_window current;
+    static fg_window_handle current;
 
     // Required to be defined for GLEW MX to work, along with the GLEW_MX define in the perprocessor!
     static GLEWContext* glewGetContext()
@@ -22,7 +22,7 @@ namespace backend
         return current->pGLEWContext;
     }
 
-    static void MakeContextCurrent(afgfx_window wh)
+    static void MakeContextCurrent(fg_window_handle wh)
     {
         CheckGL("Before MakeContextCurrent");
         if (wh != NULL)
@@ -33,13 +33,13 @@ namespace backend
         CheckGL("In MakeContextCurrent");
     }
 
-    static GLenum mode_to_glColor(afgfx_color_mode mode)
+    static GLenum mode_to_glColor(fg_color_mode mode)
     {
         GLenum color;
         switch(mode) {
-            case AFGFX_RED : color = GL_RED;  break;
-            case AFGFX_RGB : color = GL_RGB;  break;
-            case AFGFX_RGBA: color = GL_RGBA; break;
+            case FG_RED : color = GL_RED;  break;
+            case FG_RGB : color = GL_RGB;  break;
+            case FG_RGBA: color = GL_RGBA; break;
         }
         return color;
     }

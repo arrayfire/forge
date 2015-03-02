@@ -12,38 +12,38 @@
 #include <stdexcept>
 #include <string>
 #include <cassert>
-#include <afgfx/defines.h>
+#include <fg/defines.h>
 #include <vector>
 
-class AfgfxError   : public std::logic_error
+class FgError   : public std::logic_error
 {
     std::string functionName;
     int lineNumber;
-    afgfx_err error;
-    AfgfxError();
+    fg_err error;
+    FgError();
 
 public:
 
-    AfgfxError(const char * const funcName,
+    FgError(const char * const funcName,
             const int line,
-            const char * const message, afgfx_err err);
+            const char * const message, fg_err err);
 
-    AfgfxError(std::string funcName,
+    FgError(std::string funcName,
             const int line,
-            std::string message, afgfx_err err);
+            std::string message, fg_err err);
 
     const std::string&
     getFunctionName() const;
 
     int getLine() const;
 
-    afgfx_err getError() const;
+    fg_err getError() const;
 
-    virtual ~AfgfxError() throw();
+    virtual ~FgError() throw();
 };
 
 // TODO: Perhaps add a way to return supported types
-class TypeError : public AfgfxError
+class TypeError : public FgError
 {
     int argIndex;
     std::string errTypeName;
@@ -64,7 +64,7 @@ public:
     ~TypeError() throw() {}
 };
 
-class ArgumentError : public AfgfxError
+class ArgumentError : public FgError
 {
     int argIndex;
     std::string expected;
@@ -84,7 +84,7 @@ public:
     ~ArgumentError() throw(){}
 };
 
-class DimensionError : public AfgfxError
+class DimensionError : public FgError
 {
     int argIndex;
     std::string expected;
@@ -104,7 +104,7 @@ public:
     ~DimensionError() throw(){}
 };
 
-afgfx_err processException();
+fg_err processException();
 
 #define DIM_ASSERT(INDEX, COND) do {                    \
         if((COND) == false) {                           \
@@ -126,12 +126,12 @@ afgfx_err processException();
     } while(0)                                          \
 
 
-#define AFGFX_ERROR(MSG, ERR_TYPE) do {                 \
-        throw AfgfxError(__FILE__, __LINE__,            \
+#define FG_ERROR(MSG, ERR_TYPE) do {                 \
+        throw FgError(__FILE__, __LINE__,            \
                       MSG, ERR_TYPE);                   \
     } while(0)
 
-#define AFGFX_ASSERT(COND, MESSAGE)                     \
+#define FG_ASSERT(COND, MESSAGE)                     \
     assert(MESSAGE && COND)
 
 #define CATCHALL                                        \
@@ -139,10 +139,10 @@ afgfx_err processException();
         return processException();                      \
     }
 
-#define AFGFX_CHECK(fn) do {                            \
-        afgfx_err __err = fn;                           \
-        if (__err == AFGFX_SUCCESS) break;              \
-        throw AfgfxError(__FILE__, __LINE__,            \
+#define FG_CHECK(fn) do {                            \
+        fg_err __err = fn;                           \
+        if (__err == FG_SUCCESS) break;              \
+        throw FgError(__FILE__, __LINE__,            \
                       "\n", __err);                     \
     } while(0)
 

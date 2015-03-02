@@ -12,11 +12,11 @@
 const char *getName(GLenum type)
 {
     switch(type) {
-    case GL_FLOAT: return "float";
-    case GL_INT: return "int";
-    case GL_UNSIGNED_INT: return "unsigned int";
-    case GL_BYTE: return "char";
-    case GL_UNSIGNED_BYTE: return "unsigned char";
-    default: return "unknown type";
+    case GL_FLOAT:              return "float";
+    case GL_INT:                return "int";
+    case GL_UNSIGNED_INT:       return "unsigned int";
+    case GL_BYTE:               return "char";
+    case GL_UNSIGNED_BYTE:      return "unsigned char";
+    default:                    return "unknown type";
     }
 }

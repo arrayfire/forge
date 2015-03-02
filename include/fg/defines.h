@@ -15,31 +15,31 @@
 #endif
 
 typedef enum {
-    AFGFX_SUCCESS=0,
-    AFGFX_ERR_INTERNAL,
-    AFGFX_ERR_NOMEM,
-    AFGFX_ERR_DRIVER,
-    AFGFX_ERR_RUNTIME,
-    AFGFX_ERR_INVALID_ARRAY,
-    AFGFX_ERR_ARG,
-    AFGFX_ERR_SIZE,
-    AFGFX_ERR_DIFF_TYPE,
-    AFGFX_ERR_NOT_SUPPORTED,
-    AFGFX_ERR_NOT_CONFIGURED,
-    AFGFX_ERR_INVALID_TYPE,
-    AFGFX_ERR_INVALID_ARG,
-    AFGFX_ERR_GL_ERROR,
-    AFGFX_ERR_UNKNOWN
-} afgfx_err;
+    FG_SUCCESS=0,
+    FG_ERR_INTERNAL,
+    FG_ERR_NOMEM,
+    FG_ERR_DRIVER,
+    FG_ERR_RUNTIME,
+    FG_ERR_INVALID_ARRAY,
+    FG_ERR_ARG,
+    FG_ERR_SIZE,
+    FG_ERR_DIFF_TYPE,
+    FG_ERR_NOT_SUPPORTED,
+    FG_ERR_NOT_CONFIGURED,
+    FG_ERR_INVALID_TYPE,
+    FG_ERR_INVALID_ARG,
+    FG_ERR_GL_ERROR,
+    FG_ERR_UNKNOWN
+} fg_err;
 
 typedef unsigned int  uint;
 typedef unsigned char uchar;
 
 typedef enum {
-    AFGFX_RED =1,
-    AFGFX_RGB =3,
-    AFGFX_RGBA=4,
-} afgfx_color_mode;
+    FG_RED =1,
+    FG_RGB =3,
+    FG_RGBA=4,
+} fg_color_mode;
 
 // Print for OpenGL errors
 // Returns 1 if an OpenGL error occurred, 0 otherwise.
@@ -47,10 +47,10 @@ typedef enum {
 #if defined(_WIN32) || defined(_MSC_VER)
     // http://msdn.microsoft.com/en-us/library/b0084kay(v=VS.80).aspx
     // http://msdn.microsoft.com/en-us/library/3y1sfaz2%28v=VS.80%29.aspx
-    #ifdef AFGFXDLL // libafgfx
-        #define AFGFXAPI  __declspec(dllexport)
+    #ifdef FGDLL // libfg
+        #define FGAPI  __declspec(dllexport)
     #else
-        #define AFGFXAPI  __declspec(dllimport)
+        #define FGAPI  __declspec(dllimport)
     #endif
 
 // bool
@@ -63,7 +63,7 @@ typedef enum {
     #define snprintf sprintf_s
     #define STATIC_ static
 #else
-    #define AFGFXAPI   __attribute__((visibility("default")))
+    #define FGAPI   __attribute__((visibility("default")))
     #include <stdbool.h>
     #define __PRETTY_FUNCTION__ __func__
     #define STATIC_

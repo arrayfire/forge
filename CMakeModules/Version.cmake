@@ -1,8 +1,8 @@
 #
-# Make a version file that includes the ArrayFire GFX version and git revision
+# Make a version file that includes the Forge version and git revision
 #
-SET(AFGFX_VERSION "3.0")
-SET(AFGFX_VERSION_MINOR ".beta")
+SET(FG_VERSION "3.0")
+SET(FG_VERSION_MINOR ".beta")
 EXECUTE_PROCESS(
     COMMAND git log -1 --format=%h
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -12,5 +12,5 @@ EXECUTE_PROCESS(
 
 CONFIGURE_FILE(
     ${CMAKE_MODULE_PATH}/version.h.in
-    ${CMAKE_SOURCE_DIR}/include/afgfx/version.h
+    ${CMAKE_SOURCE_DIR}/include/fg/version.h
 )

@@ -8,11 +8,11 @@
  ********************************************************/
 
 #pragma once
-#include <afgfx/window.h>
+#include <fg/window.h>
 
 typedef struct
 {
-    afgfx_window window;
+    fg_window_handle window;
 
     //OpenGL PBO and texture "names"
     unsigned src_width;
@@ -22,12 +22,12 @@ typedef struct
     GLuint gl_Shader;
     GLenum gl_Format;
     GLenum gl_Type;
-} afgfx_image_struct;
+} fg_image_struct;
 
-typedef afgfx_image_struct* afgfx_image;
+typedef fg_image_struct* fg_image_handle;
 
 #ifdef __cplusplus
-namespace afgfx
+namespace fg
 {
 }
 #endif
@@ -35,12 +35,12 @@ namespace afgfx
 #ifdef __cplusplus
 extern "C" {
 #endif
-    AFGFXAPI afgfx_err afgfx_setup_image(afgfx_image *out, const afgfx_window window,
-                                         const unsigned width, const unsigned height);
+    FGAPI fg_err fg_setup_image(fg_image_handle *out, const fg_window_handle window,
+                                const unsigned width, const unsigned height);
 
-    AFGFXAPI afgfx_err afgfx_draw_image(const afgfx_image in);
+    FGAPI fg_err fg_draw_image(const fg_image_handle in);
 
-    AFGFXAPI afgfx_err afgfx_destroy_image(const afgfx_image in);
+    FGAPI fg_err fg_destroy_image(const fg_image_handle in);
 #ifdef __cplusplus
 }
 #endif
