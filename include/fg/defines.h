@@ -61,10 +61,10 @@ typedef enum {
     #endif
     #define __PRETTY_FUNCTION__ __FUNCSIG__
     #define snprintf sprintf_s
-    #define STATIC_ static
+    #define FG_STATIC_ static
 #else
     #define FGAPI   __attribute__((visibility("default")))
     #include <stdbool.h>
     #define __PRETTY_FUNCTION__ __func__
-    #define STATIC_
+    #define FG_STATIC_
 #endif
