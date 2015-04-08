@@ -8,8 +8,39 @@
  ********************************************************/
 
 #pragma once
+
+#if defined(_WIN32) || defined(_WIN64) || defined(_MSC_VER) ||  defined(_WINDOWS_) || defined(__WIN32__) || defined(__WINDOWS__)
+#define WINDOWS_OS
+#elif defined(__APPLE__) || defined(__MACH__)
+#define APPLE_OS
+#else
+#define LINUX_OS
+#endif
+
 #include <GL/glew.h>
+
+#ifdef WINDOWS_OS
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+#endif
+
+#ifdef LINUX_OS
+#define GLFW_EXPOSE_NATIVE_X11
+#define GLFW_EXPOSE_NATIVE_GLX
+#endif
+
 #include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+
+#ifdef WINDOWS_OS
+typedef HGLRC ContextHandle;
+typedef HDC DisplayHandle;
+#endif
+
+#ifdef LINUX_OS
+typedef GLXContext ContextHandle;
+typedef Display* DisplayHandle;
+#endif
 
 #ifdef __cplusplus
 #endif
@@ -44,7 +75,7 @@ typedef enum {
 // Print for OpenGL errors
 // Returns 1 if an OpenGL error occurred, 0 otherwise.
 
-#if defined(_WIN32) || defined(_MSC_VER)
+#ifdef WINDOWS_OS
     // http://msdn.microsoft.com/en-us/library/b0084kay(v=VS.80).aspx
     // http://msdn.microsoft.com/en-us/library/3y1sfaz2%28v=VS.80%29.aspx
     #ifdef FGDLL // libfg

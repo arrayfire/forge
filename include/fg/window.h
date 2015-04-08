@@ -12,6 +12,9 @@
 
 typedef struct
 {
+    ContextHandle   cxt;
+    DisplayHandle   dsp;
+
     GLFWwindow*     pWindow;
     GLEWContext*    pGLEWContext;
     int             uiWidth;

@@ -110,6 +110,15 @@ namespace backend
 
         MakeContextCurrent(newWindow);
 
+#ifdef WINDOWS_OS
+        newWindow->cxt = glfwGetWGLContext(newWindow->pWindow);
+        newWindow->dsp = GetDC(glfwGetWin32Window(newWindow->pWindow));
+#endif
+#ifdef LINUX_OS
+        newWindow->cxt = glfwGetGLXContext(newWindow->pWindow);
+        newWindow->dsp = glfwGetX11Display();
+#endif
+
         CheckGL("At End of Create Window");
         return newWindow;
     }
