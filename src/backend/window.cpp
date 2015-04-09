@@ -21,7 +21,11 @@
 
 namespace backend
 {
-    static int g_uiWindowCounter = 0; // Window Counter
+    static GLFWwindow* gPrimaryWindow;  // This window is the primary window in forge, all subsequent
+                                        // windows use the same OpenGL context that is created while
+                                        // creating the primary window
+
+    static int g_uiWindowCounter = 0;   // Window Counter
 
     static void error_callback(int error, const char* description)
     {
@@ -41,6 +45,7 @@ namespace backend
     fg_window_handle createWindow(const unsigned disp_w, const unsigned disp_h, const char *title,
                               const fg_color_mode mode)
     {
+        static bool isPrimaryWindowNotInitialized = true;
         // save current active context info so we can restore it later!
         //fg_window_handle previous = current;
 
@@ -68,8 +73,14 @@ namespace backend
         glfwWindowHint(GLFW_DEPTH_BITS, mode * sizeof(T));
         glfwWindowHint(GLFW_RESIZABLE, false);
 
-        // Create the window itself
-        newWindow->pWindow = glfwCreateWindow(newWindow->uiWidth, newWindow->uiHeight, title, NULL, NULL);
+        // Create the Primary Window if not already done
+        if (isPrimaryWindowNotInitialized) {
+            gPrimaryWindow = glfwCreateWindow(16, 16, "Alpha", NULL, NULL);
+            isPrimaryWindowNotInitialized = false;
+        }
+        // now create the window with user provided meta-data that
+        // shares the context with the primary window
+        newWindow->pWindow = glfwCreateWindow(newWindow->uiWidth, newWindow->uiHeight, title, NULL, gPrimaryWindow);
 
         // Confirm window was created successfully:
         if (newWindow->pWindow == NULL)
