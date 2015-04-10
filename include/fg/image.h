@@ -29,6 +29,28 @@ typedef fg_image_struct* fg_image_handle;
 #ifdef __cplusplus
 namespace fg
 {
+
+class FGAPI Image {
+    private:
+        fg_image_handle mHandle;
+
+    public:
+        Image();
+        Image(const uint pWidth, const uint pHeight, const Window& pWindow);
+        ~Image();
+
+        uint width() const;
+        uint height() const;
+        FGuint pboResourceId() const;
+        FGuint texResourceId() const;
+        FGuint shaderResourceId() const;
+        FGenum pixelFormat() const;
+        FGenum channelType() const;
+        fg_image_handle get() const;
+};
+
+void drawImage(const Image& pImage);
+
 }
 #endif
 

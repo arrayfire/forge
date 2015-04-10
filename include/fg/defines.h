@@ -102,3 +102,13 @@ typedef enum {
 
 typedef GLuint FGuint;
 typedef GLenum FGenum;
+
+#ifdef __cplusplus
+namespace fg
+{
+
+typedef fg_color_mode WindowColorMode;
+typedef fg_err ForgeError;
+
+}
+#endif

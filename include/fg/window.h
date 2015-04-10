@@ -29,6 +29,26 @@ typedef fg_window_struct* fg_window_handle;
 #ifdef __cplusplus
 namespace fg
 {
+
+class FGAPI Window {
+    private:
+        fg_window_handle mHandle;
+
+    public:
+        Window();
+        Window(const uint pWidth, const uint pHeight, const char* pTitle,
+               WindowColorMode pMode, FGenum pChannelType);
+        ~Window();
+
+        uint width() const;
+        uint height() const;
+        WindowColorMode colorMode() const;
+        FGenum channelType() const;
+        fg_window_handle get() const;
+};
+
+void makeWindowCurrent(const Window& pWindow);
+
 }
 #endif
 
