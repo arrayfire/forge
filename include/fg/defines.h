@@ -99,3 +99,6 @@ typedef enum {
     #define __PRETTY_FUNCTION__ __func__
     #define FG_STATIC_
 #endif
+
+typedef GLuint FGuint;
+typedef GLenum FGenum;

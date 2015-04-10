@@ -20,7 +20,7 @@ typedef struct
     int             uiWidth;
     int             uiHeight;
     int             uiID;
-    GLenum          type;
+    FGenum          type;
     fg_color_mode   mode;
 } fg_window_struct;
 
@@ -36,7 +36,7 @@ namespace fg
 extern "C" {
 #endif
     FGAPI fg_err fg_create_window(fg_window_handle *out, const unsigned width, const unsigned height,
-                                  const char *title, fg_color_mode mode, GLenum type);
+                                  const char *title, fg_color_mode mode, FGenum type);
 
     FGAPI fg_err fg_make_window_current(const fg_window_handle in);
 

@@ -17,11 +17,11 @@ typedef struct
     //OpenGL PBO and texture "names"
     unsigned src_width;
     unsigned src_height;
-    GLuint gl_PBO;
-    GLuint gl_Tex;
-    GLuint gl_Shader;
-    GLenum gl_Format;
-    GLenum gl_Type;
+    FGuint gl_PBO;
+    FGuint gl_Tex;
+    FGuint gl_Shader;
+    FGenum gl_Format;
+    FGenum gl_Type;
 } fg_image_struct;
 
 typedef fg_image_struct* fg_image_handle;

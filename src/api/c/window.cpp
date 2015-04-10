@@ -14,7 +14,7 @@
 using namespace backend;
 
 fg_err fg_create_window(fg_window_handle *out, const unsigned width, const unsigned height, const char *title,
-                              fg_color_mode mode, GLenum type)
+                              fg_color_mode mode, FGenum type)
 {
     try {
         fg_window_handle window;

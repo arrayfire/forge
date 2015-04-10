@@ -57,7 +57,7 @@ FgError::~FgError() throw() {}
 
 TypeError::TypeError(const char * const  funcName,
                      const int line,
-                     const int index, const GLenum type)
+                     const int index, const FGenum type)
     : FgError (funcName, line, "Invalid data type", FG_ERR_INVALID_TYPE),
       argIndex(index),
       errTypeName(getName(type))
