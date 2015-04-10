@@ -134,7 +134,7 @@ namespace backend
         glDisable(GL_FRAGMENT_PROGRAM_ARB);
 
         // Complete render
-        glfwSwapBuffers(current->pWindow);
+        glfwSwapBuffers(image->window->pWindow);
         glfwPollEvents();
 
         ForceCheckGL("In drawImage");
