@@ -21,8 +21,6 @@ typedef struct
     fg_window_handle window;
     GLuint gl_vbo;
     size_t vbosize;            // In bytes
-    double *xpointer;
-    double *ypointer;
 
     unsigned src_width;
     unsigned src_height;
@@ -50,7 +48,7 @@ class FGAPI Plot2d {
 
     public:
         Plot2d();
-        Plot2d(mHandle, const Window& pWindow, const uint pWidth, const uint pHeight);
+        Plot2d(fg_plot_handle mHandle, const Window& pWindow, const uint pWidth, const uint pHeight);
         ~Plot2d();
 
         uint width()  const;
@@ -64,7 +62,7 @@ class FGAPI Plot2d {
         FGint scale_y()  const;
         FGint ticksize() const;
         FGint margin()   const;
-}
+};
 
 }
 #endif
@@ -74,7 +72,7 @@ extern "C" {
 #endif
     FGAPI fg_err fg_plot_init(fg_plot_handle *in, const fg_window_handle window, const unsigned width, const unsigned height);
 
-    FGAPI fg_err fg_plot2d(fg_plot_handle in, const double xmax, const double xmin, const double ymax, const double ymin, const int size);
+    FGAPI fg_err fg_plot2d(fg_plot_handle in, const double xmax, const double xmin, const double ymax, const double ymin);
 
     FGAPI fg_err fg_destroy_plot(fg_plot_handle plot);
 

@@ -20,9 +20,9 @@ fg_err fg_plot_init(fg_plot_handle *in, const fg_window_handle window, const uns
     return FG_SUCCESS;
 }
 
-fg_err fg_plot2d(fg_plot_handle plot, const double xmax, const double xmin, const double ymax, const double ymin, const int size)
+fg_err fg_plot2d(fg_plot_handle plot, const double xmax, const double xmin, const double ymax, const double ymin)
 {
-    plot_2d(plot, xmax, xmin,ymax, ymin, size);
+    plot_2d(plot, xmax, xmin,ymax, ymin);
     return FG_SUCCESS;
 }
 

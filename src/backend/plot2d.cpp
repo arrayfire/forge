@@ -89,7 +89,7 @@ namespace backend
         return plot;
     }
 
-    void plot_2d(fg_plot_handle plot, const double xmax,const double xmin, const double ymax, const double ymin, const int size)
+    void plot_2d(fg_plot_handle plot, const double xmax,const double xmin, const double ymax, const double ymin)
     {
 
         MakeContextCurrent(plot->window);
@@ -122,7 +122,6 @@ namespace backend
         }
 */
 
-
         glUniform1f(plot->gl_Uniform_Offset_x,offset_x);
         glUniform1f(plot->gl_Uniform_Offset_y,offset_y);
         glUniform1f(plot->gl_Uniform_Scale_x,scale_x);
@@ -133,7 +132,15 @@ namespace backend
         glEnableVertexAttribArray(plot->gl_Attribute_Coord2d);
         glVertexAttribPointer(plot->gl_Attribute_Coord2d, 2, plot->window->type, GL_FALSE, 0, 0);
 
-        glDrawArrays(GL_LINE_STRIP, 0, size);
+        size_t elements = 0;
+        switch(plot->window->type) {
+            case GL_FLOAT:          elements = plot->vbosize / (2 * sizeof(float));     break;
+            case GL_INT:            elements = plot->vbosize / (2 * sizeof(int  ));     break;
+            case GL_UNSIGNED_INT:   elements = plot->vbosize / (2 * sizeof(uint ));     break;
+            case GL_BYTE:           elements = plot->vbosize / (2 * sizeof(char ));     break;
+            case GL_UNSIGNED_BYTE:  elements = plot->vbosize / (2 * sizeof(uchar));     break;
+        }
+        glDrawArrays(GL_LINE_STRIP, 0, elements);
 
         glfwSwapBuffers(plot->window->pWindow);
         glfwPollEvents();

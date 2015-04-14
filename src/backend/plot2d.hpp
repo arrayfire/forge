@@ -13,7 +13,7 @@ namespace backend
 {
     fg_plot_handle plot_init(const fg_window_handle window, const unsigned width, const unsigned height);
 
-    void plot_2d(fg_plot_handle plot, const double xmax, const double xmin, const double ymax, const double ymin, const int size);
+    void plot_2d(fg_plot_handle plot, const double xmax, const double xmin, const double ymax, const double ymin);
 
     void destroyPlot(fg_plot_handle plot);
 }

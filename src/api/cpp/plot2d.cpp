@@ -93,9 +93,9 @@ fg_plot_handle Plot2d::get() const
     return mHandle;
 }
 
-void drawPlot(const Plot2d& pPlot2d,const double xmax, const double xmin, const double ymax, const double ymin, const int size)
+void drawPlot(const Plot2d& pPlot2d,const double xmax, const double xmin, const double ymax, const double ymin)
 {
-    FG_THROW(fg_plot2d(pPlot2d.get(), xmax, xmin, ymax, ymin, size));
+    FG_THROW(fg_plot2d(pPlot2d.get(), xmax, xmin, ymax, ymin));
 }
 
 }
