@@ -43,6 +43,29 @@ typedef fg_plot_struct* fg_plot_handle;
 #ifdef __cplusplus
 namespace fg
 {
+
+class FGAPI Plot2d {
+    private:
+        fg_plot_handle mHandle;
+
+    public:
+        Plot2d();
+        Plot2d(mHandle, const Window& pWindow, const uint pWidth, const uint pHeight);
+        ~Plot2d();
+
+        uint width()  const;
+        uint height() const;
+        FGuint programResourceId() const;
+        size_t vbosize() const;
+        FGint coord2d()  const;
+        FGint offset_x() const;
+        FGint scale_x()  const;
+        FGint offset_y() const;
+        FGint scale_y()  const;
+        FGint ticksize() const;
+        FGint margin()   const;
+}
+
 }
 #endif
 

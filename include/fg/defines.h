@@ -101,6 +101,7 @@ typedef enum {
 #endif
 
 typedef GLuint FGuint;
+typedef GLint FGint;
 typedef GLenum FGenum;
 
 #ifdef __cplusplus
