@@ -131,7 +131,7 @@ namespace backend
 
         glDrawArrays(GL_LINE_STRIP, 0, size);
 
-        glfwSwapBuffers(current->pWindow);
+        glfwSwapBuffers(plot->window->pWindow);
         glfwPollEvents();
     }
     void destroyPlot(fg_plot_handle plot)
