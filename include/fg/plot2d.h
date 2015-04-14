@@ -51,6 +51,7 @@ class FGAPI Plot2d {
         Plot2d(fg_plot_handle mHandle, const Window& pWindow, const uint pWidth, const uint pHeight);
         ~Plot2d();
 
+        fg_plot_handle get() const;
         uint width()  const;
         uint height() const;
         FGuint programResourceId() const;

@@ -15,7 +15,7 @@ namespace fg
 
 Plot2d::Plot2d() :mHandle(0) {}
 
-Plot2d::Plot2d(const uint pWidth, const uint pHeight, const Window& pWindow)
+Plot2d::Plot2d(fg_plot_handle mHandle, const Window &pWindow, const uint pWidth, const uint pHeight)
 {
     FG_THROW(fg_plot_init(&mHandle, pWindow.get(), pWidth, pHeight));
 }
@@ -50,7 +50,7 @@ size_t Plot2d::vbosize() const
 {
     if (mHandle==0)
         throw fg::exception("Invalid Plot Handle");
-    return mHandle->gl_vbosize;
+    return mHandle->vbosize;
 }
 
 FGint Plot2d::coord2d() const
