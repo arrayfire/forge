@@ -12,38 +12,38 @@
 #include <stdexcept>
 #include <string>
 #include <cassert>
-#include <fw/defines.h>
+#include <fg/defines.h>
 #include <vector>
 
-class FwError   : public std::logic_error
+class FgError   : public std::logic_error
 {
     std::string functionName;
     int lineNumber;
-    fw_err error;
-    FwError();
+    fg_err error;
+    FgError();
 
 public:
 
-    FwError(const char * const funcName,
+    FgError(const char * const funcName,
             const int line,
-            const char * const message, fw_err err);
+            const char * const message, fg_err err);
 
-    FwError(std::string funcName,
+    FgError(std::string funcName,
             const int line,
-            std::string message, fw_err err);
+            std::string message, fg_err err);
 
     const std::string&
     getFunctionName() const;
 
     int getLine() const;
 
-    fw_err getError() const;
+    fg_err getError() const;
 
-    virtual ~FwError() throw();
+    virtual ~FgError() throw();
 };
 
 // TODO: Perhaps add a way to return supported types
-class TypeError : public FwError
+class TypeError : public FgError
 {
     int argIndex;
     std::string errTypeName;
@@ -54,7 +54,7 @@ public:
     TypeError(const char * const  funcName,
               const int line,
               const int index,
-              const fw_dtype type);
+              const FGenum type);
 
     const std::string&
     getTypeName() const;
@@ -64,7 +64,7 @@ public:
     ~TypeError() throw() {}
 };
 
-class ArgumentError : public FwError
+class ArgumentError : public FgError
 {
     int argIndex;
     std::string expected;
@@ -84,7 +84,7 @@ public:
     ~ArgumentError() throw(){}
 };
 
-class DimensionError : public FwError
+class DimensionError : public FgError
 {
     int argIndex;
     std::string expected;
@@ -104,7 +104,7 @@ public:
     ~DimensionError() throw(){}
 };
 
-fw_err processException();
+fg_err processException();
 
 #define DIM_ASSERT(INDEX, COND) do {                    \
         if((COND) == false) {                           \
@@ -113,37 +113,37 @@ fw_err processException();
         }                                               \
     } while(0)
 
-#define ARG_ASSERT(INDEX, COND) do {                \
-        if((COND) == false) {                       \
-            throw ArgumentError(__FILE__, __LINE__, \
-                                INDEX, #COND);      \
-        }                                           \
+#define ARG_ASSERT(INDEX, COND) do {                    \
+        if((COND) == false) {                           \
+            throw ArgumentError(__FILE__, __LINE__,     \
+                                INDEX, #COND);          \
+        }                                               \
     } while(0)
 
-#define TYPE_ERROR(INDEX, type) do {            \
-        throw TypeError(__FILE__, __LINE__,     \
-                        INDEX, type);           \
-    } while(0)                                  \
+#define TYPE_ERROR(INDEX, type) do {                    \
+        throw TypeError(__FILE__, __LINE__,             \
+                        INDEX, type);                   \
+    } while(0)                                          \
 
 
-#define FW_ERROR(MSG, ERR_TYPE) do {            \
-        throw FwError(__FILE__, __LINE__,       \
-                      MSG, ERR_TYPE);           \
+#define FG_ERROR(MSG, ERR_TYPE) do {                 \
+        throw FgError(__FILE__, __LINE__,            \
+                      MSG, ERR_TYPE);                   \
     } while(0)
 
-#define FW_ASSERT(COND, MESSAGE)                \
+#define FG_ASSERT(COND, MESSAGE)                     \
     assert(MESSAGE && COND)
 
-#define CATCHALL                                \
-    catch(...) {                                \
-        return processException();              \
+#define CATCHALL                                        \
+    catch(...) {                                        \
+        return processException();                      \
     }
 
-#define FW_CHECK(fn) do {                       \
-        fw_err __err = fn;                      \
-        if (__err == FW_SUCCESS) break;         \
-        throw FwError(__FILE__, __LINE__,       \
-                      "\n", __err);             \
+#define FG_CHECK(fn) do {                            \
+        fg_err __err = fn;                           \
+        if (__err == FG_SUCCESS) break;              \
+        throw FgError(__FILE__, __LINE__,            \
+                      "\n", __err);                     \
     } while(0)
 
 // GL Errors

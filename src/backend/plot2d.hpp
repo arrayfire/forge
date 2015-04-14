@@ -7,15 +7,13 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/window.h>
+#include <fg/plot2d.h>
 
 namespace backend
 {
-    template<typename T>
-    fg_window_handle createWindow(const unsigned width, const unsigned height, const char *title,
-                              fg_color_mode mode);
+    fg_plot_handle plot_init(const fg_window_handle window, const unsigned width, const unsigned height);
 
-    void makeWindowCurrent(const fg_window_handle window);
+    void plot_2d(fg_plot_handle plot, const double xmax, const double xmin, const double ymax, const double ymin);
 
-    void destroyWindow(const fg_window_handle window);
+    void destroyPlot(fg_plot_handle plot);
 }

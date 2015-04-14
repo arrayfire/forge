@@ -67,18 +67,18 @@ ELSE(${UNIX}) #Windows
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 ENDIF()
 
-ADD_LIBRARY(afgfx SHARED
+ADD_LIBRARY(forge SHARED
            ${backend_headers}
            ${backend_sources}
            ${c_headers}
            ${c_sources}
            ${cpp_sources})
 
-TARGET_LINK_LIBRARIES(afgfx
+TARGET_LINK_LIBRARIES(forge
                       ${GLFW_LIBRARY}
                       ${GLEWmx_LIBRARY}
                       ${OPENGL_gl_LIBRARY}
                       ${OPENGL_glu_LIBRARY}
                       )
 
-INSTALL(TARGETS afgfx DESTINATION lib)
+INSTALL(TARGETS forge DESTINATION lib)

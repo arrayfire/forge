@@ -7,15 +7,14 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/window.h>
+#include <fg/image.h>
 
 namespace backend
 {
     template<typename T>
-    fg_window_handle createWindow(const unsigned width, const unsigned height, const char *title,
-                              fg_color_mode mode);
+    fg_image_handle setupImage(fg_window_handle window, const unsigned width, const unsigned height);
 
-    void makeWindowCurrent(const fg_window_handle window);
+    void drawImage(const fg_image_handle image);
 
-    void destroyWindow(const fg_window_handle window);
+    void destroyImage(const fg_image_handle image);
 }

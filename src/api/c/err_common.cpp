@@ -17,18 +17,18 @@ using std::string;
 using std::stringstream;
 using std::cerr;
 
-FwError::FwError(const char * const funcName,
+FgError::FgError(const char * const funcName,
                  const int line,
-                 const char * const message, fw_err err)
+                 const char * const message, fg_err err)
     : logic_error   (message),
       functionName  (funcName),
       lineNumber(line),
       error(err)
 {}
 
-FwError::FwError(string funcName,
+FgError::FgError(string funcName,
                  const int line,
-                 string message, fw_err err)
+                 string message, fg_err err)
     : logic_error   (message),
       functionName  (funcName),
       lineNumber(line),
@@ -36,29 +36,29 @@ FwError::FwError(string funcName,
 {}
 
 const string&
-FwError::getFunctionName() const
+FgError::getFunctionName() const
 {
     return functionName;
 }
 
 int
-FwError::getLine() const
+FgError::getLine() const
 {
     return lineNumber;
 }
 
-fw_err
-FwError::getError() const
+fg_err
+FgError::getError() const
 {
     return error;
 }
 
-FwError::~FwError() throw() {}
+FgError::~FgError() throw() {}
 
 TypeError::TypeError(const char * const  funcName,
                      const int line,
-                     const int index, const fw_dtype type)
-    : FwError (funcName, line, "Invalid data type", FW_ERR_INVALID_TYPE),
+                     const int index, const FGenum type)
+    : FgError (funcName, line, "Invalid data type", FG_ERR_INVALID_TYPE),
       argIndex(index),
       errTypeName(getName(type))
 {}
@@ -77,7 +77,7 @@ ArgumentError::ArgumentError(const char * const  funcName,
                              const int line,
                              const int index,
                              const char * const  expectString)
-    : FwError(funcName, line, "Invalid argument", FW_ERR_INVALID_ARG),
+    : FgError(funcName, line, "Invalid argument", FG_ERR_INVALID_ARG),
       argIndex(index),
       expected(expectString)
 {
@@ -99,7 +99,7 @@ DimensionError::DimensionError(const char * const  funcName,
                              const int line,
                              const int index,
                              const char * const  expectString)
-    : FwError(funcName, line, "Invalid dimension", FW_ERR_SIZE),
+    : FgError(funcName, line, "Invalid dimension", FG_ERR_SIZE),
       argIndex(index),
       expected(expectString)
 {
@@ -117,10 +117,10 @@ int DimensionError::getArgIndex() const
 }
 
 
-fw_err processException()
+fg_err processException()
 {
     stringstream    ss;
-    fw_err          err= FW_ERR_INTERNAL;
+    fg_err          err= FG_ERR_INTERNAL;
 
     try {
         throw;
@@ -132,7 +132,7 @@ fw_err processException()
            << "Expected: " << ex.getExpectedCondition() << "\n";
 
         cerr << ss.str();
-        err = FW_ERR_SIZE;
+        err = FG_ERR_SIZE;
 
     } catch (const ArgumentError &ex) {
 
@@ -142,7 +142,7 @@ fw_err processException()
            << "Expected: " << ex.getExpectedCondition() << "\n";
 
         cerr << ss.str();
-        err = FW_ERR_ARG;
+        err = FG_ERR_ARG;
 
     } catch (const TypeError &ex) {
 
@@ -151,8 +151,8 @@ fw_err processException()
            << "Invalid type for argument " << ex.getArgIndex() << "\n";
 
         cerr << ss.str();
-        err = FW_ERR_INVALID_TYPE;
-    } catch (const FwError &ex) {
+        err = FG_ERR_INVALID_TYPE;
+    } catch (const FgError &ex) {
 
         ss << "Internal error in " << ex.getFunctionName()
            << "(" << ex.getLine() << "):\n"
@@ -163,7 +163,7 @@ fw_err processException()
     } catch (...) {
 
         cerr << "Unknown error\n";
-        err = FW_ERR_UNKNOWN;
+        err = FG_ERR_UNKNOWN;
     }
 
     return err;
@@ -190,7 +190,7 @@ GLenum glErrorCheck(const char *msg, const char* file, int line)
 
     if (x != GL_NO_ERROR) {
         printf("GL Error at: %s:%d Message: %s Error Code: %d \"%s\"\n", file, line, msg, x, gluErrorString(x));
-        FW_ERROR("Error in Graphics", FW_ERR_GL_ERROR);
+        FG_ERROR("Error in Graphics", FG_ERR_GL_ERROR);
     }
     return x;
 #else
@@ -204,7 +204,7 @@ GLenum glForceErrorCheck(const char *msg, const char* file, int line)
 
     if (x != GL_NO_ERROR) {
         printf("GL Error at: %s:%d Message: %s Error Code: %d \"%s\"\n", file, line, msg, x, gluErrorString(x));
-        FW_ERROR("Error in Graphics", FW_ERR_GL_ERROR);
+        FG_ERROR("Error in Graphics", FG_ERR_GL_ERROR);
     }
     return x;
 }

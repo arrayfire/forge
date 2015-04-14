@@ -8,16 +8,8 @@
  ********************************************************/
 
 #pragma once
-
-#ifdef __cplusplus
-namespace fw
-{
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-#ifdef __cplusplus
-}
-#endif
+#include "fg/defines.h"
+#include "fg/window.h"
+#include "fg/image.h"
+#include "fg/version.h"
+#include "fg/plot2d.h"

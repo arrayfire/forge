@@ -7,37 +7,47 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fw/window.h>
+#include <fg/window.h>
 #include <window.hpp>
 #include <err_common.hpp>
 
 using namespace backend;
 
-fw_err fw_create_window(WindowHandle *out, const unsigned height, const unsigned width, const char *title,
-                        fw_color_mode mode, fw_dtype type)
+fg_err fg_create_window(fg_window_handle *out, const unsigned width, const unsigned height, const char *title,
+                              fg_color_mode mode, FGenum type)
 {
     try {
-        WindowHandle window;
+        fg_window_handle window;
         DIM_ASSERT(1, height > 0);
         DIM_ASSERT(2, width > 0);
 
         switch(type) {
-            case f32: window = createWindow<float  >(height, width, title, mode);  break;
-            case f64: window = createWindow<double >(height, width, title, mode);  break;
-            case b8:  window = createWindow<char   >(height, width, title, mode);  break;
-            case s32: window = createWindow<int    >(height, width, title, mode);  break;
-            case u32: window = createWindow<uint   >(height, width, title, mode);  break;
-            case u8:  window = createWindow<uchar  >(height, width, title, mode);  break;
+            case GL_FLOAT:          window = createWindow<float>(width, height, title, mode);  break;
+            case GL_INT:            window = createWindow<int  >(width, height, title, mode);  break;
+            case GL_UNSIGNED_INT:   window = createWindow<uint >(width, height, title, mode);  break;
+            case GL_BYTE:           window = createWindow<char >(width, height, title, mode);  break;
+            case GL_UNSIGNED_BYTE:  window = createWindow<uchar>(width, height, title, mode);  break;
             default:  TYPE_ERROR(1, type);
         }
+        window->type = type;
         std::swap(*out, window);
     }
     CATCHALL;
 
-    return FW_SUCCESS;
+    return FG_SUCCESS;
 }
 
-fw_err fw_destroy_window(const WindowHandle in)
+fg_err fg_make_window_current(const fg_window_handle in)
+{
+    try {
+        ARG_ASSERT(0, in != NULL);
+        makeWindowCurrent(in);
+    }
+    CATCHALL;
+
+    return FG_SUCCESS;
+}
+fg_err fg_destroy_window(const fg_window_handle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
@@ -45,5 +55,5 @@ fw_err fw_destroy_window(const WindowHandle in)
     }
     CATCHALL;
 
-    return FW_SUCCESS;
+    return FG_SUCCESS;
 }
