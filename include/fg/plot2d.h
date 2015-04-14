@@ -20,6 +20,7 @@ typedef struct
 {
     fg_window_handle window;
     GLuint gl_vbo;
+    size_t vbosize;            // In bytes
     double *xpointer;
     double *ypointer;
 

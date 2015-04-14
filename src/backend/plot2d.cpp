@@ -31,6 +31,7 @@ namespace backend
         MakeContextCurrent(plot->window);
 
         glGenBuffers(1, &(plot->gl_vbo));
+        plot->vbosize = 0;
 
         GLint compile_ok = GL_FALSE, link_ok = GL_FALSE;
         // Vertex Shader
