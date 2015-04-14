@@ -30,6 +30,8 @@ namespace backend
         plot->margin = 20;
         MakeContextCurrent(plot->window);
 
+        glGenBuffers(1, &(plot->gl_vbo));
+
         GLint compile_ok = GL_FALSE, link_ok = GL_FALSE;
         // Vertex Shader
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -85,6 +87,7 @@ namespace backend
 
         return plot;
     }
+
     void plot_2d(fg_plot_handle plot, const double xmax,const double xmin, const double ymax, const double ymin, const int size)
     {
 
@@ -134,6 +137,7 @@ namespace backend
         glfwSwapBuffers(plot->window->pWindow);
         glfwPollEvents();
     }
+
     void destroyPlot(fg_plot_handle plot)
     {
         CheckGL("Before destroyPlot");
