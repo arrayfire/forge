@@ -7,9 +7,13 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#pragma once
-#include "fg/defines.h"
-#include "fg/window.h"
-#include "fg/image.h"
-#include "fg/version.h"
-#include "fg/plot2d.h"
+#include <fg/plot2d.h>
+
+namespace backend
+{
+    fg_plot_handle plot_init(const fg_window_handle window, const unsigned width, const unsigned height);
+
+    void plot_2d(fg_plot_handle plot, const double xmax, const double xmin, const double ymax, const double ymin, const int size);
+
+    void destroyPlot(fg_plot_handle plot);
+}
