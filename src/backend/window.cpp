@@ -21,7 +21,11 @@
 
 namespace backend
 {
-    static int g_uiWindowCounter = 0; // Window Counter
+    static fg_window_handle gPrimaryWindow; // This window is the primary window in forge, all subsequent
+                                            // windows use the same OpenGL context that is created while
+                                            // creating the primary window
+
+    static int g_uiWindowCounter = 0;   // Window Counter
 
     static void error_callback(int error, const char* description)
     {
@@ -37,10 +41,60 @@ namespace backend
         }
     }
 
+    static void initializePrimaryWindow()
+    {
+        static bool isPrimaryWindowNotInitialized = true;
+        // Create the Primary Window if not already done
+        if (isPrimaryWindowNotInitialized) {
+            gPrimaryWindow = new fg_window_struct[1];
+
+            // Initalize GLFW
+            glfwSetErrorCallback(error_callback);
+            if (!glfwInit()) {
+                std::cerr << "ERROR: GLFW wasn't able to initalize" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+
+            gPrimaryWindow->pWindow = glfwCreateWindow(16, 16, "Alpha", NULL, NULL);
+            // Confirm window was created successfully:
+            if (gPrimaryWindow->pWindow == NULL) {
+                delete gPrimaryWindow;
+                printf("Error: Could not Create GLFW Window!\n");
+                exit(EXIT_FAILURE);
+            }
+
+            // Create GLEW Context
+            gPrimaryWindow->pGLEWContext = new GLEWContext();
+            if (gPrimaryWindow->pGLEWContext == NULL)
+            {
+                printf("Error: Could not create GLEW Context!\n");
+                delete gPrimaryWindow;
+                exit(EXIT_FAILURE);
+            }
+
+            // Set context (before glewInit())
+            MakeContextCurrent(gPrimaryWindow);
+
+            //GLEW Initialization - Must be done
+            GLenum err = glewInit();
+            if (err != GLEW_OK) {
+                printf("GLEW Error occured, Description: %s\n", glewGetErrorString(err));
+                glfwDestroyWindow(gPrimaryWindow->pWindow);
+                delete gPrimaryWindow;
+                exit(EXIT_FAILURE);
+            }
+
+            isPrimaryWindowNotInitialized = false;
+        }
+    }
+
     template<typename T>
     fg_window_handle createWindow(const unsigned disp_w, const unsigned disp_h, const char *title,
                               const fg_color_mode mode)
     {
+        // below call wouldnt do anything unless it is called first time
+        initializePrimaryWindow();
+
         // save current active context info so we can restore it later!
         //fg_window_handle previous = current;
 
@@ -50,26 +104,23 @@ namespace backend
             printf("Error\n");
             //Error out
 
-        newWindow->pGLEWContext = NULL;
+        newWindow->pGLEWContext = gPrimaryWindow->pGLEWContext;
         newWindow->pWindow      = NULL;
         newWindow->uiID         = g_uiWindowCounter++;        //set ID and Increment Counter!
         newWindow->uiWidth      = disp_w;
         newWindow->uiHeight     = disp_h;
         newWindow->mode         = mode;
 
-        // Initalize GLFW
-        glfwSetErrorCallback(error_callback);
-        if (!glfwInit()) {
-            std::cerr << "ERROR: GLFW wasn't able to initalize" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-
         // Add Hints
         glfwWindowHint(GLFW_DEPTH_BITS, mode * sizeof(T));
         glfwWindowHint(GLFW_RESIZABLE, false);
 
-        // Create the window itself
-        newWindow->pWindow = glfwCreateWindow(newWindow->uiWidth, newWindow->uiHeight, title, NULL, NULL);
+        // now create the window with user provided meta-data that
+        // shares the context with the primary window
+        newWindow->pWindow = glfwCreateWindow(newWindow->uiWidth,
+                                              newWindow->uiHeight,
+                                              title, NULL,
+                                              gPrimaryWindow->pWindow);
 
         // Confirm window was created successfully:
         if (newWindow->pWindow == NULL)
@@ -79,26 +130,7 @@ namespace backend
             return NULL;
         }
 
-        // Create GLEW Context
-        newWindow->pGLEWContext = new GLEWContext();
-        if (newWindow->pGLEWContext == NULL)
-        {
-            printf("Error: Could not create GLEW Context!\n");
-            delete newWindow;
-            return NULL;
-        }
-
-        // Set context (before glewInit())
         MakeContextCurrent(newWindow);
-
-        //GLEW Initialization - Must be done
-        GLenum err = glewInit();
-        if (err != GLEW_OK) {
-            printf("GLEW Error occured, Description: %s\n", glewGetErrorString(err));
-            glfwDestroyWindow(newWindow->pWindow);
-            delete newWindow;
-            return NULL;
-        }
 
         int b_width  = newWindow->uiWidth;
         int b_height = newWindow->uiHeight;
@@ -108,7 +140,14 @@ namespace backend
 
         glfwSetKeyCallback(newWindow->pWindow, key_callback);
 
-        MakeContextCurrent(newWindow);
+#ifdef WINDOWS_OS
+        newWindow->cxt = glfwGetWGLContext(newWindow->pWindow);
+        newWindow->dsp = GetDC(glfwGetWin32Window(newWindow->pWindow));
+#endif
+#ifdef LINUX_OS
+        newWindow->cxt = glfwGetGLXContext(newWindow->pWindow);
+        newWindow->dsp = glfwGetX11Display();
+#endif
 
         CheckGL("At End of Create Window");
         return newWindow;

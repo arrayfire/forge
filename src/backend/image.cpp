@@ -27,9 +27,9 @@ namespace backend
         "TEX result.color, fragment.texcoord, texture[0], 2D; \n"
         "END";
 
-    GLuint compileASMShader(GLenum program_type, const char *code)
+    FGuint compileASMShader(GLenum program_type, const char *code)
     {
-        GLuint program_id;
+        FGuint program_id;
         glGenProgramsARB(1, &program_id);
         glBindProgramARB(program_type, program_id);
         glProgramStringARB(program_type, GL_PROGRAM_FORMAT_ASCII_ARB, (GLsizei) strlen(code), (GLubyte *) code);
@@ -134,7 +134,7 @@ namespace backend
         glDisable(GL_FRAGMENT_PROGRAM_ARB);
 
         // Complete render
-        glfwSwapBuffers(current->pWindow);
+        glfwSwapBuffers(image->window->pWindow);
         glfwPollEvents();
 
         ForceCheckGL("In drawImage");

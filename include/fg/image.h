@@ -17,11 +17,11 @@ typedef struct
     //OpenGL PBO and texture "names"
     unsigned src_width;
     unsigned src_height;
-    GLuint gl_PBO;
-    GLuint gl_Tex;
-    GLuint gl_Shader;
-    GLenum gl_Format;
-    GLenum gl_Type;
+    FGuint gl_PBO;
+    FGuint gl_Tex;
+    FGuint gl_Shader;
+    FGenum gl_Format;
+    FGenum gl_Type;
 } fg_image_struct;
 
 typedef fg_image_struct* fg_image_handle;
@@ -29,6 +29,28 @@ typedef fg_image_struct* fg_image_handle;
 #ifdef __cplusplus
 namespace fg
 {
+
+class FGAPI Image {
+    private:
+        fg_image_handle mHandle;
+
+    public:
+        Image();
+        Image(const uint pWidth, const uint pHeight, const Window& pWindow);
+        ~Image();
+
+        uint width() const;
+        uint height() const;
+        FGuint pboResourceId() const;
+        FGuint texResourceId() const;
+        FGuint shaderResourceId() const;
+        FGenum pixelFormat() const;
+        FGenum channelType() const;
+        fg_image_handle get() const;
+};
+
+void drawImage(const Image& pImage);
+
 }
 #endif
 

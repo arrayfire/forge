@@ -11,19 +11,17 @@
 #include <image.hpp>
 #include <err_common.hpp>
 
-using namespace backend;
-
 fg_err fg_setup_image(fg_image_handle *out, const fg_window_handle window,
                       const unsigned width, const unsigned height)
 {
     try {
         fg_image_handle image = new fg_image_struct[1];
         switch(window->type) {
-            case GL_FLOAT:           image = setupImage<float>(window, width, height);  break;
-            case GL_INT:             image = setupImage<int  >(window, width, height);  break;
-            case GL_UNSIGNED_INT:    image = setupImage<uint >(window, width, height);  break;
-            case GL_BYTE:            image = setupImage<char >(window, width, height);  break;
-            case GL_UNSIGNED_BYTE:   image = setupImage<uchar>(window, width, height);  break;
+            case GL_FLOAT:           image = backend::setupImage<float>(window, width, height);  break;
+            case GL_INT:             image = backend::setupImage<int  >(window, width, height);  break;
+            case GL_UNSIGNED_INT:    image = backend::setupImage<uint >(window, width, height);  break;
+            case GL_BYTE:            image = backend::setupImage<char >(window, width, height);  break;
+            case GL_UNSIGNED_BYTE:   image = backend::setupImage<uchar>(window, width, height);  break;
             default:  TYPE_ERROR(1, window->type);
         }
         std::swap(*out, image);
@@ -37,7 +35,7 @@ fg_err fg_draw_image(const fg_image_handle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
-        drawImage(in);
+        backend::drawImage(in);
     }
     CATCHALL;
 
@@ -49,10 +47,9 @@ fg_err fg_destroy_image(const fg_image_handle in)
 {
     try {
         ARG_ASSERT(0, in != NULL);
-        destroyImage(in);
+        backend::destroyImage(in);
     }
     CATCHALL;
 
     return FG_SUCCESS;
 }
-

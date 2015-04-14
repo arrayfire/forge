@@ -1,7 +1,7 @@
 #
 # Make a version file that includes the Forge version and git revision
 #
-SET(FG_VERSION "3.0")
+SET(FG_VERSION "1.0")
 SET(FG_VERSION_MINOR ".beta")
 EXECUTE_PROCESS(
     COMMAND git log -1 --format=%h
