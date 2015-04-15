@@ -113,7 +113,6 @@ namespace backend
 
         // Add Hints
         glfwWindowHint(GLFW_DEPTH_BITS, mode * sizeof(T));
-        glfwWindowHint(GLFW_RESIZABLE, false);
 
         // now create the window with user provided meta-data that
         // shares the context with the primary window
@@ -131,12 +130,6 @@ namespace backend
         }
 
         MakeContextCurrent(newWindow);
-
-        int b_width  = newWindow->uiWidth;
-        int b_height = newWindow->uiHeight;
-        glfwGetFramebufferSize(newWindow->pWindow, &b_width, &b_height);
-
-        glViewport(0, 0, b_width, b_height);
 
         glfwSetKeyCallback(newWindow->pWindow, key_callback);
 

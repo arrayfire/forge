@@ -10,6 +10,8 @@
 #pragma once
 #include <fg/window.h>
 
+#include <vector>
+
 typedef struct
 {
     fg_window_handle window;
@@ -51,6 +53,8 @@ class FGAPI Image {
 
 void drawImage(const Image& pImage);
 
+void drawImages(int pRows, int pCols, const std::vector<Image>& pImages);
+
 }
 #endif
 
@@ -61,6 +65,8 @@ extern "C" {
                                 const unsigned width, const unsigned height);
 
     FGAPI fg_err fg_draw_image(const fg_image_handle in);
+
+    FGAPI fg_err fg_draw_images(int pRows, int pCols, const unsigned int pNumImages, const fg_image_handle pHandles[]);
 
     FGAPI fg_err fg_destroy_image(const fg_image_handle in);
 #ifdef __cplusplus

@@ -42,6 +42,18 @@ fg_err fg_draw_image(const fg_image_handle in)
     return FG_SUCCESS;
 }
 
+fg_err fg_draw_images(int pRows, int pCols, const unsigned int pNumImages, const fg_image_handle pHandles[])
+{
+    try {
+        ARG_ASSERT(1, (pRows*pCols>0));
+        ARG_ASSERT(1, ((pRows*pCols)>=(int)pNumImages));
+        ARG_ASSERT(2, (pHandles!=NULL));
+        backend::drawImages(pRows, pCols, pNumImages, pHandles);
+    }
+    CATCHALL;
+
+    return FG_SUCCESS;
+}
 
 fg_err fg_destroy_image(const fg_image_handle in)
 {

@@ -16,5 +16,7 @@ namespace backend
 
     void drawImage(const fg_image_handle image);
 
+    void drawImages(int pRows, int pCols, const unsigned int pNumImages, const fg_image_handle pHandles[]);
+
     void destroyImage(const fg_image_handle image);
 }

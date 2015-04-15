@@ -10,6 +10,8 @@
 #include <fg/image.h>
 #include "error.hpp"
 
+#include <algorithm>
+
 namespace fg
 {
 
@@ -82,6 +84,23 @@ fg_image_handle Image::get() const
 void drawImage(const Image& pImage)
 {
     FG_THROW(fg_draw_image(pImage.get()));
+}
+
+void drawImages(int pRows, int pCols, const std::vector<Image>& pImages)
+{
+    size_t nHandles = pImages.size();
+    fg_image_handle* handles = new fg_image_handle[nHandles];
+
+    std::transform(pImages.begin(), pImages.end(), handles,
+                   [](const Image& img)
+                   {
+                       return img.get();
+                   }
+                  );
+
+    FG_THROW(fg_draw_images(pRows, pCols, pImages.size(), handles));
+
+    delete[] handles;
 }
 
 }
