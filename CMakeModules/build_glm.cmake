@@ -8,7 +8,7 @@ SET(archive ${srcDir}.tar.gz)
 SET(inflated ${srcDir}-inflated)
 
 # the config to be used in the code
-SET(GLM_INCLUDE_DIRS "${srcDir}/glm")
+SET(GLM_INCLUDE_DIRS "${srcDir}")
 
 # do we have to do it again?
 SET(doExtraction ON)
