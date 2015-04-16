@@ -9,28 +9,17 @@
 
 #pragma once
 #include <fg/window.h>
-/*
-typedef struct
-{
-	GLfloat x;
-	GLfloat y;
-} point;
-*/
 typedef struct
 {
     fg_window_handle window;
-    GLuint gl_vbo;
+    GLuint gl_vbo[3];
     size_t vbosize;            // In bytes
-
     unsigned src_width;
     unsigned src_height;
-    GLuint gl_Program;
-    GLint gl_Attribute_Coord2d;
-    GLint gl_Uniform_Offset_x;
-    GLint gl_Uniform_Scale_x;
-    GLint gl_Uniform_Offset_y;
-    GLint gl_Uniform_Scale_y;
-    // TODO: Implement ticks and margins
+    FGuint gl_Program;
+    FGint gl_Attribute_Coord2d;
+    FGint gl_Uniform_Color;
+    FGint gl_Uniform_Transform;
     int ticksize;
     int margin;
 
@@ -55,14 +44,12 @@ class FGAPI Plot2d {
         uint width()  const;
         uint height() const;
         FGuint programResourceId() const;
-        size_t vbosize() const;
-        FGint coord2d()  const;
-        FGint offset_x() const;
-        FGint scale_x()  const;
-        FGint offset_y() const;
-        FGint scale_y()  const;
-        FGint ticksize() const;
-        FGint margin()   const;
+        size_t vbosize()  const;
+        FGint coord2d()   const;
+        FGint color()     const;
+        FGint transform() const;
+        FGint ticksize()  const;
+        FGint margin()    const;
 };
 
 }

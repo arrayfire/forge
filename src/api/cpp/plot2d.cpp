@@ -60,32 +60,32 @@ FGint Plot2d::coord2d() const
     return mHandle->gl_Attribute_Coord2d;
 }
 
-FGint Plot2d::offset_x() const
+FGint Plot2d::color() const
 {
     if (mHandle==0)
         throw fg::exception("Invalid Plot Handle");
-    return mHandle->gl_Uniform_Offset_x;
+    return mHandle->gl_Uniform_Color;
 }
 
-FGint Plot2d::scale_x() const
+FGint Plot2d::transform() const
 {
     if (mHandle==0)
         throw fg::exception("Invalid Plot Handle");
-    return mHandle->gl_Uniform_Scale_x;
+    return mHandle->gl_Uniform_Transform;
 }
 
-FGint Plot2d::offset_y() const
+FGint Plot2d::ticksize() const
 {
     if (mHandle==0)
         throw fg::exception("Invalid Plot Handle");
-    return mHandle->gl_Uniform_Offset_y;
+    return mHandle->ticksize;
 }
 
-FGint Plot2d::scale_y() const
+FGint Plot2d::margin() const
 {
     if (mHandle==0)
         throw fg::exception("Invalid Plot Handle");
-    return mHandle->gl_Uniform_Scale_y;
+    return mHandle->margin;
 }
 
 fg_plot_handle Plot2d::get() const
