@@ -10,20 +10,21 @@
 // Parts of this code sourced from SnopyDogy
 // https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
 
+#include <fg/defines.h>
+#include <fg/window.h>
 #include <err_common.hpp>
-
-namespace backend
-{
 
 // Required to be defined for GLEW MX to work,
 // along with the GLEW_MX define in the perprocessor!
 GLEWContext* glewGetContext();
 
+void MakeContextCurrent(fg::Window* pWindow);
+
 void MakeContextCurrent();
 
-void MakeContextCurrent(fg_window_handle wh);
+GLenum FGMode_to_GLColor(fg::ColorMode mode);
 
-GLenum mode_to_glColor(fg_color_mode mode);
+fg::ColorMode GLMode_to_FGColor(GLenum mode);
 
 char* loadFile(const char *fname, GLint &fSize);
 
@@ -38,6 +39,4 @@ GLuint createBuffer(int size, const T* data, GLenum usage)
     glBufferData(GL_ARRAY_BUFFER,size*sizeof(T),data,usage);
     glBindBuffer(GL_ARRAY_BUFFER,0);
     return ret_val;
-}
-
 }

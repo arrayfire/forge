@@ -7,15 +7,12 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/window.h>
+#pragma once
 
-namespace backend
-{
-    template<typename T>
-    fg_window_handle createWindow(const unsigned width, const unsigned height, const char *title,
-                              fg_color_mode mode);
+#include <fg/defines.h>
 
-    void makeWindowCurrent(const fg_window_handle window);
+void glErrorCheck(const char *pMsg, const char* pFile, int pLine);
+void glForceErrorCheck(const char *pMsg, const char* pFile, int pLine);
 
-    void destroyWindow(const fg_window_handle window);
-}
+#define CheckGL(msg)      glErrorCheck     (msg, __FILE__, __LINE__)
+#define ForceCheckGL(msg) glForceErrorCheck(msg, __FILE__, __LINE__)

@@ -9,25 +9,118 @@
 
 #pragma once
 
-#include <iostream>
 #include <fg/defines.h>
+#include <string>
+#include <iostream>
+#include <stdexcept>
 
-namespace fg {
-
-class FGAPI exception
+namespace fg
 {
-    public:
-    exception();
-    exception(const char *msg);
-    exception(const char *file, unsigned line);
-    exception(const char *file, unsigned line, fg_err err);
-    exception(const char *msg, const char *file, unsigned line, fg_err err);
-    virtual ~exception() throw() {}
-    virtual const char *what() const throw() { return m_msg; }
 
-    char m_msg[1024];
+class FGAPI Error : public std::logic_error
+{
+    std::string mFuncName;
+    int         mLineNumber;
+    ErrorCode   mErrCode;
 
-    friend inline std::ostream& operator<<(std::ostream &s, const exception &e) { return s << e.what(); }
+    Error();
+
+public:
+
+    Error(const char * const pFuncName, int pLine, const char * const pMessage, ErrorCode pErrCode);
+
+    Error(std::string pFuncName, int pLine, std::string pMessage, ErrorCode err);
+
+    const std::string& functionName() const;
+
+    int line() const;
+
+    ErrorCode err() const;
+
+    const std::string& msg() const;
+
+    virtual ~Error() throw();
+
+    friend inline std::ostream& operator<<(std::ostream &s, const Error &e) {
+        return s << "@" << e.functionName() <<":"<< e.line()<<": "<<e.what()<<"("<<e.err()<<")"<<std::endl;
+    }
+};
+
+// TODO: Perhaps add a way to return supported types
+class FGAPI TypeError : public Error
+{
+    int         mArgIndex;
+    std::string mErrTypeName;
+
+    TypeError();
+
+public:
+
+    TypeError(const char * const pFuncName,
+              const int pLine,
+              const int pIndex,
+              const GLenum pType);
+
+    TypeError(std::string pFuncName,
+              const int pLine,
+              const int pIndex,
+              const GLenum pType);
+
+    const std::string& typeName() const;
+
+    int argIndex() const;
+
+    ~TypeError() throw();
+};
+
+class FGAPI ArgumentError : public Error
+{
+    int         mArgIndex;
+    std::string mExpected;
+
+    ArgumentError();
+
+public:
+    ArgumentError(const char * const pFuncName,
+                  const int pLine,
+                  const int pIndex,
+                  const char * const pExpectString);
+
+    ArgumentError(std::string pFuncName,
+                  const int pLine,
+                  const int pIndex,
+                  std::string pExpectString);
+
+    const std::string& expectedCondition() const;
+
+    int argIndex() const;
+
+    ~ArgumentError() throw();
+};
+
+class FGAPI DimensionError : public Error
+{
+    int         mArgIndex;
+    std::string mExpected;
+
+    DimensionError();
+
+public:
+    DimensionError(const char * const pFuncName,
+                   const int pLine,
+                   const int pIndex,
+                   const char * const pExpectString);
+
+    DimensionError(std::string pFuncName,
+                   const int pLine,
+                   const int pIndex,
+                   std::string pExpectString);
+
+    const std::string& expectedCondition() const;
+
+    int argIndex() const;
+
+    ~DimensionError() throw();
 };
 
 }

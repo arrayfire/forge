@@ -7,16 +7,15 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/window.h>
+#include <fg/exception.h>
 #include <common.hpp>
 
 #include <iostream>
 #include <fstream>
 
-namespace backend
-{
+using namespace fg;
 
-static fg_window_handle current = NULL;
+static fg::Window* current = NULL;
 
 typedef struct {
     GLuint vertex;
@@ -25,18 +24,18 @@ typedef struct {
 
 GLEWContext* glewGetContext()
 {
-    return current->pGLEWContext;
+    return current->glewContext();
 }
 
-void MakeContextCurrent(fg_window_handle wh)
+void MakeContextCurrent(fg::Window* pWindow)
 {
-    CheckGL("Before MakeContextCurrent");
-    if (wh != NULL)
+    CheckGL("Begin MakeContextCurrent");
+    if (pWindow != NULL)
     {
-        glfwMakeContextCurrent(wh->pWindow);
-        current = wh;
+        glfwMakeContextCurrent((GLFWwindow*)pWindow->window());
+        current = pWindow;
     }
-    CheckGL("In MakeContextCurrent");
+    CheckGL("End MakeContextCurrent");
 }
 
 void MakeContextCurrent()
@@ -44,7 +43,7 @@ void MakeContextCurrent()
     MakeContextCurrent(current);
 }
 
-GLenum mode_to_glColor(fg_color_mode mode)
+GLenum FGMode_to_GLColor(ColorMode mode)
 {
     GLenum color = GL_RGBA;
     switch(mode) {
@@ -55,7 +54,18 @@ GLenum mode_to_glColor(fg_color_mode mode)
     return color;
 }
 
-char* loadFile(const char *fname, GLint &fSize)
+ColorMode GLMode_to_FGColor(GLenum mode)
+{
+    ColorMode color = FG_RGBA;
+    switch(mode) {
+        case GL_RED : color = FG_RED;  break;
+        case GL_RGB : color = FG_RGB;  break;
+        case GL_RGBA: color = FG_RGBA; break;
+    }
+    return color;
+}
+
+char* loadFile(const char * fname, GLint &fSize)
 {
     std::ifstream file(fname,std::ios::in|std::ios::binary|std::ios::ate);
     if (file.is_open())
@@ -70,8 +80,10 @@ char* loadFile(const char *fname, GLint &fSize)
         return memblock;
     }
 
-    std::cerr << "Unable to open file " << fname << std::endl;
-    exit(255);
+    char buffer[64];
+    sprintf(buffer, "Unable to open file %s", fname);
+
+    throw fg::Error("loadFile", __LINE__, buffer, FG_ERR_GL_ERROR);
 }
 
 void printShaderInfoLog(GLint shader)
@@ -86,8 +98,9 @@ void printShaderInfoLog(GLint shader)
     {
         infoLog = new GLchar[infoLogLen];
         glGetShaderInfoLog(shader,infoLogLen, &charsWritten, infoLog);
-        std::cout << "InfoLog:" << std::endl << infoLog << std::endl;
+        std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;
         delete [] infoLog;
+        throw fg::Error("printShaderInfoLog", __LINE__, "OpenGL Shader compilation failed", FG_ERR_GL_ERROR);
     }
 }
 
@@ -106,6 +119,7 @@ void printLinkInfoLog(GLint prog)
         glGetProgramInfoLog(prog,infoLogLen, &charsWritten, infoLog);
         std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;
         delete [] infoLog;
+        throw fg::Error("printLinkInfoLog", __LINE__, "OpenGL Shader linking failed", FG_ERR_GL_ERROR);
     }
 }
 
@@ -120,6 +134,7 @@ void attachAndLinkProgram(GLuint program, shaders_t shaders)
     if (!linked)
     {
         std::cerr << "Program did not link." << std::endl;
+        throw fg::Error("attachAndLinkProgram", __LINE__, "OpenGL program linking failed", FG_ERR_GL_ERROR);
     }
     printLinkInfoLog(program);
 }
@@ -164,6 +179,4 @@ GLuint initShaders(const char* vshader_code, const char* fshader_code)
     GLuint shader_program = glCreateProgram();
     attachAndLinkProgram(shader_program, shaders);
     return shader_program;
-}
-
 }

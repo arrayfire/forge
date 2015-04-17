@@ -9,61 +9,37 @@
 
 #pragma once
 #include <fg/window.h>
-typedef struct
-{
-    fg_window_handle window;
-    GLuint gl_vbo[3];
-    size_t vbosize;            // In bytes
-    unsigned src_width;
-    unsigned src_height;
-    FGuint gl_Program;
-    FGint gl_Attribute_Coord2d;
-    FGint gl_Uniform_Color;
-    FGint gl_Uniform_Transform;
-    int ticksize;
-    int margin;
 
-} fg_plot_struct;
-
-typedef fg_plot_struct* fg_plot_handle;
-
-#ifdef __cplusplus
 namespace fg
 {
 
-class FGAPI Plot2d {
+class FGAPI Plot {
     private:
-        fg_plot_handle mHandle;
+        GLenum    mDataType;
+        GLuint    mVBO[3];
+        size_t    mVBOSize;
+        GLuint    mProgram;
+        GLuint    mAttrCoord2d;
+        GLuint    mUnfmColor;
+        GLuint    mUnfmTrans;
+        int       mTickSize;
+        int       mMargin;
 
     public:
-        Plot2d();
-        Plot2d(fg_plot_handle mHandle, const Window& pWindow, const uint pWidth, const uint pHeight);
-        ~Plot2d();
+        Plot(GLenum pDataType);
+        ~Plot();
 
-        fg_plot_handle get() const;
-        uint width()  const;
-        uint height() const;
-        FGuint programResourceId() const;
-        size_t vbosize()  const;
-        FGint coord2d()   const;
-        FGint color()     const;
-        FGint transform() const;
-        FGint ticksize()  const;
-        FGint margin()    const;
+        GLuint vbo() const;
+        size_t vboSize() const;
+        void setVBOSize(size_t pSize);
+
+        void render(int pViewPortWidth, int pViewPortHeight,
+                    double pXmax, double pXmin,
+                    double pYmax, double pYmin) const;
 };
 
+FGAPI void drawPlot(Window* pWindow, const Plot& pPlot,
+              const double pXmax=0, const double pXmin=0,
+              const double pYmax=0, const double pYmin=0);
+
 }
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-    FGAPI fg_err fg_plot_init(fg_plot_handle *in, const fg_window_handle window, const unsigned width, const unsigned height);
-
-    FGAPI fg_err fg_plot2d(fg_plot_handle in, const double xmax, const double xmin, const double ymax, const double ymin);
-
-    FGAPI fg_err fg_destroy_plot(fg_plot_handle plot);
-
-#ifdef __cplusplus
-}
-#endif
