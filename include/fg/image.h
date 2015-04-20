@@ -19,6 +19,7 @@ class FGAPI Image {
         unsigned  mWidth;
         unsigned  mHeight;
         ColorMode mFormat;
+        GLenum    mGLformat;
         GLenum    mDataType;
         /* internal resources for interop */
         size_t   mPBOsize;

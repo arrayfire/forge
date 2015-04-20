@@ -45,6 +45,7 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
 : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType)
 {
     MakeContextCurrent();
+    mGLformat = FGMode_to_GLColor(mFormat);
 
     // Initialize OpenGL Items
     glEnable(GL_TEXTURE_2D);
@@ -55,7 +56,7 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, mFormat, mWidth, mHeight, 0, mFormat, mDataType, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, mGLformat, mWidth, mHeight, 0, mGLformat, mDataType, NULL);
 
     CheckGL("Before PBO Initialization");
     glGenBuffers(1, &mPBO);
@@ -113,6 +114,7 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
 
 Image::~Image()
 {
+    MakeContextCurrent();
     glDeleteBuffers(1, &mPBO);
     glDeleteTextures(1, &mTex);
     glDeleteProgram(mProgram);
@@ -149,7 +151,7 @@ void Image::render() const
     glBindTexture(GL_TEXTURE_2D, mTex);
     // bind PBO to load data into texture
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, mPBO);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, mFormat, mDataType, 0);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, mGLformat, mDataType, 0);
 
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, matrix);
 
