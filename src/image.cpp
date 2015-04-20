@@ -41,10 +41,9 @@ static GLuint gCanvasVAO = 0;
 namespace fg
 {
 
-Image::Image(unsigned pWidth, unsigned pHeight, GLint pFormat, GLenum pDataType)
+Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType)
 : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType)
 {
-    ColorMode mode = GLMode_to_FGColor(pFormat);
     MakeContextCurrent();
 
     // Initialize OpenGL Items
@@ -69,7 +68,7 @@ Image::Image(unsigned pWidth, unsigned pHeight, GLint pFormat, GLenum pDataType)
         case GL_BYTE:           typeSize = sizeof(char );     break;
         case GL_UNSIGNED_BYTE:  typeSize = sizeof(uchar);     break;
     }
-    glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, mWidth * mHeight * mode * typeSize, NULL, GL_STREAM_COPY);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, mWidth * mHeight * mFormat * typeSize, NULL, GL_STREAM_COPY);
 
     glBindTexture(GL_TEXTURE_2D, 0);
     CheckGL("After PBO Initialization");
@@ -122,7 +121,7 @@ unsigned Image::width() const { return mWidth; }
 
 unsigned Image::height() const { return mHeight; }
 
-GLint Image::pixelFormat() const { return mFormat; }
+ColorMode Image::pixelFormat() const { return mFormat; }
 
 GLenum Image::channelType() const { return mDataType; }
 

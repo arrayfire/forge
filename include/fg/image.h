@@ -16,22 +16,22 @@ namespace fg
 
 class FGAPI Image {
     private:
-        unsigned mWidth;
-        unsigned mHeight;
-        GLint    mFormat;
-        GLenum   mDataType;
+        unsigned  mWidth;
+        unsigned  mHeight;
+        ColorMode mFormat;
+        GLenum    mDataType;
         /* internal resources for interop */
         GLuint   mPBO;
         GLuint   mTex;
         GLuint   mProgram;
 
     public:
-        Image(unsigned pWidth, unsigned pHeight, GLint pFormat, GLenum pDataType);
+        Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType);
         ~Image();
 
         unsigned width() const;
         unsigned height() const;
-        GLint pixelFormat() const;
+        ColorMode pixelFormat() const;
         GLenum channelType() const;
         GLuint pbo() const;
 
