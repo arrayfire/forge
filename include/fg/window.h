@@ -31,12 +31,12 @@ class FGAPI Window {
         Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow=NULL);
         ~Window();
 
-        const ContextHandle context() const { return mCxt; }
-        const DisplayHandle display() const { return mDsp; }
+        ContextHandle context() const { return mCxt; }
+        DisplayHandle display() const { return mDsp; }
         int width() const { return mWidth; }
         int height() const { return mHeight; }
         GLFWwindow* window() const { return mWindow; }
-        GLEWContext* glewContext() { return mGLEWContext; }
+        GLEWContext* glewContext() const { return mGLEWContext; }
 };
 
 FGAPI void makeWindowCurrent(Window* pWindow);

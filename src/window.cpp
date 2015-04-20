@@ -61,6 +61,7 @@ Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindo
     mWindow = temp;
 
     // create glew context so that it will bind itself to windows
+    if (pWindow==NULL) {
     GLEWContext* tmp = new GLEWContext();
     if (tmp == NULL) {
         std::cerr<<"Error: Could not create GLEW Context!\n";
@@ -68,6 +69,9 @@ Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindo
         GLFW_THROW_ERROR("GLEW context creation failed", fg::FG_ERR_GL_ERROR)
     }
     mGLEWContext = tmp;
+    } else {
+        mGLEWContext = pWindow->glewContext();
+    }
 
     // Set context (before glewInit())
     MakeContextCurrent(this);
