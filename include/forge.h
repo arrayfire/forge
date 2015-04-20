@@ -9,6 +9,7 @@
 
 #pragma once
 #include "fg/defines.h"
+#include "fg/exception.h"
 #include "fg/window.h"
 #include "fg/image.h"
 #include "fg/version.h"

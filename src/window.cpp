@@ -19,13 +19,7 @@
 namespace fg
 {
 
-static Window* gPrimaryWindow;  // This window is the primary window in forge, all subsequent
-                                // windows use the same OpenGL context that is created while
-                                // creating the primary window
-
 static int gWindowCounter = 0;   // Window Counter
-
-static bool isPrimaryWindowNotInitialized = true;
 
 static void windowErrorCallback(int pError, const char* pDescription)
 {
@@ -40,70 +34,52 @@ static void keyboardCallback(GLFWwindow* pWind, int pKey, int scancode, int pAct
     }
 }
 
-static void initializePrimaryWindow()
-{
-    // Create the Primary Window if not already done
-    if (isPrimaryWindowNotInitialized) {
-        // Initalize GLFW
-        glfwSetErrorCallback(windowErrorCallback);
-        if (!glfwInit()) {
-            std::cerr << "ERROR: GLFW wasn't able to initalize" << std::endl;
-            throw fg::Error("initializePrimaryWindow", __LINE__,
-                    "glfw initilization failed", fg::FG_ERR_GL_ERROR);
-        }
-        // try creating the primary window
-        GLFWwindow* temp = glfwCreateWindow(16, 16, "Alpha", NULL, NULL);
-        if (temp == NULL) {
-            printf("Error: Could not Create GLFW Window!\n");
-            throw fg::Error("initializePrimaryWindow", __LINE__,
-                    "glfw window creation failed", fg::FG_ERR_GL_ERROR);
-        }
-        // create glew context so that it will bind itself to windows
-        GLEWContext* cxt = new GLEWContext();
-        if (cxt == NULL)
-        {
-            printf("Error: Could not create GLEW Context!\n");
-            glfwDestroyWindow(temp);
-            throw fg::Error("initializePrimaryWindow", __LINE__,
-                    "GLEW context creation failed", fg::FG_ERR_GL_ERROR);
-        }
+#define GLFW_THROW_ERROR(msg, err) \
+    throw fg::Error("Window constructor", __LINE__, msg, err);
 
-        gPrimaryWindow = new Window(16, 16, "Alpha");
-        fg::Window::setGLEWcontext(cxt);
-
-        // Set context (before glewInit())
-        MakeContextCurrent(gPrimaryWindow);
-
-        //GLEW Initialization - Must be done
-        GLenum err = glewInit();
-        if (err != GLEW_OK) {
-            char buffer[128];
-            sprintf(buffer, "GLEW init failed: Error: %s\n", glewGetErrorString(err));
-            glfwDestroyWindow(gPrimaryWindow->window());
-            delete gPrimaryWindow;
-            throw fg::Error("initializePrimaryWindow", __LINE__, buffer, fg::FG_ERR_GL_ERROR);
-        }
-
-        isPrimaryWindowNotInitialized = false;
-    }
-}
-
-Window::Window()
-{
-    initializePrimaryWindow();
-}
-
-Window::Window(int pWidth, int pHeight, const char* pTitle)
+Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow)
     : mWidth(pWidth), mHeight(pHeight)
 {
     CheckGL("Begin Window::Window");
-    initializePrimaryWindow();
 
-    mWindow = glfwCreateWindow(pWidth, pHeight, pTitle, NULL, (GLFWwindow*)gPrimaryWindow->window());
-    if (mWindow == NULL) {
+    glfwSetErrorCallback(windowErrorCallback);
+
+    if (!glfwInit()) {
+        std::cerr << "ERROR: GLFW wasn't able to initalize\n";
+        GLFW_THROW_ERROR("glfw initilization failed", fg::FG_ERR_GL_ERROR)
+    }
+
+    // create glfw window
+    // if pWindow is not null, then the window created in this
+    // constructor call will share the context with pWindow
+    GLFWwindow* temp = glfwCreateWindow(pWidth, pHeight, pTitle, NULL,
+                                        (pWindow!=NULL ? pWindow->window() : NULL));
+    if (temp == NULL) {
         std::cerr<<"Error: Could not Create GLFW Window!\n";
-        throw fg::Error("initializePrimaryWindow", __LINE__,
-                "glfw window creation failed", FG_ERR_GL_ERROR);
+        GLFW_THROW_ERROR("glfw window creation failed", fg::FG_ERR_GL_ERROR)
+    }
+    mWindow = temp;
+
+    // create glew context so that it will bind itself to windows
+    GLEWContext* tmp = new GLEWContext();
+    if (tmp == NULL) {
+        std::cerr<<"Error: Could not create GLEW Context!\n";
+        glfwDestroyWindow(mWindow);
+        GLFW_THROW_ERROR("GLEW context creation failed", fg::FG_ERR_GL_ERROR)
+    }
+    mGLEWContext = tmp;
+
+    // Set context (before glewInit())
+    MakeContextCurrent(this);
+
+    //GLEW Initialization - Must be done
+    GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        char buffer[128];
+        sprintf(buffer, "GLEW init failed: Error: %s\n", glewGetErrorString(err));
+        glfwDestroyWindow(mWindow);
+        delete mGLEWContext;
+        GLFW_THROW_ERROR(buffer, fg::FG_ERR_GL_ERROR);
     }
 
     glfwSetKeyCallback(mWindow, keyboardCallback);
@@ -122,18 +98,8 @@ Window::Window(int pWidth, int pHeight, const char* pTitle)
 Window::~Window()
 {
     MakeContextCurrent(this);
-    glfwDestroyWindow(mWindow);
+    if (mWindow!=NULL) glfwDestroyWindow(mWindow);
 }
-
-const ContextHandle Window::context() const { return mCxt; }
-
-const DisplayHandle Window::display() const { return mDsp; }
-
-int Window::width() const { return mWidth; }
-
-int Window::height() const { return mHeight; }
-
-GLFWwindow* Window::window() const { return mWindow; }
 
 void makeWindowCurrent(Window* pWindow)
 {

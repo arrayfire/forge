@@ -58,7 +58,7 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
     glTexImage2D(GL_TEXTURE_2D, 0, mFormat, mWidth, mHeight, 0, mFormat, mDataType, NULL);
 
     CheckGL("Before PBO Initialization");
-    glGenBuffers(1, &(mPBO));
+    glGenBuffers(1, &mPBO);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, mPBO);
     size_t typeSize = 0;
     switch(mDataType) {
@@ -68,7 +68,8 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
         case GL_BYTE:           typeSize = sizeof(char );     break;
         case GL_UNSIGNED_BYTE:  typeSize = sizeof(uchar);     break;
     }
-    glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, mWidth * mHeight * mFormat * typeSize, NULL, GL_STREAM_COPY);
+    mPBOsize = mWidth * mHeight * mFormat * typeSize;
+    glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, mPBOsize, NULL, GL_STREAM_COPY);
 
     glBindTexture(GL_TEXTURE_2D, 0);
     CheckGL("After PBO Initialization");
@@ -126,6 +127,8 @@ ColorMode Image::pixelFormat() const { return mFormat; }
 GLenum Image::channelType() const { return mDataType; }
 
 GLuint Image::pbo() const { return mPBO; }
+
+size_t Image::size() const { return mPBOsize; }
 
 void Image::render() const
 {

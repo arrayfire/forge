@@ -78,7 +78,7 @@ Plot::Plot(GLenum pDataType)
     mMargin = 10;
 
     glGenBuffers(3, mVBO);
-    mVBOSize = 0;
+    mVBOsize = 0;
 
     mProgram = initShaders(gPlotVertexShaderSrc, gPlotFragmentShaderSrc);
 
@@ -101,16 +101,27 @@ Plot::~Plot()
 
 GLuint Plot::vbo() const { return mVBO[0]; }
 
-size_t Plot::vboSize() const { return mVBOSize; }
+size_t Plot::size() const { return mVBOsize; }
+
+double Plot::xmax() const { return mXMax; }
+double Plot::xmin() const { return mXMin; }
+double Plot::ymax() const { return mYMax; }
+double Plot::ymin() const { return mYMin; }
+
+void Plot::setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin)
+{
+    mXMax = pXmax;
+    mXMin = pXmin;
+    mYMax = pYmax;
+    mYMin = pYmin;
+}
 
 void Plot::setVBOSize(size_t pSize)
 {
-    mVBOSize = pSize;
+    mVBOsize = pSize;
 }
 
-void Plot::render(int pViewPortWidth, int pViewPortHeight,
-                  double pXmax, double pXmin,
-                  double pYmax, double pYmin) const
+void Plot::render(int pViewPortWidth, int pViewPortHeight) const
 {
     glUseProgram(mProgram);
 
@@ -122,8 +133,8 @@ void Plot::render(int pViewPortWidth, int pViewPortHeight,
 
     glEnable(GL_SCISSOR_TEST);
 
-    float graph_scale_x = 1/(pXmax - pXmin);
-    float graph_scale_y = 1/(pYmax - pYmin);
+    float graph_scale_x = 1/(mXMax - mXMin);
+    float graph_scale_y = 1/(mYMax - mYMin);
 
     glm::mat4 transform = glm::translate(glm::scale(glm::mat4(1.0f),
                                          glm::vec3(graph_scale_x, graph_scale_y, 1)),
@@ -142,11 +153,11 @@ void Plot::render(int pViewPortWidth, int pViewPortHeight,
 
     size_t elements = 0;
     switch(mDataType) {
-        case GL_FLOAT:          elements = mVBOSize / (2 * sizeof(float));     break;
-        case GL_INT:            elements = mVBOSize / (2 * sizeof(int  ));     break;
-        case GL_UNSIGNED_INT:   elements = mVBOSize / (2 * sizeof(uint ));     break;
-        case GL_BYTE:           elements = mVBOSize / (2 * sizeof(char ));     break;
-        case GL_UNSIGNED_BYTE:  elements = mVBOSize / (2 * sizeof(uchar));     break;
+        case GL_FLOAT:          elements = mVBOsize / (2 * sizeof(float));     break;
+        case GL_INT:            elements = mVBOsize / (2 * sizeof(int  ));     break;
+        case GL_UNSIGNED_INT:   elements = mVBOsize / (2 * sizeof(uint ));     break;
+        case GL_BYTE:           elements = mVBOsize / (2 * sizeof(char ));     break;
+        case GL_UNSIGNED_BYTE:  elements = mVBOsize / (2 * sizeof(uchar));     break;
     }
     glDrawArrays(GL_LINE_STRIP, 0, elements);
 
@@ -237,9 +248,7 @@ void Plot::render(int pViewPortWidth, int pViewPortHeight,
 }
 
 
-void drawPlot(Window* pWindow, const Plot& pHandle,
-            const double pXmax, const double pXmin,
-            const double pYmax, const double pYmin)
+void drawPlot(Window* pWindow, const Plot& pHandle)
 {
     CheckGL("Begin plot2d");
     MakeContextCurrent(pWindow);
@@ -251,7 +260,7 @@ void drawPlot(Window* pWindow, const Plot& pHandle,
     glClearColor(0.2, 0.2, 0.2, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    pHandle.render(wind_width, wind_height, pXmax, pXmin, pYmax, pYmin);
+    pHandle.render(wind_width, wind_height);
 
     glfwSwapBuffers(pWindow->window());
     glfwPollEvents();

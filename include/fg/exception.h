@@ -37,8 +37,6 @@ public:
 
     ErrorCode err() const;
 
-    const std::string& msg() const;
-
     virtual ~Error() throw();
 
     friend inline std::ostream& operator<<(std::ostream &s, const Error &e) {

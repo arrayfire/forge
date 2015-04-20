@@ -21,6 +21,7 @@ class FGAPI Image {
         ColorMode mFormat;
         GLenum    mDataType;
         /* internal resources for interop */
+        size_t   mPBOsize;
         GLuint   mPBO;
         GLuint   mTex;
         GLuint   mProgram;
@@ -34,6 +35,7 @@ class FGAPI Image {
         ColorMode pixelFormat() const;
         GLenum channelType() const;
         GLuint pbo() const;
+        size_t size() const;
 
         void render() const;
 };

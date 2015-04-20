@@ -23,21 +23,20 @@ class FGAPI Window {
         int             mHeight;
         GLFWwindow*     mWindow;
         /* single context for all windows */
-        static GLEWContext* mGLEWContext;
+        GLEWContext* mGLEWContext;
+    protected:
+        Window() {}
 
     public:
-        Window();
-        Window(int pWidth, int pHeight, const char* pTitle);
+        Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow=NULL);
         ~Window();
 
-        const ContextHandle context() const;
-        const DisplayHandle display() const;
-        int width() const;
-        int height() const;
-        GLFWwindow* window() const;
-
-        static void setGLEWcontext(GLEWContext* pCxt) { mGLEWContext = pCxt; }
-        static GLEWContext* glewContext() { return mGLEWContext; }
+        const ContextHandle context() const { return mCxt; }
+        const DisplayHandle display() const { return mDsp; }
+        int width() const { return mWidth; }
+        int height() const { return mHeight; }
+        GLFWwindow* window() const { return mWindow; }
+        GLEWContext* glewContext() { return mGLEWContext; }
 };
 
 FGAPI void makeWindowCurrent(Window* pWindow);
