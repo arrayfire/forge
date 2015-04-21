@@ -23,6 +23,8 @@ IF(USE_SYSTEM_GLM)
       INCLUDE("${CMAKE_MODULE_PATH}/build_glm.cmake")
 ENDIF()
 
+INCLUDE("${CMAKE_MODULE_PATH}/build_freetypegl.cmake")
+
 IF(NOT UNIX)
   ADD_DEFINITIONS(-DAFDLL)
 ENDIF()
@@ -31,6 +33,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_INCLUDE_PATH}
     "${CMAKE_SOURCE_DIR}/src"
     ${GLM_INCLUDE_DIRS}
+    "${FREETYPEGL_INCLUDE_DIRS}"
     )
 
 IF(${GRAPHICS_FOUND})
@@ -76,6 +79,7 @@ TARGET_LINK_LIBRARIES(forge
                       ${GLEWmx_LIBRARY}
                       ${OPENGL_gl_LIBRARY}
                       ${OPENGL_glu_LIBRARY}
+                      ${FREETYPEGL_LIBRARIES}
                       )
 
 INSTALL(TARGETS forge DESTINATION lib)
