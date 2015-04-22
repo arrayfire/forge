@@ -23,7 +23,18 @@ IF(USE_SYSTEM_GLM)
       INCLUDE("${CMAKE_MODULE_PATH}/build_glm.cmake")
 ENDIF()
 
-INCLUDE("${CMAKE_MODULE_PATH}/build_freetypegl.cmake")
+OPTION(USE_SYSTEM_FREETYPE "Use system GLM" OFF)
+IF(USE_SYSTEM_FREETYPE)
+    FIND_PACKAGE(Freetype REQUIRED)
+ELSE()
+    INCLUDE("${CMAKE_MODULE_PATH}/build_freetype.cmake")
+ENDIF()
+
+IF(FREETYPE_FOUND)
+    MESSAGE(STATUS "FreeType system library found!")
+ELSE(FREETYPE_FOUND)
+    MESSAGE(FATAL_ERROR "FreeType not found in system, try setting USE_SYSTEM_FREETYPE to OFF")
+ENDIF(FREETYPE_FOUND)
 
 IF(NOT UNIX)
   ADD_DEFINITIONS(-DAFDLL)
@@ -33,7 +44,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_INCLUDE_PATH}
     "${CMAKE_SOURCE_DIR}/src"
     ${GLM_INCLUDE_DIRS}
-    "${FREETYPEGL_INCLUDE_DIRS}"
+    "${FREETYPE_INCLUDE_DIRS}"
     )
 
 IF(${GRAPHICS_FOUND})
@@ -79,7 +90,7 @@ TARGET_LINK_LIBRARIES(forge
                       ${GLEWmx_LIBRARY}
                       ${OPENGL_gl_LIBRARY}
                       ${OPENGL_glu_LIBRARY}
-                      ${FREETYPEGL_LIBRARIES}
+                      ${FREETYPE_LIBRARIES}
                       )
 
 INSTALL(TARGETS forge DESTINATION lib)
