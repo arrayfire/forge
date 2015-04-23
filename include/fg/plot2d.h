@@ -8,7 +8,7 @@
  ********************************************************/
 
 #pragma once
-#include <fg/window.h>
+#include <fg/defines.h>
 
 namespace fg
 {
@@ -46,7 +46,5 @@ class FGAPI Plot {
 
         void render(int pViewPortWidth, int pViewPortHeight) const;
 };
-
-FGAPI void drawPlot(Window* pWindow, const Plot& pPlot);
 
 }

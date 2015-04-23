@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 using namespace fg;
 
@@ -179,4 +180,9 @@ GLuint initShaders(const char* vshader_code, const char* fshader_code)
     GLuint shader_program = glCreateProgram();
     attachAndLinkProgram(shader_program, shaders);
     return shader_program;
+}
+
+int next_p2(int value)
+{
+    return std::pow(2, (std::ceil(std::log2(value))));
 }

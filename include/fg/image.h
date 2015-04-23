@@ -8,7 +8,7 @@
  ********************************************************/
 
 #pragma once
-#include <fg/window.h>
+#include <fg/defines.h>
 #include <vector>
 
 namespace fg
@@ -40,9 +40,5 @@ class FGAPI Image {
 
         void render() const;
 };
-
-FGAPI void drawImage(Window* pWindow, const Image& pImage);
-
-FGAPI void drawImages(Window* pWindow, int pRows, int pCols, const std::vector<Image>& pImages);
 
 }

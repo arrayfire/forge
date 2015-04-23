@@ -22,6 +22,6 @@ SET(freetype_location ${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}freetype${CMAK
 SET_TARGET_PROPERTIES(freetype PROPERTIES IMPORTED_LOCATION ${freetype_location})
 ADD_DEPENDENCIES(freetype freetype-external)
 
-SET(FREETYPE_INCLUDE_DIRS ${prefix}/include)
+SET(FREETYPE_INCLUDE_DIRS ${prefix}/include/freetype2)
 SET(FREETYPE_LIBRARIES freetype)
 SET(FREETYPE_FOUND ON)
