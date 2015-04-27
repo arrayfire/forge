@@ -1,5 +1,5 @@
 /*******************************************************
- * Copyright (c) 2014, ArrayFire
+ * Copyright (c) 2015-2019, ArrayFire
  * All rights reserved.
  *
  * This file is distributed under 3-clause BSD license.
@@ -8,61 +8,37 @@
  ********************************************************/
 
 #pragma once
-#include <fg/window.h>
+#include <fg/defines.h>
+#include <vector>
 
-typedef struct
-{
-    fg_window_handle window;
-
-    //OpenGL PBO and texture "names"
-    unsigned src_width;
-    unsigned src_height;
-    FGuint gl_PBO;
-    FGuint gl_Tex;
-    FGuint gl_Shader;
-    FGenum gl_Format;
-    FGenum gl_Type;
-} fg_image_struct;
-
-typedef fg_image_struct* fg_image_handle;
-
-#ifdef __cplusplus
 namespace fg
 {
 
 class FGAPI Image {
     private:
-        fg_image_handle mHandle;
+        unsigned  mWidth;
+        unsigned  mHeight;
+        ColorMode mFormat;
+        GLenum    mGLformat;
+        GLenum    mDataType;
+        /* internal resources for interop */
+        size_t   mPBOsize;
+        GLuint   mPBO;
+        GLuint   mTex;
+        GLuint   mProgram;
 
     public:
-        Image();
-        Image(const uint pWidth, const uint pHeight, const Window& pWindow);
+        Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType);
         ~Image();
 
-        uint width() const;
-        uint height() const;
-        FGuint pboResourceId() const;
-        FGuint texResourceId() const;
-        FGuint shaderResourceId() const;
-        FGenum pixelFormat() const;
-        FGenum channelType() const;
-        fg_image_handle get() const;
+        unsigned width() const;
+        unsigned height() const;
+        ColorMode pixelFormat() const;
+        GLenum channelType() const;
+        GLuint pbo() const;
+        size_t size() const;
+
+        void render() const;
 };
 
-void drawImage(const Image& pImage);
-
 }
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-    FGAPI fg_err fg_setup_image(fg_image_handle *out, const fg_window_handle window,
-                                const unsigned width, const unsigned height);
-
-    FGAPI fg_err fg_draw_image(const fg_image_handle in);
-
-    FGAPI fg_err fg_destroy_image(const fg_image_handle in);
-#ifdef __cplusplus
-}
-#endif

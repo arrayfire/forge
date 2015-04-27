@@ -7,7 +7,7 @@ OPTION(BUILD_EXAMPLES "Build Examples" ON)
 
 INCLUDE_DIRECTORIES(
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/api/c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/"
     )
 
 IF(${UNIX})
@@ -36,7 +36,7 @@ ENDIF()
 
 INCLUDE(${CMAKE_MODULE_PATH}/Version.cmake)
 
-ADD_SUBDIRECTORY(src/backend)
+ADD_SUBDIRECTORY(src)
 
 ## Install step
 INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION include

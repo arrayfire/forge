@@ -1,5 +1,5 @@
 /*******************************************************
- * Copyright (c) 2014, ArrayFire
+ * Copyright (c) 2015-2019, ArrayFire
  * All rights reserved.
  *
  * This file is distributed under 3-clause BSD license.
@@ -9,58 +9,48 @@
 
 #pragma once
 #include <fg/defines.h>
+#include <fg/font.h>
+#include <fg/image.h>
+#include <fg/plot2d.h>
 
-typedef struct
-{
-    ContextHandle   cxt;
-    DisplayHandle   dsp;
-
-    GLFWwindow*     pWindow;
-    GLEWContext*    pGLEWContext;
-    int             uiWidth;
-    int             uiHeight;
-    int             uiID;
-    FGenum          type;
-    fg_color_mode   mode;
-} fg_window_struct;
-
-typedef fg_window_struct* fg_window_handle;
-
-#ifdef __cplusplus
 namespace fg
 {
 
 class FGAPI Window {
     private:
-        fg_window_handle mHandle;
+        ContextHandle   mCxt;
+        DisplayHandle   mDsp;
+        int             mID;
+
+        int             mWidth;
+        int             mHeight;
+        GLFWwindow*     mWindow;
+        Font*           mFont;
+
+        /* single context for all windows */
+        GLEWContext* mGLEWContext;
+    protected:
+        Window() {}
 
     public:
-        Window();
-        Window(const uint pWidth, const uint pHeight, const char* pTitle,
-               WindowColorMode pMode, FGenum pChannelType);
+        Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow=NULL);
         ~Window();
 
-        uint width() const;
-        uint height() const;
-        WindowColorMode colorMode() const;
-        FGenum channelType() const;
-        fg_window_handle get() const;
+        ContextHandle context() const { return mCxt; }
+        DisplayHandle display() const { return mDsp; }
+        int width() const { return mWidth; }
+        int height() const { return mHeight; }
+        GLFWwindow* window() const { return mWindow; }
+        GLEWContext* glewContext() const { return mGLEWContext; }
+
+        void setFont(Font* pFont) { mFont = pFont; }
+
+        /* draw functions */
+        void draw(const Image& pImage);
+        void draw(int pRow, int pCols, const std::vector<Image>& pImages);
+        void draw(const Plot& pPlot);
 };
 
-void makeWindowCurrent(const Window& pWindow);
+FGAPI void makeCurrent(Window* pWindow);
 
 }
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-    FGAPI fg_err fg_create_window(fg_window_handle *out, const unsigned width, const unsigned height,
-                                  const char *title, fg_color_mode mode, FGenum type);
-
-    FGAPI fg_err fg_make_window_current(const fg_window_handle in);
-
-    FGAPI fg_err fg_destroy_window(const fg_window_handle in);
-#ifdef __cplusplus
-}
-#endif

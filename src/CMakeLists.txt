@@ -23,14 +23,28 @@ IF(USE_SYSTEM_GLM)
       INCLUDE("${CMAKE_MODULE_PATH}/build_glm.cmake")
 ENDIF()
 
+OPTION(USE_SYSTEM_FREETYPE "Use system GLM" OFF)
+IF(USE_SYSTEM_FREETYPE)
+    FIND_PACKAGE(Freetype REQUIRED)
+ELSE()
+    INCLUDE("${CMAKE_MODULE_PATH}/build_freetype.cmake")
+ENDIF()
+
+IF(FREETYPE_FOUND)
+    MESSAGE(STATUS "FreeType system library found!")
+ELSE(FREETYPE_FOUND)
+    MESSAGE(FATAL_ERROR "FreeType not found in system, try setting USE_SYSTEM_FREETYPE to OFF")
+ENDIF(FREETYPE_FOUND)
+
 IF(NOT UNIX)
   ADD_DEFINITIONS(-DAFDLL)
 ENDIF()
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_INCLUDE_PATH}
-    "${CMAKE_SOURCE_DIR}/src/backend"
+    "${CMAKE_SOURCE_DIR}/src"
     ${GLM_INCLUDE_DIRS}
+    "${FREETYPE_INCLUDE_DIRS}"
     )
 
 IF(${GRAPHICS_FOUND})
@@ -40,33 +54,25 @@ IF(${GRAPHICS_FOUND})
         )
 ENDIF(${GRAPHICS_FOUND})
 
-FILE(GLOB backend_headers
+
+FILE(GLOB api_headers
+    "../include/*.h"
+    )
+
+source_group(API FILES ${api_headers})
+
+FILE(GLOB headers
     "*.hpp"
-    "*.h")
-
-FILE(GLOB backend_sources
-    "*.cpp")
-
-source_group(backend\\Headers FILES ${backend_headers})
-source_group(backend\\Sources FILES ${backend_sources})
-
-FILE(GLOB c_headers
-    "../api/c/*.hpp"
-    "../api/c/*.h"
+    "*.h"
     )
 
-FILE(GLOB c_sources
-    "../api/c/*.cpp"
+FILE(GLOB sources
+    "*.c"
+    "*.cpp"
     )
 
-source_group(api\\c\\Headers FILES ${c_headers})
-source_group(api\\c\\Sources FILES ${c_sources})
-
-FILE(GLOB cpp_sources
-    "../api/cpp/*.cpp"
-    )
-
-source_group(api\\cpp\\Sources FILES ${cpp_sources})
+source_group(Headers FILES ${headers})
+source_group(Sources FILES ${sources})
 
 # OS Definitions
 IF(UNIX)
@@ -76,17 +82,15 @@ ELSE(${UNIX}) #Windows
 ENDIF()
 
 ADD_LIBRARY(forge SHARED
-           ${backend_headers}
-           ${backend_sources}
-           ${c_headers}
-           ${c_sources}
-           ${cpp_sources})
+           ${headers}
+           ${sources})
 
 TARGET_LINK_LIBRARIES(forge
                       ${GLFW_LIBRARY}
                       ${GLEWmx_LIBRARY}
                       ${OPENGL_gl_LIBRARY}
                       ${OPENGL_glu_LIBRARY}
+                      ${FREETYPE_LIBRARIES}
                       )
 
 INSTALL(TARGETS forge DESTINATION lib)

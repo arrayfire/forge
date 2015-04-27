@@ -1,5 +1,5 @@
 /*******************************************************
- * Copyright (c) 2014, ArrayFire
+ * Copyright (c) 2015-2019, ArrayFire
  * All rights reserved.
  *
  * This file is distributed under 3-clause BSD license.
@@ -42,36 +42,6 @@ typedef GLXContext ContextHandle;
 typedef Display* DisplayHandle;
 #endif
 
-#ifdef __cplusplus
-#endif
-
-typedef enum {
-    FG_SUCCESS=0,
-    FG_ERR_INTERNAL,
-    FG_ERR_NOMEM,
-    FG_ERR_DRIVER,
-    FG_ERR_RUNTIME,
-    FG_ERR_INVALID_ARRAY,
-    FG_ERR_ARG,
-    FG_ERR_SIZE,
-    FG_ERR_DIFF_TYPE,
-    FG_ERR_NOT_SUPPORTED,
-    FG_ERR_NOT_CONFIGURED,
-    FG_ERR_INVALID_TYPE,
-    FG_ERR_INVALID_ARG,
-    FG_ERR_GL_ERROR,
-    FG_ERR_UNKNOWN
-} fg_err;
-
-typedef unsigned int  uint;
-typedef unsigned char uchar;
-
-typedef enum {
-    FG_RED =1,
-    FG_RGB =3,
-    FG_RGBA=4,
-} fg_color_mode;
-
 // Print for OpenGL errors
 // Returns 1 if an OpenGL error occurred, 0 otherwise.
 
@@ -100,16 +70,35 @@ typedef enum {
     #define FG_STATIC_
 #endif
 
-typedef GLuint FGuint;
-typedef GLint FGint;
-typedef GLenum FGenum;
-
-#ifdef __cplusplus
 namespace fg
 {
 
-typedef fg_color_mode WindowColorMode;
-typedef fg_err ForgeError;
+typedef unsigned int  uint;
+typedef unsigned char uchar;
+
+enum ErrorCode {
+    FG_SUCCESS            = 0,
+    FG_ERR_INTERNAL       = 1,
+    FG_ERR_NOMEM          = 2,
+    FG_ERR_DRIVER         = 3,
+    FG_ERR_RUNTIME        = 4,
+    FG_ERR_INVALID_ARRAY  = 5,
+    FG_ERR_ARG            = 6,
+    FG_ERR_SIZE           = 7,
+    FG_ERR_DIFF_TYPE      = 8,
+    FG_ERR_NOT_SUPPORTED  = 9,
+    FG_ERR_NOT_CONFIGURED = 10,
+    FG_ERR_INVALID_TYPE   = 11,
+    FG_ERR_INVALID_ARG    = 12,
+    FG_ERR_GL_ERROR       = 13,
+    FG_ERR_FREETYPE_ERROR = 14,
+    FG_ERR_UNKNOWN        = 15
+};
+
+enum ColorMode {
+    FG_RED =1,
+    FG_RGB =3,
+    FG_RGBA=4,
+};
 
 }
-#endif
