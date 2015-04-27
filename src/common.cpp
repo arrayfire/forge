@@ -186,3 +186,8 @@ int next_p2(int value)
 {
     return std::pow(2, (std::ceil(std::log2(value))));
 }
+
+float clampTo01(float a)
+{
+    return (a < 0.0f ? 0.0f : (a>1.0f ? 1.0f : a));
+}

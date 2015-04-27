@@ -42,3 +42,5 @@ GLuint createBuffer(int size, const T* data, GLenum usage)
 }
 
 int next_p2(int value);
+
+float clampTo01(float a);
