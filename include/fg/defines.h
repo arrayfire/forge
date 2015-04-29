@@ -91,7 +91,8 @@ enum ErrorCode {
     FG_ERR_INVALID_TYPE   = 11,
     FG_ERR_INVALID_ARG    = 12,
     FG_ERR_GL_ERROR       = 13,
-    FG_ERR_UNKNOWN        = 14
+    FG_ERR_FREETYPE_ERROR = 14,
+    FG_ERR_UNKNOWN        = 15
 };
 
 enum ColorMode {

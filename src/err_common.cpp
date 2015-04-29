@@ -18,7 +18,7 @@ void commonErrorCheck(const char *pMsg, const char* pFile, int pLine)
         char buffer[256];
         sprintf(buffer, "GL Error at: %s:%d Message: %s Error Code: %d \"%s\"\n",
                 pFile, pLine, pMsg, x, gluErrorString(x));
-        throw fg::Error(pFile, pLine, pMsg, fg::FG_ERR_GL_ERROR);
+        throw fg::Error(pFile, pLine, buffer, fg::FG_ERR_GL_ERROR);
     }
 }
 

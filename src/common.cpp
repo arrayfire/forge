@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 using namespace fg;
 
@@ -179,4 +180,14 @@ GLuint initShaders(const char* vshader_code, const char* fshader_code)
     GLuint shader_program = glCreateProgram();
     attachAndLinkProgram(shader_program, shaders);
     return shader_program;
+}
+
+int next_p2(int value)
+{
+    return std::pow(2, (std::ceil(std::log2(value))));
+}
+
+float clampTo01(float a)
+{
+    return (a < 0.0f ? 0.0f : (a>1.0f ? 1.0f : a));
 }

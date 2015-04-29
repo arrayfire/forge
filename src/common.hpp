@@ -40,3 +40,7 @@ GLuint createBuffer(int size, const T* data, GLenum usage)
     glBindBuffer(GL_ARRAY_BUFFER,0);
     return ret_val;
 }
+
+int next_p2(int value);
+
+float clampTo01(float a);

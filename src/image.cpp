@@ -44,11 +44,11 @@ namespace fg
 Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType)
 : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType)
 {
+    CheckGL("Begin Image::Image");
     MakeContextCurrent();
     mGLformat = FGMode_to_GLColor(mFormat);
 
     // Initialize OpenGL Items
-    glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &(mTex));
     glBindTexture(GL_TEXTURE_2D, mTex);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -60,7 +60,7 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
 
     CheckGL("Before PBO Initialization");
     glGenBuffers(1, &mPBO);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, mPBO);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     size_t typeSize = 0;
     switch(mDataType) {
         case GL_FLOAT:          typeSize = sizeof(float);     break;
@@ -70,9 +70,10 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
         case GL_UNSIGNED_BYTE:  typeSize = sizeof(uchar);     break;
     }
     mPBOsize = mWidth * mHeight * mFormat * typeSize;
-    glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, mPBOsize, NULL, GL_STREAM_COPY);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, mPBOsize, NULL, GL_STREAM_COPY);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     CheckGL("After PBO Initialization");
 
     mProgram = initShaders(vertex_shader_code, fragment_shader_code);
@@ -110,6 +111,7 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glBindVertexArray(0);
     }
+    CheckGL("End Image::Image");
 }
 
 Image::~Image()
@@ -150,7 +152,7 @@ void Image::render() const
     glUniform1i(tex_loc, 0);
     glBindTexture(GL_TEXTURE_2D, mTex);
     // bind PBO to load data into texture
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, mPBO);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, mGLformat, mDataType, 0);
 
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, matrix);
@@ -162,68 +164,10 @@ void Image::render() const
 
     // Unbind textures
     glBindTexture(GL_TEXTURE_2D, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
     // ubind the shader program
     glUseProgram(0);
-}
-
-
-void drawImage(Window* pWindow, const Image& pImage)
-{
-    CheckGL("Begin drawImage");
-    MakeContextCurrent(pWindow);
-
-    int wind_width, wind_height;
-    glfwGetWindowSize(pWindow->window(), &wind_width, &wind_height);
-    glViewport(0, 0, wind_width, wind_height);
-
-    // clear color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2, 0.2, 0.2, 1.0);
-
-    pImage.render();
-
-    glfwSwapBuffers(pWindow->window());
-    glfwPollEvents();
-    ForceCheckGL("End drawImage");
-}
-
-void drawImages(Window* pWindow, int pRows, int pCols, const unsigned int pNumImages, const std::vector<Image>& pHandles)
-{
-    CheckGL("Begin drawImages");
-    MakeContextCurrent(pWindow);
-
-    int wind_width, wind_height;
-    glfwGetWindowSize(pWindow->window(), &wind_width, &wind_height);
-    glViewport(0, 0, wind_width, wind_height);
-
-    // calculate cell width and height
-    uint wid_step = wind_width/ pCols;
-    uint hei_step = wind_height/ pRows;
-
-    // clear color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2, 0.2, 0.2, 1.0);
-
-    for (int c=0; c<pCols; ++c) {
-        for (int r=0; r<pRows; ++r) {
-            uint idx = c*pRows + pRows-1-r;
-            if (idx<pNumImages) {
-
-                int x_off = c * wid_step;
-                int y_off = r * hei_step;
-
-                // set viewport to render sub image
-                glViewport(x_off, y_off, wid_step, hei_step);
-
-                pHandles[idx].render();
-            }
-        }
-    }
-
-    glfwSwapBuffers(pWindow->window());
-    glfwPollEvents();
-    CheckGL("End drawImages");
 }
 
 }

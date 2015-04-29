@@ -9,6 +9,9 @@
 
 #pragma once
 #include <fg/defines.h>
+#include <fg/font.h>
+#include <fg/image.h>
+#include <fg/plot2d.h>
 
 namespace fg
 {
@@ -22,6 +25,8 @@ class FGAPI Window {
         int             mWidth;
         int             mHeight;
         GLFWwindow*     mWindow;
+        Font*           mFont;
+
         /* single context for all windows */
         GLEWContext* mGLEWContext;
     protected:
@@ -37,8 +42,15 @@ class FGAPI Window {
         int height() const { return mHeight; }
         GLFWwindow* window() const { return mWindow; }
         GLEWContext* glewContext() const { return mGLEWContext; }
+
+        void setFont(Font* pFont) { mFont = pFont; }
+
+        /* draw functions */
+        void draw(const Image& pImage);
+        void draw(int pRow, int pCols, const std::vector<Image>& pImages);
+        void draw(const Plot& pPlot);
 };
 
-FGAPI void makeWindowCurrent(Window* pWindow);
+FGAPI void makeCurrent(Window* pWindow);
 
 }
