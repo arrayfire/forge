@@ -45,6 +45,7 @@ INCLUDE_DIRECTORIES(
     "${CMAKE_SOURCE_DIR}/src"
     ${GLM_INCLUDE_DIRS}
     "${FREETYPE_INCLUDE_DIRS}"
+    "${FONTCONFIG_INCLUDE_DIR}"
     )
 
 IF(${GRAPHICS_FOUND})
@@ -91,6 +92,7 @@ TARGET_LINK_LIBRARIES(forge
                       ${OPENGL_gl_LIBRARY}
                       ${OPENGL_glu_LIBRARY}
                       ${FREETYPE_LIBRARIES}
+                      ${FONTCONFIG_LIBRARY}
                       )
 
 INSTALL(TARGETS forge DESTINATION lib)
