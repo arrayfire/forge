@@ -205,6 +205,23 @@ void Window::draw(const Plot& pHandle)
     CheckGL("End draw(Plot)");
 }
 
+void Window::draw(const Histogram& pHist)
+{
+    CheckGL("Begin draw(Histogram)");
+    MakeContextCurrent(this);
+
+    int wind_width, wind_height;
+    glfwGetWindowSize(window(), &wind_width, &wind_height);
+    glViewport(0, 0, wind_width, wind_height);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    pHist.render(wind_width, wind_height);
+
+    glfwSwapBuffers(window());
+    glfwPollEvents();
+    CheckGL("End draw(Histogram)");
+}
 
 void makeCurrent(Window* pWindow)
 {

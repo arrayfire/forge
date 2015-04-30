@@ -12,6 +12,7 @@
 #include <fg/font.h>
 #include <fg/image.h>
 #include <fg/plot2d.h>
+#include <fg/histogram.h>
 
 namespace fg
 {
@@ -49,6 +50,7 @@ class FGAPI Window {
         void draw(const Image& pImage);
         void draw(int pRow, int pCols, const std::vector<Image>& pImages);
         void draw(const Plot& pPlot);
+        void draw(const Histogram& pHist);
 };
 
 FGAPI void makeCurrent(Window* pWindow);

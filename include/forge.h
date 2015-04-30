@@ -15,3 +15,4 @@
 #include "fg/image.h"
 #include "fg/version.h"
 #include "fg/plot2d.h"
+#include "fg/histogram.h"
