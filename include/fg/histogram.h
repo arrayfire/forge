@@ -13,22 +13,30 @@
 namespace fg
 {
 
-class FGAPI Plot : public Chart {
+class FGAPI Histogram : public Chart {
     private:
         /* plot points characteristics */
-        GLuint    mNumPoints;
         GLenum    mDataType;
-        float     mLineColor[4];
+        GLuint    mNBins;
+        float     mBarColor[4];
         /* OpenGL Objects */
-        GLuint    mMainVAO;
-        GLuint    mMainVBO;
-        size_t    mMainVBOsize;
+        GLuint    mHistogramVAO;
+        GLuint    mHistogramVBO;
+        size_t    mHistogramVBOSize;
+        GLuint    mHistBarProgram;
+        /* internal shader attributes for mHistBarProgram
+         * shader program to render histogram bars for each
+         * bin*/
+        GLuint    mHistBarMatIndex;
+        GLuint    mHistBarColorIndex;
+        GLuint    mHistBarNBinsIndex;
+        GLuint    mHistBarYMaxIndex;
 
     public:
-        Plot(GLuint pNumPoints, GLenum pDataType);
-        ~Plot();
+        Histogram(GLuint pNBins, GLenum pDataType);
+        ~Histogram();
 
-        void setColor(float r, float g, float b);
+        void setBarColor(float r, float g, float b);
 
         GLuint vbo() const;
         size_t size() const;
