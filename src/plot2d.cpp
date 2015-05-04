@@ -87,15 +87,15 @@ size_t Plot::size() const { return mMainVBOsize; }
 
 void Plot::render(int pVPW, int pVPH) const
 {
-    int mar_tick = margin() + tickSize();
-    int mar2_tick = margin() + mar_tick;
     float graph_scale_x = 1/(xmax() - xmin());
     float graph_scale_y = 1/(ymax() - ymin());
 
     CheckGL("Begin Plot::render");
     /* Enavle scissor test to discard anything drawn beyond viewport.
      * Set scissor rectangle to clip fragments outside of viewport */
-    glScissor(mar_tick, mar_tick, pVPW - mar2_tick, pVPH - mar2_tick);
+    glScissor(leftMargin()+tickSize(), bottomMargin()+tickSize(),
+            pVPW - (leftMargin()+rightMargin()+tickSize()),
+            pVPH - (bottomMargin()+topMargin()+tickSize()));
     glEnable(GL_SCISSOR_TEST);
 
     bindBorderProgram();

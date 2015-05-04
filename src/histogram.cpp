@@ -135,19 +135,19 @@ size_t Histogram::size() const { return mHistogramVBOSize; }
 void Histogram::render(int pVPW, int pVPH) const
 {
     static const float BLACK[4] = {0,0,0,1};
-    int mar_tick = margin() + tickSize();
-    int mar2_tick = margin() + mar_tick;
-    float w = pVPW - mar2_tick;
-    float h = pVPH - mar2_tick;
-    float offset_x = (2.0f * mar_tick + (w - pVPW)) / pVPW;
-    float offset_y = (2.0f * mar_tick + (h - pVPH)) / pVPH;
+    float w = pVPW - (leftMargin()+rightMargin()+tickSize());
+    float h = pVPH - (bottomMargin()+topMargin()+tickSize());
+    float offset_x = (2.0f * (leftMargin()+tickSize()) + (w - pVPW)) / pVPW;
+    float offset_y = (2.0f * (bottomMargin()+tickSize()) + (h - pVPH)) / pVPH;
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 
     CheckGL("Begin Histogram::render");
     /* Enavle scissor test to discard anything drawn beyond viewport.
      * Set scissor rectangle to clip fragments outside of viewport */
-    glScissor(mar_tick, mar_tick, pVPW - mar2_tick, pVPH - mar2_tick);
+    glScissor(leftMargin()+tickSize(), bottomMargin()+tickSize(),
+            pVPW - (leftMargin()+rightMargin()+tickSize()),
+            pVPH - (bottomMargin()+topMargin()+tickSize()));
     glEnable(GL_SCISSOR_TEST);
 
     glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),

@@ -7,12 +7,17 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <fg/font.h>
 #include <fg/chart.h>
 #include <fg/exception.h>
 #include <common.hpp>
 #include <err_common.hpp>
 
 #include <math.h>
+#include <string>
+#include <sstream>
+#include <iomanip>
+#include <mutex>
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -20,6 +25,14 @@
 #include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
+typedef std::vector<std::string>::const_iterator StringIter;
+
+std::string toString(float pVal, const int n = 2)
+{
+    std::ostringstream out;
+    out << std::fixed << std::setprecision(n) << pVal;
+    return out.str();
+}
 
 const char *gChartVertexShaderSrc =
 "#version 330\n"
@@ -51,6 +64,16 @@ const char *gChartSpriteFragmentShaderSrc =
 "       outputColor = tick_color;\n"
 "}";
 
+fg::Font& getChartFont()
+{
+    static fg::Font mChartFont;
+    static std::once_flag flag;
+
+    std::call_once(flag, []() { mChartFont.loadSystemFont("Vera", 32); });
+
+    return mChartFont;
+}
+
 namespace fg
 {
 
@@ -61,13 +84,76 @@ GLuint Chart::borderProgramPointIndex() const { return mBorderPointIndex; }
 GLuint Chart::borderColorIndex() const { return mBorderColorIndex; }
 GLuint Chart::borderMatIndex() const { return mBorderMatIndex; }
 int Chart::tickSize() const { return mTickSize; }
-int Chart::margin() const { return mMargin; }
+int Chart::leftMargin() const { return mLeftMargin; }
+int Chart::rightMargin() const { return mRightMargin; }
+int Chart::bottomMargin() const { return mBottomMargin; }
+int Chart::topMargin() const { return mTopMargin; }
+
+void Chart::setTickCount(int pTickCount)
+{
+    static const float border[8] = { -1, -1, 1, -1, 1, 1, -1, 1 };
+    static const int nValues = sizeof(border)/sizeof(float);
+
+    mTickCount = pTickCount;
+
+    std::vector<float> decorData;
+    std::copy(border, border+nValues, std::back_inserter(decorData));
+
+    float step = 2.0f/(mTickCount+1);
+    float yRange = mYMax-mYMin;
+    float xRange = mXMax-mXMin;
+    /* push tick points for y axis */
+    for (int i = 1; i <= mTickCount; i++) {
+        float temp = -1.0f+i*step;
+        /* (-1,-1) to (-1, 1)*/
+        decorData.push_back(-1.0f);
+        decorData.push_back(temp);
+        /* push tick text marker coordinates and the display text */
+        mTickTextX.push_back(-1.0f);
+        mTickTextY.push_back(temp);
+        mTickText.push_back(toString(mYMin+i*step*yRange/2));
+    }
+    /* push tick points for x axis */
+    for (int i = 1; i <= mTickCount; i++) {
+        float temp = -1.0f+i*step;
+        /* (-1,-1) to (1, -1)*/
+        decorData.push_back(-1.0f+i*step);
+        decorData.push_back(-1);
+        /* push tick text marker coordinates and the display text */
+        mTickTextX.push_back(temp);
+        mTickTextY.push_back(-1.0f);
+        mTickText.push_back(toString(mXMin+i*step*xRange/2));
+    }
+
+    /* check if decoration VBO has been already used(case where
+     * tick marks are being changed from default(21) */
+    if (mDecorVBO != 0)
+        glDeleteBuffers(1, &mDecorVBO);
+
+    /* create vbo that has the border and axis data */
+    mDecorVBO = createBuffer<float>(decorData.size(), &(decorData.front()), GL_STATIC_DRAW);
+
+    glBindVertexArray(mDecorVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
+    glVertexAttribPointer(mBorderPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(mBorderPointIndex);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
 Chart::Chart()
-    : mTickCount(21), mTickSize(10), mMargin(10),
+    : mTickCount(13), mTickSize(10),
+      mLeftMargin(50), mRightMargin(10), mTopMargin(10), mBottomMargin(20),
+      mXMax(1), mXMin(0), mYMax(1), mYMin(0),
       mDecorVAO(0), mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
 {
     MakeContextCurrent();
+    /* load font Vera font for chart text
+     * renderings, below function actually returns a constant
+     * reference to font object used by Chart objects, we are
+     * calling it here just to make sure required font glyphs
+     * are loaded into the shared Font object */
+    getChartFont();
 
     mBorderProgram = initShaders(gChartVertexShaderSrc, gChartFragmentShaderSrc);
     mSpriteProgram = initShaders(gChartVertexShaderSrc, gChartSpriteFragmentShaderSrc);
@@ -79,35 +165,12 @@ Chart::Chart()
     mSpriteMatIndex       = glGetUniformLocation(mSpriteProgram, "transform");
     mSpriteTickaxisIndex  = glGetUniformLocation(mSpriteProgram, "isYAxis");
 
-    static const float border[8] = { -1, -1, 1, -1, 1, 1, -1, 1 };
-    static const int nValues = sizeof(border)/sizeof(float);
-
-    std::vector<float> decorData;
-    std::copy(border, border+nValues, std::back_inserter(decorData));
-
-    float step = 2.0f/(mTickCount+1);
-    /* push tick points for y axis */
-    for (int i = 1; i <= mTickCount; i++) {
-        /* (-1,-1) to (-1, 1)*/
-        decorData.push_back(-1.0f);
-        decorData.push_back(-1.0f+i*step);
-    }
-    /* push tick points for x axis */
-    for (int i = 1; i <= mTickCount; i++) {
-        /* (-1,-1) to (1, -1)*/
-        decorData.push_back(-1.0f+i*step);
-        decorData.push_back(-1);
-    }
-    /* create vbo that has the border and axis data */
-    mDecorVBO = createBuffer<float>(decorData.size(), &(decorData.front()), GL_STATIC_DRAW);
-
     glGenVertexArrays(1, &mDecorVAO);
-    glBindVertexArray(mDecorVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
-    glVertexAttribPointer(mBorderPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(mBorderPointIndex);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    /* the following function sets the member variable
+     * mTickCount and creates VBO to hold tick marks and the corresponding
+     * text markers for those ticks on the axes */
+    setTickCount(mTickCount);
 }
 
 Chart::~Chart()
@@ -130,18 +193,42 @@ void Chart::setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin
     mXMin = pXmin;
     mYMax = pYmax;
     mYMin = pYmin;
+
+    /* based on maximum value on Y, set vertical axis margin
+     * so that the text tick markers don't go beyond the
+     * axis line */
+    std::string max_val_str = toString(mYMax);
+    /* assuming each numeric literal occupies 10 pixels */
+    mLeftMargin = 10.0f * max_val_str.length();
+
+    /* remove all the tick text markers that were generated
+     * by default during the base class(chart) creation and
+     * update the text markers based on the new axes limits*/
+    mTickText.clear();
+
+    float step = 2.0f/(mTickCount+1);
+    float yRange = mYMax-mYMin;
+    float xRange = mXMax-mXMin;
+    /* push tick points for y axis */
+    for (int i = 1; i <= mTickCount; i++) {
+        float temp = (i*step)/2;
+        mTickText.push_back(toString(mYMin+temp*yRange));
+    }
+    /* push tick points for x axis */
+    for (int i = 1; i <= mTickCount; i++) {
+        float temp = (i*step)/2;
+        mTickText.push_back(toString(mXMin+temp*xRange));
+    }
 }
 
 void Chart::renderChart(int pVPW, int pVPH) const
 {
     static const GLfloat BLACK[4] = { 0, 0, 0, 1 };
     static const GLfloat BLUE[4] = { 0.0588f, 0.1137f, 0.2745f, 1 };
-    int mar_tick = mMargin + mTickSize;
-    int mar2_tick = mMargin + mar_tick;
-    float w = pVPW - mar2_tick;
-    float h = pVPH - mar2_tick;
-    float offset_x = (2.0f * mar_tick + (w - pVPW)) / pVPW;
-    float offset_y = (2.0f * mar_tick + (h - pVPH)) / pVPH;
+    float w = pVPW - (mLeftMargin + mRightMargin + mTickSize);
+    float h = pVPH - (mTopMargin + mBottomMargin + mTickSize);
+    float offset_x = (2.0f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
+    float offset_y = (2.0f * (mBottomMargin+mTickSize) + (h - pVPH)) / pVPH;
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 
@@ -189,6 +276,15 @@ void Chart::renderChart(int pVPW, int pVPH) const
     glPointSize(1);
     /* reset shader program binding */
     glUseProgram(0);
+
+    fg::Font& fonter = getChartFont();
+    fonter.setOthro2D(pVPW, pVPH);
+
+    for (StringIter it = mTickText.begin(); it!=mTickText.end(); ++it) {
+        int idx = it - mTickText.begin();
+        float pos[2] = { pVPW*(mTickTextX[idx]+1)/2, pVPH*(mTickTextY[idx]+1)/2 };
+        fonter.render(pos, BLACK, *it, 16);
+    }
 
     CheckGL("End Chart::render");
 }

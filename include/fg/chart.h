@@ -9,6 +9,8 @@
 
 #pragma once
 #include <fg/defines.h>
+#include <vector>
+#include <string>
 
 namespace fg
 {
@@ -17,9 +19,15 @@ class FGAPI Chart {
     private:
         /* internal class attributes for
          * drawing ticks on axes for plots*/
+        std::vector<float> mTickTextX;
+        std::vector<float> mTickTextY;
+        std::vector<std::string> mTickText;
         int       mTickCount;
         int       mTickSize;
-        int       mMargin;
+        int       mLeftMargin;
+        int       mRightMargin;
+        int       mTopMargin;
+        int       mBottomMargin;
         /* chart characteristics */
         double    mXMax;
         double    mXMin;
@@ -46,7 +54,16 @@ class FGAPI Chart {
         GLuint borderColorIndex() const;
         GLuint borderMatIndex() const;
         int tickSize() const;
-        int margin() const;
+        int leftMargin() const;
+        int rightMargin() const;
+        int bottomMargin() const;
+        int topMargin() const;
+
+        /* this function should be used after
+         * setAxesLimits is called as this function uses
+         * those values to generate the text markers that
+         * are placed near the ticks on the axes */
+        void setTickCount(int pTickCount);
 
     public:
         Chart();
