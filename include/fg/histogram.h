@@ -40,7 +40,7 @@ class FGAPI Histogram : public Chart {
 
         GLuint vbo() const;
         size_t size() const;
-        void render(int pViewPortWidth, int pViewPortHeight) const;
+        void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
 };
 
 }

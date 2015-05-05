@@ -38,7 +38,8 @@ static void keyboardCallback(GLFWwindow* pWind, int pKey, int scancode, int pAct
     throw fg::Error("Window constructor", __LINE__, msg, err);
 
 Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow)
-    : mWidth(pWidth), mHeight(pHeight), mWindow(NULL), mFont(NULL), mGLEWContext(NULL)
+    : mWidth(pWidth), mHeight(pHeight), mWindow(NULL), mFont(NULL),
+      mRows(0), mCols(0), mGLEWContext(NULL)
 {
     CheckGL("Begin Window::Window");
     glfwSetErrorCallback(windowErrorCallback);
@@ -116,6 +117,7 @@ Window::~Window()
 {
     MakeContextCurrent(this);
     if (mWindow!=NULL) glfwDestroyWindow(mWindow);
+    mCells.clear();
 }
 
 void Window::draw(const Image& pImage)
@@ -147,45 +149,6 @@ void Window::draw(const Image& pImage)
     CheckGL("End drawImage");
 }
 
-void Window::draw(int pRows, int pCols, const std::vector<Image>& pHandles)
-{
-    CheckGL("Begin draw(Images)");
-    MakeContextCurrent(this);
-
-    int wind_width, wind_height;
-    glfwGetWindowSize(window(), &wind_width, &wind_height);
-    glViewport(0, 0, wind_width, wind_height);
-
-    // calculate cell width and height
-    uint wid_step = wind_width/ pCols;
-    uint hei_step = wind_height/ pRows;
-    int numImages = pHandles.size();
-
-    // clear color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2, 0.2, 0.2, 1.0);
-
-    for (int c=0; c<pCols; ++c) {
-        for (int r=0; r<pRows; ++r) {
-            int idx = c*pRows + pRows-1-r;
-            if (idx<numImages) {
-
-                int x_off = c * wid_step;
-                int y_off = r * hei_step;
-
-                // set viewport to render sub image
-                glViewport(x_off, y_off, wid_step, hei_step);
-
-                pHandles[idx].render();
-            }
-        }
-    }
-
-    glfwSwapBuffers(window());
-    glfwPollEvents();
-    CheckGL("End draw(Images)");
-}
-
 void Window::draw(const Plot& pHandle)
 {
     CheckGL("Begin draw(Plot)");
@@ -198,7 +161,7 @@ void Window::draw(const Plot& pHandle)
     glClearColor(1.0, 1.0, 1.0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    pHandle.render(wind_width, wind_height);
+    pHandle.render(0, 0, wind_width, wind_height);
 
     glfwSwapBuffers(window());
     glfwPollEvents();
@@ -216,11 +179,86 @@ void Window::draw(const Histogram& pHist)
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    pHist.render(wind_width, wind_height);
+    pHist.render(0, 0, wind_width, wind_height);
 
     glfwSwapBuffers(window());
     glfwPollEvents();
     CheckGL("End draw(Histogram)");
+}
+
+void Window::grid(int pRows, int pCols)
+{
+    mRows = pRows;
+    mCols = pCols;
+    mCells.clear();
+}
+
+void Window::bind(int pColId, int pRowId, const void* pRenderablePtr, Renderable pType)
+{
+    int idx = (pColId-1) + (pRowId-1)*mCols;
+    auto cell = std::make_pair(pRenderablePtr, pType);
+    mCells.emplace(idx, cell);
+}
+
+void Window::show()
+{
+    CheckGL("Begin show");
+    MakeContextCurrent(this);
+
+    int wind_width, wind_height;
+    glfwGetWindowSize(window(), &wind_width, &wind_height);
+    glViewport(0, 0, wind_width, wind_height);
+
+    // calculate cell width and height
+    uint wid_step = wind_width/ mCols;
+    uint hei_step = wind_height/ mRows;
+    int numRenderables = mCells.size();
+
+    // clear color and depth buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.2, 0.2, 0.2, 1.0);
+
+    for (int r=0; r<mRows; ++r) {
+        for (int c=0; c<mCols; ++c) {
+
+            int idx = mCols-1-c + r*mCols;
+            if (idx<numRenderables) {
+
+                auto item = mCells.find(idx);
+                if (item == mCells.end()) {
+                    printf("Cell id not found in the grid, skipping it\n");
+                    continue;
+                }
+
+                const void* pointer = item->second.first;
+                Renderable renderType = item->second.second;
+
+                int x_off = r * wid_step;
+                int y_off = c * hei_step;
+
+                // set viewport to render sub image
+                glViewport(x_off, y_off, wid_step, hei_step);
+
+                /* FIXME as of now, only fg::Image::render doesn't ask
+                 * for any input parameters */
+                switch(renderType) {
+                    case FG_IMAGE:
+                        ((const fg::Image*)pointer)->render();
+                        break;
+                    case FG_PLOT:
+                        ((const fg::Plot*)pointer)->render(x_off, y_off, wid_step, hei_step);
+                        break;
+                    case FG_HIST:
+                        ((const fg::Histogram*)pointer)->render(x_off, y_off, wid_step, hei_step);
+                        break;
+                }
+            }
+        }
+    }
+
+    glfwSwapBuffers(window());
+    glfwPollEvents();
+    CheckGL("End show");
 }
 
 void makeCurrent(Window* pWindow)

@@ -85,7 +85,7 @@ GLuint Plot::vbo() const { return mMainVBO; }
 
 size_t Plot::size() const { return mMainVBOsize; }
 
-void Plot::render(int pVPW, int pVPH) const
+void Plot::render(int pX, int pY, int pVPW, int pVPH) const
 {
     float graph_scale_x = 1/(xmax() - xmin());
     float graph_scale_y = 1/(ymax() - ymin());
@@ -93,7 +93,7 @@ void Plot::render(int pVPW, int pVPH) const
     CheckGL("Begin Plot::render");
     /* Enavle scissor test to discard anything drawn beyond viewport.
      * Set scissor rectangle to clip fragments outside of viewport */
-    glScissor(leftMargin()+tickSize(), bottomMargin()+tickSize(),
+    glScissor(pX+leftMargin()+tickSize(), pY+bottomMargin()+tickSize(),
             pVPW - (leftMargin()+rightMargin()+tickSize()),
             pVPH - (bottomMargin()+topMargin()+tickSize()));
     glEnable(GL_SCISSOR_TEST);

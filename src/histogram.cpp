@@ -132,7 +132,7 @@ GLuint Histogram::vbo() const { return mHistogramVBO; }
 
 size_t Histogram::size() const { return mHistogramVBOSize; }
 
-void Histogram::render(int pVPW, int pVPH) const
+void Histogram::render(int pX, int pY, int pVPW, int pVPH) const
 {
     static const float BLACK[4] = {0,0,0,1};
     float w = pVPW - (leftMargin()+rightMargin()+tickSize());
@@ -145,7 +145,7 @@ void Histogram::render(int pVPW, int pVPH) const
     CheckGL("Begin Histogram::render");
     /* Enavle scissor test to discard anything drawn beyond viewport.
      * Set scissor rectangle to clip fragments outside of viewport */
-    glScissor(leftMargin()+tickSize(), bottomMargin()+tickSize(),
+    glScissor(pX+leftMargin()+tickSize(), pY+bottomMargin()+tickSize(),
             pVPW - (leftMargin()+rightMargin()+tickSize()),
             pVPH - (bottomMargin()+topMargin()+tickSize()));
     glEnable(GL_SCISSOR_TEST);

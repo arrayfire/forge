@@ -101,4 +101,10 @@ enum ColorMode {
     FG_RGBA=4,
 };
 
+enum Renderable {
+    FG_IMAGE= 1,
+    FG_PLOT = 2,
+    FG_HIST = 3
+};
+
 }

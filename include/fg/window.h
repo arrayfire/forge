@@ -13,6 +13,7 @@
 #include <fg/image.h>
 #include <fg/plot2d.h>
 #include <fg/histogram.h>
+#include <map>
 
 namespace fg
 {
@@ -27,9 +28,14 @@ class FGAPI Window {
         int             mHeight;
         GLFWwindow*     mWindow;
         Font*           mFont;
+        int             mRows;
+        int             mCols;
+
+        std::map<int, std::pair<const void*, Renderable> > mCells;
 
         /* single context for all windows */
         GLEWContext* mGLEWContext;
+
     protected:
         Window() {}
 
@@ -48,9 +54,15 @@ class FGAPI Window {
 
         /* draw functions */
         void draw(const Image& pImage);
-        void draw(int pRow, int pCols, const std::vector<Image>& pImages);
         void draw(const Plot& pPlot);
         void draw(const Histogram& pHist);
+
+        /* if the window render area is used to display
+         * multiple Forge objects such as Image, Histogram, Plot etc
+         * the following functions have to be used */
+        void grid(int pRows, int pCols);
+        void bind(int pColId, int pRowId, const void* pRenderablePtr, Renderable pType);
+        void show();
 };
 
 FGAPI void makeCurrent(Window* pWindow);

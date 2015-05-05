@@ -78,7 +78,7 @@ class FGAPI Chart {
 
         virtual GLuint vbo() const = 0;
         virtual size_t size() const = 0;
-        virtual void render(int pViewPortWidth, int pViewPortHeight) const = 0;
+        virtual void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const = 0;
 };
 
 }
