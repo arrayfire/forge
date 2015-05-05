@@ -29,11 +29,16 @@ static const char* vertex_shader_code =
 static const char* fragment_shader_code =
 "#version 330\n"
 "uniform sampler2D tex;\n"
+"uniform bool isGrayScale;\n"
 "in vec2 texcoord;\n"
 "out vec4 fragColor;\n"
 "void main()\n"
 "{\n"
-"    fragColor = texture2D(tex,texcoord);\n"
+"    vec4 tcolor = texture2D(tex, texcoord);\n"
+"    if(isGrayScale)\n"
+"        fragColor = vec4(tcolor.r, tcolor.r, tcolor.r, 1);\n"
+"    else\n"
+"        fragColor = tcolor;\n"
 "}\n";
 
 static GLuint gCanvasVAO = 0;
@@ -146,7 +151,9 @@ void Image::render() const
     // get uniform locations
     int mat_loc = glGetUniformLocation(mProgram,"matrix");
     int tex_loc = glGetUniformLocation(mProgram,"tex");
+    int chn_loc = glGetUniformLocation(mProgram,"isGrayScale");
 
+    glUniform1i(chn_loc, mFormat==1);
     // load texture from PBO
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(tex_loc, 0);
