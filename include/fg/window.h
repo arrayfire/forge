@@ -30,8 +30,8 @@ class FGAPI Window {
         Font*           mFont;
         int             mRows;
         int             mCols;
-
-        std::map<int, std::pair<const void*, Renderable> > mCells;
+        uint            mCellWidth;
+        uint            mCellHeight;
 
         /* single context for all windows */
         GLEWContext* mGLEWContext;
@@ -61,7 +61,7 @@ class FGAPI Window {
          * multiple Forge objects such as Image, Histogram, Plot etc
          * the following functions have to be used */
         void grid(int pRows, int pCols);
-        void bind(int pColId, int pRowId, const void* pRenderablePtr, Renderable pType);
+        void draw(int pColId, int pRowId, const void* pRenderablePtr, Renderable pType);
         void show();
 };
 

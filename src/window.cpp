@@ -117,7 +117,6 @@ Window::~Window()
 {
     MakeContextCurrent(this);
     if (mWindow!=NULL) glfwDestroyWindow(mWindow);
-    mCells.clear();
 }
 
 void Window::draw(const Image& pImage)
@@ -190,72 +189,47 @@ void Window::grid(int pRows, int pCols)
 {
     mRows = pRows;
     mCols = pCols;
-    mCells.clear();
+
+    int wind_width, wind_height;
+
+    MakeContextCurrent(this);
+    glfwGetWindowSize(window(), &wind_width, &wind_height);
+    glViewport(0, 0, wind_width, wind_height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.2, 0.2, 0.2, 1.0);
+    mCellWidth = wind_width/ mCols;
+    mCellHeight = wind_height/ mRows;
 }
 
-void Window::bind(int pColId, int pRowId, const void* pRenderablePtr, Renderable pType)
+void Window::draw(int pColId, int pRowId, const void* pRenderablePtr, Renderable pType)
 {
-    int idx = (pColId-1) + (pRowId-1)*mCols;
-    auto cell = std::make_pair(pRenderablePtr, pType);
-    mCells.emplace(idx, cell);
+    CheckGL("Begin show(column, row)");
+    int c     = pColId-1;
+    int r     = pRowId-1;
+    int x_off = c * mCellWidth;
+    int y_off = (mRows-1-r) * mCellHeight;
+
+    // set viewport to render sub image
+    glViewport(x_off, y_off, mCellWidth, mCellHeight);
+    /* FIXME as of now, only fg::Image::render doesn't ask
+     * for any input parameters */
+    switch(pType) {
+        case FG_IMAGE:
+            ((const fg::Image*)pRenderablePtr)->render();
+            break;
+        case FG_PLOT:
+            ((const fg::Plot*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
+            break;
+        case FG_HIST:
+            ((const fg::Histogram*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
+            break;
+    }
+    CheckGL("End show(column, row)");
 }
 
 void Window::show()
 {
     CheckGL("Begin show");
-    MakeContextCurrent(this);
-
-    int wind_width, wind_height;
-    glfwGetWindowSize(window(), &wind_width, &wind_height);
-    glViewport(0, 0, wind_width, wind_height);
-
-    // calculate cell width and height
-    uint wid_step = wind_width/ mCols;
-    uint hei_step = wind_height/ mRows;
-    int numRenderables = mCells.size();
-
-    // clear color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2, 0.2, 0.2, 1.0);
-
-    for (int r=0; r<mRows; ++r) {
-        for (int c=0; c<mCols; ++c) {
-
-            int idx = mCols-1-c + r*mCols;
-            if (idx<numRenderables) {
-
-                auto item = mCells.find(idx);
-                if (item == mCells.end()) {
-                    printf("Cell id not found in the grid, skipping it\n");
-                    continue;
-                }
-
-                const void* pointer = item->second.first;
-                Renderable renderType = item->second.second;
-
-                int x_off = r * wid_step;
-                int y_off = c * hei_step;
-
-                // set viewport to render sub image
-                glViewport(x_off, y_off, wid_step, hei_step);
-
-                /* FIXME as of now, only fg::Image::render doesn't ask
-                 * for any input parameters */
-                switch(renderType) {
-                    case FG_IMAGE:
-                        ((const fg::Image*)pointer)->render();
-                        break;
-                    case FG_PLOT:
-                        ((const fg::Plot*)pointer)->render(x_off, y_off, wid_step, hei_step);
-                        break;
-                    case FG_HIST:
-                        ((const fg::Histogram*)pointer)->render(x_off, y_off, wid_step, hei_step);
-                        break;
-                }
-            }
-        }
-    }
-
     glfwSwapBuffers(window());
     glfwPollEvents();
     CheckGL("End show");
