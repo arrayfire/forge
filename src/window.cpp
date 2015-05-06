@@ -139,7 +139,7 @@ void Window::draw(const Image& pImage)
     // draw Forge tag
     mFont->setOthro2D(wind_width, wind_height);
     pos[1] = 30.0f;
-    mFont->render(pos, color, "powered by", 12);
+    mFont->render(pos, color, "powered by", 13);
     pos[1] -= 20.0f;
     mFont->render(pos, color, "Forge", 16);
 
@@ -200,8 +200,13 @@ void Window::grid(int pRows, int pCols)
     mCellHeight = wind_height/ mRows;
 }
 
-void Window::draw(int pColId, int pRowId, const void* pRenderablePtr, Renderable pType)
+void Window::draw(int pColId, int pRowId,
+                  const void* pRenderablePtr, Renderable pType,
+                  const char* pTitle)
 {
+    static const float GREEN[4] = {1.0, 0.0, 0.0, 1.0};
+    float pos[2] = {0.0, 0.0};
+
     CheckGL("Begin show(column, row)");
     int c     = pColId-1;
     int r     = pRowId-1;
@@ -234,6 +239,10 @@ void Window::draw(int pColId, int pRowId, const void* pRenderablePtr, Renderable
             ((const fg::Histogram*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
             break;
     }
+    mFont->setOthro2D(mCellWidth, mCellHeight);
+    pos[0] = mCellWidth/3.0f;
+    pos[1] = mCellHeight*0.9f;
+    mFont->render(pos, GREEN, pTitle, 16);
     CheckGL("End show(column, row)");
 }
 
