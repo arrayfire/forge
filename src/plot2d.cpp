@@ -28,8 +28,6 @@ Plot::Plot(GLuint pNumPoints, GLenum pDataType)
     : Chart(), mNumPoints(pNumPoints), mDataType(pDataType),
       mMainVAO(0), mMainVBO(0), mMainVBOsize(0)
 {
-    MakeContextCurrent();
-
     unsigned total_points = 2*mNumPoints;
     // buffersubdata calls on mMainVBO
     // will only update the points data
@@ -68,9 +66,10 @@ Plot::Plot(GLuint pNumPoints, GLenum pDataType)
 
 Plot::~Plot()
 {
-    MakeContextCurrent();
+    CheckGL("Begin Plot::~Plot");
     glDeleteBuffers(1, &mMainVBO);
     glDeleteVertexArrays(1, &mMainVAO);
+    CheckGL("End Plot::~Plot");
 }
 
 void Plot::setColor(float r, float g, float b)

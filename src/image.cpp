@@ -50,7 +50,6 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
 : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType)
 {
     CheckGL("Begin Image::Image");
-    MakeContextCurrent();
     mGLformat = FGMode_to_GLColor(mFormat);
 
     // Initialize OpenGL Items
@@ -121,7 +120,6 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
 
 Image::~Image()
 {
-    MakeContextCurrent();
     glDeleteBuffers(1, &mPBO);
     glDeleteTextures(1, &mTex);
     glDeleteProgram(mProgram);

@@ -147,7 +147,6 @@ Chart::Chart()
       mXMax(1), mXMin(0), mYMax(1), mYMin(0),
       mDecorVAO(0), mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
 {
-    MakeContextCurrent();
     /* load font Vera font for chart text
      * renderings, below function actually returns a constant
      * reference to font object used by Chart objects, we are
@@ -175,11 +174,12 @@ Chart::Chart()
 
 Chart::~Chart()
 {
-    MakeContextCurrent();
+    CheckGL("Begin Chart::~Chart");
     glDeleteBuffers(1, &mDecorVBO);
     glDeleteVertexArrays(1, &mDecorVAO);
     glDeleteProgram(mBorderProgram);
     glDeleteProgram(mSpriteProgram);
+    CheckGL("End Chart::~Chart");
 }
 
 double Chart::xmax() const { return mXMax; }
@@ -283,7 +283,7 @@ void Chart::renderChart(int pVPW, int pVPH) const
     for (StringIter it = mTickText.begin(); it!=mTickText.end(); ++it) {
         int idx = it - mTickText.begin();
         float pos[2] = { pVPW*(mTickTextX[idx]+1)/2, pVPH*(mTickTextY[idx]+1)/2 };
-        fonter.render(pos, BLACK, *it, 16);
+        fonter.render(pos, BLACK, *it, 14);
     }
 
     CheckGL("End Chart::render");

@@ -61,7 +61,6 @@ Histogram::Histogram(GLuint pNBins, GLenum pDataType)
     mHistBarMatIndex(0), mHistBarColorIndex(0), mHistBarYMaxIndex(0)
 {
     CheckGL("Begin Histogram::Histogram");
-    MakeContextCurrent();
 
     CheckGL("Begin Histogram::Shaders");
     mHistBarProgram = initShaders(gHistBarVertexShaderSrc, gHistBarFragmentShaderSrc);
@@ -113,7 +112,6 @@ Histogram::Histogram(GLuint pNBins, GLenum pDataType)
 
 Histogram::~Histogram()
 {
-    MakeContextCurrent();
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDeleteBuffers(1, &mHistogramVBO);
     glDeleteVertexArrays(1, &mHistogramVAO);
