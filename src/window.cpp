@@ -196,7 +196,6 @@ void Window::grid(int pRows, int pCols)
     glfwGetWindowSize(window(), &wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2, 0.2, 0.2, 1.0);
     mCellWidth = wind_width/ mCols;
     mCellHeight = wind_height/ mRows;
 }
@@ -211,16 +210,27 @@ void Window::draw(int pColId, int pRowId, const void* pRenderablePtr, Renderable
 
     // set viewport to render sub image
     glViewport(x_off, y_off, mCellWidth, mCellHeight);
+    glScissor(x_off, y_off, mCellWidth, mCellHeight);
+    glEnable(GL_SCISSOR_TEST);
     /* FIXME as of now, only fg::Image::render doesn't ask
      * for any input parameters */
     switch(pType) {
         case FG_IMAGE:
+            glClearColor(0.2, 0.2, 0.2, 1.0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glDisable(GL_SCISSOR_TEST);
             ((const fg::Image*)pRenderablePtr)->render();
             break;
         case FG_PLOT:
+            glClearColor(0.2, 0.2, 0.2, 1.0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glDisable(GL_SCISSOR_TEST);
             ((const fg::Plot*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
             break;
         case FG_HIST:
+            glClearColor(1.0, 1.0, 1.0, 1.0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glDisable(GL_SCISSOR_TEST);
             ((const fg::Histogram*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
             break;
     }
