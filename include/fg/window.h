@@ -43,6 +43,8 @@ class FGAPI Window {
         Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow=NULL);
         ~Window();
 
+        void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
+
         ContextHandle context() const { return mCxt; }
         DisplayHandle display() const { return mDsp; }
         int width() const { return mWidth; }

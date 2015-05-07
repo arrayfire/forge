@@ -21,17 +21,11 @@ namespace fg
 
 static int gWindowCounter = 0;   // Window Counter
 
+static const float GRAY[] = {0.6, 0.6, 0.6, 1.0};
+
 static void windowErrorCallback(int pError, const char* pDescription)
 {
     fputs(pDescription, stderr);
-}
-
-static void keyboardCallback(GLFWwindow* pWind, int pKey, int scancode, int pAction, int pMods)
-{
-    if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(pWind, GL_TRUE);
-    }
 }
 
 #define GLFW_THROW_ERROR(msg, err) \
@@ -100,6 +94,13 @@ Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindo
         GLFW_THROW_ERROR("GLEW initilization failed", fg::FG_ERR_GL_ERROR)
     }
 
+    glfwSetWindowUserPointer(mWindow, this);
+
+    auto keyboardCallback = [](GLFWwindow* w, int a, int b, int c, int d)
+    {
+        static_cast<Window*>(glfwGetWindowUserPointer(w))->keyboardHandler(a, b, c, d);
+    };
+
     glfwSetKeyCallback(mWindow, keyboardCallback);
 #ifdef WINDOWS_OS
     mCxt = glfwGetWGLContext(mWindow);
@@ -119,6 +120,14 @@ Window::~Window()
     if (mWindow!=NULL) glfwDestroyWindow(mWindow);
 }
 
+void Window::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
+{
+    if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(mWindow, GL_TRUE);
+    }
+}
+
 void Window::draw(const Image& pImage)
 {
     float pos[2] = {0.0, 0.0};
@@ -133,7 +142,7 @@ void Window::draw(const Image& pImage)
 
     // clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2, 0.2, 0.2, 1.0);
+    glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pImage.render();
     // draw Forge tag
@@ -157,7 +166,7 @@ void Window::draw(const Plot& pHandle)
     glfwGetWindowSize(window(), &wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
 
-    glClearColor(1.0, 1.0, 1.0, 1);
+    glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     pHandle.render(0, 0, wind_width, wind_height);
@@ -175,7 +184,7 @@ void Window::draw(const Histogram& pHist)
     int wind_width, wind_height;
     glfwGetWindowSize(window(), &wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     pHist.render(0, 0, wind_width, wind_height);
@@ -217,28 +226,21 @@ void Window::draw(int pColId, int pRowId,
     glViewport(x_off, y_off, mCellWidth, mCellHeight);
     glScissor(x_off, y_off, mCellWidth, mCellHeight);
     glEnable(GL_SCISSOR_TEST);
+    glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
     /* FIXME as of now, only fg::Image::render doesn't ask
      * for any input parameters */
     switch(pType) {
         case FG_IMAGE:
-            glClearColor(0.2, 0.2, 0.2, 1.0);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glDisable(GL_SCISSOR_TEST);
             ((const fg::Image*)pRenderablePtr)->render();
             break;
         case FG_PLOT:
-            glClearColor(0.2, 0.2, 0.2, 1.0);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glDisable(GL_SCISSOR_TEST);
             ((const fg::Plot*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
             break;
         case FG_HIST:
-            glClearColor(1.0, 1.0, 1.0, 1.0);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glDisable(GL_SCISSOR_TEST);
             ((const fg::Histogram*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
             break;
     }
+    glDisable(GL_SCISSOR_TEST);
     mFont->setOthro2D(mCellWidth, mCellHeight);
     pos[0] = mCellWidth/3.0f;
     pos[1] = mCellHeight*0.9f;
