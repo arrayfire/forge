@@ -214,8 +214,8 @@ void Window::draw(int pColId, int pRowId,
     float pos[2] = {0.0, 0.0};
 
     CheckGL("Begin show(column, row)");
-    int c     = pColId-1;
-    int r     = pRowId-1;
+    int c     = pColId;
+    int r     = pRowId;
     int x_off = c * mCellWidth;
     int y_off = (mRows-1-r) * mCellHeight;
 

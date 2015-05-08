@@ -63,6 +63,8 @@ class FGAPI Window {
          * multiple Forge objects such as Image, Histogram, Plot etc
          * the following functions have to be used */
         void grid(int pRows, int pCols);
+        /* below draw call uses zero-based indexing
+         * for referring to cells within the grid */
         void draw(int pColId, int pRowId,
                   const void* pRenderablePtr, Renderable pType,
                   const char* pTitle);
