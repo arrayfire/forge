@@ -166,11 +166,6 @@ void Histogram::render(int pX, int pY, int pVPW, int pVPH) const
     glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, mNBins);
     glBindVertexArray(0);
 
-    glUniform4fv(mHistBarColorIndex, 1, BLACK);
-    glBindVertexArray(mHistogramVAO);
-    glDrawArraysInstanced(GL_LINE_LOOP, 0, 4, mNBins);
-    glBindVertexArray(0);
-
     glUseProgram(0);
     /* Stop clipping */
     glDisable(GL_SCISSOR_TEST);

@@ -223,8 +223,6 @@ void Chart::setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin
 
 void Chart::renderChart(int pVPW, int pVPH) const
 {
-    static const GLfloat BLACK[4] = { 0, 0, 0, 1 };
-    static const GLfloat BLUE[4] = { 0.0588f, 0.1137f, 0.2745f, 1 };
     float w = pVPW - (mLeftMargin + mRightMargin + mTickSize);
     float h = pVPH - (mTopMargin + mBottomMargin + mTickSize);
     float offset_x = (2.0f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
@@ -243,7 +241,7 @@ void Chart::renderChart(int pVPW, int pVPH) const
                                  glm::vec3(scale_x, scale_y, 1));
 
     glUniformMatrix4fv(mBorderMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-    glUniform4fv(mBorderColorIndex, 1, BLUE);
+    glUniform4fv(mBorderColorIndex, 1, WHITE);
 
     /* Draw borders */
     glBindVertexArray(mDecorVAO);
@@ -257,7 +255,7 @@ void Chart::renderChart(int pVPW, int pVPH) const
      * draw ticks on x and y axes */
     glUseProgram(mSpriteProgram);
     glPointSize(mTickSize);
-    glUniform4fv(mSpriteTickcolorIndex, 1, BLACK);
+    glUniform4fv(mSpriteTickcolorIndex, 1, WHITE);
     glUniformMatrix4fv(mSpriteMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
 
     /* Draw tick marks on y axis */
@@ -283,7 +281,7 @@ void Chart::renderChart(int pVPW, int pVPH) const
     for (StringIter it = mTickText.begin(); it!=mTickText.end(); ++it) {
         int idx = it - mTickText.begin();
         float pos[2] = { pVPW*(mTickTextX[idx]+1)/2, pVPH*(mTickTextY[idx]+1)/2 };
-        fonter.render(pos, BLACK, *it, 14);
+        fonter.render(pos, WHITE, *it, 14);
     }
 
     CheckGL("End Chart::render");

@@ -21,8 +21,6 @@ namespace fg
 
 static int gWindowCounter = 0;   // Window Counter
 
-static const float GRAY[] = {0.6, 0.6, 0.6, 1.0};
-
 static void windowErrorCallback(int pError, const char* pDescription)
 {
     fputs(pDescription, stderr);
@@ -131,7 +129,6 @@ void Window::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
 void Window::draw(const Image& pImage)
 {
     float pos[2] = {0.0, 0.0};
-    const float color[4] = {1.0, 1.0, 1.0, 1.0};
     CheckGL("Begin drawImage");
     MakeContextCurrent(this);
 
@@ -148,9 +145,9 @@ void Window::draw(const Image& pImage)
     // draw Forge tag
     mFont->setOthro2D(wind_width, wind_height);
     pos[1] = 30.0f;
-    mFont->render(pos, color, "powered by", 13);
+    mFont->render(pos, WHITE, "powered by", 13);
     pos[1] -= 20.0f;
-    mFont->render(pos, color, "Forge", 16);
+    mFont->render(pos, WHITE, "Forge", 16);
 
     glfwSwapBuffers(window());
     glfwPollEvents();
@@ -213,7 +210,7 @@ void Window::draw(int pColId, int pRowId,
                   const void* pRenderablePtr, Renderable pType,
                   const char* pTitle)
 {
-    static const float GREEN[4] = {1.0, 0.0, 0.0, 1.0};
+    static const float RED[4] = {1.0, 0.0, 0.0, 1.0};
     float pos[2] = {0.0, 0.0};
 
     CheckGL("Begin show(column, row)");
@@ -244,7 +241,7 @@ void Window::draw(int pColId, int pRowId,
     mFont->setOthro2D(mCellWidth, mCellHeight);
     pos[0] = mCellWidth/3.0f;
     pos[1] = mCellHeight*0.9f;
-    mFont->render(pos, GREEN, pTitle, 16);
+    mFont->render(pos, RED, pTitle, 16);
     CheckGL("End show(column, row)");
 }
 
