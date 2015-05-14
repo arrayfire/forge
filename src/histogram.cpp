@@ -132,7 +132,6 @@ size_t Histogram::size() const { return mHistogramVBOSize; }
 
 void Histogram::render(int pX, int pY, int pVPW, int pVPH) const
 {
-    static const float BLACK[4] = {0,0,0,1};
     float w = pVPW - (leftMargin()+rightMargin()+tickSize());
     float h = pVPH - (bottomMargin()+topMargin()+tickSize());
     float offset_x = (2.0f * (leftMargin()+tickSize()) + (w - pVPW)) / pVPW;

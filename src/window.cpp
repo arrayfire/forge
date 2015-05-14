@@ -29,7 +29,8 @@ static void windowErrorCallback(int pError, const char* pDescription)
 #define GLFW_THROW_ERROR(msg, err) \
     throw fg::Error("Window constructor", __LINE__, msg, err);
 
-Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow)
+Window::Window(int pWidth, int pHeight, const char* pTitle,
+               const Window* pWindow, const bool invisible)
     : mWidth(pWidth), mHeight(pHeight), mWindow(NULL), mFont(NULL),
       mRows(0), mCols(0), mGLEWContext(NULL)
 {
@@ -45,6 +46,10 @@ Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindo
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    if (invisible)
+        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+    else
+        glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
     // create glfw window
     // if pWindow is not null, then the window created in this
     // constructor call will share the context with pWindow
@@ -128,26 +133,18 @@ void Window::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
 
 void Window::draw(const Image& pImage)
 {
-    float pos[2] = {0.0, 0.0};
     CheckGL("Begin drawImage");
     MakeContextCurrent(this);
 
     int wind_width, wind_height;
     glfwGetWindowSize(window(), &wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
-    pos[0] = wind_width-128.0f;
 
     // clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pImage.render();
-    // draw Forge tag
-    mFont->setOthro2D(wind_width, wind_height);
-    pos[1] = 30.0f;
-    mFont->render(pos, WHITE, "powered by", 13);
-    pos[1] -= 20.0f;
-    mFont->render(pos, WHITE, "Forge", 16);
 
     glfwSwapBuffers(window());
     glfwPollEvents();
@@ -245,7 +242,7 @@ void Window::draw(int pColId, int pRowId,
     CheckGL("End show(column, row)");
 }
 
-void Window::show()
+void Window::draw()
 {
     CheckGL("Begin show");
     glfwSwapBuffers(window());

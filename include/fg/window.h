@@ -40,7 +40,8 @@ class FGAPI Window {
         Window() {}
 
     public:
-        Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow=NULL);
+        Window(int pWidth, int pHeight, const char* pTitle,
+               const Window* pWindow=NULL, const bool invisible=false);
         ~Window();
 
         void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
@@ -53,6 +54,9 @@ class FGAPI Window {
         GLEWContext* glewContext() const { return mGLEWContext; }
 
         void setFont(Font* pFont) { mFont = pFont; }
+        void hide() { glfwHideWindow(mWindow); }
+        void show() { glfwShowWindow(mWindow); }
+        bool close() { return glfwWindowShouldClose(mWindow); }
 
         /* draw functions */
         void draw(const Image& pImage);
@@ -68,7 +72,7 @@ class FGAPI Window {
         void draw(int pColId, int pRowId,
                   const void* pRenderablePtr, Renderable pType,
                   const char* pTitle);
-        void show();
+        void draw();
 };
 
 FGAPI void makeCurrent(Window* pWindow);
