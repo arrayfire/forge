@@ -216,9 +216,16 @@ void Window::draw(int pColId, int pRowId,
     int x_off = c * mCellWidth;
     int y_off = (mRows-1-r) * mCellHeight;
 
+    /* following margins are tested out for various
+     * aspect ratios and are working fine. DO NOT CHANGE.
+     * */
+    int top_margin = 0.06f*mCellHeight;
+    int bot_margin = 0.02f*mCellHeight;
+    int lef_margin = 0.02f*mCellWidth;
+    int rig_margin = 0.02f*mCellWidth;
     // set viewport to render sub image
-    glViewport(x_off, y_off, mCellWidth, mCellHeight);
-    glScissor(x_off, y_off, mCellWidth, mCellHeight);
+    glViewport(x_off+lef_margin, y_off+bot_margin, mCellWidth-2*rig_margin, mCellHeight-2*top_margin);
+    glScissor(x_off+lef_margin, y_off+bot_margin, mCellWidth-2*rig_margin, mCellHeight-2*top_margin);
     glEnable(GL_SCISSOR_TEST);
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
     /* FIXME as of now, only fg::Image::render doesn't ask
@@ -235,6 +242,8 @@ void Window::draw(int pColId, int pRowId,
             break;
     }
     glDisable(GL_SCISSOR_TEST);
+
+    glViewport(x_off, y_off, mCellWidth, mCellHeight);
     mFont->setOthro2D(mCellWidth, mCellHeight);
     pos[0] = mCellWidth/3.0f;
     pos[1] = mCellHeight*0.9f;
