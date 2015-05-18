@@ -44,6 +44,9 @@ class FGAPI Window {
                const Window* pWindow=NULL, const bool invisible=false);
         ~Window();
 
+        void setTitle(const char* pTitle);
+        void setPos(int pX, int pY);
+
         void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
 
         ContextHandle context() const { return mCxt; }

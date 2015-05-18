@@ -15,6 +15,7 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include <ft2build.h>
 #include <freetype.h>
@@ -61,37 +62,6 @@ namespace fg
 
 #define FT_THROW_ERROR(msg, err) \
     throw fg::Error("Freetype library", __LINE__, msg, err);
-
-void Font::destroyGLResources()
-{
-    if (mIsFontLoaded) {
-        if (mProgram) glDeleteProgram(mProgram);
-        if (mVAO) glDeleteVertexArrays(1, &mVAO);
-        if (mVBO) glDeleteBuffers(1, &mVBO);
-        glDeleteTextures(NUM_CHARS, mCharTextures);
-    }
-}
-
-Font::Font()
-    : mIsFontLoaded(false), mTTFfile(""), mVAO(0), mVBO(0), mProgram(0), mSampler(0)
-{
-    mProgram = initShaders(gFontVertShader, gFontFragShader);
-
-    memset(mCharTextures, 0, NUM_CHARS);
-
-    glGenSamplers(1, &mSampler);
-    glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(mSampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glSamplerParameteri(mSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-}
-
-Font::~Font()
-{
-    destroyGLResources();
-    if (mProgram) glDeleteProgram(mProgram);
-    if (mSampler) glDeleteSamplers(1, &mSampler);
-}
 
 void Font::extractGlyph(int pCharacter)
 {
@@ -154,6 +124,37 @@ void Font::extractGlyph(int pCharacter)
         mVertexData.insert(mVertexData.end(), vert_ptr, vert_ptr+2);
         mVertexData.insert(mVertexData.end(), tex_ptr, tex_ptr+2);
     }
+}
+
+void Font::destroyGLResources()
+{
+    if (mIsFontLoaded) {
+        if (mProgram) glDeleteProgram(mProgram);
+        if (mVAO) glDeleteVertexArrays(1, &mVAO);
+        if (mVBO) glDeleteBuffers(1, &mVBO);
+        glDeleteTextures(NUM_CHARS, mCharTextures);
+    }
+}
+
+Font::Font()
+    : mIsFontLoaded(false), mTTFfile(""), mVAO(0), mVBO(0), mProgram(0), mSampler(0)
+{
+    mProgram = initShaders(gFontVertShader, gFontFragShader);
+
+    memset(mCharTextures, 0, NUM_CHARS);
+
+    glGenSamplers(1, &mSampler);
+    glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(mSampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glSamplerParameteri(mSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+}
+
+Font::~Font()
+{
+    destroyGLResources();
+    if (mProgram) glDeleteProgram(mProgram);
+    if (mSampler) glDeleteSamplers(1, &mSampler);
 }
 
 void Font::loadFont(std::string pFile, int pFontSize)
@@ -262,7 +263,7 @@ void Font::setOthro2D(int pWidth, int pHeight)
     mWidth = pWidth;
 }
 
-void Font::render(const float pPos[], const float pColor[], std::string pText, int pFontSize)
+void Font::render(const float pPos[], const float pColor[], std::string pText, int pFontSize, bool pIsVertical)
 {
     if(!mIsFontLoaded)return;
 
@@ -288,6 +289,7 @@ void Font::render(const float pPos[], const float pColor[], std::string pText, i
 
     for (std::string::iterator it=pText.begin(); it!=pText.end(); ++it) {
         char currChar = *it;
+
         if(currChar == '\n') {
             // if it is new line, move location to next line
             loc_x = pPos[0];
@@ -301,6 +303,8 @@ void Font::render(const float pPos[], const float pColor[], std::string pText, i
             glUniform1i(tex_loc, 0);
             glBindTexture(GL_TEXTURE_2D, mCharTextures[idx]);
 
+            /* rotate by 90 degress if we need
+             * to render the characters vertically */
             glm::mat4 modelView = glm::translate(glm::mat4(1.0f),
                     glm::vec3(float(loc_x), float(loc_y), 0.0f));
 
@@ -314,6 +318,13 @@ void Font::render(const float pPos[], const float pColor[], std::string pText, i
             glBindVertexArray(0);
 
             loc_x += (mAdvX[idx]-mBearingX[idx])*pFontSize/mLoadedPixelSize;
+        }
+        /* if the text needs to be rendered vertically,
+         * move the pen cursor to next line after each
+         * character render mandatorily */
+        if (pIsVertical) {
+            loc_x = pPos[0];
+            loc_y -= mNewLine*pFontSize/mLoadedPixelSize;
         }
     }
 

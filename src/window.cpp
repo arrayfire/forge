@@ -123,6 +123,20 @@ Window::~Window()
     if (mWindow!=NULL) glfwDestroyWindow(mWindow);
 }
 
+void Window::setTitle(const char* pTitle)
+{
+    CheckGL("Begin Window::setTitle");
+    glfwSetWindowTitle(mWindow, pTitle);
+    CheckGL("End Window::setTitle");
+}
+
+void Window::setPos(int pX, int pY)
+{
+    CheckGL("Begin Window::setPos");
+    glfwSetWindowPos(mWindow, pX, pY);
+    CheckGL("End Window::setPos");
+}
+
 void Window::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
 {
     if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS)

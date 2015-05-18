@@ -112,7 +112,7 @@ void Plot::render(int pX, int pY, int pVPW, int pVPH) const
     unbindBorderProgram();
 
     /* render graph border and axes */
-    renderChart(pVPW, pVPH);
+    renderChart(pX, pY, pVPW, pVPH);
 
     CheckGL("End Plot::render");
 }

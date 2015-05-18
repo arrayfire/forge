@@ -59,7 +59,7 @@ class FGAPI Font {
 
         void setOthro2D(int pWidth, int pHeight);
 
-        void render(const float pPos[2], const float pColor[4], std::string pText, int pFontSize=-1);
+        void render(const float pPos[2], const float pColor[4], std::string pText, int pFontSize=-1, bool pIsVertical=false);
 };
 
 }

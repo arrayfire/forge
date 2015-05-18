@@ -111,7 +111,7 @@ void Chart::setTickCount(int pTickCount)
         /* push tick text marker coordinates and the display text */
         mTickTextX.push_back(-1.0f);
         mTickTextY.push_back(temp);
-        mTickText.push_back(toString(mYMin+i*step*yRange/2));
+        mYText.push_back(toString(mYMin+i*step*yRange/2));
     }
     /* push tick points for x axis */
     for (int i = 1; i <= mTickCount; i++) {
@@ -122,7 +122,7 @@ void Chart::setTickCount(int pTickCount)
         /* push tick text marker coordinates and the display text */
         mTickTextX.push_back(temp);
         mTickTextY.push_back(-1.0f);
-        mTickText.push_back(toString(mXMin+i*step*xRange/2));
+        mXText.push_back(toString(mXMin+i*step*xRange/2));
     }
 
     /* check if decoration VBO has been already used(case where
@@ -143,7 +143,7 @@ void Chart::setTickCount(int pTickCount)
 
 Chart::Chart()
     : mTickCount(8), mTickSize(10),
-      mLeftMargin(50), mRightMargin(10), mTopMargin(10), mBottomMargin(20),
+      mLeftMargin(64), mRightMargin(10), mTopMargin(10), mBottomMargin(32),
       mXMax(1), mXMin(0), mYMax(1), mYMin(0),
       mDecorVAO(0), mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
 {
@@ -182,11 +182,6 @@ Chart::~Chart()
     CheckGL("End Chart::~Chart");
 }
 
-double Chart::xmax() const { return mXMax; }
-double Chart::xmin() const { return mXMin; }
-double Chart::ymax() const { return mYMax; }
-double Chart::ymin() const { return mYMin; }
-
 void Chart::setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin)
 {
     mXMax = pXmax;
@@ -194,17 +189,11 @@ void Chart::setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin
     mYMax = pYmax;
     mYMin = pYmin;
 
-    /* based on maximum value on Y, set vertical axis margin
-     * so that the text tick markers don't go beyond the
-     * axis line */
-    std::string max_val_str = toString(mYMax);
-    /* assuming each numeric literal occupies 10 pixels */
-    mLeftMargin = 10.0f * max_val_str.length();
-
     /* remove all the tick text markers that were generated
      * by default during the base class(chart) creation and
      * update the text markers based on the new axes limits*/
-    mTickText.clear();
+    mXText.clear();
+    mYText.clear();
 
     float step = 2.0f/(mTickCount+1);
     float yRange = mYMax-mYMin;
@@ -212,16 +201,31 @@ void Chart::setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin
     /* push tick points for y axis */
     for (int i = 1; i <= mTickCount; i++) {
         float temp = (i*step)/2;
-        mTickText.push_back(toString(mYMin+temp*yRange));
+        mYText.push_back(toString(mYMin+temp*yRange));
     }
     /* push tick points for x axis */
     for (int i = 1; i <= mTickCount; i++) {
         float temp = (i*step)/2;
-        mTickText.push_back(toString(mXMin+temp*xRange));
+        mXText.push_back(toString(mXMin+temp*xRange));
     }
 }
 
-void Chart::renderChart(int pVPW, int pVPH) const
+void Chart::setXAxisTitle(const char* pTitle)
+{
+    mXTitle = std::string(pTitle);
+}
+
+void Chart::setYAxisTitle(const char* pTitle)
+{
+    mYTitle = std::string(pTitle);
+}
+
+double Chart::xmax() const { return mXMax; }
+double Chart::xmin() const { return mXMin; }
+double Chart::ymax() const { return mYMax; }
+double Chart::ymin() const { return mYMin; }
+
+void Chart::renderChart(int pX, int pY, int pVPW, int pVPH) const
 {
     float w = pVPW - (mLeftMargin + mRightMargin + mTickSize);
     float h = pVPH - (mTopMargin + mBottomMargin + mTickSize);
@@ -278,10 +282,41 @@ void Chart::renderChart(int pVPW, int pVPH) const
     fg::Font& fonter = getChartFont();
     fonter.setOthro2D(w, h);
 
-    for (StringIter it = mTickText.begin(); it!=mTickText.end(); ++it) {
-        int idx = it - mTickText.begin();
-        float pos[2] = { w*(mTickTextX[idx]+1)/2, h*(mTickTextY[idx]+1)/2 };
+    float pos[2];
+    /* render tick marker texts for y axis */
+    for (StringIter it = mYText.begin(); it!=mYText.end(); ++it) {
+        int idx = it - mYText.begin();
+        glm::vec4 res = trans * glm::vec4(mTickTextX[idx], mTickTextY[idx], 0, 1);
+        pos[0] = w*(res.x+1.0f)/2.0f;
+        pos[1] = h*(res.y+1.0f)/2.0f;
+        pos[0] -= (pVPW-w)*0.50f;
         fonter.render(pos, WHITE, *it, 15);
+    }
+    /* render tick marker texts for x axis */
+    for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
+        int idx = it - mXText.begin();
+        /* mTickCount offset is needed while reading point coordinates for
+         * x axis tick marks */
+        glm::vec4 res = trans * glm::vec4(mTickTextX[idx+mTickCount], mTickTextY[idx+mTickCount], 0, 1);
+        pos[0] = w*(res.x+1.0f)/2.0f;
+        pos[1] = h*(res.y+1.0f)/2.0f;
+        pos[1] -= (pVPH-h)*0.32f;
+        fonter.render(pos, WHITE, *it, 15);
+    }
+    /* render chart axes titles */
+    if (!mYTitle.empty()) {
+        glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
+        pos[0] = w*(res.x+1.0f)/2.0f;
+        pos[1] = h*(res.y+1.0f)/2.0f;
+        pos[0] -= (pVPW-w)*0.70f;
+        fonter.render(pos, WHITE, mYTitle, 15, true);
+    }
+    if (!mXTitle.empty()) {
+        glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+        pos[0] = w*(res.x+1.0f)/2.0f;
+        pos[1] = h*(res.y+1.0f)/2.0f;
+        pos[1] -= (pVPH-h)*0.70f;
+        fonter.render(pos, WHITE, mXTitle, 15);
     }
 
     CheckGL("End Chart::render");

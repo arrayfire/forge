@@ -21,7 +21,8 @@ class FGAPI Chart {
          * drawing ticks on axes for plots*/
         std::vector<float> mTickTextX;
         std::vector<float> mTickTextY;
-        std::vector<std::string> mTickText;
+        std::vector<std::string> mXText;
+        std::vector<std::string> mYText;
         int       mTickCount;
         int       mTickSize;
         int       mLeftMargin;
@@ -33,6 +34,8 @@ class FGAPI Chart {
         double    mXMin;
         double    mYMax;
         double    mYMin;
+        std::string mXTitle;
+        std::string mYTitle;
         /* OpenGL Objects */
         GLuint    mDecorVAO;
         GLuint    mDecorVBO;
@@ -69,12 +72,15 @@ class FGAPI Chart {
         Chart();
         virtual ~Chart();
 
+        void setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin);
+        void setXAxisTitle(const char* pTitle);
+        void setYAxisTitle(const char* pTitle);
+
         double xmax() const;
         double xmin() const;
         double ymax() const;
         double ymin() const;
-        void setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin);
-        void renderChart(int pViewPortWidth, int pViewPortHeight) const;
+        void renderChart(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
 
         virtual GLuint vbo() const = 0;
         virtual size_t size() const = 0;

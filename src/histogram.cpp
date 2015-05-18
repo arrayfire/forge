@@ -169,7 +169,7 @@ void Histogram::render(int pX, int pY, int pVPW, int pVPH) const
     /* Stop clipping */
     glDisable(GL_SCISSOR_TEST);
 
-    renderChart(pVPW, pVPH);
+    renderChart(pX, pY, pVPW, pVPH);
     CheckGL("End Histogram::render");
 }
 
