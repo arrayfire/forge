@@ -142,7 +142,7 @@ void Chart::setTickCount(int pTickCount)
 }
 
 Chart::Chart()
-    : mTickCount(13), mTickSize(10),
+    : mTickCount(8), mTickSize(10),
       mLeftMargin(50), mRightMargin(10), mTopMargin(10), mBottomMargin(20),
       mXMax(1), mXMin(0), mYMax(1), mYMin(0),
       mDecorVAO(0), mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
@@ -276,12 +276,12 @@ void Chart::renderChart(int pVPW, int pVPH) const
     glUseProgram(0);
 
     fg::Font& fonter = getChartFont();
-    fonter.setOthro2D(pVPW, pVPH);
+    fonter.setOthro2D(w, h);
 
     for (StringIter it = mTickText.begin(); it!=mTickText.end(); ++it) {
         int idx = it - mTickText.begin();
-        float pos[2] = { pVPW*(mTickTextX[idx]+1)/2, pVPH*(mTickTextY[idx]+1)/2 };
-        fonter.render(pos, WHITE, *it, 14);
+        float pos[2] = { w*(mTickTextX[idx]+1)/2, h*(mTickTextY[idx]+1)/2 };
+        fonter.render(pos, WHITE, *it, 15);
     }
 
     CheckGL("End Chart::render");
