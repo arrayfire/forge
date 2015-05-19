@@ -11,6 +11,7 @@
 #include <fg/exception.h>
 #include <common.hpp>
 #include <cmath>
+#include <algorithm>
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -249,9 +250,10 @@ void Font::loadSystemFont(std::string pName, int pFontSize)
 #else
     char buf[512];
     GetWindowsDirectory(buf, 512);
-    string ttf_file_path = buf;
+    ttf_file_path = buf;
     ttf_file_path += "\\Fonts\\";
-    ttf_file_path += sName;
+    ttf_file_path += pName;
+    ttf_file_path += ".ttf";
 #endif
 
     loadFont(ttf_file_path, pFontSize);
