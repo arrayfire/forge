@@ -1,10 +1,9 @@
 # - Find Forge
 
 # Defines the following variables:
-# FORGE_INCLUDE_DIRS    - Location of FORGE's include directory.
-# FORGE_LIBRARIES       - Location of FORGE's libraries.
-# FORGE_DIR             - Location of FORGE.
-# FORGE_FOUND           - True if FORGE has been located
+# FORGE_INCLUDE_DIRECTORIES    - Location of FORGE's include directory.
+# FORGE_LIBRARIES              - Location of FORGE's libraries.
+# FORGE_FOUND                  - True if FORGE has been located
 #
 # You may provide a hint to where FORGE's root directory may be located
 # by setting FORGE_ROOT_DIR before calling this script.
@@ -47,7 +46,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #=============================================================================
 
-IF(FORGE_INCLUDE_DIRS)
+IF(FORGE_INCLUDE_DIRECTORIES)
   # Already in cache, be silent
   set (FORGE_FIND_QUIETLY TRUE)
 ENDIF()
@@ -64,13 +63,13 @@ FIND_PATH(FORGE_PACKAGE_DIR
     HINTS "${FORGE_ROOT_DIR}/package" "${FORGE_ROOT_DIR}/build/package" "${FORGE_ROOT_DIR}"
     DOC "FORGE Package directory.")
 
-FIND_PATH(_FORGE_INCLUDE_DIRS
+FIND_PATH(FORGE_INCLUDE_DIRECTORIES
     NAMES forge.h
     HINTS "${FORGE_PACKAGE_DIR}/include"
     DOC "FORGE Include directory")
 
 # Find all libraries required for the FORGE
-FIND_LIBRARY(_FORGE_LIBRARY
+FIND_LIBRARY(FORGE_LIBRARY
     NAMES forge
     HINTS "${FORGE_PACKAGE_DIR}/lib")
 
@@ -78,8 +77,20 @@ INCLUDE("${CMAKE_MODULE_PATH}/FindGLEWmx.cmake")
 INCLUDE("${CMAKE_MODULE_PATH}/FindGLFW.cmake")
 
 IF(GLFW_FOUND AND GLEWmx_FOUND AND OPENGL_FOUND)
-  SET(GRAPHICS_FOUND ON)
-  ADD_DEFINITIONS(-DGLEW_MX -DWITH_GRAPHICS)
+    IF(FORGE_INCLUDE_DIRECTORIES)
+        SET(FORGE_INCLUDE_DIRECTORIES ${FORGE_INCLUDE_DIRECTORIES} ${GLFW_INCLUDE_DIR} ${GLEW_INCLUDE_DIR}
+            CACHE INTERNAL "All include dirs required for FORGE'")
+    ENDIF()
+    IF(FORGE_LIBRARY)
+        SET(FORGE_LIBRARIES ${FORGE_LIBRARY} ${GLFW_LIBRARY} ${GLEWmx_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY}
+            CACHE INTERNAL "All libraries required for FORGE'")
+    ENDIF()
+    # handle the QUIETLY and REQUIRED arguments and set FORGE_FOUND to TRUE if
+    # all listed variables are TRUE
+    INCLUDE (FindPackageHandleStandardArgs)
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS(FORGE DEFAULT_MSG FORGE_LIBRARIES FORGE_INCLUDE_DIRECTORIES)
+    MARK_AS_ADVANCED(FORGE_LIBRARIES FORGE_INCLUDE_DIRECTORIES)
+
 ELSE(GLFW_FOUND AND GLEWmx_FOUND AND OPENGL_FOUND)
     IF(NOT GLFW_FOUND)
         MESSAGE(FATAL_ERROR "GLFW Not Found")
@@ -89,23 +100,3 @@ ELSE(GLFW_FOUND AND GLEWmx_FOUND AND OPENGL_FOUND)
         MESSAGE(FATAL_ERROR "OpenGL Not Found")
     ENDIF()
 ENDIF(GLFW_FOUND AND GLEWmx_FOUND AND OPENGL_FOUND)
-
-IF(_FORGE_INCLUDE_DIRS)
-    SET(FORGE_INCLUDE_DIRS ${_FORGE_INCLUDE_DIRS} ${GLFW_INCLUDE_DIR} ${GLEW_INCLUDE_DIR}
-        CACHE INTERNAL "All include dirs required for FORGE'")
-ENDIF()
-
-IF(_FORGE_LIBRARY)
-    SET(FORGE_LIBRARIES ${_FORGE_LIBRARY} ${GLFW_LIBRARY} ${GLEWmx_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY}
-        CACHE INTERNAL "All libraries required for FORGE'")
-    SET(FORGE_FOUND TRUE CACHE BOOL "Whether or not FORGE' library has been located.")
-ENDIF()
-
-SET(FORGE_DIR ${FORGE_PACKAGE_DIR})
-
-# handle the QUIETLY and REQUIRED arguments and set FORGE_FOUND to TRUE if
-# all listed variables are TRUE
-INCLUDE (FindPackageHandleStandardArgs)
-
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(FORGE DEFAULT_MSG FORGE_DIR FORGE_LIBRARIES FORGE_INCLUDE_DIRS)
-MARK_AS_ADVANCED(FORGE_DIR FORGE_LIBRARIES FORGE_INCLUDE_DIRS)
