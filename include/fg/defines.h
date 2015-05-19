@@ -22,9 +22,7 @@
 #ifdef WINDOWS_OS
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
-#endif
-
-#ifdef LINUX_OS
+#else
 #define GLFW_EXPOSE_NATIVE_X11
 #define GLFW_EXPOSE_NATIVE_GLX
 #endif
@@ -35,9 +33,7 @@
 #ifdef WINDOWS_OS
 typedef HGLRC ContextHandle;
 typedef HDC DisplayHandle;
-#endif
-
-#ifdef LINUX_OS
+#else
 typedef GLXContext ContextHandle;
 typedef Display* DisplayHandle;
 #endif

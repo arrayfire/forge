@@ -54,8 +54,8 @@ class FGAPI Font {
         //FIXME copy constructor and assignment operators need
         // to be dealt with properly
 
-        void loadFont(std::string pFile, int pFontSize);
-        void loadSystemFont(std::string pName, int pFontSize);
+        void loadFont(const char* const pFile, int pFontSize);
+        void loadSystemFont(const char* const pName, int pFontSize);
 
         void setOthro2D(int pWidth, int pHeight);
 

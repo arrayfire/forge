@@ -49,7 +49,7 @@ static const char* gFontFragShader =
 "uniform vec4 textColor;\n"
 "void main()\n"
 "{\n"
-"    vec4 texC = texture2D(tex, texCoord);\n"
+"    vec4 texC = texture(tex, texCoord);\n"
 "    vec4 alpha = vec4(1.0, 1.0, 1.0, texC.r);\n"
 "    outputColor = alpha*textColor;\n"
 "}\n";
@@ -90,7 +90,6 @@ void Font::extractGlyph(int pCharacter)
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glGenTextures(1, &(mCharTextures[pIndex]));
     glBindTexture(GL_TEXTURE_2D, mCharTextures[pIndex]);
-    glBindSampler(mCharTextures[pIndex], mSampler);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, &glyphData.front());
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -158,7 +157,7 @@ Font::~Font()
     if (mSampler) glDeleteSamplers(1, &mSampler);
 }
 
-void Font::loadFont(std::string pFile, int pFontSize)
+void Font::loadFont(const char* const pFile, int pFontSize)
 {
     if (mIsFontLoaded) {
         if (pFile==mTTFfile)
@@ -174,7 +173,7 @@ void Font::loadFont(std::string pFile, int pFontSize)
     // Initialize freetype font library
     bool bError = FT_Init_FreeType(&gFTLib);
 
-    bError = FT_New_Face(gFTLib, pFile.c_str(), 0, &gFTFace);
+    bError = FT_New_Face(gFTLib, pFile, 0, &gFTFace);
     if(bError) {
         FT_Done_FreeType(gFTLib);
         FT_THROW_ERROR("font face creation failed", FG_ERR_FREETYPE_ERROR);
@@ -212,7 +211,7 @@ void Font::loadFont(std::string pFile, int pFontSize)
     CheckGL("End Font::loadFont");
 }
 
-void Font::loadSystemFont(std::string pName, int pFontSize)
+void Font::loadSystemFont(const char* const pName, int pFontSize)
 {
     //TODO do error checking once it is working
     std::string ttf_file_path;
@@ -224,7 +223,7 @@ void Font::loadSystemFont(std::string pName, int pFontSize)
         FT_THROW_ERROR("fontconfig initilization failed", FG_ERR_FREETYPE_ERROR);
     }
     // configure the search pattern,
-    FcPattern* pat = FcNameParse((const FcChar8*)(pName.c_str()));
+    FcPattern* pat = FcNameParse((const FcChar8*)(pName));
     if (!pat) {
         FT_THROW_ERROR("fontconfig pattern creation failed", FG_ERR_FREETYPE_ERROR);
     }
@@ -256,7 +255,7 @@ void Font::loadSystemFont(std::string pName, int pFontSize)
     ttf_file_path += ".ttf";
 #endif
 
-    loadFont(ttf_file_path, pFontSize);
+    loadFont(ttf_file_path.c_str(), pFontSize);
 }
 
 void Font::setOthro2D(int pWidth, int pHeight)
@@ -304,6 +303,7 @@ void Font::render(const float pPos[], const float pColor[], std::string pText, i
             glActiveTexture(GL_TEXTURE0);
             glUniform1i(tex_loc, 0);
             glBindTexture(GL_TEXTURE_2D, mCharTextures[idx]);
+            glBindSampler(0, mSampler);
 
             /* rotate by 90 degress if we need
              * to render the characters vertically */

@@ -34,7 +34,7 @@ static const char* fragment_shader_code =
 "out vec4 fragColor;\n"
 "void main()\n"
 "{\n"
-"    vec4 tcolor = texture2D(tex, texcoord);\n"
+"    vec4 tcolor = texture(tex, texcoord);\n"
 "    if(isGrayScale)\n"
 "        fragColor = vec4(tcolor.r, tcolor.r, tcolor.r, 1);\n"
 "    else\n"
@@ -55,8 +55,8 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
     // Initialize OpenGL Items
     glGenTextures(1, &(mTex));
     glBindTexture(GL_TEXTURE_2D, mTex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 

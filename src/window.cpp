@@ -34,7 +34,6 @@ Window::Window(int pWidth, int pHeight, const char* pTitle,
     : mWidth(pWidth), mHeight(pHeight), mWindow(NULL), mFont(NULL),
       mRows(0), mCols(0), mGLEWContext(NULL)
 {
-    CheckGL("Begin Window::Window");
     glfwSetErrorCallback(windowErrorCallback);
 
     if (!glfwInit()) {
