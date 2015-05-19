@@ -4,8 +4,7 @@ INCLUDE("${CMAKE_MODULE_PATH}/FindGLEWmx.cmake")
 FIND_PACKAGE(GLFW REQUIRED)
 
 IF(GLFW_FOUND AND GLEWmx_FOUND AND OPENGL_FOUND)
-  SET(GRAPHICS_FOUND ON)
-  ADD_DEFINITIONS(-DGLEW_MX -DWITH_GRAPHICS)
+  ADD_DEFINITIONS(-DGLEW_MX)
 ELSE(GLFW_FOUND AND GLEWmx_FOUND AND OPENGL_FOUND)
     IF(NOT GLFW_FOUND)
         MESSAGE(FATAL_ERROR "GLFW Not Found")
@@ -37,30 +36,27 @@ ELSE(FREETYPE_FOUND)
 ENDIF(FREETYPE_FOUND)
 
 IF(NOT UNIX)
-  ADD_DEFINITIONS(-DAFDLL)
-ENDIF()
+  ADD_DEFINITIONS(-DFGDLL)
+ENDIF(NOT UNIX)
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_INCLUDE_PATH}
-    "${CMAKE_SOURCE_DIR}/src"
     ${GLM_INCLUDE_DIRS}
-    "${FREETYPE_INCLUDE_DIRS}"
-    "${FONTCONFIG_INCLUDE_DIR}"
-    )
+	${GLEW_INCLUDE_DIR}
+	${GLFW_INCLUDE_DIR}
+    ${FREETYPE_INCLUDE_DIRS}
+	"${PROJECT_SOURCE_DIR}/include"
+    "${PROJECT_SOURCE_DIR}/src"
+	)
 
-IF(${GRAPHICS_FOUND})
-    INCLUDE_DIRECTORIES(
-        ${GLEW_INCLUDE_DIR}
-        ${GLFW_INCLUDE_DIR}
-        )
-ENDIF(${GRAPHICS_FOUND})
-
+IF(UNIX)
+	INCLUDE_DIRECTORIES("${FONTCONFIG_INCLUDE_DIR}")
+ENDIF(UNIX)
 
 FILE(GLOB api_headers
-    "../include/*.h"
+    "${PROJECT_SOURCE_DIR}/include/*.h"
+	"${PROJECT_SOURCE_DIR}/include/fg/*.h"
     )
-
-source_group(API FILES ${api_headers})
 
 FILE(GLOB headers
     "*.hpp"
@@ -72,19 +68,22 @@ FILE(GLOB sources
     "*.cpp"
     )
 
+source_group(API FILES ${api_headers})
 source_group(Headers FILES ${headers})
 source_group(Sources FILES ${sources})
 
 # OS Definitions
 IF(UNIX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-ELSE(${UNIX}) #Windows
+ELSE(UNIX) #Windows
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-ENDIF()
+ENDIF(UNIX)
 
 ADD_LIBRARY(forge SHARED
-           ${headers}
-           ${sources})
+		    ${api_headers}
+			${headers}
+			${sources}
+			)
 
 TARGET_LINK_LIBRARIES(forge
                       ${GLFW_LIBRARY}
