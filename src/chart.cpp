@@ -69,7 +69,13 @@ fg::Font& getChartFont()
     static fg::Font mChartFont;
     static std::once_flag flag;
 
-    std::call_once(flag, []() { mChartFont.loadSystemFont("Vera", 32); });
+    std::call_once(flag, []() {
+#if defined(WINDOWS_OS)
+        mChartFont.loadSystemFont("Calibri", 32);
+#else
+        mChartFont.loadSystemFont("Vera", 32);
+#endif
+    });
 
     return mChartFont;
 }

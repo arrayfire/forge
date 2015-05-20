@@ -18,10 +18,6 @@ static const float GRAY[] = {0.0, 0.0, 0.0, 1.0};
 static const float WHITE[] = {1.0, 1.0, 1.0, 1.0};
 static const float BLUE[4] = { 0.0588f, 0.1137f, 0.2745f, 1 };
 
-// Required to be defined for GLEW MX to work,
-// along with the GLEW_MX define in the perprocessor!
-GLEWContext* glewGetContext();
-
 void MakeContextCurrent(fg::Window* pWindow);
 
 void MakeContextCurrent();

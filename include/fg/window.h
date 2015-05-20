@@ -81,3 +81,7 @@ class FGAPI Window {
 FGAPI void makeCurrent(Window* pWindow);
 
 }
+
+// Required to be defined for GLEW MX to work,
+// along with the GLEW_MX define in the perprocessor!
+FGAPI GLEWContext* glewGetContext();

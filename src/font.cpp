@@ -90,7 +90,8 @@ void Font::extractGlyph(int pCharacter)
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glGenTextures(1, &(mCharTextures[pIndex]));
     glBindTexture(GL_TEXTURE_2D, mCharTextures[pIndex]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, &glyphData.front());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
+        (pCharacter==32 ? NULL : &glyphData.front()));
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);

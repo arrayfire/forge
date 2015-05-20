@@ -30,7 +30,6 @@ GLEWContext* glewGetContext()
 
 void MakeContextCurrent(fg::Window* pWindow)
 {
-    CheckGL("Begin MakeContextCurrent");
     if (pWindow != NULL)
     {
         glfwMakeContextCurrent((GLFWwindow*)pWindow->window());
