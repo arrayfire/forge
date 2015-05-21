@@ -8,8 +8,9 @@
  ********************************************************/
 
 #include <fg/font.h>
-#include <fg/exception.h>
+#include <font.hpp>
 #include <common.hpp>
+
 #include <cmath>
 #include <algorithm>
 
@@ -58,13 +59,13 @@ static const char* gFontFragShader =
 static FT_Library  gFTLib;
 static FT_Face     gFTFace;
 
-namespace fg
+namespace internal
 {
 
 #define FT_THROW_ERROR(msg, err) \
     throw fg::Error("Freetype library", __LINE__, msg, err);
 
-void Font::extractGlyph(int pCharacter)
+void _Font::extractGlyph(int pCharacter)
 {
     FT_Load_Glyph(gFTFace, FT_Get_Char_Index(gFTFace, pCharacter), FT_LOAD_DEFAULT);
     FT_Render_Glyph(gFTFace->glyph, FT_RENDER_MODE_NORMAL);
@@ -127,7 +128,7 @@ void Font::extractGlyph(int pCharacter)
     }
 }
 
-void Font::destroyGLResources()
+void _Font::destroyGLResources()
 {
     if (mIsFontLoaded) {
         if (mProgram) glDeleteProgram(mProgram);
@@ -137,7 +138,7 @@ void Font::destroyGLResources()
     }
 }
 
-Font::Font()
+_Font::_Font()
     : mIsFontLoaded(false), mTTFfile(""), mVAO(0), mVBO(0), mProgram(0), mSampler(0)
 {
     mProgram = initShaders(gFontVertShader, gFontFragShader);
@@ -151,14 +152,14 @@ Font::Font()
     glSamplerParameteri(mSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
-Font::~Font()
+_Font::~_Font()
 {
     destroyGLResources();
     if (mProgram) glDeleteProgram(mProgram);
     if (mSampler) glDeleteSamplers(1, &mSampler);
 }
 
-void Font::loadFont(const char* const pFile, int pFontSize)
+void _Font::loadFont(const char* const pFile, int pFontSize)
 {
     if (mIsFontLoaded) {
         if (pFile==mTTFfile)
@@ -172,19 +173,19 @@ void Font::loadFont(const char* const pFile, int pFontSize)
 
     CheckGL("Begin Font::loadFont");
     // Initialize freetype font library
-    bool bError = FT_Init_FreeType(&gFTLib);
+    FT_Error bError = FT_Init_FreeType(&gFTLib);
 
     bError = FT_New_Face(gFTLib, pFile, 0, &gFTFace);
     if(bError) {
         FT_Done_FreeType(gFTLib);
-        FT_THROW_ERROR("font face creation failed", FG_ERR_FREETYPE_ERROR);
+        FT_THROW_ERROR("font face creation failed", fg::FG_ERR_FREETYPE_ERROR);
     }
 
     bError = FT_Set_Pixel_Sizes(gFTFace, 0, pFontSize);
     if (bError) {
         FT_Done_Face(gFTFace);
         FT_Done_FreeType(gFTLib);
-        FT_THROW_ERROR("set font size failed", FG_ERR_FREETYPE_ERROR);
+        FT_THROW_ERROR("set font size failed", fg::FG_ERR_FREETYPE_ERROR);
     }
 
     // read font glyphs for only characters
@@ -194,7 +195,7 @@ void Font::loadFont(const char* const pFile, int pFontSize)
     FT_Done_Face(gFTFace);
     FT_Done_FreeType(gFTLib);
 
-    size_t size = sizeof(glm::vec2);
+    GLsizei size = sizeof(glm::vec2);
 
     mVBO = createBuffer<float>(mVertexData.size(), &mVertexData.front(), GL_STATIC_DRAW);
 
@@ -212,7 +213,7 @@ void Font::loadFont(const char* const pFile, int pFontSize)
     CheckGL("End Font::loadFont");
 }
 
-void Font::loadSystemFont(const char* const pName, int pFontSize)
+void _Font::loadSystemFont(const char* const pName, int pFontSize)
 {
     //TODO do error checking once it is working
     std::string ttf_file_path;
@@ -259,13 +260,13 @@ void Font::loadSystemFont(const char* const pName, int pFontSize)
     loadFont(ttf_file_path.c_str(), pFontSize);
 }
 
-void Font::setOthro2D(int pWidth, int pHeight)
+void _Font::setOthro2D(int pWidth, int pHeight)
 {
     mHeight = pHeight;
     mWidth = pWidth;
 }
 
-void Font::render(const float pPos[], const float pColor[], std::string pText, int pFontSize, bool pIsVertical)
+void _Font::render(const float pPos[], const float pColor[], const char* pText, int pFontSize, bool pIsVertical)
 {
     if(!mIsFontLoaded)return;
 
@@ -285,16 +286,18 @@ void Font::render(const float pPos[], const float pColor[], std::string pText, i
     glUniformMatrix4fv(pmat_loc, 1, GL_FALSE, (GLfloat*)&projMat);
     glUniform4fv(col_loc, 1, pColor);
 
-    int loc_x = pPos[0], loc_y = pPos[1];
+    int loc_x = int(pPos[0]);
+    int loc_y = int(pPos[1]);
     if(pFontSize == -1)pFontSize = mLoadedPixelSize;
     float scale_factor = float(pFontSize)/float(mLoadedPixelSize);
 
-    for (std::string::iterator it=pText.begin(); it!=pText.end(); ++it) {
+    std::string str(pText);
+    for (std::string::iterator it = str.begin(); it != str.end(); ++it) {
         char currChar = *it;
 
         if(currChar == '\n') {
             // if it is new line, move location to next line
-            loc_x = pPos[0];
+            loc_x = int(pPos[0]);
             loc_y -= mNewLine*pFontSize/mLoadedPixelSize;
         } else if (currChar <= '~' && currChar >= ' ') {
             // regular characters are rendered as textured quad
@@ -326,7 +329,7 @@ void Font::render(const float pPos[], const float pColor[], std::string pText, i
          * move the pen cursor to next line after each
          * character render mandatorily */
         if (pIsVertical) {
-            loc_x = pPos[0];
+            loc_x = int(pPos[0]);
             loc_y -= mNewLine*pFontSize/mLoadedPixelSize;
         }
     }
@@ -335,6 +338,36 @@ void Font::render(const float pPos[], const float pColor[], std::string pText, i
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+}
+
+}
+
+namespace fg
+{
+
+Font::Font() {
+    value = std::make_shared<internal::_Font>();
+}
+
+void Font::loadFont(const char* const pFile, int pFontSize) {
+    value.get()->loadFont(pFile, pFontSize);
+}
+
+void Font::loadSystemFont(const char* const pName, int pFontSize) {
+    value.get()->loadSystemFont(pName, pFontSize);
+}
+
+void Font::setOthro2D(int pWidth, int pHeight) {
+    value.get()->setOthro2D(pWidth, pHeight);
+}
+
+internal::_Font* Font::get() const {
+    return value.get();
+}
+
+void Font::render(const float pPos[2], const float pColor[4], 
+                  const char* pText, int pFontSize, bool pIsVertical) {
+    value.get()->render(pPos, pColor, pText, pFontSize, pIsVertical);
 }
 
 }

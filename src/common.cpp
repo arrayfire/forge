@@ -7,8 +7,8 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/exception.h>
 #include <common.hpp>
+#include <window.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -16,32 +16,10 @@
 
 using namespace fg;
 
-static fg::Window* current = NULL;
-
 typedef struct {
     GLuint vertex;
     GLuint fragment;
 } shaders_t;
-
-GLEWContext* glewGetContext()
-{
-    return current->glewContext();
-}
-
-void MakeContextCurrent(fg::Window* pWindow)
-{
-    if (pWindow != NULL)
-    {
-        glfwMakeContextCurrent((GLFWwindow*)pWindow->window());
-        current = pWindow;
-    }
-    CheckGL("End MakeContextCurrent");
-}
-
-void MakeContextCurrent()
-{
-    MakeContextCurrent(current);
-}
 
 GLenum FGMode_to_GLColor(ColorMode mode)
 {
@@ -183,7 +161,7 @@ GLuint initShaders(const char* vshader_code, const char* fshader_code)
 
 int next_p2(int value)
 {
-    return std::pow(2, (std::ceil(std::log2(value))));
+    return int(std::pow(2, (std::ceil(std::log2(value)))));
 }
 
 float clampTo01(float a)

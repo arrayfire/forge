@@ -17,27 +17,6 @@
 #define LINUX_OS
 #endif
 
-#include <GL/glew.h>
-
-#ifdef WINDOWS_OS
-#define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_EXPOSE_NATIVE_WGL
-#else
-#define GLFW_EXPOSE_NATIVE_X11
-#define GLFW_EXPOSE_NATIVE_GLX
-#endif
-
-#include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
-
-#ifdef WINDOWS_OS
-typedef HGLRC ContextHandle;
-typedef HDC DisplayHandle;
-#else
-typedef GLXContext ContextHandle;
-typedef Display* DisplayHandle;
-#endif
-
 // Print for OpenGL errors
 // Returns 1 if an OpenGL error occurred, 0 otherwise.
 
@@ -66,11 +45,44 @@ typedef Display* DisplayHandle;
     #define FG_STATIC_
 #endif
 
-namespace fg
+#include <GL/glew.h>
+
+#ifdef WINDOWS_OS
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+#else
+#define GLFW_EXPOSE_NATIVE_X11
+#define GLFW_EXPOSE_NATIVE_GLX
+#endif
+
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+
+#ifdef WINDOWS_OS
+typedef HGLRC ContextHandle;
+typedef HDC DisplayHandle;
+#else
+typedef GLXContext ContextHandle;
+typedef Display* DisplayHandle;
+#endif
+
+// Required to be defined for GLEW MX to work,
+// along with the GLEW_MX define in the perprocessor!
+FGAPI GLEWContext* glewGetContext();
+
+namespace internal
 {
 
-typedef unsigned int  uint;
-typedef unsigned char uchar;
+class _Window;
+class _Font;
+class _Image;
+class _Plot;
+class _Histogram;
+
+}
+
+namespace fg
+{
 
 enum ErrorCode {
     FG_SUCCESS            = 0,
@@ -95,12 +107,6 @@ enum ColorMode {
     FG_RED =1,
     FG_RGB =3,
     FG_RGBA=4,
-};
-
-enum Renderable {
-    FG_IMAGE= 1,
-    FG_PLOT = 2,
-    FG_HIST = 3
 };
 
 }

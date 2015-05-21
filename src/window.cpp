@@ -11,15 +11,29 @@
 // https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
 
 #include <fg/window.h>
-#include <fg/exception.h>
-
+#include <window.hpp>
 #include <common.hpp>
-#include <err_common.hpp>
+#include <memory>
 
-namespace fg
+static internal::_Window* current = NULL;
+
+void MakeContextCurrent(internal::_Window* pWindow)
 {
+    if (pWindow != NULL)
+    {
+        glfwMakeContextCurrent((GLFWwindow*)pWindow->window());
+        current = pWindow;
+    }
+    CheckGL("End MakeContextCurrent");
+}
 
-static int gWindowCounter = 0;   // Window Counter
+GLEWContext* glewGetContext()
+{
+    return current->glewContext();
+}
+
+namespace internal
+{
 
 static void windowErrorCallback(int pError, const char* pDescription)
 {
@@ -29,8 +43,8 @@ static void windowErrorCallback(int pError, const char* pDescription)
 #define GLFW_THROW_ERROR(msg, err) \
     throw fg::Error("Window constructor", __LINE__, msg, err);
 
-Window::Window(int pWidth, int pHeight, const char* pTitle,
-               const Window* pWindow, const bool invisible)
+_Window::_Window(int pWidth, int pHeight, const char* pTitle,
+    const _Window* pWindow, const bool invisible)
     : mWidth(pWidth), mHeight(pHeight), mWindow(NULL), mFont(NULL),
       mRows(0), mCols(0), mGLEWContext(NULL)
 {
@@ -100,7 +114,7 @@ Window::Window(int pWidth, int pHeight, const char* pTitle,
 
     auto keyboardCallback = [](GLFWwindow* w, int a, int b, int c, int d)
     {
-        static_cast<Window*>(glfwGetWindowUserPointer(w))->keyboardHandler(a, b, c, d);
+        static_cast<_Window*>(glfwGetWindowUserPointer(w))->keyboardHandler(a, b, c, d);
     };
 
     glfwSetKeyCallback(mWindow, keyboardCallback);
@@ -112,31 +126,31 @@ Window::Window(int pWidth, int pHeight, const char* pTitle,
     mCxt = glfwGetGLXContext(mWindow);
     mDsp = glfwGetX11Display();
 #endif
-    mID = gWindowCounter++; //set ID and Increment Counter!
+
     CheckGL("End Window::Window");
 }
 
-Window::~Window()
+_Window::~_Window()
 {
     MakeContextCurrent(this);
     if (mWindow!=NULL) glfwDestroyWindow(mWindow);
 }
 
-void Window::setTitle(const char* pTitle)
+void _Window::setTitle(const char* pTitle)
 {
     CheckGL("Begin Window::setTitle");
     glfwSetWindowTitle(mWindow, pTitle);
     CheckGL("End Window::setTitle");
 }
 
-void Window::setPos(int pX, int pY)
+void _Window::setPos(int pX, int pY)
 {
     CheckGL("Begin Window::setPos");
     glfwSetWindowPos(mWindow, pX, pY);
     CheckGL("End Window::setPos");
 }
 
-void Window::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
+void _Window::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
 {
     if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS)
     {
@@ -144,7 +158,7 @@ void Window::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
     }
 }
 
-void Window::draw(const Image& pImage)
+void _Window::draw(const _Image* pImage)
 {
     CheckGL("Begin drawImage");
     MakeContextCurrent(this);
@@ -157,14 +171,14 @@ void Window::draw(const Image& pImage)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
-    pImage.render();
+    pImage->render();
 
     glfwSwapBuffers(window());
     glfwPollEvents();
     CheckGL("End drawImage");
 }
 
-void Window::draw(const Plot& pHandle)
+void _Window::draw(const _Plot* pHandle)
 {
     CheckGL("Begin draw(Plot)");
     MakeContextCurrent(this);
@@ -176,14 +190,14 @@ void Window::draw(const Plot& pHandle)
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    pHandle.render(0, 0, wind_width, wind_height);
+    pHandle->render(0, 0, wind_width, wind_height);
 
     glfwSwapBuffers(window());
     glfwPollEvents();
     CheckGL("End draw(Plot)");
 }
 
-void Window::draw(const Histogram& pHist)
+void _Window::draw(const _Histogram* pHist)
 {
     CheckGL("Begin draw(Histogram)");
     MakeContextCurrent(this);
@@ -194,14 +208,14 @@ void Window::draw(const Histogram& pHist)
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    pHist.render(0, 0, wind_width, wind_height);
+    pHist->render(0, 0, wind_width, wind_height);
 
     glfwSwapBuffers(window());
     glfwPollEvents();
     CheckGL("End draw(Histogram)");
 }
 
-void Window::grid(int pRows, int pCols)
+void _Window::grid(int pRows, int pCols)
 {
     mRows = pRows;
     mCols = pCols;
@@ -216,7 +230,7 @@ void Window::grid(int pRows, int pCols)
     mCellHeight = wind_height/ mRows;
 }
 
-void Window::draw(int pColId, int pRowId,
+void _Window::draw(int pColId, int pRowId,
                   const void* pRenderablePtr, Renderable pType,
                   const char* pTitle)
 {
@@ -232,10 +246,10 @@ void Window::draw(int pColId, int pRowId,
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
-    int top_margin = 0.06f*mCellHeight;
-    int bot_margin = 0.02f*mCellHeight;
-    int lef_margin = 0.02f*mCellWidth;
-    int rig_margin = 0.02f*mCellWidth;
+    int top_margin = int(0.06f*mCellHeight);
+    int bot_margin = int(0.02f*mCellHeight);
+    int lef_margin = int(0.02f*mCellWidth);
+    int rig_margin = int(0.02f*mCellWidth);
     // set viewport to render sub image
     glViewport(x_off+lef_margin, y_off+bot_margin, mCellWidth-2*rig_margin, mCellHeight-2*top_margin);
     glScissor(x_off+lef_margin, y_off+bot_margin, mCellWidth-2*rig_margin, mCellHeight-2*top_margin);
@@ -245,13 +259,13 @@ void Window::draw(int pColId, int pRowId,
      * for any input parameters */
     switch(pType) {
         case FG_IMAGE:
-            ((const fg::Image*)pRenderablePtr)->render();
+            ((const _Image*)pRenderablePtr)->render();
             break;
         case FG_PLOT:
-            ((const fg::Plot*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
+            ((const _Plot*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
             break;
         case FG_HIST:
-            ((const fg::Histogram*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
+            ((const _Histogram*)pRenderablePtr)->render(x_off, y_off, mCellWidth, mCellHeight);
             break;
     }
     glDisable(GL_SCISSOR_TEST);
@@ -264,7 +278,7 @@ void Window::draw(int pColId, int pRowId,
     CheckGL("End show(column, row)");
 }
 
-void Window::draw()
+void _Window::draw()
 {
     CheckGL("Begin show");
     glfwSwapBuffers(window());
@@ -272,9 +286,106 @@ void Window::draw()
     CheckGL("End show");
 }
 
-void makeCurrent(Window* pWindow)
+}
+
+namespace fg
 {
-    MakeContextCurrent(pWindow);
+
+Window::Window(int pWidth, int pHeight, const char* pTitle, 
+               const Window* pWindow, const bool invisible) {
+    if (pWindow == NULL)
+        value = std::make_shared<internal::_Window>(pWidth, pHeight, pTitle,
+                                                    nullptr, invisible);
+    else
+        value = std::make_shared<internal::_Window>(pWidth, pHeight, pTitle,
+                                                    pWindow->get(), invisible);
+}
+
+void Window::setFont(Font* pFont) {
+    value.get()->setFont(pFont->get());
+}
+
+void Window::setTitle(const char* pTitle) {
+    value.get()->setTitle(pTitle);
+}
+
+void Window::setPos(int pX, int pY) {
+    value.get()->setPos(pX, pY);
+}
+
+ContextHandle Window::context() const {
+    return value.get()->context();
+}
+
+DisplayHandle Window::display() const {
+    return value.get()->display();
+}
+
+int Window::width() const {
+    return value.get()->width();
+}
+
+int Window::height() const {
+    return value.get()->height();
+}
+
+GLFWwindow* Window::window() const {
+    return value.get()->window();
+}
+
+GLEWContext* Window::glewContext() const {
+    return value.get()->glewContext();
+}
+
+internal::_Window* Window::get() const {
+    return value.get();
+}
+
+void Window::hide() {
+    value.get()->hide();
+}
+
+void Window::show() {
+    value.get()->show();
+}
+
+bool Window::close() {
+    return value.get()->close();
+}
+
+void Window::makeCurrent() {
+    MakeContextCurrent(value.get());
+}
+
+void Window::draw(const Image& pImage) {
+    value.get()->draw(pImage.get());
+}
+
+void Window::draw(const Plot& pPlot) {
+    value.get()->draw(pPlot.get());
+}
+void Window::draw(const Histogram& pHist) {
+    value.get()->draw(pHist.get());
+}
+
+void Window::grid(int pRows, int pCols) {
+    value.get()->grid(pRows, pCols);
+}
+
+void Window::draw(int pColId, int pRowId, const Image& pImage, const char* pTitle) {
+    value.get()->draw(pColId, pRowId, pImage.get(), internal::FG_IMAGE, pTitle);
+}
+
+void Window::draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle) {
+    value.get()->draw(pColId, pRowId, pPlot.get(), internal::FG_PLOT, pTitle);
+}
+
+void Window::draw(int pColId, int pRowId, const Histogram& pHist, const char* pTitle) {
+    value.get()->draw(pColId, pRowId, pHist.get(), internal::FG_HIST, pTitle);
+}
+
+void Window::draw() {
+    value.get()->draw();
 }
 
 }

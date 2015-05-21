@@ -1,24 +1,25 @@
 /*******************************************************
- * Copyright (c) 2015-2019, ArrayFire
- * All rights reserved.
- *
- * This file is distributed under 3-clause BSD license.
- * The complete license agreement can be obtained at:
- * http://arrayfire.com/licenses/BSD-3-Clause
- ********************************************************/
+* Copyright (c) 2015-2019, ArrayFire
+* All rights reserved.
+*
+* This file is distributed under 3-clause BSD license.
+* The complete license agreement can be obtained at:
+* http://arrayfire.com/licenses/BSD-3-Clause
+********************************************************/
 
 #pragma once
-#include <fg/defines.h>
+
+#include <common.hpp>
 #include <vector>
 #include <string>
 
-namespace fg
+namespace internal
 {
 
-class FGAPI Chart {
+class _Chart {
     private:
         /* internal class attributes for
-         * drawing ticks on axes for plots*/
+        * drawing ticks on axes for plots*/
         std::vector<float> mTickTextX;
         std::vector<float> mTickTextY;
         std::vector<std::string> mXText;
@@ -30,10 +31,10 @@ class FGAPI Chart {
         int       mTopMargin;
         int       mBottomMargin;
         /* chart characteristics */
-        double    mXMax;
-        double    mXMin;
-        double    mYMax;
-        double    mYMin;
+        float    mXMax;
+        float    mXMin;
+        float    mYMax;
+        float    mYMin;
         std::string mXTitle;
         std::string mYTitle;
         /* OpenGL Objects */
@@ -63,23 +64,23 @@ class FGAPI Chart {
         int topMargin() const;
 
         /* this function should be used after
-         * setAxesLimits is called as this function uses
-         * those values to generate the text markers that
-         * are placed near the ticks on the axes */
+        * setAxesLimits is called as this function uses
+        * those values to generate the text markers that
+        * are placed near the ticks on the axes */
         void setTickCount(int pTickCount);
 
     public:
-        Chart();
-        virtual ~Chart();
+        _Chart();
+        virtual ~_Chart();
 
-        void setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin);
+        void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);
         void setXAxisTitle(const char* pTitle);
         void setYAxisTitle(const char* pTitle);
 
-        double xmax() const;
-        double xmin() const;
-        double ymax() const;
-        double ymin() const;
+        float xmax() const;
+        float xmin() const;
+        float ymax() const;
+        float ymin() const;
         void renderChart(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
 
         virtual GLuint vbo() const = 0;

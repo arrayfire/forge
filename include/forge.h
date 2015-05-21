@@ -8,11 +8,12 @@
  ********************************************************/
 
 #pragma once
+
 #include "fg/defines.h"
 #include "fg/exception.h"
 #include "fg/window.h"
 #include "fg/font.h"
 #include "fg/image.h"
 #include "fg/version.h"
-#include "fg/plot2d.h"
+#include "fg/plot.h"
 #include "fg/histogram.h"

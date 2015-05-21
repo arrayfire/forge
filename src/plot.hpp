@@ -1,19 +1,21 @@
 /*******************************************************
- * Copyright (c) 2015-2019, ArrayFire
- * All rights reserved.
- *
- * This file is distributed under 3-clause BSD license.
- * The complete license agreement can be obtained at:
- * http://arrayfire.com/licenses/BSD-3-Clause
- ********************************************************/
+* Copyright (c) 2015-2019, ArrayFire
+* All rights reserved.
+*
+* This file is distributed under 3-clause BSD license.
+* The complete license agreement can be obtained at:
+* http://arrayfire.com/licenses/BSD-3-Clause
+********************************************************/
 
 #pragma once
-#include <fg/chart.h>
 
-namespace fg
+#include <common.hpp>
+#include <chart.hpp>
+
+namespace internal
 {
 
-class FGAPI Plot : public Chart {
+class _Plot : public _Chart {
     private:
         /* plot points characteristics */
         GLuint    mNumPoints;
@@ -25,8 +27,8 @@ class FGAPI Plot : public Chart {
         size_t    mMainVBOsize;
 
     public:
-        Plot(GLuint pNumPoints, GLenum pDataType);
-        ~Plot();
+        _Plot(GLuint pNumPoints, GLenum pDataType);
+        ~_Plot();
 
         void setColor(float r, float g, float b);
 

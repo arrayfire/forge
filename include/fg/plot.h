@@ -15,14 +15,14 @@
 namespace fg
 {
 
-class Histogram {
+class Plot {
     private:
-        std::shared_ptr<internal::_Histogram> value;
+        std::shared_ptr<internal::_Plot> value;
 
     public:
-        FGAPI Histogram(GLuint pNBins, GLenum pDataType);
+        FGAPI Plot(GLuint pNumPoints, GLenum pDataType);
 
-        FGAPI void setBarColor(float r, float g, float b);
+        FGAPI void setColor(float r, float g, float b);
         FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);
         FGAPI void setXAxisTitle(const char* pTitle);
         FGAPI void setYAxisTitle(const char* pTitle);
@@ -31,10 +31,9 @@ class Histogram {
         FGAPI float xmin() const;
         FGAPI float ymax() const;
         FGAPI float ymin() const;
-
         FGAPI GLuint vbo() const;
         FGAPI size_t size() const;
-        FGAPI internal::_Histogram* get() const;
+        FGAPI internal::_Plot* get() const;
 
         FGAPI void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
 };

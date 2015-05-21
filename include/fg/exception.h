@@ -10,7 +10,6 @@
 #pragma once
 
 #include <fg/defines.h>
-#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -19,7 +18,7 @@ namespace fg
 
 class FGAPI Error : public std::logic_error
 {
-    std::string mFuncName;
+    char*       mFuncName;
     int         mLineNumber;
     ErrorCode   mErrCode;
 
@@ -29,9 +28,7 @@ public:
 
     Error(const char * const pFuncName, int pLine, const char * const pMessage, ErrorCode pErrCode);
 
-    Error(std::string pFuncName, int pLine, std::string pMessage, ErrorCode err);
-
-    const std::string& functionName() const;
+    const char* const functionName() const;
 
     int line() const;
 
@@ -47,8 +44,8 @@ public:
 // TODO: Perhaps add a way to return supported types
 class FGAPI TypeError : public Error
 {
-    int         mArgIndex;
-    std::string mErrTypeName;
+    int   mArgIndex;
+    char* mErrTypeName;
 
     TypeError();
 
@@ -59,12 +56,7 @@ public:
               const int pIndex,
               const GLenum pType);
 
-    TypeError(std::string pFuncName,
-              const int pLine,
-              const int pIndex,
-              const GLenum pType);
-
-    const std::string& typeName() const;
+    const char* const typeName() const;
 
     int argIndex() const;
 
@@ -73,8 +65,8 @@ public:
 
 class FGAPI ArgumentError : public Error
 {
-    int         mArgIndex;
-    std::string mExpected;
+    int   mArgIndex;
+    char* mExpected;
 
     ArgumentError();
 
@@ -84,12 +76,7 @@ public:
                   const int pIndex,
                   const char * const pExpectString);
 
-    ArgumentError(std::string pFuncName,
-                  const int pLine,
-                  const int pIndex,
-                  std::string pExpectString);
-
-    const std::string& expectedCondition() const;
+    const char* const expectedCondition() const;
 
     int argIndex() const;
 
@@ -98,8 +85,8 @@ public:
 
 class FGAPI DimensionError : public Error
 {
-    int         mArgIndex;
-    std::string mExpected;
+    int   mArgIndex;
+    char* mExpected;
 
     DimensionError();
 
@@ -109,12 +96,7 @@ public:
                    const int pIndex,
                    const char * const pExpectString);
 
-    DimensionError(std::string pFuncName,
-                   const int pLine,
-                   const int pIndex,
-                   std::string pExpectString);
-
-    const std::string& expectedCondition() const;
+    const char* const expectedCondition() const;
 
     int argIndex() const;
 

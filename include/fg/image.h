@@ -8,37 +8,29 @@
  ********************************************************/
 
 #pragma once
+
 #include <fg/defines.h>
-#include <vector>
+#include <memory>
 
 namespace fg
 {
 
-class FGAPI Image {
+class Image {
     private:
-        unsigned  mWidth;
-        unsigned  mHeight;
-        ColorMode mFormat;
-        GLenum    mGLformat;
-        GLenum    mDataType;
-        /* internal resources for interop */
-        size_t   mPBOsize;
-        GLuint   mPBO;
-        GLuint   mTex;
-        GLuint   mProgram;
+        std::shared_ptr<internal::_Image> value;
 
     public:
-        Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType);
-        ~Image();
+        FGAPI Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType);
 
-        unsigned width() const;
-        unsigned height() const;
-        ColorMode pixelFormat() const;
-        GLenum channelType() const;
-        GLuint pbo() const;
-        size_t size() const;
+        FGAPI unsigned width() const;
+        FGAPI unsigned height() const;
+        FGAPI ColorMode pixelFormat() const;
+        FGAPI GLenum channelType() const;
+        FGAPI GLuint pbo() const;
+        FGAPI size_t size() const;
+        FGAPI internal::_Image* get() const;
 
-        void render() const;
+        FGAPI void render() const;
 };
 
 }

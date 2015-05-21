@@ -7,20 +7,15 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-// Parts of this code sourced from SnopyDogy
-// https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
+#pragma once
 
 #include <fg/defines.h>
-#include <fg/window.h>
+#include <fg/exception.h>
 #include <err_common.hpp>
 
 static const float GRAY[] = {0.0, 0.0, 0.0, 1.0};
 static const float WHITE[] = {1.0, 1.0, 1.0, 1.0};
 static const float BLUE[4] = { 0.0588f, 0.1137f, 0.2745f, 1 };
-
-void MakeContextCurrent(fg::Window* pWindow);
-
-void MakeContextCurrent();
 
 GLenum FGMode_to_GLColor(fg::ColorMode mode);
 
@@ -31,7 +26,7 @@ char* loadFile(const char *fname, GLint &fSize);
 GLuint initShaders(const char* vshader_code, const char* fshader_code);
 
 template<typename T>
-GLuint createBuffer(int size, const T* data, GLenum usage)
+GLuint createBuffer(size_t size, const T* data, GLenum usage)
 {
     GLuint ret_val = 0;
     glGenBuffers(1,&ret_val);

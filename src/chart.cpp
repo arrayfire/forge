@@ -7,19 +7,14 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/font.h>
-#include <fg/chart.h>
-#include <fg/exception.h>
-#include <common.hpp>
-#include <err_common.hpp>
+#include <chart.hpp>
+#include <font.hpp>
 
-#include <math.h>
-#include <string>
+#include <cmath>
 #include <sstream>
 #include <iomanip>
 #include <mutex>
 
-#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -64,9 +59,9 @@ const char *gChartSpriteFragmentShaderSrc =
 "       outputColor = tick_color;\n"
 "}";
 
-fg::Font& getChartFont()
+internal::_Font& getChartFont()
 {
-    static fg::Font mChartFont;
+    static internal::_Font mChartFont;
     static std::once_flag flag;
 
     std::call_once(flag, []() {
@@ -80,22 +75,22 @@ fg::Font& getChartFont()
     return mChartFont;
 }
 
-namespace fg
+namespace internal
 {
 
-void Chart::bindBorderProgram() const { glUseProgram(mBorderProgram); }
-void Chart::unbindBorderProgram() const { glUseProgram(0); }
-GLuint Chart::rectangleVBO() const { return mDecorVBO; }
-GLuint Chart::borderProgramPointIndex() const { return mBorderPointIndex; }
-GLuint Chart::borderColorIndex() const { return mBorderColorIndex; }
-GLuint Chart::borderMatIndex() const { return mBorderMatIndex; }
-int Chart::tickSize() const { return mTickSize; }
-int Chart::leftMargin() const { return mLeftMargin; }
-int Chart::rightMargin() const { return mRightMargin; }
-int Chart::bottomMargin() const { return mBottomMargin; }
-int Chart::topMargin() const { return mTopMargin; }
+void _Chart::bindBorderProgram() const { glUseProgram(mBorderProgram); }
+void _Chart::unbindBorderProgram() const { glUseProgram(0); }
+GLuint _Chart::rectangleVBO() const { return mDecorVBO; }
+GLuint _Chart::borderProgramPointIndex() const { return mBorderPointIndex; }
+GLuint _Chart::borderColorIndex() const { return mBorderColorIndex; }
+GLuint _Chart::borderMatIndex() const { return mBorderMatIndex; }
+int _Chart::tickSize() const { return mTickSize; }
+int _Chart::leftMargin() const { return mLeftMargin; }
+int _Chart::rightMargin() const { return mRightMargin; }
+int _Chart::bottomMargin() const { return mBottomMargin; }
+int _Chart::topMargin() const { return mTopMargin; }
 
-void Chart::setTickCount(int pTickCount)
+void _Chart::setTickCount(int pTickCount)
 {
     static const float border[8] = { -1, -1, 1, -1, 1, 1, -1, 1 };
     static const int nValues = sizeof(border)/sizeof(float);
@@ -147,7 +142,7 @@ void Chart::setTickCount(int pTickCount)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-Chart::Chart()
+_Chart::_Chart()
     : mTickCount(8), mTickSize(10),
       mLeftMargin(64), mRightMargin(10), mTopMargin(10), mBottomMargin(32),
       mXMax(1), mXMin(0), mYMax(1), mYMin(0),
@@ -178,7 +173,7 @@ Chart::Chart()
     setTickCount(mTickCount);
 }
 
-Chart::~Chart()
+_Chart::~_Chart()
 {
     CheckGL("Begin Chart::~Chart");
     glDeleteBuffers(1, &mDecorVBO);
@@ -188,7 +183,7 @@ Chart::~Chart()
     CheckGL("End Chart::~Chart");
 }
 
-void Chart::setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin)
+void _Chart::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
 {
     mXMax = pXmax;
     mXMin = pXmin;
@@ -216,25 +211,25 @@ void Chart::setAxesLimits(double pXmax, double pXmin, double pYmax, double pYmin
     }
 }
 
-void Chart::setXAxisTitle(const char* pTitle)
+void _Chart::setXAxisTitle(const char* pTitle)
 {
     mXTitle = std::string(pTitle);
 }
 
-void Chart::setYAxisTitle(const char* pTitle)
+void _Chart::setYAxisTitle(const char* pTitle)
 {
     mYTitle = std::string(pTitle);
 }
 
-double Chart::xmax() const { return mXMax; }
-double Chart::xmin() const { return mXMin; }
-double Chart::ymax() const { return mYMax; }
-double Chart::ymin() const { return mYMin; }
+float _Chart::xmax() const { return mXMax; }
+float _Chart::xmin() const { return mXMin; }
+float _Chart::ymax() const { return mYMax; }
+float _Chart::ymin() const { return mYMin; }
 
-void Chart::renderChart(int pX, int pY, int pVPW, int pVPH) const
+void _Chart::renderChart(int pX, int pY, int pVPW, int pVPH) const
 {
-    float w = pVPW - (mLeftMargin + mRightMargin + mTickSize);
-    float h = pVPH - (mTopMargin + mBottomMargin + mTickSize);
+    float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
+    float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
     float offset_x = (2.0f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
     float offset_y = (2.0f * (mBottomMargin+mTickSize) + (h - pVPH)) / pVPH;
     float scale_x = w / pVPW;
@@ -264,7 +259,7 @@ void Chart::renderChart(int pX, int pY, int pVPW, int pVPH) const
     /* bind the sprite shader program to
      * draw ticks on x and y axes */
     glUseProgram(mSpriteProgram);
-    glPointSize(mTickSize);
+    glPointSize((GLfloat)mTickSize);
     glUniform4fv(mSpriteTickcolorIndex, 1, WHITE);
     glUniformMatrix4fv(mSpriteMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
 
@@ -285,29 +280,29 @@ void Chart::renderChart(int pX, int pY, int pVPW, int pVPH) const
     /* reset shader program binding */
     glUseProgram(0);
 
-    fg::Font& fonter = getChartFont();
-    fonter.setOthro2D(w, h);
+    auto &fonter = getChartFont();
+    fonter.setOthro2D(int(w), int(h));
 
     float pos[2];
     /* render tick marker texts for y axis */
     for (StringIter it = mYText.begin(); it!=mYText.end(); ++it) {
-        int idx = it - mYText.begin();
+        int idx = int(it - mYText.begin());
         glm::vec4 res = trans * glm::vec4(mTickTextX[idx], mTickTextY[idx], 0, 1);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[0] -= (pVPW-w)*0.50f;
-        fonter.render(pos, WHITE, *it, 15);
+        fonter.render(pos, WHITE, it->c_str(), 15);
     }
     /* render tick marker texts for x axis */
     for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
-        int idx = it - mXText.begin();
+        int idx = int(it - mXText.begin());
         /* mTickCount offset is needed while reading point coordinates for
          * x axis tick marks */
         glm::vec4 res = trans * glm::vec4(mTickTextX[idx+mTickCount], mTickTextY[idx+mTickCount], 0, 1);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] -= (pVPH-h)*0.32f;
-        fonter.render(pos, WHITE, *it, 15);
+        fonter.render(pos, WHITE, it->c_str(), 15);
     }
     /* render chart axes titles */
     if (!mYTitle.empty()) {
@@ -315,14 +310,14 @@ void Chart::renderChart(int pX, int pY, int pVPW, int pVPH) const
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[0] -= (pVPW-w)*0.70f;
-        fonter.render(pos, WHITE, mYTitle, 15, true);
+        fonter.render(pos, WHITE, mYTitle.c_str(), 15, true);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] -= (pVPH-h)*0.70f;
-        fonter.render(pos, WHITE, mXTitle, 15);
+        fonter.render(pos, WHITE, mXTitle.c_str(), 15);
     }
 
     CheckGL("End Chart::render");

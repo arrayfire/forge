@@ -7,13 +7,9 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-// Parts of this code sourced from SnopyDogy
-// https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
-
 #include <fg/image.h>
-#include <fg/exception.h>
+#include <image.hpp>
 #include <common.hpp>
-#include <err_common.hpp>
 
 static const char* vertex_shader_code =
 "#version 330\n"
@@ -43,10 +39,10 @@ static const char* fragment_shader_code =
 
 static GLuint gCanvasVAO = 0;
 
-namespace fg
+namespace internal
 {
 
-Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType)
+_Image::_Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType)
 : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType)
 {
     CheckGL("Begin Image::Image");
@@ -67,11 +63,11 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     size_t typeSize = 0;
     switch(mDataType) {
-        case GL_FLOAT:          typeSize = sizeof(float);     break;
-        case GL_INT:            typeSize = sizeof(int  );     break;
-        case GL_UNSIGNED_INT:   typeSize = sizeof(uint );     break;
-        case GL_BYTE:           typeSize = sizeof(char );     break;
-        case GL_UNSIGNED_BYTE:  typeSize = sizeof(uchar);     break;
+        case GL_FLOAT:          typeSize = sizeof(float);           break;
+        case GL_INT:            typeSize = sizeof(int  );           break;
+        case GL_UNSIGNED_INT:   typeSize = sizeof(unsigned int);    break;
+        case GL_BYTE:           typeSize = sizeof(char );           break;
+        case GL_UNSIGNED_BYTE:  typeSize = sizeof(unsigned char);   break;
     }
     mPBOsize = mWidth * mHeight * mFormat * typeSize;
     glBufferData(GL_PIXEL_UNPACK_BUFFER, mPBOsize, NULL, GL_STREAM_COPY);
@@ -91,14 +87,14 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
 
         const float texcords[8] = {0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0};
 
-        const uint indices[6] = {0,1,2,0,2,3};
+        const unsigned indices[6] = {0,1,2,0,2,3};
 
         GLuint vbo  = createBuffer(12, vertices, GL_STATIC_DRAW);
         GLuint tbo  = createBuffer(8, texcords, GL_STATIC_DRAW);
         GLuint ibo;
         glGenBuffers(1,&ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint)*6, indices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * 6, indices, GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
         // bind vao
         glGenVertexArrays(1, &gCanvasVAO);
@@ -118,26 +114,26 @@ Image::Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataT
     CheckGL("End Image::Image");
 }
 
-Image::~Image()
+_Image::~_Image()
 {
     glDeleteBuffers(1, &mPBO);
     glDeleteTextures(1, &mTex);
     glDeleteProgram(mProgram);
 }
 
-unsigned Image::width() const { return mWidth; }
+unsigned _Image::width() const { return mWidth; }
 
-unsigned Image::height() const { return mHeight; }
+unsigned _Image::height() const { return mHeight; }
 
-ColorMode Image::pixelFormat() const { return mFormat; }
+fg::ColorMode _Image::pixelFormat() const { return mFormat; }
 
-GLenum Image::channelType() const { return mDataType; }
+GLenum _Image::channelType() const { return mDataType; }
 
-GLuint Image::pbo() const { return mPBO; }
+GLuint _Image::pbo() const { return mPBO; }
 
-size_t Image::size() const { return mPBOsize; }
+size_t _Image::size() const { return mPBOsize; }
 
-void Image::render() const
+void _Image::render() const
 {
     static const float matrix[16] = {
         1.0f, 0.0f, 0.0f, 0.0f,
@@ -173,6 +169,47 @@ void Image::render() const
 
     // ubind the shader program
     glUseProgram(0);
+}
+
+}
+
+namespace fg
+{
+
+Image::Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType) {
+    value = std::make_shared<internal::_Image>(pWidth, pHeight, pFormat, pDataType);
+}
+
+unsigned Image::width() const {
+    return value.get()->width();
+}
+
+unsigned Image::height() const {
+    return value.get()->height();
+}
+
+ColorMode Image::pixelFormat() const {
+    return value.get()->pixelFormat();
+}
+
+GLenum Image::channelType() const {
+    return value.get()->channelType();
+}
+
+GLuint Image::pbo() const {
+    return value.get()->pbo();
+}
+
+size_t Image::size() const {
+    return value.get()->size();
+}
+
+internal::_Image* Image::get() const {
+    return value.get();
+}
+
+void Image::render() const {
+    value.get()->render();
 }
 
 }

@@ -8,80 +8,59 @@
  ********************************************************/
 
 #pragma once
+
 #include <fg/defines.h>
 #include <fg/font.h>
 #include <fg/image.h>
-#include <fg/plot2d.h>
+#include <fg/plot.h>
 #include <fg/histogram.h>
-#include <map>
+#include <memory>
 
 namespace fg
 {
 
-class FGAPI Window {
+class Window {
     private:
-        ContextHandle   mCxt;
-        DisplayHandle   mDsp;
-        int             mID;
-
-        int             mWidth;
-        int             mHeight;
-        GLFWwindow*     mWindow;
-        Font*           mFont;
-        int             mRows;
-        int             mCols;
-        uint            mCellWidth;
-        uint            mCellHeight;
-
-        /* single context for all windows */
-        GLEWContext* mGLEWContext;
-
-    protected:
-        Window() {}
+        std::shared_ptr<internal::_Window> value;
 
     public:
-        Window(int pWidth, int pHeight, const char* pTitle,
-               const Window* pWindow=NULL, const bool invisible=false);
-        ~Window();
+        FGAPI Window(int pWidth, int pHeight, const char* pTitle,
+                    const Window* pWindow=NULL, const bool invisible=false);
 
-        void setTitle(const char* pTitle);
-        void setPos(int pX, int pY);
+        FGAPI void setFont(Font* pFont);
+        FGAPI void setTitle(const char* pTitle);
+        FGAPI void setPos(int pX, int pY);
 
-        void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
-
-        ContextHandle context() const { return mCxt; }
-        DisplayHandle display() const { return mDsp; }
-        int width() const { return mWidth; }
-        int height() const { return mHeight; }
-        GLFWwindow* window() const { return mWindow; }
-        GLEWContext* glewContext() const { return mGLEWContext; }
-
-        void setFont(Font* pFont) { mFont = pFont; }
-        void hide() { glfwHideWindow(mWindow); }
-        void show() { glfwShowWindow(mWindow); }
-        bool close() { return glfwWindowShouldClose(mWindow); }
+        FGAPI ContextHandle context() const;
+        FGAPI DisplayHandle display() const;
+        FGAPI int width() const;
+        FGAPI int height() const;
+        FGAPI GLFWwindow* window() const;
+        FGAPI GLEWContext* glewContext() const;
+        FGAPI internal::_Window* get() const;
+        
+        FGAPI void makeCurrent();
+        FGAPI void hide();
+        FGAPI void show();
+        FGAPI bool close();
 
         /* draw functions */
-        void draw(const Image& pImage);
-        void draw(const Plot& pPlot);
-        void draw(const Histogram& pHist);
+        FGAPI void draw(const Image& pImage);
+        FGAPI void draw(const Plot& pPlot);
+        FGAPI void draw(const Histogram& pHist);
 
         /* if the window render area is used to display
          * multiple Forge objects such as Image, Histogram, Plot etc
          * the following functions have to be used */
-        void grid(int pRows, int pCols);
+        FGAPI void grid(int pRows, int pCols);
+
         /* below draw call uses zero-based indexing
          * for referring to cells within the grid */
-        void draw(int pColId, int pRowId,
-                  const void* pRenderablePtr, Renderable pType,
-                  const char* pTitle);
-        void draw();
+        FGAPI void draw(int pColId, int pRowId, const Image& pImage, const char* pTitle=NULL);
+        FGAPI void draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle = NULL);
+        FGAPI void draw(int pColId, int pRowId, const Histogram& pHist, const char* pTitle = NULL);
+
+        FGAPI void draw();
 };
 
-FGAPI void makeCurrent(Window* pWindow);
-
 }
-
-// Required to be defined for GLEW MX to work,
-// along with the GLEW_MX define in the perprocessor!
-FGAPI GLEWContext* glewGetContext();

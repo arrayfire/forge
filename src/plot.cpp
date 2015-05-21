@@ -7,25 +7,23 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/plot2d.h>
-#include <fg/exception.h>
+#include <fg/plot.h>
+#include <plot.hpp>
 #include <common.hpp>
-#include <err_common.hpp>
 
-#include <math.h>
+#include <cmath>
 
-#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 
-namespace fg
+namespace internal
 {
 
-Plot::Plot(GLuint pNumPoints, GLenum pDataType)
-    : Chart(), mNumPoints(pNumPoints), mDataType(pDataType),
+_Plot::_Plot(GLuint pNumPoints, GLenum pDataType)
+    : _Chart(), mNumPoints(pNumPoints), mDataType(pDataType),
       mMainVAO(0), mMainVBO(0), mMainVBOsize(0)
 {
     unsigned total_points = 2*mNumPoints;
@@ -64,7 +62,7 @@ Plot::Plot(GLuint pNumPoints, GLenum pDataType)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-Plot::~Plot()
+_Plot::~_Plot()
 {
     CheckGL("Begin Plot::~Plot");
     glDeleteBuffers(1, &mMainVBO);
@@ -72,7 +70,7 @@ Plot::~Plot()
     CheckGL("End Plot::~Plot");
 }
 
-void Plot::setColor(float r, float g, float b)
+void _Plot::setColor(float r, float g, float b)
 {
     mLineColor[0] = clampTo01(r);
     mLineColor[1] = clampTo01(g);
@@ -80,11 +78,11 @@ void Plot::setColor(float r, float g, float b)
     mLineColor[3] = 1.0f;
 }
 
-GLuint Plot::vbo() const { return mMainVBO; }
+GLuint _Plot::vbo() const { return mMainVBO; }
 
-size_t Plot::size() const { return mMainVBOsize; }
+size_t _Plot::size() const { return mMainVBOsize; }
 
-void Plot::render(int pX, int pY, int pVPW, int pVPH) const
+void _Plot::render(int pX, int pY, int pVPW, int pVPH) const
 {
     float graph_scale_x = 1/(xmax() - xmin());
     float graph_scale_y = 1/(ymax() - ymin());
@@ -115,6 +113,52 @@ void Plot::render(int pX, int pY, int pVPW, int pVPH) const
     renderChart(pX, pY, pVPW, pVPH);
 
     CheckGL("End Plot::render");
+}
+
+}
+
+namespace fg
+{
+
+Plot::Plot(GLuint pNumPoints, GLenum pDataType) {
+    value = std::make_shared<internal::_Plot>(pNumPoints, pDataType);
+}
+
+void Plot::setColor(float r, float g, float b) {
+    value.get()->setColor(r, g, b);
+}
+
+void Plot::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin) {
+    value.get()->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
+}
+
+void Plot::setXAxisTitle(const char* pTitle) {
+    value.get()->setXAxisTitle(pTitle);
+}
+
+void Plot::setYAxisTitle(const char* pTitle) {
+    value.get()->setYAxisTitle(pTitle);
+}
+
+float Plot::xmax() const { return value.get()->xmax(); }
+float Plot::xmin() const { return value.get()->xmin(); }
+float Plot::ymax() const { return value.get()->ymax(); }
+float Plot::ymin() const { return value.get()->ymin(); }
+
+GLuint Plot::vbo() const {
+    return value.get()->vbo();
+}
+
+size_t Plot::size() const {
+    return value.get()->size();
+}
+
+internal::_Plot* Plot::get() const {
+    return value.get();
+}
+
+void Plot::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
+    value.get()->render(pX, pY, pViewPortWidth, pViewPortHeight);
 }
 
 }
