@@ -23,29 +23,35 @@ std::string getName(GLenum pType)
     return std::string("test");
 }
 
+void stringcopy(char* dest, const char* src, size_t len)
+{
+#ifdef WINDOWS_OS
+    strncpy_s(dest, len, src, len);
+#else
+    strncpy(dest, src, len);
+#endif
+}
+
 namespace fg
 {
 
 Error::Error(const char * const pFuncName, const int pLine,
              const char * const pMessage, ErrorCode pErrCode)
     : logic_error(pMessage),
-      mFuncName(new char[strlen(pFuncName)+1]), mLineNumber(pLine), mErrCode(pErrCode)
+      mLineNumber(pLine), mErrCode(pErrCode)
 {
     size_t len = strlen(pFuncName);
-    mFuncName = new char[len + 1];
-    strcpy_s(mFuncName, len, pFuncName);
+    stringcopy(mFuncName, pFuncName, len);
     mFuncName[len] = '\0';
 }
 
-const char* const  Error::functionName() const { return mFuncName; }
+const char* Error::functionName() const { return mFuncName; }
 
 int Error::line() const { return mLineNumber; }
 
 ErrorCode Error::err() const { return mErrCode; }
 
-Error::~Error() throw() {
-    delete[] mFuncName;
-}
+Error::~Error() throw() {}
 
 
 TypeError::TypeError(const char * const pFuncName, const int pLine,
@@ -54,18 +60,15 @@ TypeError::TypeError(const char * const pFuncName, const int pLine,
 {
     std::string str = getName(pType); /* TODO getName has to be defined */
     size_t len = str.length();
-    mErrTypeName = new char[len + 1];
-    strcpy_s(mErrTypeName, len, str.c_str());
+    stringcopy(mErrTypeName, str.c_str(), len);
     mErrTypeName[len] = '\0';
 }
 
-const char* const  TypeError::typeName() const { return mErrTypeName; }
+const char* TypeError::typeName() const { return mErrTypeName; }
 
 int TypeError::argIndex() const { return mArgIndex; }
 
-TypeError::~TypeError() throw() {
-    delete[] mErrTypeName;
-}
+TypeError::~TypeError() throw() {}
 
 
 ArgumentError::ArgumentError(const char * const pFuncName,
@@ -75,18 +78,15 @@ ArgumentError::ArgumentError(const char * const pFuncName,
     : Error(pFuncName, pLine, "Invalid argument", FG_ERR_INVALID_ARG), mArgIndex(pIndex)
 {
     size_t len = strlen(pExpectString);
-    mExpected = new char[len + 1];
-    strcpy_s(mExpected, len, pExpectString);
+    stringcopy(mExpected, pExpectString, len);
     mExpected[len] = '\0';
 }
 
-const char* const ArgumentError::expectedCondition() const { return mExpected; }
+const char* ArgumentError::expectedCondition() const { return mExpected; }
 
 int ArgumentError::argIndex() const { return mArgIndex; }
 
-ArgumentError::~ArgumentError() throw() {
-    delete[] mExpected;
-}
+ArgumentError::~ArgumentError() throw() {}
 
 
 DimensionError::DimensionError(const char * const pFuncName,
@@ -96,17 +96,14 @@ DimensionError::DimensionError(const char * const pFuncName,
     : Error(pFuncName, pLine, "Invalid dimension", FG_ERR_SIZE), mArgIndex(pIndex)
 {
     size_t len = strlen(pExpectString);
-    mExpected = new char[len + 1];
-    strcpy_s(mExpected, len,pExpectString);
+    stringcopy(mExpected, pExpectString, len);
     mExpected[len] = '\0';
 }
 
-const char* const DimensionError::expectedCondition() const { return mExpected; }
+const char* DimensionError::expectedCondition() const { return mExpected; }
 
 int DimensionError::argIndex() const { return mArgIndex; }
 
-DimensionError::~DimensionError() throw() {
-    delete[] mExpected;
-}
+DimensionError::~DimensionError() throw() {}
 
 }

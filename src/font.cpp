@@ -222,12 +222,12 @@ void _Font::loadSystemFont(const char* const pName, int pFontSize)
     // use fontconfig to get the file
     FcConfig* config = FcInitLoadConfigAndFonts();
     if (!config) {
-        FT_THROW_ERROR("fontconfig initilization failed", FG_ERR_FREETYPE_ERROR);
+        FT_THROW_ERROR("fontconfig initilization failed", fg::FG_ERR_FREETYPE_ERROR);
     }
     // configure the search pattern,
     FcPattern* pat = FcNameParse((const FcChar8*)(pName));
     if (!pat) {
-        FT_THROW_ERROR("fontconfig pattern creation failed", FG_ERR_FREETYPE_ERROR);
+        FT_THROW_ERROR("fontconfig pattern creation failed", fg::FG_ERR_FREETYPE_ERROR);
     }
 
     FcConfigSubstitute(config, pat, FcMatchPattern);
@@ -365,7 +365,7 @@ internal::_Font* Font::get() const {
     return value.get();
 }
 
-void Font::render(const float pPos[2], const float pColor[4], 
+void Font::render(const float pPos[2], const float pColor[4],
                   const char* pText, int pFontSize, bool pIsVertical) {
     value.get()->render(pPos, pColor, pText, pFontSize, pIsVertical);
 }

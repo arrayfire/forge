@@ -18,7 +18,9 @@ namespace fg
 
 class FGAPI Error : public std::logic_error
 {
-    char*       mFuncName;
+    static const int MAX_STR_LEN = 1024;
+
+    char        mFuncName[MAX_STR_LEN];
     int         mLineNumber;
     ErrorCode   mErrCode;
 
@@ -28,7 +30,7 @@ public:
 
     Error(const char * const pFuncName, int pLine, const char * const pMessage, ErrorCode pErrCode);
 
-    const char* const functionName() const;
+    const char* functionName() const;
 
     int line() const;
 
@@ -56,7 +58,7 @@ public:
               const int pIndex,
               const GLenum pType);
 
-    const char* const typeName() const;
+    const char* typeName() const;
 
     int argIndex() const;
 
@@ -76,7 +78,7 @@ public:
                   const int pIndex,
                   const char * const pExpectString);
 
-    const char* const expectedCondition() const;
+    const char* expectedCondition() const;
 
     int argIndex() const;
 
@@ -96,7 +98,7 @@ public:
                    const int pIndex,
                    const char * const pExpectString);
 
-    const char* const expectedCondition() const;
+    const char* expectedCondition() const;
 
     int argIndex() const;
 
