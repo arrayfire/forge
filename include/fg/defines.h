@@ -70,17 +70,6 @@ typedef Display* DisplayHandle;
 // along with the GLEW_MX define in the perprocessor!
 FGAPI GLEWContext* glewGetContext();
 
-namespace internal
-{
-
-class _Window;
-class _Font;
-class _Image;
-class _Plot;
-class _Histogram;
-
-}
-
 namespace fg
 {
 

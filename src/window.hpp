@@ -9,69 +9,91 @@
 
 #pragma once
 
-#include <common.hpp>
+#include <fg/font.h>
+#include <fg/image.h>
+#include <fg/plot.h>
+#include <fg/histogram.h>
 
+#include <common.hpp>
 #include <font.hpp>
 #include <image.hpp>
 #include <plot.hpp>
 #include <histogram.hpp>
 
+#include <memory>
+
 namespace internal
 {
 
-enum Renderable {
-    FG_IMAGE = 1,
-    FG_PLOT = 2,
-    FG_HIST = 3
+struct window_impl {
+    ContextHandle mCxt;
+    DisplayHandle mDsp;
+    int           mID;
+    int           mWidth;
+    int           mHeight;
+    GLFWwindow*   mWindow;
+    int           mRows;
+    int           mCols;
+    int           mCellWidth;
+    int           mCellHeight;
+    GLEWContext*  mGLEWContext;
+    fg::Font*     mFont;
+
+    window_impl(int pWidth, int pHeight, const char* pTitle)
+        : mWidth(pWidth), mHeight(pHeight), mWindow(nullptr),
+        mRows(0), mCols(0) {
+    }
+    ~window_impl() {
+        glfwDestroyWindow(mWindow);
+    }
+
+    inline void setGrid(int rows, int cols) {
+        mRows = rows;
+        mCols = cols;
+    }
+
+    inline void setCellDims(int w, int h) {
+        mCellWidth = w;
+        mCellHeight = h;
+    }
+
+    inline int rows() const { return mRows; }
+    inline int cols() const { return mCols; }
+    inline int cellw() const { return mCellWidth; }
+    inline int cellh() const { return mCellHeight; }
 };
 
 class _Window {
     private:
-        ContextHandle mCxt;
-        DisplayHandle mDsp;
-        int           mID;
-
-        int           mWidth;
-        int           mHeight;
-        GLFWwindow*   mWindow;
-        _Font*         mFont;
-        int           mRows;
-        int           mCols;
-        int           mCellWidth;
-        int           mCellHeight;
-
-        /* single context for all windows */
-        GLEWContext* mGLEWContext;
-
-    protected:
         _Window() {}
 
     public:
-        _Window(int pWidth, int pHeight, const char* pTitle,
-            const _Window* pWindow = NULL, const bool invisible = false);
-        ~_Window();
+        std::shared_ptr<window_impl> wnd;
 
-        void setFont(internal::_Font* pFont) { mFont = pFont; }
+        _Window(int pWidth, int pHeight, const char* pTitle,
+            std::weak_ptr<_Window> pWindow, const bool invisible = false);
+
+        void setFont(fg::Font* pFont) { wnd->mFont = pFont; }
         void setTitle(const char* pTitle);
         void setPos(int pX, int pY);
 
         void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
 
-        ContextHandle context() const { return mCxt; }
-        DisplayHandle display() const { return mDsp; }
-        int width() const { return mWidth; }
-        int height() const { return mHeight; }
-        GLFWwindow* window() const { return mWindow; }
-        GLEWContext* glewContext() const { return mGLEWContext; }
+        ContextHandle context() const { return wnd->mCxt; }
+        DisplayHandle display() const { return wnd->mDsp; }
+        int width() const { return wnd->mWidth; }
+        int height() const { return wnd->mHeight; }
+        GLEWContext* glewContext() const { return wnd->mGLEWContext; }
+        GLFWwindow* get() const { return wnd->mWindow; }
 
-        void hide() { glfwHideWindow(mWindow); }
-        void show() { glfwShowWindow(mWindow); }
-        bool close() { return glfwWindowShouldClose(mWindow)!=0; }
+        void hide() { glfwHideWindow(wnd->mWindow); }
+        void show() { glfwShowWindow(wnd->mWindow); }
+        bool close() { return glfwWindowShouldClose(wnd->mWindow) != 0; }
 
         /* draw functions */
-        void draw(const internal::_Image* pImage);
-        void draw(const internal::_Plot* pPlot);
-        void draw(const internal::_Histogram* pHist);
+        void draw(const fg::Image& pImage);
+        void draw(const fg::Plot& pPlot);
+        void draw(const fg::Histogram& pHist);
 
         /* if the window render area is used to display
         * multiple Forge objects such as Image, Histogram, Plot etc
@@ -79,9 +101,9 @@ class _Window {
         void grid(int pRows, int pCols);
         /* below draw call uses zero-based indexing
         * for referring to cells within the grid */
-        void draw(int pColId, int pRowId,
-            const void* pRenderablePtr, Renderable pType,
-            const char* pTitle = NULL);
+        template<typename T>
+        void draw(int pColId, int pRowId, const T& pRenderable, const char* pTitle = NULL);
+
         void draw();
 };
 

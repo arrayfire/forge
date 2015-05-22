@@ -10,17 +10,22 @@
 #pragma once
 
 #include <fg/defines.h>
-#include <memory>
+
+namespace internal
+{
+class _Plot;
+}
 
 namespace fg
 {
 
 class Plot {
     private:
-        std::shared_ptr<internal::_Plot> value;
+        internal::_Plot* value;
 
     public:
         FGAPI Plot(GLuint pNumPoints, GLenum pDataType);
+        FGAPI ~Plot();
 
         FGAPI void setColor(float r, float g, float b);
         FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);

@@ -42,8 +42,8 @@ static GLuint gCanvasVAO = 0;
 namespace internal
 {
 
-_Image::_Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType)
-: mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType)
+image_impl::image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType)
+    : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType)
 {
     CheckGL("Begin Image::Image");
     mGLformat = FGMode_to_GLColor(mFormat);
@@ -114,26 +114,14 @@ _Image::_Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum 
     CheckGL("End Image::Image");
 }
 
-_Image::~_Image()
+image_impl::~image_impl()
 {
     glDeleteBuffers(1, &mPBO);
     glDeleteTextures(1, &mTex);
     glDeleteProgram(mProgram);
 }
 
-unsigned _Image::width() const { return mWidth; }
-
-unsigned _Image::height() const { return mHeight; }
-
-fg::ColorMode _Image::pixelFormat() const { return mFormat; }
-
-GLenum _Image::channelType() const { return mDataType; }
-
-GLuint _Image::pbo() const { return mPBO; }
-
-size_t _Image::size() const { return mPBOsize; }
-
-void _Image::render() const
+void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
 {
     static const float matrix[16] = {
         1.0f, 0.0f, 0.0f, 0.0f,
@@ -154,7 +142,8 @@ void _Image::render() const
     glBindTexture(GL_TEXTURE_2D, mTex);
     // bind PBO to load data into texture
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, mGLformat, mDataType, 0);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight,
+                    mGLformat, mDataType, 0);
 
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, matrix);
 
@@ -177,39 +166,43 @@ namespace fg
 {
 
 Image::Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType) {
-    value = std::make_shared<internal::_Image>(pWidth, pHeight, pFormat, pDataType);
+    value = new internal::_Image(pWidth, pHeight, pFormat, pDataType);
+}
+
+Image::~Image() {
+    delete value;
 }
 
 unsigned Image::width() const {
-    return value.get()->width();
+    return value->width();
 }
 
 unsigned Image::height() const {
-    return value.get()->height();
+    return value->height();
 }
 
 ColorMode Image::pixelFormat() const {
-    return value.get()->pixelFormat();
+    return value->pixelFormat();
 }
 
 GLenum Image::channelType() const {
-    return value.get()->channelType();
+    return value->channelType();
 }
 
 GLuint Image::pbo() const {
-    return value.get()->pbo();
+    return value->pbo();
 }
 
 size_t Image::size() const {
-    return value.get()->size();
+    return value->size();
 }
 
 internal::_Image* Image::get() const {
-    return value.get();
+    return value;
 }
 
-void Image::render() const {
-    value.get()->render();
+void Image::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
+    value->render(pX, pY, pViewPortWidth, pViewPortHeight);
 }
 
 }

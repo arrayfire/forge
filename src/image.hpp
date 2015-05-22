@@ -10,35 +10,46 @@
 #pragma once
 
 #include <common.hpp>
+#include <memory>
 
 namespace internal
 {
 
+struct image_impl {
+    unsigned  mWidth;
+    unsigned  mHeight;
+    fg::ColorMode mFormat;
+    GLenum    mGLformat;
+    GLenum    mDataType;
+    /* internal resources for interop */
+    size_t   mPBOsize;
+    GLuint   mPBO;
+    GLuint   mTex;
+    GLuint   mProgram;
+
+    image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType);
+    ~image_impl();
+    void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
+};
+
 class _Image {
     private:
-        unsigned  mWidth;
-        unsigned  mHeight;
-        fg::ColorMode mFormat;
-        GLenum    mGLformat;
-        GLenum    mDataType;
-        /* internal resources for interop */
-        size_t   mPBOsize;
-        GLuint   mPBO;
-        GLuint   mTex;
-        GLuint   mProgram;
+        std::shared_ptr<image_impl> img;
 
     public:
-        _Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType);
-        ~_Image();
+        _Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType)
+            : img(std::make_shared<image_impl>(pWidth, pHeight, pFormat, pDataType)) {}
 
-        unsigned width() const;
-        unsigned height() const;
-        fg::ColorMode pixelFormat() const;
-        GLenum channelType() const;
-        GLuint pbo() const;
-        size_t size() const;
+        unsigned width() const { return img->mWidth; }
+        unsigned height() const { return img->mHeight; }
+        fg::ColorMode pixelFormat() const { return img->mFormat; }
+        GLenum channelType() const { return img->mDataType; }
+        GLuint pbo() const { return img->mPBO; }
+        size_t size() const { return img->mPBOsize; }
 
-        void render() const;
+        inline void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
+            img->render(pX, pY, pViewPortWidth, pViewPortHeight);
+        }
 };
 
 }

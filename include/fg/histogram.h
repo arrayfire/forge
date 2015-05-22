@@ -10,17 +10,21 @@
 #pragma once
 
 #include <fg/defines.h>
-#include <memory>
 
+namespace internal
+{
+class _Histogram;
+}
 namespace fg
 {
 
 class Histogram {
     private:
-        std::shared_ptr<internal::_Histogram> value;
+        internal::_Histogram* value;
 
     public:
         FGAPI Histogram(GLuint pNBins, GLenum pDataType);
+        FGAPI ~Histogram();
 
         FGAPI void setBarColor(float r, float g, float b);
         FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);

@@ -52,8 +52,8 @@ const char *gHistBarFragmentShaderSrc =
 namespace internal
 {
 
-_Histogram::_Histogram(GLuint pNBins, GLenum pDataType)
-    : _Chart(), mDataType(pDataType), mNBins(pNBins),
+hist_impl::hist_impl(GLuint pNBins, GLenum pDataType)
+ : _Chart(), mDataType(pDataType), mNBins(pNBins),
     mHistogramVAO(0), mHistogramVBO(0), mHistogramVBOSize(0), mHistBarProgram(0),
     mHistBarMatIndex(0), mHistBarColorIndex(0), mHistBarYMaxIndex(0)
 {
@@ -104,7 +104,7 @@ _Histogram::_Histogram(GLuint pNBins, GLenum pDataType)
     CheckGL("End Histogram::Histogram");
 }
 
-_Histogram::~_Histogram()
+hist_impl::~hist_impl()
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDeleteBuffers(1, &mHistogramVBO);
@@ -112,19 +112,7 @@ _Histogram::~_Histogram()
     glDeleteProgram(mHistBarProgram);
 }
 
-void _Histogram::setBarColor(float r, float g, float b)
-{
-    mBarColor[0] = r;
-    mBarColor[1] = g;
-    mBarColor[2] = b;
-    mBarColor[3] = 1.0f;
-}
-
-GLuint _Histogram::vbo() const { return mHistogramVBO; }
-
-size_t _Histogram::size() const { return mHistogramVBOSize; }
-
-void _Histogram::render(int pX, int pY, int pVPW, int pVPH) const
+void hist_impl::render(int pX, int pY, int pVPW, int pVPH) const
 {
     float w = float(pVPW - (leftMargin()+rightMargin()+tickSize()));
     float h = float(pVPH - (bottomMargin()+topMargin()+tickSize()));
@@ -173,44 +161,48 @@ namespace fg
 {
 
 Histogram::Histogram(GLuint pNBins, GLenum pDataType) {
-    value = std::make_shared<internal::_Histogram>(pNBins, pDataType);
+    value = new internal::_Histogram(pNBins, pDataType);
+}
+
+Histogram::~Histogram() {
+    delete value;
 }
 
 void Histogram::setBarColor(float r, float g, float b) {
-    value.get()->setBarColor(r, g, b);
+    value->setBarColor(r, g, b);
 }
 
 void Histogram::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin) {
-    value.get()->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
+    value->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
 }
 
 void Histogram::setXAxisTitle(const char* pTitle) {
-    value.get()->setXAxisTitle(pTitle);
+    value->setXAxisTitle(pTitle);
 }
 
 void Histogram::setYAxisTitle(const char* pTitle) {
-    value.get()->setYAxisTitle(pTitle);
+    value->setYAxisTitle(pTitle);
 }
 
-float Histogram::xmax() const { return value.get()->xmax(); }
-float Histogram::xmin() const { return value.get()->xmin(); }
-float Histogram::ymax() const { return value.get()->ymax(); }
-float Histogram::ymin() const { return value.get()->ymin(); }
+float Histogram::xmax() const { return value->xmax(); }
+float Histogram::xmin() const { return value->xmin(); }
+float Histogram::ymax() const { return value->ymax(); }
+float Histogram::ymin() const { return value->ymin(); }
 
 GLuint Histogram::vbo() const{
-    return value.get()->vbo();
+    return value->vbo();
 }
 
 size_t Histogram::size() const {
-    return value.get()->size();
+    return value->size();
 }
 
 internal::_Histogram* Histogram::get() const {
-    return value.get();
+    return value;
 }
 
 void Histogram::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
-    value.get()->render(pX, pY, pViewPortWidth, pViewPortHeight);
+    value->render(pX, pY, pViewPortWidth, pViewPortHeight);
 }
 
 }

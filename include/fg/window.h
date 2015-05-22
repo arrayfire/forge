@@ -14,18 +14,26 @@
 #include <fg/image.h>
 #include <fg/plot.h>
 #include <fg/histogram.h>
-#include <memory>
+
+namespace internal
+{
+class _Window;
+}
 
 namespace fg
 {
 
 class Window {
     private:
-        std::shared_ptr<internal::_Window> value;
+        internal::_Window* value;
+
+        Window() {}
 
     public:
         FGAPI Window(int pWidth, int pHeight, const char* pTitle,
-                    const Window* pWindow=NULL, const bool invisible=false);
+                    const Window* pWindow=nullptr, const bool invisible = false);
+        FGAPI Window(const Window& other);
+        FGAPI ~Window() { delete value; }
 
         FGAPI void setFont(Font* pFont);
         FGAPI void setTitle(const char* pTitle);
@@ -35,8 +43,6 @@ class Window {
         FGAPI DisplayHandle display() const;
         FGAPI int width() const;
         FGAPI int height() const;
-        FGAPI GLFWwindow* window() const;
-        FGAPI GLEWContext* glewContext() const;
         FGAPI internal::_Window* get() const;
         
         FGAPI void makeCurrent();

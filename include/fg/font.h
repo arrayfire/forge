@@ -9,17 +9,22 @@
 
 #pragma once
 #include <fg/defines.h>
-#include <memory>
+
+namespace internal
+{
+class _Font;
+}
 
 namespace fg
 {
 
 class Font {
     private:
-        std::shared_ptr<internal::_Font> value;
+        internal::_Font* value;
 
     public:
         FGAPI Font();
+        FGAPI ~Font();
 
         FGAPI void loadFont(const char* const pFile, int pFontSize);
         FGAPI void loadSystemFont(const char* const pName, int pFontSize);

@@ -10,17 +10,22 @@
 #pragma once
 
 #include <fg/defines.h>
-#include <memory>
+
+namespace internal
+{
+class _Image;
+}
 
 namespace fg
 {
 
 class Image {
     private:
-        std::shared_ptr<internal::_Image> value;
+        internal::_Image* value;
 
     public:
         FGAPI Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType);
+        FGAPI ~Image();
 
         FGAPI unsigned width() const;
         FGAPI unsigned height() const;
@@ -30,7 +35,7 @@ class Image {
         FGAPI size_t size() const;
         FGAPI internal::_Image* get() const;
 
-        FGAPI void render() const;
+        FGAPI void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
 };
 
 }

@@ -14,7 +14,6 @@
 #include <cmath>
 #include <algorithm>
 
-#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
@@ -28,6 +27,9 @@
 #include <fontconfig/fontconfig.h>
 #endif
 
+/* freetype library types */
+static FT_Library  gFTLib;
+static FT_Face     gFTFace;
 
 static const char* gFontVertShader =
 "#version 330\n"
@@ -55,9 +57,8 @@ static const char* gFontFragShader =
 "    outputColor = alpha*textColor;\n"
 "}\n";
 
-/* freetype library types */
-static FT_Library  gFTLib;
-static FT_Face     gFTFace;
+static const int START_CHAR = 32;
+static const int END_CHAR = 127;
 
 namespace internal
 {
@@ -65,7 +66,7 @@ namespace internal
 #define FT_THROW_ERROR(msg, err) \
     throw fg::Error("Freetype library", __LINE__, msg, err);
 
-void _Font::extractGlyph(int pCharacter)
+void font_impl::extractGlyph(int pCharacter)
 {
     FT_Load_Glyph(gFTFace, FT_Get_Char_Index(gFTFace, pCharacter), FT_LOAD_DEFAULT);
     FT_Render_Glyph(gFTFace->glyph, FT_RENDER_MODE_NORMAL);
@@ -128,23 +129,11 @@ void _Font::extractGlyph(int pCharacter)
     }
 }
 
-void _Font::destroyGLResources()
-{
-    if (mIsFontLoaded) {
-        if (mProgram) glDeleteProgram(mProgram);
-        if (mVAO) glDeleteVertexArrays(1, &mVAO);
-        if (mVBO) glDeleteBuffers(1, &mVBO);
-        glDeleteTextures(NUM_CHARS, mCharTextures);
-    }
-}
-
-_Font::_Font()
-    : mIsFontLoaded(false), mTTFfile(""), mVAO(0), mVBO(0), mProgram(0), mSampler(0)
-{
+font_impl::font_impl()
+    :   mIsFontLoaded(false), mTTFfile(""), mVAO(0),
+        mVBO(0), mProgram(0), mSampler(0) {
     mProgram = initShaders(gFontVertShader, gFontFragShader);
-
     memset(mCharTextures, 0, NUM_CHARS);
-
     glGenSamplers(1, &mSampler);
     glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -152,24 +141,34 @@ _Font::_Font()
     glSamplerParameteri(mSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
-_Font::~_Font()
+void font_impl::destroyGLResources()
 {
-    destroyGLResources();
+    if (mIsFontLoaded) {
+        if (mProgram) glDeleteProgram(mProgram);
+        if (mVAO) glDeleteVertexArrays(1, &mVAO);
+        if (mVBO) glDeleteBuffers(1, &mVBO);
+        glDeleteTextures(NUM_CHARS, mCharTextures);
+    }
     if (mProgram) glDeleteProgram(mProgram);
     if (mSampler) glDeleteSamplers(1, &mSampler);
 }
 
+font_impl::~font_impl()
+{
+    destroyGLResources();
+}
+
 void _Font::loadFont(const char* const pFile, int pFontSize)
 {
-    if (mIsFontLoaded) {
-        if (pFile==mTTFfile)
+    if (fnt->isReady()) {
+        if (pFile==fnt->fontfile())
             return;
         else {
-            destroyGLResources();
-            mIsFontLoaded = false;
+            fnt->destroyGLResources();
+            fnt->setReady(false);
         }
     }
-    mLoadedPixelSize = pFontSize;
+    fnt->setPixelSize(pFontSize);
 
     CheckGL("Begin Font::loadFont");
     // Initialize freetype font library
@@ -190,26 +189,28 @@ void _Font::loadFont(const char* const pFile, int pFontSize)
 
     // read font glyphs for only characters
     // from ' ' to '~'
-    for (int i=START_CHAR; i<END_CHAR; ++i) extractGlyph(i);
+    for (int i=START_CHAR; i<END_CHAR; ++i) fnt->extractGlyph(i);
 
     FT_Done_Face(gFTFace);
     FT_Done_FreeType(gFTLib);
 
     GLsizei size = sizeof(glm::vec2);
 
-    mVBO = createBuffer<float>(mVertexData.size(), &mVertexData.front(), GL_STATIC_DRAW);
+    fnt->setVBO( createBuffer<float>(fnt->mVertexData.size(), &(fnt->mVertexData.front()), GL_STATIC_DRAW) );
 
-    glGenVertexArrays(1, &mVAO);
-    glBindVertexArray(mVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    GLuint temp = 0;
+    glGenVertexArrays(1, &temp);
+    glBindVertexArray(temp);
+    glBindBuffer(GL_ARRAY_BUFFER, fnt->vbo());
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, size*2, 0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, (void*)(size));
     glBindVertexArray(0);
+    fnt->setVAO(temp);
 
-    mIsFontLoaded = true;
-    mTTFfile = pFile;
+    fnt->setReady(true);
+    fnt->setFontFile(pFile);
     CheckGL("End Font::loadFont");
 }
 
@@ -262,34 +263,34 @@ void _Font::loadSystemFont(const char* const pName, int pFontSize)
 
 void _Font::setOthro2D(int pWidth, int pHeight)
 {
-    mHeight = pHeight;
-    mWidth = pWidth;
+    fnt->setOthro2D(pWidth, pHeight);
 }
 
 void _Font::render(const float pPos[], const float pColor[], const char* pText, int pFontSize, bool pIsVertical)
 {
-    if(!mIsFontLoaded)return;
+    if(!fnt->mIsFontLoaded)
+        return;
 
     glDisable(GL_DEPTH_TEST);
     glDepthFunc(GL_ALWAYS);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glUseProgram(mProgram);
-    GLuint pmat_loc = glGetUniformLocation(mProgram, "projectionMatrix");
-    GLuint mvmat_loc = glGetUniformLocation(mProgram, "modelViewMatrix");
-    GLuint tex_loc = glGetUniformLocation(mProgram, "tex");
-    GLuint col_loc = glGetUniformLocation(mProgram, "textColor");
+    glUseProgram(fnt->prog());
+    GLuint pmat_loc = glGetUniformLocation(fnt->prog(), "projectionMatrix");
+    GLuint mvmat_loc = glGetUniformLocation(fnt->prog(), "modelViewMatrix");
+    GLuint tex_loc = glGetUniformLocation(fnt->prog(), "tex");
+    GLuint col_loc = glGetUniformLocation(fnt->prog(), "textColor");
 
-    glm::mat4 projMat = glm::ortho(0.0f, float(mWidth), 0.0f, float(mHeight));
+    glm::mat4 projMat = glm::ortho(0.0f, float(fnt->width()), 0.0f, float(fnt->height()));
 
     glUniformMatrix4fv(pmat_loc, 1, GL_FALSE, (GLfloat*)&projMat);
     glUniform4fv(col_loc, 1, pColor);
 
     int loc_x = int(pPos[0]);
     int loc_y = int(pPos[1]);
-    if(pFontSize == -1)pFontSize = mLoadedPixelSize;
-    float scale_factor = float(pFontSize)/float(mLoadedPixelSize);
+    if(pFontSize == -1)pFontSize = fnt->pixelSize();
+    float scale_factor = float(pFontSize)/float(fnt->pixelSize());
 
     std::string str(pText);
     for (std::string::iterator it = str.begin(); it != str.end(); ++it) {
@@ -298,16 +299,16 @@ void _Font::render(const float pPos[], const float pColor[], const char* pText, 
         if(currChar == '\n') {
             // if it is new line, move location to next line
             loc_x = int(pPos[0]);
-            loc_y -= mNewLine*pFontSize/mLoadedPixelSize;
+            loc_y -= fnt->newline() * pFontSize / fnt->pixelSize();
         } else if (currChar <= '~' && currChar >= ' ') {
             // regular characters are rendered as textured quad
             int idx = int(currChar) - START_CHAR;
-            loc_x += mBearingX[idx]*pFontSize/mLoadedPixelSize;
+            loc_x += fnt->mBearingX[idx]*pFontSize / fnt->pixelSize();
 
             glActiveTexture(GL_TEXTURE0);
             glUniform1i(tex_loc, 0);
-            glBindTexture(GL_TEXTURE_2D, mCharTextures[idx]);
-            glBindSampler(0, mSampler);
+            glBindTexture(GL_TEXTURE_2D, fnt->mCharTextures[idx]);
+            glBindSampler(0, fnt->sampler());
 
             /* rotate by 90 degress if we need
              * to render the characters vertically */
@@ -318,19 +319,19 @@ void _Font::render(const float pPos[], const float pColor[], const char* pText, 
             glUniformMatrix4fv(mvmat_loc, 1, GL_FALSE, (GLfloat*)&modelView);
 
             // Draw letter
-            glBindVertexArray(mVAO);
+            glBindVertexArray(fnt->vao());
             glDrawArrays(GL_TRIANGLE_STRIP, idx*4, 4);
             CheckGL("Draw pCharacter");
             glBindVertexArray(0);
 
-            loc_x += (mAdvX[idx]-mBearingX[idx])*pFontSize/mLoadedPixelSize;
+            loc_x += (fnt->mAdvX[idx]-fnt->mBearingX[idx])*pFontSize/fnt->pixelSize();
         }
         /* if the text needs to be rendered vertically,
          * move the pen cursor to next line after each
          * character render mandatorily */
         if (pIsVertical) {
             loc_x = int(pPos[0]);
-            loc_y -= mNewLine*pFontSize/mLoadedPixelSize;
+            loc_y -= fnt->newline()*pFontSize/fnt->pixelSize();
         }
     }
 
@@ -346,28 +347,32 @@ namespace fg
 {
 
 Font::Font() {
-    value = std::make_shared<internal::_Font>();
+    value = new internal::_Font();
+}
+
+Font::~Font() {
+    delete value;
 }
 
 void Font::loadFont(const char* const pFile, int pFontSize) {
-    value.get()->loadFont(pFile, pFontSize);
+    value->loadFont(pFile, pFontSize);
 }
 
 void Font::loadSystemFont(const char* const pName, int pFontSize) {
-    value.get()->loadSystemFont(pName, pFontSize);
+    value->loadSystemFont(pName, pFontSize);
 }
 
 void Font::setOthro2D(int pWidth, int pHeight) {
-    value.get()->setOthro2D(pWidth, pHeight);
+    value->setOthro2D(pWidth, pHeight);
 }
 
 internal::_Font* Font::get() const {
-    return value.get();
+    return value;
 }
 
 void Font::render(const float pPos[2], const float pColor[4],
                   const char* pText, int pFontSize, bool pIsVertical) {
-    value.get()->render(pPos, pColor, pText, pFontSize, pIsVertical);
+    value->render(pPos, pColor, pText, pFontSize, pIsVertical);
 }
 
 }
