@@ -31,9 +31,9 @@ class Window {
 
     public:
         FGAPI Window(int pWidth, int pHeight, const char* pTitle,
-                    const Window* pWindow=nullptr, const bool invisible = false);
+                    const Window* pWindow=NULL, const bool invisible = false);
         FGAPI Window(const Window& other);
-        FGAPI ~Window() { delete value; }
+        FGAPI ~Window();
 
         FGAPI void setFont(Font* pFont);
         FGAPI void setTitle(const char* pTitle);
@@ -44,7 +44,7 @@ class Window {
         FGAPI int width() const;
         FGAPI int height() const;
         FGAPI internal::_Window* get() const;
-        
+
         FGAPI void makeCurrent();
         FGAPI void hide();
         FGAPI void show();

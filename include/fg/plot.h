@@ -25,6 +25,7 @@ class Plot {
 
     public:
         FGAPI Plot(GLuint pNumPoints, GLenum pDataType);
+        FGAPI Plot(const Plot& other);
         FGAPI ~Plot();
 
         FGAPI void setColor(float r, float g, float b);

@@ -24,7 +24,7 @@ void MakeContextCurrent(internal::_Window* pWindow)
     if (pWindow != NULL)
     {
         glfwMakeContextCurrent((GLFWwindow*)pWindow->get());
-        current = pWindow->wnd;
+        current = pWindow->impl();
     }
     CheckGL("End MakeContextCurrent");
 }
@@ -299,7 +299,10 @@ Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindo
     }
 }
 
+Window::~Window() { delete value; }
+
 Window::Window(const Window& other) {
+    value = new internal::_Window(*other.get());
 }
 
 void Window::setFont(Font* pFont) {

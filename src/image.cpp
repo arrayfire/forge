@@ -169,6 +169,10 @@ Image::Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pD
     value = new internal::_Image(pWidth, pHeight, pFormat, pDataType);
 }
 
+Image::Image(const Image& other) {
+    value = new internal::_Image(*other.get());
+}
+
 Image::~Image() {
     delete value;
 }

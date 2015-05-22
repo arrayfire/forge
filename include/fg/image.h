@@ -25,6 +25,7 @@ class Image {
 
     public:
         FGAPI Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType);
+        FGAPI Image(const Image& other);
         FGAPI ~Image();
 
         FGAPI unsigned width() const;

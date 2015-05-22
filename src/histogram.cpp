@@ -164,6 +164,10 @@ Histogram::Histogram(GLuint pNBins, GLenum pDataType) {
     value = new internal::_Histogram(pNBins, pDataType);
 }
 
+Histogram::Histogram(const Histogram& other) {
+    value = new internal::_Histogram(*other.get());
+}
+
 Histogram::~Histogram() {
     delete value;
 }

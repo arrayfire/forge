@@ -350,6 +350,10 @@ Font::Font() {
     value = new internal::_Font();
 }
 
+Font::Font(const Font& other) {
+    value = new internal::_Font(*other.get());
+}
+
 Font::~Font() {
     delete value;
 }

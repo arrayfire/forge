@@ -24,6 +24,7 @@ class Histogram {
 
     public:
         FGAPI Histogram(GLuint pNBins, GLenum pDataType);
+        FGAPI Histogram(const Histogram& other);
         FGAPI ~Histogram();
 
         FGAPI void setBarColor(float r, float g, float b);

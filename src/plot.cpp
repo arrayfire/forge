@@ -112,6 +112,10 @@ Plot::Plot(GLuint pNumPoints, GLenum pDataType) {
     value = new internal::_Plot(pNumPoints, pDataType);
 }
 
+Plot::Plot(const Plot& other) {
+    value = new internal::_Plot(*other.get());
+}
+
 Plot::~Plot() {
     delete value;
 }

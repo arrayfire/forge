@@ -65,10 +65,11 @@ struct window_impl {
 
 class _Window {
     private:
+        std::shared_ptr<window_impl> wnd;
+
         _Window() {}
 
     public:
-        std::shared_ptr<window_impl> wnd;
 
         _Window(int pWidth, int pHeight, const char* pTitle,
             std::weak_ptr<_Window> pWindow, const bool invisible = false);
@@ -85,6 +86,7 @@ class _Window {
         int height() const { return wnd->mHeight; }
         GLEWContext* glewContext() const { return wnd->mGLEWContext; }
         GLFWwindow* get() const { return wnd->mWindow; }
+        std::shared_ptr<window_impl> impl() const { return wnd; }
 
         void hide() { glfwHideWindow(wnd->mWindow); }
         void show() { glfwShowWindow(wnd->mWindow); }
