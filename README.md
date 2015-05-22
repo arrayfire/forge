@@ -1,12 +1,20 @@
 Forge - High Performance Visualizations
-=======================================
+---------------------------------------
 
-A prototype of the graphics interop library that can be used with ArrayFire.
+A prototype of the OpenGL interop library that can be used with ArrayFire. The goal of `Forge` is to provide high performance OpenGL visualizations for C/C++ applications that use CUDA/OpenCL.
 
 ### Build Status
-|                 | Build           |
+|   Platform              | Build           |
 |-----------------|-----------------|
 | Linux x86       | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge-linux)](http://ci.arrayfire.org/job/forge-linux)      |
 | Linux Tegra     | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge-tegra)](http://ci.arrayfire.org/job/forge-tegra)      |
 | Windows         | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge-windows)](http://ci.arrayfire.org/job/forge-windows)  |
 | OSX             | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge-osx)](http://ci.arrayfire.org/job/forge-osx)          |
+
+### Dependencies
+* [GLEW](http://glew.sourceforge.net/)
+* [GLFW](http://www.glfw.org/)
+* [freetype](http://www.freetype.org/)
+* On `Linux` and `OS X`, [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) is required.
+
+Above dependecies are available through package managers on most of the Unix/Linux based distributions. We have provided an option in `CMake` for `Forge` to build it's own internal `freetype` version if you choose to not install it on your machine.
