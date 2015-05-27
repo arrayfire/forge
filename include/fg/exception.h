@@ -13,14 +13,14 @@
 #include <iostream>
 #include <stdexcept>
 
+static const int MAX_ERR_STR_LEN = 1024;
+
 namespace fg
 {
 
 class FGAPI Error : public std::logic_error
 {
-    static const int MAX_STR_LEN = 1024;
-
-    char        mFuncName[MAX_STR_LEN];
+    char        mFuncName[MAX_ERR_STR_LEN];
     int         mLineNumber;
     ErrorCode   mErrCode;
 

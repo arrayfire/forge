@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 #include <string.h>
 
 using std::string;
@@ -26,7 +27,7 @@ std::string getName(GLenum pType)
 void stringcopy(char* dest, const char* src, size_t len)
 {
 #ifdef WINDOWS_OS
-    strncpy_s(dest, len, src, len);
+    strncpy_s(dest, MAX_ERR_STR_LEN, src, len);
 #else
     strncpy(dest, src, len);
 #endif
@@ -40,7 +41,7 @@ Error::Error(const char * const pFuncName, const int pLine,
     : logic_error(pMessage),
       mLineNumber(pLine), mErrCode(pErrCode)
 {
-    size_t len = strlen(pFuncName);
+    size_t len = std::min(MAX_ERR_STR_LEN - 1, (int)strlen(pFuncName));
     stringcopy(mFuncName, pFuncName, len);
     mFuncName[len] = '\0';
 }
@@ -59,7 +60,7 @@ TypeError::TypeError(const char * const pFuncName, const int pLine,
     : Error(pFuncName, pLine, "Invalid data type", FG_ERR_INVALID_TYPE), mArgIndex(pIndex)
 {
     std::string str = getName(pType); /* TODO getName has to be defined */
-    size_t len = str.length();
+    size_t len = std::min(MAX_ERR_STR_LEN - 1, (int)str.length());
     stringcopy(mErrTypeName, str.c_str(), len);
     mErrTypeName[len] = '\0';
 }
@@ -77,7 +78,7 @@ ArgumentError::ArgumentError(const char * const pFuncName,
                              const char * const pExpectString)
     : Error(pFuncName, pLine, "Invalid argument", FG_ERR_INVALID_ARG), mArgIndex(pIndex)
 {
-    size_t len = strlen(pExpectString);
+    size_t len = std::min(MAX_ERR_STR_LEN - 1, (int)strlen(pExpectString));
     stringcopy(mExpected, pExpectString, len);
     mExpected[len] = '\0';
 }
@@ -95,7 +96,7 @@ DimensionError::DimensionError(const char * const pFuncName,
                                const char * const pExpectString)
     : Error(pFuncName, pLine, "Invalid dimension", FG_ERR_SIZE), mArgIndex(pIndex)
 {
-    size_t len = strlen(pExpectString);
+    size_t len = std::min(MAX_ERR_STR_LEN - 1, (int)strlen(pExpectString));
     stringcopy(mExpected, pExpectString, len);
     mExpected[len] = '\0';
 }
