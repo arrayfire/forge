@@ -67,6 +67,7 @@ void hist_impl::bindResources() const
 
 void hist_impl::unbindResources() const
 {
+    glVertexAttribDivisor(mFreqIndex, 0);
     glDisableVertexAttribArray(mPointIndex);
     glDisableVertexAttribArray(mFreqIndex);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

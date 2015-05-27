@@ -40,6 +40,11 @@ class font_impl {
          * ASCII character pointed by pIndex*/
         void extractGlyph(int pIndex);
 
+        /* helper functions to bind and unbind
+         * rendering resources */
+        void bindResources() const;
+        void unbindResources() const;
+
         /* helper to destroy GL objects created for
          * given font face and size if required */
         void destroyGLResources();

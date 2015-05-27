@@ -129,6 +129,24 @@ void font_impl::extractGlyph(int pCharacter)
     }
 }
 
+void font_impl::bindResources() const
+{
+    GLsizei size = sizeof(glm::vec2);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, size*2, 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, (void*)(size));
+}
+
+void font_impl::unbindResources() const
+{
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void font_impl::destroyGLResources()
 {
     if (mIsFontLoaded) {
@@ -283,14 +301,7 @@ void font_impl::render(const float pPos[], const float pColor[], const char* pTe
         pFontSize = mLoadedPixelSize;
     float scale_factor = float(pFontSize) / float(mLoadedPixelSize);
 
-    GLsizei size = sizeof(glm::vec2);
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, size*2, 0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, (void*)(size));
+    bindResources();
     CheckGL("After Font::render bind resources");
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(tex_loc, 0);
@@ -333,9 +344,7 @@ void font_impl::render(const float pPos[], const float pColor[], const char* pTe
         }
     }
 
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    unbindResources();
 
     glUseProgram(0);
     glDisable(GL_BLEND);
