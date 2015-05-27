@@ -78,19 +78,62 @@ internal::_Font& getChartFont()
 namespace internal
 {
 
-void _Chart::bindBorderProgram() const { glUseProgram(mBorderProgram); }
-void _Chart::unbindBorderProgram() const { glUseProgram(0); }
-GLuint _Chart::rectangleVBO() const { return mDecorVBO; }
-GLuint _Chart::borderProgramPointIndex() const { return mBorderPointIndex; }
-GLuint _Chart::borderColorIndex() const { return mBorderColorIndex; }
-GLuint _Chart::borderMatIndex() const { return mBorderMatIndex; }
-int _Chart::tickSize() const { return mTickSize; }
-int _Chart::leftMargin() const { return mLeftMargin; }
-int _Chart::rightMargin() const { return mRightMargin; }
-int _Chart::bottomMargin() const { return mBottomMargin; }
-int _Chart::topMargin() const { return mTopMargin; }
+void AbstractChart2D::bindBorderProgram() const
+{
+    glUseProgram(mBorderProgram);
+}
 
-void _Chart::setTickCount(int pTickCount)
+void AbstractChart2D::unbindBorderProgram() const
+{
+    glUseProgram(0);
+}
+
+GLuint AbstractChart2D::rectangleVBO() const
+{
+    return mDecorVBO;
+}
+
+GLuint AbstractChart2D::borderProgramPointIndex() const
+{
+    return mBorderPointIndex;
+}
+
+GLuint AbstractChart2D::borderColorIndex() const
+{
+    return mBorderColorIndex;
+}
+
+GLuint AbstractChart2D::borderMatIndex() const
+{
+    return mBorderMatIndex;
+}
+
+int AbstractChart2D::tickSize() const
+{
+    return mTickSize;
+}
+
+int AbstractChart2D::leftMargin() const
+{
+    return mLeftMargin;
+}
+
+int AbstractChart2D::rightMargin() const
+{
+    return mRightMargin;
+}
+
+int AbstractChart2D::bottomMargin() const
+{
+    return mBottomMargin;
+}
+
+int AbstractChart2D::topMargin() const
+{
+    return mTopMargin;
+}
+
+void AbstractChart2D::setTickCount(int pTickCount)
 {
     static const float border[8] = { -1, -1, 1, -1, 1, 1, -1, 1 };
     static const int nValues = sizeof(border)/sizeof(float);
@@ -142,7 +185,7 @@ void _Chart::setTickCount(int pTickCount)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-_Chart::_Chart()
+AbstractChart2D::AbstractChart2D()
     : mTickCount(8), mTickSize(10),
       mLeftMargin(64), mRightMargin(10), mTopMargin(10), mBottomMargin(32),
       mXMax(1), mXMin(0), mYMax(1), mYMin(0),
@@ -173,7 +216,7 @@ _Chart::_Chart()
     setTickCount(mTickCount);
 }
 
-_Chart::~_Chart()
+AbstractChart2D::~AbstractChart2D()
 {
     CheckGL("Begin Chart::~Chart");
     glDeleteBuffers(1, &mDecorVBO);
@@ -183,7 +226,7 @@ _Chart::~_Chart()
     CheckGL("End Chart::~Chart");
 }
 
-void _Chart::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
+void AbstractChart2D::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
 {
     mXMax = pXmax;
     mXMin = pXmin;
@@ -211,22 +254,22 @@ void _Chart::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
     }
 }
 
-void _Chart::setXAxisTitle(const char* pTitle)
+void AbstractChart2D::setXAxisTitle(const char* pTitle)
 {
     mXTitle = std::string(pTitle);
 }
 
-void _Chart::setYAxisTitle(const char* pTitle)
+void AbstractChart2D::setYAxisTitle(const char* pTitle)
 {
     mYTitle = std::string(pTitle);
 }
 
-float _Chart::xmax() const { return mXMax; }
-float _Chart::xmin() const { return mXMin; }
-float _Chart::ymax() const { return mYMax; }
-float _Chart::ymin() const { return mYMin; }
+float AbstractChart2D::xmax() const { return mXMax; }
+float AbstractChart2D::xmin() const { return mXMin; }
+float AbstractChart2D::ymax() const { return mYMax; }
+float AbstractChart2D::ymin() const { return mYMin; }
 
-void _Chart::renderChart(int pX, int pY, int pVPW, int pVPH) const
+void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
 {
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));

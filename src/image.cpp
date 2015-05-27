@@ -121,6 +121,18 @@ image_impl::~image_impl()
     glDeleteProgram(mProgram);
 }
 
+unsigned image_impl::width() const { return mWidth; }
+
+unsigned image_impl::height() const { return mHeight; }
+
+fg::ColorMode image_impl::pixelFormat() const { return mFormat; }
+
+GLenum image_impl::channelType() const { return mDataType; }
+
+GLuint image_impl::pbo() const { return mPBO; }
+
+size_t image_impl::size() const { return mPBOsize; }
+
 void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
 {
     static const float matrix[16] = {

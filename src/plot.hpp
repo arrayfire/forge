@@ -16,7 +16,7 @@
 namespace internal
 {
 
-class plot_impl : public _Chart {
+class plot_impl : public AbstractChart2D {
     public:
         /* plot points characteristics */
         GLuint    mNumPoints;
@@ -30,8 +30,9 @@ class plot_impl : public _Chart {
         plot_impl(GLuint pNumPoints, GLenum pDataType);
         ~plot_impl();
 
-        inline GLuint vbo() const { return mMainVBO; }
-        inline size_t size() const { return mMainVBOsize; }
+        void setColor(float r, float g, float b);
+        GLuint vbo() const;
+        size_t size() const;
 
         void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
 };
@@ -44,26 +45,49 @@ class _Plot {
         _Plot(GLuint pNumPoints, GLenum pDataType)
             : plt(std::make_shared<plot_impl>(pNumPoints, pDataType)) {}
 
-        void setColor(float r, float g, float b) {
-            plt->mLineColor[0] = clampTo01(r);
-            plt->mLineColor[1] = clampTo01(g);
-            plt->mLineColor[2] = clampTo01(b);
-            plt->mLineColor[3] = 1.0f;
+        inline const std::shared_ptr<plot_impl>& impl() const {
+            return plt;
+        }
+
+        inline void setColor(float r, float g, float b) {
+            plt->setColor(r, g, b);
         }
 
         inline void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin) {
             plt->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
         }
 
-        inline void setXAxisTitle(const char* pTitle) { plt->setXAxisTitle(pTitle); }
-        inline void setYAxisTitle(const char* pTitle) { plt->setYAxisTitle(pTitle); }
+        inline void setXAxisTitle(const char* pTitle) {
+            plt->setXAxisTitle(pTitle);
+        }
 
-        inline float xmax() const { return plt->xmax(); }
-        inline float xmin() const { return plt->xmin(); }
-        inline float ymax() const { return plt->ymax(); }
-        inline float ymin() const { return plt->ymin(); }
-        inline GLuint vbo() const { return plt->vbo();  }
-        inline size_t size() const { return plt->size();}
+        inline void setYAxisTitle(const char* pTitle) {
+            plt->setYAxisTitle(pTitle);
+        }
+
+        inline float xmax() const {
+            return plt->xmax();
+        }
+
+        inline float xmin() const {
+            return plt->xmin();
+        }
+
+        inline float ymax() const {
+            return plt->ymax();
+        }
+
+        inline float ymin() const {
+            return plt->ymin();
+        }
+
+        inline GLuint vbo() const {
+            return plt->vbo();
+        }
+
+        inline size_t size() const {
+            return plt->size();
+        }
 
         inline void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
             plt->render(pX, pY, pViewPortWidth, pViewPortHeight);

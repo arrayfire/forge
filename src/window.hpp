@@ -25,43 +25,57 @@
 namespace internal
 {
 
-struct window_impl {
-    ContextHandle mCxt;
-    DisplayHandle mDsp;
-    int           mID;
-    int           mWidth;
-    int           mHeight;
-    GLFWwindow*   mWindow;
-    int           mRows;
-    int           mCols;
-    int           mCellWidth;
-    int           mCellHeight;
-    GLEWContext*  mGLEWContext;
-    fg::Font*     mFont;
+class window_impl {
+    private:
+        ContextHandle mCxt;
+        DisplayHandle mDsp;
+        int           mID;
+        int           mWidth;
+        int           mHeight;
+        GLFWwindow*   mWindow;
+        int           mRows;
+        int           mCols;
+        int           mCellWidth;
+        int           mCellHeight;
+        GLEWContext*  mGLEWContext;
 
-    window_impl(int pWidth, int pHeight, const char* pTitle)
-        : mWidth(pWidth), mHeight(pHeight), mWindow(nullptr),
-        mRows(0), mCols(0) {
-    }
-    ~window_impl() {
-        glfwDestroyWindow(mWindow);
-    }
+        std::shared_ptr<font_impl>     mFont;
 
-    inline void setGrid(int rows, int cols) {
-        mRows = rows;
-        mCols = cols;
-    }
+    public:
+        window_impl(int pWidth, int pHeight, const char* pTitle,
+                std::weak_ptr<window_impl> pWindow, const bool invisible=false);
 
-    inline void setCellDims(int w, int h) {
-        mCellWidth = w;
-        mCellHeight = h;
-    }
+        ~window_impl();
 
-    inline int rows() const { return mRows; }
-    inline int cols() const { return mCols; }
-    inline int cellw() const { return mCellWidth; }
-    inline int cellh() const { return mCellHeight; }
+        void setFont(const std::shared_ptr<font_impl>& pFont);
+        void setTitle(const char* pTitle);
+        void setPos(int pX, int pY);
+
+        void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
+
+        ContextHandle context() const;
+        DisplayHandle display() const;
+        int width() const;
+        int height() const;
+        GLEWContext* glewContext() const;
+        GLFWwindow* get() const;
+
+        void hide();
+        void show();
+        bool close();
+
+        void draw(const std::shared_ptr<AbstractRenderable>& pRenderable);
+
+        void grid(int pRows, int pCols);
+
+        void draw(int pColId, int pRowId,
+                const std::shared_ptr<AbstractRenderable>& pRenderable,
+                const char* pTitle = NULL);
+
+        void draw();
 };
+
+void MakeContextCurrent(window_impl* pWindow);
 
 class _Window {
     private:
@@ -72,43 +86,89 @@ class _Window {
     public:
 
         _Window(int pWidth, int pHeight, const char* pTitle,
-            std::weak_ptr<_Window> pWindow, const bool invisible = false);
+                const _Window* pWindow, const bool invisible = false) {
+            if (pWindow) {
+                wnd = std::make_shared<window_impl>(pWidth, pHeight, pTitle,
+                                                    pWindow->impl(), invisible);
+            } else {
+                std::shared_ptr<window_impl> other;
+                wnd = std::make_shared<window_impl>(pWidth, pHeight, pTitle,
+                                                    other, invisible);
+            }
+        }
 
-        void setFont(fg::Font* pFont) { wnd->mFont = pFont; }
-        void setTitle(const char* pTitle);
-        void setPos(int pX, int pY);
+        inline const std::shared_ptr<window_impl>& impl () const {
+            return wnd;
+        }
 
-        void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
+        inline void setFont (_Font* pFont) {
+            wnd->setFont (pFont->impl());
+        }
 
-        ContextHandle context() const { return wnd->mCxt; }
-        DisplayHandle display() const { return wnd->mDsp; }
-        int width() const { return wnd->mWidth; }
-        int height() const { return wnd->mHeight; }
-        GLEWContext* glewContext() const { return wnd->mGLEWContext; }
-        GLFWwindow* get() const { return wnd->mWindow; }
-        std::shared_ptr<window_impl> impl() const { return wnd; }
+        inline void setTitle(const char* pTitle) {
+            wnd->setTitle(pTitle);
+        }
 
-        void hide() { glfwHideWindow(wnd->mWindow); }
-        void show() { glfwShowWindow(wnd->mWindow); }
-        bool close() { return glfwWindowShouldClose(wnd->mWindow) != 0; }
+        inline void setPos(int pX, int pY) {
+            wnd->setPos(pX, pY);
+        }
 
-        /* draw functions */
-        void draw(const fg::Image& pImage);
-        void draw(const fg::Plot& pPlot);
-        void draw(const fg::Histogram& pHist);
+        inline ContextHandle context() const {
+            return wnd->context() ;
+        }
 
-        /* if the window render area is used to display
-        * multiple Forge objects such as Image, Histogram, Plot etc
-        * the following functions have to be used */
-        void grid(int pRows, int pCols);
-        /* below draw call uses zero-based indexing
-        * for referring to cells within the grid */
+        inline DisplayHandle display() const {
+            return wnd->display();
+        }
+
+        inline int width() const {
+            return wnd->width();
+        }
+
+        inline int height() const {
+            return wnd->height();
+        }
+
+        inline void makeCurrent() {
+            MakeContextCurrent(wnd.get());
+        }
+
+        inline void hide() {
+            wnd->hide();
+        }
+
+        inline void show() {
+            wnd->show();
+        }
+
+        inline bool close() {
+            return wnd->close();
+        }
+
+        inline void draw(const _Image* pImage) {
+            wnd->draw(pImage->impl()) ;
+        }
+
+        inline void draw(const _Plot* pPlot) {
+            wnd->draw(pPlot->impl()) ;
+        }
+
+        inline void draw(const _Histogram* pHist) {
+            wnd->draw(pHist->impl()) ;
+        }
+
+        inline void draw() {
+            wnd->draw();
+        }
+
+        inline void grid(int pRows, int pCols) {
+            wnd->grid(pRows, pCols);
+        }
+
         template<typename T>
-        void draw(int pColId, int pRowId, const T& pRenderable, const char* pTitle = NULL);
-
-        void draw();
+        void draw(int pColId, int pRowId, const T* pRenderable, const char* pTitle = NULL) {
+            wnd->draw(pColId, pRowId, pRenderable->impl(), pTitle);
+        }
 };
 
 }
-
-void MakeContextCurrent(internal::_Window* pWindow);

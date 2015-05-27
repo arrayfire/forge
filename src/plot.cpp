@@ -23,7 +23,7 @@ namespace internal
 {
 
 plot_impl::plot_impl(GLuint pNumPoints, GLenum pDataType)
-    : _Chart(), mNumPoints(pNumPoints), mDataType(pDataType),
+    : AbstractChart2D(), mNumPoints(pNumPoints), mDataType(pDataType),
       mMainVAO(0), mMainVBO(0), mMainVBOsize(0)
 {
     unsigned total_points = 2*mNumPoints;
@@ -70,6 +70,24 @@ plot_impl::~plot_impl()
     CheckGL("End Plot::~Plot");
 }
 
+void plot_impl::setColor(float r, float g, float b)
+{
+    mLineColor[0] = clampTo01(r);
+    mLineColor[1] = clampTo01(g);
+    mLineColor[2] = clampTo01(b);
+    mLineColor[3] = 1.0f;
+}
+
+GLuint plot_impl::vbo() const
+{
+    return mMainVBO;
+}
+
+size_t plot_impl::size() const
+{
+    return mMainVBOsize;
+}
+
 void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
 {
     float graph_scale_x = 1/(xmax() - xmin());
@@ -108,52 +126,78 @@ void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
 namespace fg
 {
 
-Plot::Plot(GLuint pNumPoints, GLenum pDataType) {
+Plot::Plot(GLuint pNumPoints, GLenum pDataType)
+{
     value = new internal::_Plot(pNumPoints, pDataType);
 }
 
-Plot::Plot(const Plot& other) {
+Plot::Plot(const Plot& other)
+{
     value = new internal::_Plot(*other.get());
 }
 
-Plot::~Plot() {
+Plot::~Plot()
+{
     delete value;
 }
 
-void Plot::setColor(float r, float g, float b) {
+void Plot::setColor(float r, float g, float b)
+{
     value->setColor(r, g, b);
 }
 
-void Plot::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin) {
+void Plot::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
+{
     value->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
 }
 
-void Plot::setXAxisTitle(const char* pTitle) {
+void Plot::setXAxisTitle(const char* pTitle)
+{
     value->setXAxisTitle(pTitle);
 }
 
-void Plot::setYAxisTitle(const char* pTitle) {
+void Plot::setYAxisTitle(const char* pTitle)
+{
     value->setYAxisTitle(pTitle);
 }
 
-float Plot::xmax() const { return value->xmax(); }
-float Plot::xmin() const { return value->xmin(); }
-float Plot::ymax() const { return value->ymax(); }
-float Plot::ymin() const { return value->ymin(); }
+float Plot::xmax() const
+{
+    return value->xmax();
+}
 
-GLuint Plot::vbo() const {
+float Plot::xmin() const
+{
+    return value->xmin();
+}
+
+float Plot::ymax() const
+{
+    return value->ymax();
+}
+
+float Plot::ymin() const
+{
+    return value->ymin();
+}
+
+GLuint Plot::vbo() const
+{
     return value->vbo();
 }
 
-size_t Plot::size() const {
+size_t Plot::size() const
+{
     return value->size();
 }
 
-internal::_Plot* Plot::get() const {
+internal::_Plot* Plot::get() const
+{
     return value;
 }
 
-void Plot::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
+void Plot::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
+{
     value->render(pX, pY, pViewPortWidth, pViewPortHeight);
 }
 
