@@ -28,6 +28,11 @@ class image_impl : public AbstractRenderable {
         GLuint   mTex;
         GLuint   mProgram;
 
+        /* helper functions to bind and unbind
+         * resources for render quad primitive */
+        void bindResources() const;
+        void unbindResources() const;
+
     public:
         image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType);
         ~image_impl();

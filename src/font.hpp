@@ -26,7 +26,6 @@ class font_impl {
         std::vector<float> mVertexData;
         int mWidth;
         int mHeight;
-        GLuint mVAO;
         GLuint mVBO;
         GLuint mProgram;
         GLuint mSampler;

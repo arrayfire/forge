@@ -38,7 +38,6 @@ class AbstractChart2D : public AbstractRenderable {
         std::string mXTitle;
         std::string mYTitle;
         /* OpenGL Objects */
-        GLuint    mDecorVAO;
         GLuint    mDecorVBO;
         GLuint    mBorderProgram;
         GLuint    mSpriteProgram;

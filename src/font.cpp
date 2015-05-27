@@ -133,7 +133,6 @@ void font_impl::destroyGLResources()
 {
     if (mIsFontLoaded) {
         if (mProgram) glDeleteProgram(mProgram);
-        if (mVAO) glDeleteVertexArrays(1, &mVAO);
         if (mVBO) glDeleteBuffers(1, &mVBO);
         glDeleteTextures(NUM_CHARS, mCharTextures);
     }
@@ -142,7 +141,7 @@ void font_impl::destroyGLResources()
 }
 
 font_impl::font_impl()
-    :   mIsFontLoaded(false), mTTFfile(""), mVAO(0),
+    :   mIsFontLoaded(false), mTTFfile(""),
         mVBO(0), mProgram(0), mSampler(0)
 {
     mProgram = initShaders(gFontVertShader, gFontFragShader);
@@ -201,21 +200,7 @@ void font_impl::loadFont(const char* const pFile, int pFontSize)
     FT_Done_Face(gFTFace);
     FT_Done_FreeType(gFTLib);
 
-    GLsizei size = sizeof(glm::vec2);
-
     mVBO = createBuffer<float>(mVertexData.size(), &(mVertexData.front()), GL_STATIC_DRAW);
-
-    GLuint temp = 0;
-    glGenVertexArrays(1, &temp);
-    glBindVertexArray(temp);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, size*2, 0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, (void*)(size));
-    glBindVertexArray(0);
-    CheckGL("After Font VAO creation");
-    mVAO = temp;
 
     mIsFontLoaded = true;
     mTTFfile = pFile;
@@ -298,6 +283,19 @@ void font_impl::render(const float pPos[], const float pColor[], const char* pTe
         pFontSize = mLoadedPixelSize;
     float scale_factor = float(pFontSize) / float(mLoadedPixelSize);
 
+    GLsizei size = sizeof(glm::vec2);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, size*2, 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, (void*)(size));
+    CheckGL("After Font::render bind resources");
+    glActiveTexture(GL_TEXTURE0);
+    glUniform1i(tex_loc, 0);
+    glBindSampler(0, mSampler);
+
     std::string str(pText);
     for (std::string::iterator it = str.begin(); it != str.end(); ++it) {
         char currChar = *it;
@@ -311,10 +309,7 @@ void font_impl::render(const float pPos[], const float pColor[], const char* pTe
             int idx = int(currChar) - START_CHAR;
             loc_x += mBearingX[idx] * pFontSize / mLoadedPixelSize;
 
-            glActiveTexture(GL_TEXTURE0);
-            glUniform1i(tex_loc, 0);
             glBindTexture(GL_TEXTURE_2D, mCharTextures[idx]);
-            glBindSampler(0, mSampler);
 
             /* rotate by 90 degress if we need
              * to render the characters vertically */
@@ -325,10 +320,7 @@ void font_impl::render(const float pPos[], const float pColor[], const char* pTe
             glUniformMatrix4fv(mvmat_loc, 1, GL_FALSE, (GLfloat*)&modelView);
 
             // Draw letter
-            glBindVertexArray(mVAO);
             glDrawArrays(GL_TRIANGLE_STRIP, idx*4, 4);
-            CheckGL("Draw pCharacter");
-            glBindVertexArray(0);
 
             loc_x += (mAdvX[idx] - mBearingX[idx]) * pFontSize / mLoadedPixelSize;
         }
@@ -341,10 +333,15 @@ void font_impl::render(const float pPos[], const float pColor[], const char* pTe
         }
     }
 
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     glUseProgram(0);
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    CheckGL("After Font::render ");
 }
 
 }

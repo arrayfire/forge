@@ -17,13 +17,12 @@ namespace internal
 {
 
 class hist_impl : public AbstractChart2D {
-    public:
+    private:
         /* plot points characteristics */
         GLenum    mDataType;
         GLuint    mNBins;
         float     mBarColor[4];
         /* OpenGL Objects */
-        GLuint    mHistogramVAO;
         GLuint    mHistogramVBO;
         size_t    mHistogramVBOSize;
         GLuint    mHistBarProgram;
@@ -34,7 +33,15 @@ class hist_impl : public AbstractChart2D {
         GLuint    mHistBarColorIndex;
         GLuint    mHistBarNBinsIndex;
         GLuint    mHistBarYMaxIndex;
+        GLuint    mPointIndex;
+        GLuint    mFreqIndex;
 
+        /* bind and unbind helper functions
+         * for rendering resources */
+        void bindResources() const;
+        void unbindResources() const;
+
+    public:
         hist_impl(GLuint pNBins, GLenum pDataType);
         ~hist_impl();
 

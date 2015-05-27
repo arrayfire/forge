@@ -22,9 +22,23 @@ using namespace std;
 namespace internal
 {
 
+void plot_impl::bindResources() const
+{
+    // attach plot vertices
+    glEnableVertexAttribArray(mPointIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, mMainVBO);
+    glVertexAttribPointer(mPointIndex, 2, mDataType, GL_FALSE, 0, 0);
+}
+
+void plot_impl::unbindResources() const
+{
+    glDisableVertexAttribArray(mPointIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 plot_impl::plot_impl(GLuint pNumPoints, GLenum pDataType)
     : AbstractChart2D(), mNumPoints(pNumPoints), mDataType(pDataType),
-      mMainVAO(0), mMainVBO(0), mMainVBOsize(0)
+      mMainVBO(0), mMainVBOsize(0), mPointIndex(0)
 {
     unsigned total_points = 2*mNumPoints;
     // buffersubdata calls on mMainVBO
@@ -48,25 +62,13 @@ plot_impl::plot_impl(GLuint pNumPoints, GLenum pDataType)
             break;
         default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
     }
-
-    GLuint pointIndex = borderProgramPointIndex();
-
-    //create vao
-    glGenVertexArrays(1, &mMainVAO);
-    glBindVertexArray(mMainVAO);
-    // attach plot vertices
-    glBindBuffer(GL_ARRAY_BUFFER, mMainVBO);
-    glVertexAttribPointer(pointIndex, 2, mDataType, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(pointIndex);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    mPointIndex = borderProgramPointIndex();
 }
 
 plot_impl::~plot_impl()
 {
     CheckGL("Begin Plot::~Plot");
     glDeleteBuffers(1, &mMainVBO);
-    glDeleteVertexArrays(1, &mMainVAO);
     CheckGL("End Plot::~Plot");
 }
 
@@ -107,9 +109,9 @@ void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
     glUniform4fv(borderColorIndex(), 1, mLineColor);
 
     /* render the plot data */
-    glBindVertexArray(mMainVAO);
+    bindResources();
     glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
-    glBindVertexArray(0);
+    unbindResources();
 
     /* Stop clipping and reset viewport to window dimensions */
     glDisable(GL_SCISSOR_TEST);

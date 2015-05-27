@@ -17,16 +17,23 @@ namespace internal
 {
 
 class plot_impl : public AbstractChart2D {
-    public:
+    private:
         /* plot points characteristics */
         GLuint    mNumPoints;
         GLenum    mDataType;
         float     mLineColor[4];
         /* OpenGL Objects */
-        GLuint    mMainVAO;
         GLuint    mMainVBO;
         size_t    mMainVBOsize;
+        /* shared variable index locations */
+        GLuint    mPointIndex;
 
+        /* helper functions to bind and unbind
+         * rendering resources */
+        void bindResources() const;
+        void unbindResources() const;
+
+    public:
         plot_impl(GLuint pNumPoints, GLenum pDataType);
         ~plot_impl();
 

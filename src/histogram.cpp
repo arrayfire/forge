@@ -52,16 +52,37 @@ const char *gHistBarFragmentShaderSrc =
 namespace internal
 {
 
+void hist_impl::bindResources() const
+{
+    glEnableVertexAttribArray(mPointIndex);
+    glEnableVertexAttribArray(mFreqIndex);
+    // attach histogram bar vertices
+    glBindBuffer(GL_ARRAY_BUFFER, rectangleVBO());
+    glVertexAttribPointer(mPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    // attach histogram frequencies
+    glBindBuffer(GL_ARRAY_BUFFER, mHistogramVBO);
+    glVertexAttribPointer(mFreqIndex, 1, mDataType, GL_FALSE, 0, 0);
+    glVertexAttribDivisor(mFreqIndex, 1);
+}
+
+void hist_impl::unbindResources() const
+{
+    glDisableVertexAttribArray(mPointIndex);
+    glDisableVertexAttribArray(mFreqIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 hist_impl::hist_impl(GLuint pNBins, GLenum pDataType)
  : AbstractChart2D(), mDataType(pDataType), mNBins(pNBins),
-    mHistogramVAO(0), mHistogramVBO(0), mHistogramVBOSize(0), mHistBarProgram(0),
-    mHistBarMatIndex(0), mHistBarColorIndex(0), mHistBarYMaxIndex(0)
+    mHistogramVBO(0), mHistogramVBOSize(0), mHistBarProgram(0),
+    mHistBarMatIndex(0), mHistBarColorIndex(0), mHistBarYMaxIndex(0),
+    mPointIndex(0), mFreqIndex(0)
 {
     mHistBarProgram = initShaders(gHistBarVertexShaderSrc, gHistBarFragmentShaderSrc);
     CheckGL("Histogram::Shaders");
 
-    GLuint pointIndex  = glGetAttribLocation (mHistBarProgram, "point");
-    GLuint freqIndex   = glGetAttribLocation (mHistBarProgram, "freq");
+    mPointIndex        = glGetAttribLocation (mHistBarProgram, "point");
+    mFreqIndex         = glGetAttribLocation (mHistBarProgram, "freq");
     mHistBarColorIndex = glGetUniformLocation(mHistBarProgram, "barColor");
     mHistBarMatIndex   = glGetUniformLocation(mHistBarProgram, "transform");
     mHistBarNBinsIndex = glGetUniformLocation(mHistBarProgram, "nbins");
@@ -86,29 +107,11 @@ hist_impl::hist_impl(GLuint pNBins, GLenum pDataType)
             break;
         default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
     }
-
-    //create vao
-    glGenVertexArrays(1, &mHistogramVAO);
-    glBindVertexArray(mHistogramVAO);
-    // attach histogram bar vertices
-    glBindBuffer(GL_ARRAY_BUFFER, rectangleVBO());
-    glVertexAttribPointer(pointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(pointIndex);
-    // attach histogram frequencies
-    glBindBuffer(GL_ARRAY_BUFFER, mHistogramVBO);
-    glVertexAttribPointer(freqIndex, 1, mDataType, GL_FALSE, 0, 0);
-    glVertexAttribDivisor(freqIndex, 1);
-    glEnableVertexAttribArray(freqIndex);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    CheckGL("End Histogram::Histogram");
 }
 
 hist_impl::~hist_impl()
 {
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDeleteBuffers(1, &mHistogramVBO);
-    glDeleteVertexArrays(1, &mHistogramVAO);
     glDeleteProgram(mHistBarProgram);
 }
 
@@ -161,9 +164,9 @@ void hist_impl::render(int pX, int pY, int pVPW, int pVPH) const
      * rectangle is scaled and translated accordingly
      * for each bin. This is done by OpenGL feature of
      * instanced rendering */
-    glBindVertexArray(mHistogramVAO);
+    bindResources();
     glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, mNBins);
-    glBindVertexArray(0);
+    unbindResources();
 
     glUseProgram(0);
     /* Stop clipping */

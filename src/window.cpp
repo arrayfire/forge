@@ -15,21 +15,21 @@
 #include <common.hpp>
 #include <memory>
 
-static internal::window_impl* current;
+static GLEWContext* current = nullptr;
 
 GLEWContext* glewGetContext()
 {
-    return current->glewContext();
+    return current;
 }
 
 namespace internal
 {
 
-void MakeContextCurrent(window_impl* pWindow)
+void MakeContextCurrent(const window_impl* pWindow)
 {
     if (pWindow != NULL) {
         glfwMakeContextCurrent(pWindow->get());
-        current = pWindow;
+        current = pWindow->glewContext();
     }
     CheckGL("End MakeContextCurrent");
 }
@@ -55,8 +55,8 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     if (invisible)
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
     else
@@ -209,10 +209,10 @@ bool window_impl::close()
 void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 {
     CheckGL("Begin drawImage");
-    MakeContextCurrent(this);
+    glfwMakeContextCurrent(mWindow);
 
     int wind_width, wind_height;
-    glfwGetWindowSize(mWindow, &wind_width, &wind_height);
+    glfwGetFramebufferSize(mWindow, &wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
 
     // clear color and depth buffers
@@ -232,7 +232,7 @@ void window_impl::grid(int pRows, int pCols)
     mCols= pCols;
 
     int wind_width, wind_height;
-    glfwGetWindowSize(mWindow, &wind_width, &wind_height);
+    glfwGetFramebufferSize(mWindow, &wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -246,7 +246,7 @@ void window_impl::draw(int pColId, int pRowId,
                         const char* pTitle)
 {
     CheckGL("Begin show(column, row)");
-    MakeContextCurrent(this);
+    glfwMakeContextCurrent(mWindow);
 
     float pos[2] = {0.0, 0.0};
     int c     = pColId;

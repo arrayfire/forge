@@ -176,20 +176,13 @@ void AbstractChart2D::setTickCount(int pTickCount)
 
     /* create vbo that has the border and axis data */
     mDecorVBO = createBuffer<float>(decorData.size(), &(decorData.front()), GL_STATIC_DRAW);
-
-    glBindVertexArray(mDecorVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
-    glVertexAttribPointer(mBorderPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(mBorderPointIndex);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 AbstractChart2D::AbstractChart2D()
     : mTickCount(8), mTickSize(10),
       mLeftMargin(64), mRightMargin(10), mTopMargin(10), mBottomMargin(32),
       mXMax(1), mXMin(0), mYMax(1), mYMin(0),
-      mDecorVAO(0), mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
+      mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
 {
     /* load font Vera font for chart text
      * renderings, below function actually returns a constant
@@ -208,8 +201,6 @@ AbstractChart2D::AbstractChart2D()
     mSpriteMatIndex       = glGetUniformLocation(mSpriteProgram, "transform");
     mSpriteTickaxisIndex  = glGetUniformLocation(mSpriteProgram, "isYAxis");
 
-    glGenVertexArrays(1, &mDecorVAO);
-
     /* the following function sets the member variable
      * mTickCount and creates VBO to hold tick marks and the corresponding
      * text markers for those ticks on the axes */
@@ -220,7 +211,6 @@ AbstractChart2D::~AbstractChart2D()
 {
     CheckGL("Begin Chart::~Chart");
     glDeleteBuffers(1, &mDecorVBO);
-    glDeleteVertexArrays(1, &mDecorVAO);
     glDeleteProgram(mBorderProgram);
     glDeleteProgram(mSpriteProgram);
     CheckGL("End Chart::~Chart");
@@ -279,6 +269,11 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
     float scale_y = h / pVPH;
 
     CheckGL("Begin Chart::render");
+
+    glEnableVertexAttribArray(mBorderPointIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
+    glVertexAttribPointer(mBorderPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
     /* bind the plotting shader program  */
     glUseProgram(mBorderProgram);
 
@@ -287,41 +282,37 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
     glm::mat4 trans = glm::scale(glm::translate(glm::mat4(1),
                                                 glm::vec3(offset_x, offset_y, 0)),
                                  glm::vec3(scale_x, scale_y, 1));
-
     glUniformMatrix4fv(mBorderMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderColorIndex, 1, WHITE);
 
     /* Draw borders */
-    glBindVertexArray(mDecorVAO);
     glDrawArrays(GL_LINE_LOOP, 0, 4);
-    glBindVertexArray(0);
 
     /* reset shader program binding */
     glUseProgram(0);
 
     /* bind the sprite shader program to
      * draw ticks on x and y axes */
-    glUseProgram(mSpriteProgram);
     glPointSize((GLfloat)mTickSize);
+    /* Following line is required for opengl compatibility profile */
+    glEnable(GL_POINT_SPRITE);
+
+    glUseProgram(mSpriteProgram);
     glUniform4fv(mSpriteTickcolorIndex, 1, WHITE);
     glUniformMatrix4fv(mSpriteMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-
     /* Draw tick marks on y axis */
     glUniform1i(mSpriteTickaxisIndex, 1);
-    glBindVertexArray(mDecorVAO);
     glDrawArrays(GL_POINTS, 4, mTickCount);
-    glBindVertexArray(0);
-
     /* Draw tick marks on x axis */
     glUniform1i(mSpriteTickaxisIndex, 0);
-    glBindVertexArray(mDecorVAO);
     glDrawArrays(GL_POINTS, 4+mTickCount, mTickCount);
-    glBindVertexArray(0);
 
-    /* restoring point size to default */
-    glPointSize(1);
-    /* reset shader program binding */
     glUseProgram(0);
+    glPointSize(1);
+    glDisableVertexAttribArray(mBorderPointIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    /* Following line is required for opengl compatibility profile */
+    glDisable(GL_POINT_SPRITE);
 
     auto &fonter = getChartFont();
     fonter.setOthro2D(int(w), int(h));

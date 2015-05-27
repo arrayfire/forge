@@ -75,7 +75,7 @@ class window_impl {
         void draw();
 };
 
-void MakeContextCurrent(window_impl* pWindow);
+void MakeContextCurrent(const window_impl* pWindow);
 
 class _Window {
     private:
