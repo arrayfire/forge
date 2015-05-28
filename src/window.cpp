@@ -55,6 +55,12 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    /* we are currently avoiding compatibility profile to avoid
+     * issues with Vertex Arrays Objects being not sharable among
+     * contexts. Not being able to share VAOs resulted in some issues
+     * for Forge renderable objects while being rendered
+     * onto different windows(windows that share context) on the fly.
+     * */
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     if (invisible)
