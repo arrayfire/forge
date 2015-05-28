@@ -272,10 +272,12 @@ void window_impl::draw(int pColId, int pRowId,
     glDisable(GL_SCISSOR_TEST);
     glViewport(x_off, y_off, mCellWidth, mCellHeight);
 
-	mFont->setOthro2D(mCellWidth, mCellHeight);
-    pos[0] = mCellWidth / 3.0f;
-    pos[1] = mCellHeight*0.92f;
-    mFont->render(pos, RED, pTitle, 16);
+    if (pTitle!=NULL) {
+        mFont->setOthro2D(mCellWidth, mCellHeight);
+        pos[0] = mCellWidth / 3.0f;
+        pos[1] = mCellHeight*0.92f;
+        mFont->render(pos, RED, pTitle, 16);
+    }
 
     CheckGL("End show(column, row)");
 }
