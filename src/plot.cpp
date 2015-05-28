@@ -22,9 +22,23 @@ using namespace std;
 namespace internal
 {
 
+void plot_impl::bindResources() const
+{
+    // attach plot vertices
+    glEnableVertexAttribArray(mPointIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, mMainVBO);
+    glVertexAttribPointer(mPointIndex, 2, mDataType, GL_FALSE, 0, 0);
+}
+
+void plot_impl::unbindResources() const
+{
+    glDisableVertexAttribArray(mPointIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 plot_impl::plot_impl(GLuint pNumPoints, GLenum pDataType)
-    : _Chart(), mNumPoints(pNumPoints), mDataType(pDataType),
-      mMainVAO(0), mMainVBO(0), mMainVBOsize(0)
+    : AbstractChart2D(), mNumPoints(pNumPoints), mDataType(pDataType),
+      mMainVBO(0), mMainVBOsize(0), mPointIndex(0)
 {
     unsigned total_points = 2*mNumPoints;
     // buffersubdata calls on mMainVBO
@@ -48,26 +62,32 @@ plot_impl::plot_impl(GLuint pNumPoints, GLenum pDataType)
             break;
         default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
     }
-
-    GLuint pointIndex = borderProgramPointIndex();
-
-    //create vao
-    glGenVertexArrays(1, &mMainVAO);
-    glBindVertexArray(mMainVAO);
-    // attach plot vertices
-    glBindBuffer(GL_ARRAY_BUFFER, mMainVBO);
-    glVertexAttribPointer(pointIndex, 2, mDataType, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(pointIndex);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    mPointIndex = borderProgramPointIndex();
 }
 
 plot_impl::~plot_impl()
 {
     CheckGL("Begin Plot::~Plot");
     glDeleteBuffers(1, &mMainVBO);
-    glDeleteVertexArrays(1, &mMainVAO);
     CheckGL("End Plot::~Plot");
+}
+
+void plot_impl::setColor(float r, float g, float b)
+{
+    mLineColor[0] = clampTo01(r);
+    mLineColor[1] = clampTo01(g);
+    mLineColor[2] = clampTo01(b);
+    mLineColor[3] = 1.0f;
+}
+
+GLuint plot_impl::vbo() const
+{
+    return mMainVBO;
+}
+
+size_t plot_impl::size() const
+{
+    return mMainVBOsize;
 }
 
 void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
@@ -89,9 +109,9 @@ void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
     glUniform4fv(borderColorIndex(), 1, mLineColor);
 
     /* render the plot data */
-    glBindVertexArray(mMainVAO);
+    bindResources();
     glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
-    glBindVertexArray(0);
+    unbindResources();
 
     /* Stop clipping and reset viewport to window dimensions */
     glDisable(GL_SCISSOR_TEST);
@@ -108,52 +128,78 @@ void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
 namespace fg
 {
 
-Plot::Plot(GLuint pNumPoints, GLenum pDataType) {
+Plot::Plot(GLuint pNumPoints, GLenum pDataType)
+{
     value = new internal::_Plot(pNumPoints, pDataType);
 }
 
-Plot::Plot(const Plot& other) {
+Plot::Plot(const Plot& other)
+{
     value = new internal::_Plot(*other.get());
 }
 
-Plot::~Plot() {
+Plot::~Plot()
+{
     delete value;
 }
 
-void Plot::setColor(float r, float g, float b) {
+void Plot::setColor(float r, float g, float b)
+{
     value->setColor(r, g, b);
 }
 
-void Plot::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin) {
+void Plot::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
+{
     value->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
 }
 
-void Plot::setXAxisTitle(const char* pTitle) {
+void Plot::setXAxisTitle(const char* pTitle)
+{
     value->setXAxisTitle(pTitle);
 }
 
-void Plot::setYAxisTitle(const char* pTitle) {
+void Plot::setYAxisTitle(const char* pTitle)
+{
     value->setYAxisTitle(pTitle);
 }
 
-float Plot::xmax() const { return value->xmax(); }
-float Plot::xmin() const { return value->xmin(); }
-float Plot::ymax() const { return value->ymax(); }
-float Plot::ymin() const { return value->ymin(); }
+float Plot::xmax() const
+{
+    return value->xmax();
+}
 
-GLuint Plot::vbo() const {
+float Plot::xmin() const
+{
+    return value->xmin();
+}
+
+float Plot::ymax() const
+{
+    return value->ymax();
+}
+
+float Plot::ymin() const
+{
+    return value->ymin();
+}
+
+GLuint Plot::vbo() const
+{
     return value->vbo();
 }
 
-size_t Plot::size() const {
+size_t Plot::size() const
+{
     return value->size();
 }
 
-internal::_Plot* Plot::get() const {
+internal::_Plot* Plot::get() const
+{
     return value;
 }
 
-void Plot::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
+void Plot::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
+{
     value->render(pX, pY, pViewPortWidth, pViewPortHeight);
 }
 

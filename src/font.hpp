@@ -18,56 +18,46 @@ static const int NUM_CHARS = 95;
 namespace internal
 {
 
-struct font_impl {
-    /* attributes */
-    bool mIsFontLoaded;
-    std::string mTTFfile;
-    std::vector<float> mVertexData;
-    int mWidth;
-    int mHeight;
-    GLuint mVAO;
-    GLuint mVBO;
-    GLuint mProgram;
-    GLuint mSampler;
+class font_impl {
+    private:
+        /* attributes */
+        bool mIsFontLoaded;
+        std::string mTTFfile;
+        std::vector<float> mVertexData;
+        int mWidth;
+        int mHeight;
+        GLuint mVBO;
+        GLuint mProgram;
+        GLuint mSampler;
 
-    GLuint mCharTextures[NUM_CHARS];
-    int mAdvX[NUM_CHARS], mAdvY[NUM_CHARS];
-    int mBearingX[NUM_CHARS], mBearingY[NUM_CHARS];
-    int mCharWidth[NUM_CHARS], mCharHeight[NUM_CHARS];
-    int mLoadedPixelSize, mNewLine;
+        GLuint mCharTextures[NUM_CHARS];
+        int mAdvX[NUM_CHARS], mAdvY[NUM_CHARS];
+        int mBearingX[NUM_CHARS], mBearingY[NUM_CHARS];
+        int mCharWidth[NUM_CHARS], mCharHeight[NUM_CHARS];
+        int mLoadedPixelSize, mNewLine;
 
-    /* helper function to extract glyph of
-    * ASCII character pointed by pIndex*/
-    void extractGlyph(int pIndex);
+        /* helper function to extract glyph of
+         * ASCII character pointed by pIndex*/
+        void extractGlyph(int pIndex);
 
-    /* helper to destroy GL objects created for
-    * given font face and size if required */
-    void destroyGLResources();
+        /* helper functions to bind and unbind
+         * rendering resources */
+        void bindResources() const;
+        void unbindResources() const;
 
-    font_impl();
-    ~font_impl();
+        /* helper to destroy GL objects created for
+         * given font face and size if required */
+        void destroyGLResources();
 
-    inline void setOthro2D(int w, int h) {
-        mWidth = w;
-        mHeight = h;
-    }
+    public:
+        font_impl();
+        ~font_impl();
 
-    inline void setReady(bool value) { mIsFontLoaded = value; }
-    inline void setFontFile(const std::string& value) { mTTFfile = value; }
-    inline void setPixelSize(int value) { mLoadedPixelSize = value; }
-    inline void setVBO(GLuint value) { mVBO = value; }
-    inline void setVAO(GLuint value) { mVAO = value; }
+        void setOthro2D(int pWidth, int pHeight);
+        void loadFont(const char* const pFile, int pFontSize);
+        void loadSystemFont(const char* const pName, int pFontSize);
 
-    inline int width() const { return mWidth; }
-    inline int height() const { return mHeight; }
-    inline bool isReady() const { return mIsFontLoaded; }
-    inline const std::string& fontfile() const { return mTTFfile; }
-    inline int pixelSize() const { return mLoadedPixelSize; }
-    inline GLuint vbo() const { return mVBO; }
-    inline GLuint vao() const { return mVAO; }
-    inline GLuint sampler() const { return mSampler; }
-    inline GLuint prog() const { return mProgram; }
-    inline int newline() const { return mNewLine; }
+        void render(const float pPos[2], const float pColor[4], const char* pText, int pFontSize = -1, bool pIsVertical = false);
 };
 
 class _Font {
@@ -77,12 +67,26 @@ class _Font {
     public:
         _Font() : fnt(std::make_shared<font_impl>()) {}
 
-        void loadFont(const char* const pFile, int pFontSize);
-        void loadSystemFont(const char* const pName, int pFontSize);
+        const std::shared_ptr<font_impl>& impl() const {
+            return fnt;
+        }
 
-        void setOthro2D(int pWidth, int pHeight);
+        inline void setOthro2D(int pWidth, int pHeight) {
+            fnt->setOthro2D(pWidth, pHeight);
+        }
 
-        void render(const float pPos[2], const float pColor[4], const char* pText, int pFontSize = -1, bool pIsVertical = false);
+        inline void loadFont(const char* const pFile, int pFontSize) {
+            fnt->loadFont(pFile, pFontSize);
+        }
+
+        inline void loadSystemFont(const char* const pName, int pFontSize) {
+            fnt->loadSystemFont(pName, pFontSize);
+        }
+
+        inline void render(const float pPos[2], const float pColor[4], const char* pText,
+                int pFontSize = -1, bool pIsVertical = false) {
+            fnt->render(pPos, pColor, pText, pFontSize, pIsVertical);
+        }
 };
 
 }

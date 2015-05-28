@@ -15,27 +15,24 @@
 #include <common.hpp>
 #include <memory>
 
-static std::shared_ptr<internal::window_impl> current;
-
-struct NullDeleter { template<typename T> void operator()(T*) {} };
-
-void MakeContextCurrent(internal::_Window* pWindow)
-{
-    if (pWindow != NULL)
-    {
-        glfwMakeContextCurrent((GLFWwindow*)pWindow->get());
-        current = pWindow->impl();
-    }
-    CheckGL("End MakeContextCurrent");
-}
+static GLEWContext* current = nullptr;
 
 GLEWContext* glewGetContext()
 {
-    return current->mGLEWContext;
+    return current;
 }
 
 namespace internal
 {
+
+void MakeContextCurrent(const window_impl* pWindow)
+{
+    if (pWindow != NULL) {
+        glfwMakeContextCurrent(pWindow->get());
+        current = pWindow->glewContext();
+    }
+    CheckGL("End MakeContextCurrent");
+}
 
 static void windowErrorCallback(int pError, const char* pDescription)
 {
@@ -45,9 +42,9 @@ static void windowErrorCallback(int pError, const char* pDescription)
 #define GLFW_THROW_ERROR(msg, err) \
     throw fg::Error("Window constructor", __LINE__, msg, err);
 
-_Window::_Window(int pWidth, int pHeight, const char* pTitle,
-                const std::weak_ptr<_Window> pWindow, const bool invisible)
-    : wnd(std::make_shared<window_impl>(pWidth, pHeight, pTitle))
+window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
+                        std::weak_ptr<window_impl> pWindow, const bool invisible)
+    : mWidth(pWidth), mHeight(pHeight), mWindow(nullptr), mRows(0), mCols(0)
 {
     glfwSetErrorCallback(windowErrorCallback);
 
@@ -58,8 +55,14 @@ _Window::_Window(int pWidth, int pHeight, const char* pTitle,
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    /* we are currently avoiding compatibility profile to avoid
+     * issues with Vertex Arrays Objects being not sharable among
+     * contexts. Not being able to share VAOs resulted in some issues
+     * for Forge renderable objects while being rendered
+     * onto different windows(windows that share context) on the fly.
+     * */
+    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     if (invisible)
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
     else
@@ -78,23 +81,22 @@ _Window::_Window(int pWidth, int pHeight, const char* pTitle,
         std::cerr<<"Error: Could not Create GLFW Window!\n";
         GLFW_THROW_ERROR("glfw window creation failed", fg::FG_ERR_GL_ERROR)
     }
-    wnd->mWindow = temp;
+    mWindow = temp;
 
     // create glew context so that it will bind itself to windows
     if (auto observe = pWindow.lock()) {
-        wnd->mGLEWContext = observe->glewContext();
+        mGLEWContext = observe->glewContext();
     } else {
-        wnd->mGLEWContext = new GLEWContext();
-        if (wnd->mGLEWContext == NULL) {
+        mGLEWContext = new GLEWContext();
+        if (mGLEWContext == NULL) {
             std::cerr<<"Error: Could not create GLEW Context!\n";
-            glfwDestroyWindow(wnd->mWindow);
+            glfwDestroyWindow(mWindow);
             GLFW_THROW_ERROR("GLEW context creation failed", fg::FG_ERR_GL_ERROR)
         }
     }
 
     // Set context (before glewInit())
     MakeContextCurrent(this);
-    CheckGL("After MakeContextCurrent");
 
     //GLEW Initialization - Must be done
     glewExperimental = GL_TRUE;
@@ -102,7 +104,7 @@ _Window::_Window(int pWidth, int pHeight, const char* pTitle,
     if (err != GLEW_OK) {
         char buffer[128];
         sprintf(buffer, "GLEW init failed: Error: %s\n", glewGetErrorString(err));
-        glfwDestroyWindow(wnd->mWindow);
+        glfwDestroyWindow(mWindow);
         GLFW_THROW_ERROR(buffer, fg::FG_ERR_GL_ERROR);
     }
     err = glGetError();
@@ -114,171 +116,182 @@ _Window::_Window(int pWidth, int pHeight, const char* pTitle,
         GLFW_THROW_ERROR("GLEW initilization failed", fg::FG_ERR_GL_ERROR)
     }
 
-    glfwSetWindowUserPointer(wnd->mWindow, this);
+    glfwSetWindowUserPointer(mWindow, this);
 
     auto keyboardCallback = [](GLFWwindow* w, int a, int b, int c, int d)
     {
-        static_cast<_Window*>(glfwGetWindowUserPointer(w))->keyboardHandler(a, b, c, d);
+        static_cast<window_impl*>(glfwGetWindowUserPointer(w))->keyboardHandler(a, b, c, d);
     };
 
-    glfwSetKeyCallback(wnd->mWindow, keyboardCallback);
+    glfwSetKeyCallback(mWindow, keyboardCallback);
 #ifdef WINDOWS_OS
-    wnd->mCxt = glfwGetWGLContext(wnd->mWindow);
-    wnd->mDsp = GetDC(glfwGetWin32Window(wnd->mWindow));
+    mCxt = glfwGetWGLContext(mWindow);
+    mDsp = GetDC(glfwGetWin32Window(mWindow));
 #endif
 #ifdef LINUX_OS
-    wnd->mCxt = glfwGetGLXContext(wnd->mWindow);
-    wnd->mDsp = glfwGetX11Display();
+    mCxt = glfwGetGLXContext(mWindow);
+    mDsp = glfwGetX11Display();
 #endif
 
     CheckGL("End Window::Window");
 }
 
-void _Window::setTitle(const char* pTitle)
+window_impl::~window_impl()
+{
+    glfwDestroyWindow(mWindow);
+}
+
+void window_impl::setFont(const std::shared_ptr<font_impl>& pFont)
+{
+    mFont = pFont;
+}
+
+void window_impl::setTitle(const char* pTitle)
 {
     CheckGL("Begin Window::setTitle");
-    glfwSetWindowTitle(get(), pTitle);
+    glfwSetWindowTitle(mWindow, pTitle);
     CheckGL("End Window::setTitle");
 }
 
-void _Window::setPos(int pX, int pY)
+void window_impl::setPos(int pX, int pY)
 {
     CheckGL("Begin Window::setPos");
-    glfwSetWindowPos(get(), pX, pY);
+    glfwSetWindowPos(mWindow, pX, pY);
     CheckGL("End Window::setPos");
 }
 
-void _Window::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
+void window_impl::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
 {
-    if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(get(), GL_TRUE);
+    if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS) {
+        glfwSetWindowShouldClose(mWindow, GL_TRUE);
     }
 }
 
-void _Window::draw(const fg::Image& pImage)
+ContextHandle window_impl::context() const
+{
+    return mCxt;
+}
+
+DisplayHandle window_impl::display() const
+{
+    return mDsp;
+}
+
+int window_impl::width() const
+{
+    return mWidth;
+}
+
+int window_impl::height() const
+{
+    return mHeight;
+}
+
+GLEWContext* window_impl::glewContext() const
+{
+    return mGLEWContext;
+}
+
+GLFWwindow* window_impl::get() const
+{
+    return mWindow;
+}
+
+void window_impl::hide()
+{
+    glfwHideWindow(mWindow);
+}
+
+void window_impl::show()
+{
+    glfwShowWindow(mWindow);
+}
+
+bool window_impl::close()
+{
+    return glfwWindowShouldClose(mWindow) != 0;
+}
+
+void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 {
     CheckGL("Begin drawImage");
-    MakeContextCurrent(this);
+    glfwMakeContextCurrent(mWindow);
 
     int wind_width, wind_height;
-    glfwGetWindowSize(get(), &wind_width, &wind_height);
+    glfwGetFramebufferSize(mWindow, &wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
 
     // clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
-    pImage.render(0, 0, wind_width, wind_height);
+    pRenderable->render(0, 0, wind_width, wind_height);
 
-    glfwSwapBuffers(get());
+    glfwSwapBuffers(mWindow);
     glfwPollEvents();
     CheckGL("End drawImage");
 }
 
-void _Window::draw(const fg::Plot& pHandle)
+void window_impl::grid(int pRows, int pCols)
 {
-    CheckGL("Begin draw(Plot)");
-    MakeContextCurrent(this);
+    mRows= pRows;
+    mCols= pCols;
 
     int wind_width, wind_height;
-    glfwGetWindowSize(get(), &wind_width, &wind_height);
-    glViewport(0, 0, wind_width, wind_height);
-
-    glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    pHandle.render(0, 0, wind_width, wind_height);
-
-    glfwSwapBuffers(get());
-    glfwPollEvents();
-    CheckGL("End draw(Plot)");
-}
-
-void _Window::draw(const fg::Histogram& pHist)
-{
-    CheckGL("Begin draw(Histogram)");
-    MakeContextCurrent(this);
-
-    int wind_width, wind_height;
-    glfwGetWindowSize(get(), &wind_width, &wind_height);
-    glViewport(0, 0, wind_width, wind_height);
-    glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    pHist.render(0, 0, wind_width, wind_height);
-
-    glfwSwapBuffers(get());
-    glfwPollEvents();
-    CheckGL("End draw(Histogram)");
-}
-
-void _Window::grid(int pRows, int pCols)
-{
-    wnd->setGrid(pRows, pCols);
-
-    int wind_width, wind_height;
-
-    MakeContextCurrent(this);
-    glfwGetWindowSize(get(), &wind_width, &wind_height);
+    glfwGetFramebufferSize(mWindow, &wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    wnd->setCellDims(wind_width / wnd->cols(), wind_height / wnd->rows());
+
+    mCellWidth = wind_width / mCols;
+    mCellHeight = wind_height / mRows;
 }
 
 
-template<typename T>
-void _Window::draw(int pColId, int pRowId, const T& pRenderable, const char* pTitle)
+void window_impl::draw(int pColId, int pRowId,
+                        const std::shared_ptr<AbstractRenderable>& pRenderable,
+                        const char* pTitle)
 {
-    static const float RED[4] = {1.0, 0.0, 0.0, 1.0};
-    float pos[2] = {0.0, 0.0};
-
     CheckGL("Begin show(column, row)");
+    glfwMakeContextCurrent(mWindow);
+
+    float pos[2] = {0.0, 0.0};
     int c     = pColId;
     int r     = pRowId;
-    int cellwidth = wnd->cellw();
-    int cellheight = wnd->cellh();
-    int x_off = c * cellwidth;
-    int y_off = (wnd->rows() - 1 - r) * cellheight;
+    int x_off = c * mCellWidth;
+    int y_off = (mRows - 1 - r) * mCellHeight;
 
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
-    int top_margin = int(0.06f*cellheight);
-    int bot_margin = int(0.02f*cellheight);
-    int lef_margin = int(0.02f*cellwidth);
-    int rig_margin = int(0.02f*cellwidth);
+    int top_margin = int(0.06f*mCellHeight);
+    int bot_margin = int(0.02f*mCellHeight);
+    int lef_margin = int(0.02f*mCellWidth);
+    int rig_margin = int(0.02f*mCellWidth);
     // set viewport to render sub image
-    glViewport(x_off + lef_margin, y_off + bot_margin, cellwidth - 2 * rig_margin, cellheight - 2 * top_margin);
-    glScissor(x_off + lef_margin, y_off + bot_margin, cellwidth - 2 * rig_margin, cellheight - 2 * top_margin);
+    glViewport(x_off + lef_margin, y_off + bot_margin, mCellWidth - 2 * rig_margin, mCellHeight - 2 * top_margin);
+    glScissor(x_off + lef_margin, y_off + bot_margin, mCellWidth - 2 * rig_margin, mCellHeight - 2 * top_margin);
     glEnable(GL_SCISSOR_TEST);
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
-    /* FIXME as of now, only fg::Image::render doesn't ask
-     * for any input parameters */
-    pRenderable.render(x_off, y_off, cellwidth, cellheight);
+
+    pRenderable->render(x_off, y_off, mCellWidth, mCellHeight);
+
     glDisable(GL_SCISSOR_TEST);
+    glViewport(x_off, y_off, mCellWidth, mCellHeight);
 
-    glViewport(x_off, y_off, cellwidth, cellheight);
-
-	wnd->mFont->setOthro2D(cellwidth, cellheight);
-    pos[0] = cellwidth / 3.0f;
-    pos[1] = cellheight*0.92f;
-    wnd->mFont->render(pos, RED, pTitle, 16);
+    if (pTitle!=NULL) {
+        mFont->setOthro2D(mCellWidth, mCellHeight);
+        pos[0] = mCellWidth / 3.0f;
+        pos[1] = mCellHeight*0.92f;
+        mFont->render(pos, RED, pTitle, 16);
+    }
 
     CheckGL("End show(column, row)");
 }
 
-#define INSTANTIATE_GRID_DRAW(T) \
-    template void _Window::draw<T>(int pColId, int pRowId, const T& pRenderablePtr, const char* pTitle);
-
-INSTANTIATE_GRID_DRAW(fg::Image);
-INSTANTIATE_GRID_DRAW(fg::Histogram);
-INSTANTIATE_GRID_DRAW(fg::Plot);
-
-void _Window::draw()
+void window_impl::draw()
 {
     CheckGL("Begin show");
-    glfwSwapBuffers(get());
+    glfwSwapBuffers(mWindow);
     glfwPollEvents();
     CheckGL("End show");
 }
@@ -288,99 +301,122 @@ void _Window::draw()
 namespace fg
 {
 
-Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow, const bool invisible) {
+Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow, const bool invisible)
+{
     if (pWindow == nullptr) {
-        std::shared_ptr<internal::_Window> other;
-        value = new internal::_Window(pWidth, pHeight, pTitle, other, invisible);
-    }
-    else {
-        std::shared_ptr<internal::_Window> other(pWindow->get(), NullDeleter());
-        value = new internal::_Window(pWidth, pHeight, pTitle, other, invisible);
+        value = new internal::_Window(pWidth, pHeight, pTitle, nullptr, invisible);
+    } else {
+        value = new internal::_Window(pWidth, pHeight, pTitle, pWindow->get(), invisible);
     }
 }
 
-Window::~Window() { delete value; }
+Window::~Window()
+{
+    delete value;
+}
 
-Window::Window(const Window& other) {
+Window::Window(const Window& other)
+{
     value = new internal::_Window(*other.get());
 }
 
-void Window::setFont(Font* pFont) {
-    value->setFont(pFont);
+void Window::setFont(Font* pFont)
+{
+    value->setFont(pFont->get());
 }
 
-void Window::setTitle(const char* pTitle) {
+void Window::setTitle(const char* pTitle)
+{
     value->setTitle(pTitle);
 }
 
-void Window::setPos(int pX, int pY) {
+void Window::setPos(int pX, int pY)
+{
     value->setPos(pX, pY);
 }
 
-ContextHandle Window::context() const {
+ContextHandle Window::context() const
+{
     return value->context();
 }
 
-DisplayHandle Window::display() const {
+DisplayHandle Window::display() const
+{
     return value->display();
 }
 
-int Window::width() const {
+int Window::width() const
+{
     return value->width();
 }
 
-int Window::height() const {
+int Window::height() const
+{
     return value->height();
 }
 
-internal::_Window* Window::get() const {
+internal::_Window* Window::get() const
+{
     return value;
 }
 
-void Window::hide() {
+void Window::hide()
+{
     value->hide();
 }
 
-void Window::show() {
+void Window::show()
+{
     value->show();
 }
 
-bool Window::close() {
+bool Window::close()
+{
     return value->close();
 }
 
-void Window::makeCurrent() {
-    MakeContextCurrent(value);
+void Window::makeCurrent()
+{
+    value->makeCurrent();
 }
 
-void Window::draw(const Image& pImage) {
-    value->draw(pImage);
+void Window::draw(const Image& pImage)
+{
+    value->draw(pImage.get());
 }
 
-void Window::draw(const Plot& pPlot) {
-    value->draw(pPlot);
-}
-void Window::draw(const Histogram& pHist) {
-    value->draw(pHist);
+void Window::draw(const Plot& pPlot)
+{
+    value->draw(pPlot.get());
 }
 
-void Window::grid(int pRows, int pCols) {
+void Window::draw(const Histogram& pHist)
+{
+    value->draw(pHist.get());
+}
+
+void Window::grid(int pRows, int pCols)
+{
     value->grid(pRows, pCols);
 }
 
-void Window::draw(int pColId, int pRowId, const Image& pImage, const char* pTitle) {
-    value->draw(pColId, pRowId, pImage, pTitle);
+void Window::draw(int pColId, int pRowId, const Image& pImage, const char* pTitle)
+{
+    value->draw(pColId, pRowId, pImage.get(), pTitle);
 }
 
-void Window::draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle) {
-    value->draw(pColId, pRowId, pPlot, pTitle);
+void Window::draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle)
+{
+    value->draw(pColId, pRowId, pPlot.get(), pTitle);
 }
 
-void Window::draw(int pColId, int pRowId, const Histogram& pHist, const char* pTitle) {
-    value->draw(pColId, pRowId, pHist, pTitle);
+void Window::draw(int pColId, int pRowId, const Histogram& pHist, const char* pTitle)
+{
+    value->draw(pColId, pRowId, pHist.get(), pTitle);
 }
 
-void Window::draw() {
+void Window::draw()
+{
     value->draw();
 }
 

@@ -16,7 +16,7 @@
 namespace internal
 {
 
-class _Chart {
+class AbstractChart2D : public AbstractRenderable {
     private:
         /* internal class attributes for
         * drawing ticks on axes for plots*/
@@ -38,7 +38,6 @@ class _Chart {
         std::string mXTitle;
         std::string mYTitle;
         /* OpenGL Objects */
-        GLuint    mDecorVAO;
         GLuint    mDecorVBO;
         GLuint    mBorderProgram;
         GLuint    mSpriteProgram;
@@ -70,8 +69,8 @@ class _Chart {
         void setTickCount(int pTickCount);
 
     public:
-        _Chart();
-        virtual ~_Chart();
+        AbstractChart2D();
+        virtual ~AbstractChart2D();
 
         void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);
         void setXAxisTitle(const char* pTitle);

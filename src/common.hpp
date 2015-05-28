@@ -13,9 +13,32 @@
 #include <fg/exception.h>
 #include <err_common.hpp>
 
-static const float GRAY[] = {0.0, 0.0, 0.0, 1.0};
-static const float WHITE[] = {1.0, 1.0, 1.0, 1.0};
-static const float BLUE[4] = { 0.0588f, 0.1137f, 0.2745f, 1 };
+static const float GRAY[]  = {0.0f   , 0.0f   , 0.0f   , 1.0f};
+static const float WHITE[] = {1.0f   , 1.0f   , 1.0f   , 1.0f};
+static const float BLUE[4] = {0.0588f, 0.1137f, 0.2745f, 1.0f};
+static const float RED[4]  = {1.0f   , 0.0f   , 0.0f   , 1.0f};
+
+/* Basic renderable class
+ *
+ * Any object that is renderable to a window should inherit from this
+ * class.
+ */
+class AbstractRenderable {
+    public:
+        /* render is a pure virtual function.
+         * @pX X coordinate at which the currently bound viewport begins.
+         * @pX Y coordinate at which the currently bound viewport begins.
+         * @pViewPortWidth Width of the currently bound viewport.
+         * @pViewPortHeight Height of the currently bound viewport.
+         *
+         * Any concrete class that inherits AbstractRenderable class needs to
+         * implement this method to render their OpenGL objects to
+         * the currently bound viewport.
+         *
+         * @return nothing.
+         */
+        virtual void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const = 0;
+};
 
 GLenum FGMode_to_GLColor(fg::ColorMode mode);
 

@@ -10,6 +10,7 @@
 #include <fg/image.h>
 #include <image.hpp>
 #include <common.hpp>
+#include <mutex>
 
 static const char* vertex_shader_code =
 "#version 330\n"
@@ -37,10 +38,74 @@ static const char* fragment_shader_code =
 "        fragColor = tcolor;\n"
 "}\n";
 
-static GLuint gCanvasVAO = 0;
+
+GLuint imageQuadVBO()
+{
+    static GLuint vbo = 0;
+    static std::once_flag flag;
+
+    std::call_once(flag, [] () {
+            const float vertices[12] = {-1.0f,-1.0f,0.0,
+                                        1.0f,-1.0f,0.0,
+                                        1.0f, 1.0f,0.0,
+                                        -1.0f, 1.0f,0.0};
+            vbo  = createBuffer(12, vertices, GL_STATIC_DRAW);
+        });
+    return vbo;
+}
+
+GLuint imageQuadTBO()
+{
+    static GLuint tbo = 0;
+    static std::once_flag flag;
+
+    std::call_once(flag, [] () {
+            const float texcords[8] = {0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0};
+            tbo  = createBuffer(8, texcords, GL_STATIC_DRAW);
+        });
+    return tbo;
+}
+
+GLuint imageQuadIBO()
+{
+    static GLuint ibo = 0;
+    static std::once_flag flag;
+
+    std::call_once(flag, [] () {
+            const unsigned indices[6] = {0,1,2,0,2,3};
+            glGenBuffers(1,&ibo);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * 6, indices, GL_STATIC_DRAW);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+        });
+    return ibo;
+}
 
 namespace internal
 {
+
+void image_impl::bindResources() const
+{
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    // attach vbo
+    glBindBuffer(GL_ARRAY_BUFFER, imageQuadVBO());
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    // attach tbo
+    glBindBuffer(GL_ARRAY_BUFFER, imageQuadTBO());
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+    // attach ibo
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, imageQuadIBO());
+}
+
+void image_impl::unbindResources() const
+{
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    // Unbind resources
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
 
 image_impl::image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType)
     : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType)
@@ -78,39 +143,6 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat,
 
     mProgram = initShaders(vertex_shader_code, fragment_shader_code);
 
-    if (gCanvasVAO==0) {
-        const float vertices[12] = {
-            -1.0f,-1.0f,0.0,
-            1.0f,-1.0f,0.0,
-            1.0f, 1.0f,0.0,
-            -1.0f, 1.0f,0.0};
-
-        const float texcords[8] = {0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0};
-
-        const unsigned indices[6] = {0,1,2,0,2,3};
-
-        GLuint vbo  = createBuffer(12, vertices, GL_STATIC_DRAW);
-        GLuint tbo  = createBuffer(8, texcords, GL_STATIC_DRAW);
-        GLuint ibo;
-        glGenBuffers(1,&ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * 6, indices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-        // bind vao
-        glGenVertexArrays(1, &gCanvasVAO);
-        glBindVertexArray(gCanvasVAO);
-        // attach vbo
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-        glEnableVertexAttribArray(0);
-        // attach tbo
-        glBindBuffer(GL_ARRAY_BUFFER,tbo);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-        glEnableVertexAttribArray(1);
-        // attach ibo
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBindVertexArray(0);
-    }
     CheckGL("End Image::Image");
 }
 
@@ -120,6 +152,18 @@ image_impl::~image_impl()
     glDeleteTextures(1, &mTex);
     glDeleteProgram(mProgram);
 }
+
+unsigned image_impl::width() const { return mWidth; }
+
+unsigned image_impl::height() const { return mHeight; }
+
+fg::ColorMode image_impl::pixelFormat() const { return mFormat; }
+
+GLenum image_impl::channelType() const { return mDataType; }
+
+GLuint image_impl::pbo() const { return mPBO; }
+
+size_t image_impl::size() const { return mPBOsize; }
 
 void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
 {
@@ -146,18 +190,19 @@ void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight)
                     mGLformat, mDataType, 0);
 
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, matrix);
+    CheckGL("Before render");
 
     // Draw to screen
-    glBindVertexArray(gCanvasVAO);
+    bindResources();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+    unbindResources();
 
-    // Unbind textures
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
     // ubind the shader program
     glUseProgram(0);
+    CheckGL("After render");
 }
 
 }
