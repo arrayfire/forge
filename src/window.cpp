@@ -15,6 +15,11 @@
 #include <common.hpp>
 #include <memory>
 
+using namespace fg;
+
+#define GLFW_THROW_ERROR(msg, err) \
+    throw fg::Error("Window constructor", __LINE__, msg, err);
+
 static GLEWContext* current = nullptr;
 
 GLEWContext* glewGetContext()
@@ -34,17 +39,17 @@ void MakeContextCurrent(const window_impl* pWindow)
     CheckGL("End MakeContextCurrent");
 }
 
+//FIXME we have to take care of this error callback in
+// multithreaded scenario
 static void windowErrorCallback(int pError, const char* pDescription)
 {
     fputs(pDescription, stderr);
 }
 
-#define GLFW_THROW_ERROR(msg, err) \
-    throw fg::Error("Window constructor", __LINE__, msg, err);
-
 window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                         std::weak_ptr<window_impl> pWindow, const bool invisible)
-    : mWidth(pWidth), mHeight(pHeight), mWindow(nullptr), mRows(0), mCols(0)
+    : mWidth(pWidth), mHeight(pHeight), mWindow(nullptr),
+      mRows(0), mCols(0)
 {
     glfwSetErrorCallback(windowErrorCallback);
 
@@ -132,6 +137,18 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     mCxt = glfwGetGLXContext(mWindow);
     mDsp = glfwGetX11Display();
 #endif
+    /* copy colormap shared pointer if
+     * this window shares context with another window
+     * */
+    if (auto observe = pWindow.lock()) {
+        mCMap = observe->colorMapPtr();
+    } else {
+        mCMap = std::make_shared<colormap_impl>();
+    }
+
+    /* set the colormap to default */
+    mColorMapUBO = mCMap->defaultMap();
+    mUBOSize = mCMap->defaultLen();
 
     CheckGL("End Window::Window");
 }
@@ -158,6 +175,40 @@ void window_impl::setPos(int pX, int pY)
     CheckGL("Begin Window::setPos");
     glfwSetWindowPos(mWindow, pX, pY);
     CheckGL("End Window::setPos");
+}
+
+void window_impl::setColorMap(fg::ColorMap cmap)
+{
+    switch(cmap) {
+        case FG_DEFAULT:
+            mColorMapUBO = mCMap->defaultMap();
+            mUBOSize     = mCMap->defaultLen();
+            break;
+        case FG_SPECTRUM:
+            mColorMapUBO = mCMap->spectrum();
+            mUBOSize     = mCMap->spectrumLen();
+            break;
+        case FG_COLORS:
+            mColorMapUBO = mCMap->colors();
+            mUBOSize     = mCMap->colorsLen();
+            break;
+        case FG_REDMAP:
+            mColorMapUBO = mCMap->red();
+            mUBOSize     = mCMap->redLen();
+            break;
+        case FG_MOOD:
+            mColorMapUBO = mCMap->mood();
+            mUBOSize     = mCMap->moodLen();
+            break;
+        case FG_HEAT:
+            mColorMapUBO = mCMap->heat();
+            mUBOSize     = mCMap->heatLen();
+            break;
+        case FG_BLUEMAP:
+            mColorMapUBO = mCMap->blue();
+            mUBOSize     = mCMap->blueLen();
+            break;
+    }
 }
 
 void window_impl::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
@@ -197,6 +248,11 @@ GLFWwindow* window_impl::get() const
     return mWindow;
 }
 
+const std::shared_ptr<colormap_impl>& window_impl::colorMapPtr() const
+{
+    return mCMap;
+}
+
 void window_impl::hide()
 {
     glfwHideWindow(mWindow);
@@ -225,6 +281,7 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
+    pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
     pRenderable->render(0, 0, wind_width, wind_height);
 
     glfwSwapBuffers(mWindow);
@@ -273,6 +330,7 @@ void window_impl::draw(int pColId, int pRowId,
     glEnable(GL_SCISSOR_TEST);
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
+    pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
     pRenderable->render(x_off, y_off, mCellWidth, mCellHeight);
 
     glDisable(GL_SCISSOR_TEST);
@@ -333,6 +391,11 @@ void Window::setTitle(const char* pTitle)
 void Window::setPos(int pX, int pY)
 {
     value->setPos(pX, pY);
+}
+
+void Window::setColorMap(ColorMap cmap)
+{
+    value->setColorMap(cmap);
 }
 
 ContextHandle Window::context() const

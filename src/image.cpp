@@ -25,6 +25,12 @@ static const char* vertex_shader_code =
 
 static const char* fragment_shader_code =
 "#version 330\n"
+"const int size = 259;\n"
+"uniform float cmaplen;\n"
+"layout(std140) uniform ColorMap\n"
+"{\n"
+"    vec4 ch[size];\n"
+"};\n"
 "uniform sampler2D tex;\n"
 "uniform bool isGrayScale;\n"
 "in vec2 texcoord;\n"
@@ -32,10 +38,17 @@ static const char* fragment_shader_code =
 "void main()\n"
 "{\n"
 "    vec4 tcolor = texture(tex, texcoord);\n"
+"    vec4 clrs = vec4(1, 0, 0, 1);\n"
 "    if(isGrayScale)\n"
-"        fragColor = vec4(tcolor.r, tcolor.r, tcolor.r, 1);\n"
+"        clrs = vec4(tcolor.r, tcolor.r, tcolor.r, 1);\n"
 "    else\n"
-"        fragColor = tcolor;\n"
+"        clrs = tcolor;\n"
+"    vec4 fidx  = (cmaplen-1) * clrs;\n"
+"    ivec4 idx  = ivec4(fidx.x, fidx.y, fidx.z, fidx.w);\n"
+"    float r_ch = ch[idx.x].r;\n"
+"    float g_ch = ch[idx.y].g;\n"
+"    float b_ch = ch[idx.z].b;\n"
+"    fragColor = vec4(r_ch, g_ch , b_ch, 1);\n"
 "}\n";
 
 
@@ -150,6 +163,12 @@ image_impl::~image_impl()
     glDeleteProgram(mProgram);
 }
 
+void image_impl::setColorMapUBOParams(GLuint ubo, GLuint size)
+{
+    mColorMapUBO = ubo;
+    mUBOSize = size;
+}
+
 unsigned image_impl::width() const { return mWidth; }
 
 unsigned image_impl::height() const { return mHeight; }
@@ -172,9 +191,11 @@ void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight)
 
     glUseProgram(mProgram);
     // get uniform locations
-    int mat_loc = glGetUniformLocation(mProgram,"matrix");
-    int tex_loc = glGetUniformLocation(mProgram,"tex");
-    int chn_loc = glGetUniformLocation(mProgram,"isGrayScale");
+    int mat_loc = glGetUniformLocation(mProgram, "matrix");
+    int tex_loc = glGetUniformLocation(mProgram, "tex");
+    int chn_loc = glGetUniformLocation(mProgram, "isGrayScale");
+    int cml_loc = glGetUniformLocation(mProgram, "cmaplen");
+    int ubo_idx = glGetUniformBlockIndex(mProgram, "ColorMap");
 
     glUniform1i(chn_loc, mFormat==1);
     // load texture from PBO
@@ -187,6 +208,11 @@ void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight)
                     mGLformat, mDataType, 0);
 
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, matrix);
+
+    glUniform1f(cml_loc, mUBOSize);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, mColorMapUBO);
+    glUniformBlockBinding(mProgram, ubo_idx, 0);
+
     CheckGL("Before render");
 
     // Draw to screen

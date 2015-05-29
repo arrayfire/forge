@@ -38,6 +38,11 @@ class AbstractRenderable {
          * @return nothing.
          */
         virtual void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const = 0;
+
+        /* virtual function to set colormap, a derviced class might
+         * use it or ignore it if it doesnt have a need for color maps */
+        virtual void setColorMapUBOParams(GLuint ubo, GLuint size) {
+        }
 };
 
 GLenum FGMode_to_GLColor(fg::ColorMode mode);

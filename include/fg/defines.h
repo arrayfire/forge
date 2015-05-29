@@ -98,4 +98,14 @@ enum ColorMode {
     FG_RGBA=4,
 };
 
+enum ColorMap {
+    FG_DEFAULT  = 0,
+    FG_SPECTRUM = 1,
+    FG_COLORS   = 2,
+    FG_REDMAP   = 3,
+    FG_MOOD     = 4,
+    FG_HEAT     = 5,
+    FG_BLUEMAP  = 6
+};
+
 }

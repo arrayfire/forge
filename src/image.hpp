@@ -28,6 +28,9 @@ class image_impl : public AbstractRenderable {
         GLuint   mTex;
         GLuint   mProgram;
 
+        GLuint   mColorMapUBO;
+        GLuint   mUBOSize;
+
         /* helper functions to bind and unbind
          * resources for render quad primitive */
         void bindResources() const;
@@ -36,6 +39,8 @@ class image_impl : public AbstractRenderable {
     public:
         image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType);
         ~image_impl();
+
+        void setColorMapUBOParams(GLuint ubo, GLuint size);
 
         unsigned width() const;
         unsigned height() const;
