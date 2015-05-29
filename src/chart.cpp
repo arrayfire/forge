@@ -175,7 +175,7 @@ void AbstractChart2D::setTickCount(int pTickCount)
         glDeleteBuffers(1, &mDecorVBO);
 
     /* create vbo that has the border and axis data */
-    mDecorVBO = createBuffer<float>(decorData.size(), &(decorData.front()), GL_STATIC_DRAW);
+    mDecorVBO = createBuffer<float>(GL_ARRAY_BUFFER, decorData.size(), &(decorData.front()), GL_STATIC_DRAW);
 }
 
 AbstractChart2D::AbstractChart2D()

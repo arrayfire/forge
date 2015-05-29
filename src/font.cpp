@@ -218,7 +218,7 @@ void font_impl::loadFont(const char* const pFile, int pFontSize)
     FT_Done_Face(gFTFace);
     FT_Done_FreeType(gFTLib);
 
-    mVBO = createBuffer<float>(mVertexData.size(), &(mVertexData.front()), GL_STATIC_DRAW);
+    mVBO = createBuffer<float>(GL_ARRAY_BUFFER, mVertexData.size(), &(mVertexData.front()), GL_STATIC_DRAW);
 
     mIsFontLoaded = true;
     mTTFfile = pFile;

@@ -45,19 +45,19 @@ plot_impl::plot_impl(GLuint pNumPoints, GLenum pDataType)
     // will only update the points data
     switch(mDataType) {
         case GL_FLOAT:
-            mMainVBO = createBuffer<float>(total_points, NULL, GL_DYNAMIC_DRAW);
+            mMainVBO = createBuffer<float>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(float);
             break;
         case GL_INT:
-            mMainVBO = createBuffer<int>(total_points, NULL, GL_DYNAMIC_DRAW);
+            mMainVBO = createBuffer<int>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(int);
             break;
         case GL_UNSIGNED_INT:
-            mMainVBO = createBuffer<unsigned>(total_points, NULL, GL_DYNAMIC_DRAW);
+            mMainVBO = createBuffer<unsigned>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(unsigned);
             break;
         case GL_UNSIGNED_BYTE:
-            mMainVBO = createBuffer<unsigned char>(total_points, NULL, GL_DYNAMIC_DRAW);
+            mMainVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(unsigned char);
             break;
         default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);

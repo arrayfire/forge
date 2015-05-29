@@ -49,7 +49,7 @@ GLuint imageQuadVBO()
                                         1.0f,-1.0f,0.0,
                                         1.0f, 1.0f,0.0,
                                         -1.0f, 1.0f,0.0};
-            vbo  = createBuffer(12, vertices, GL_STATIC_DRAW);
+            vbo  = createBuffer(GL_ARRAY_BUFFER, 12, vertices, GL_STATIC_DRAW);
         });
     return vbo;
 }
@@ -61,7 +61,7 @@ GLuint imageQuadTBO()
 
     std::call_once(flag, [] () {
             const float texcords[8] = {0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0};
-            tbo  = createBuffer(8, texcords, GL_STATIC_DRAW);
+            tbo  = createBuffer(GL_ARRAY_BUFFER, 8, texcords, GL_STATIC_DRAW);
         });
     return tbo;
 }
@@ -73,10 +73,7 @@ GLuint imageQuadIBO()
 
     std::call_once(flag, [] () {
             const unsigned indices[6] = {0,1,2,0,2,3};
-            glGenBuffers(1,&ibo);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * 6, indices, GL_STATIC_DRAW);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+            ibo = createBuffer(GL_ELEMENT_ARRAY_BUFFER, 6, indices, GL_STATIC_DRAW);
         });
     return ibo;
 }
