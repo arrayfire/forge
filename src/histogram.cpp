@@ -91,19 +91,19 @@ hist_impl::hist_impl(GLuint pNBins, GLenum pDataType)
 
     switch(mDataType) {
         case GL_FLOAT:
-            mHistogramVBO = createBuffer<float>(mNBins, NULL, GL_DYNAMIC_DRAW);
+            mHistogramVBO = createBuffer<float>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(float);
             break;
         case GL_INT:
-            mHistogramVBO = createBuffer<int>(mNBins, NULL, GL_DYNAMIC_DRAW);
+            mHistogramVBO = createBuffer<int>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(int);
             break;
         case GL_UNSIGNED_INT:
-            mHistogramVBO = createBuffer<unsigned>(mNBins, NULL, GL_DYNAMIC_DRAW);
+            mHistogramVBO = createBuffer<unsigned>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(unsigned);
             break;
         case GL_UNSIGNED_BYTE:
-            mHistogramVBO = createBuffer<unsigned char>(mNBins, NULL, GL_DYNAMIC_DRAW);
+            mHistogramVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(unsigned char);
             break;
         default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);

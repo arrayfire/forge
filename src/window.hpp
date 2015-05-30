@@ -15,6 +15,7 @@
 #include <fg/histogram.h>
 
 #include <common.hpp>
+#include <colormap.hpp>
 #include <font.hpp>
 #include <image.hpp>
 #include <plot.hpp>
@@ -40,6 +41,10 @@ class window_impl {
         GLEWContext*  mGLEWContext;
 
         std::shared_ptr<font_impl>     mFont;
+        std::shared_ptr<colormap_impl> mCMap;
+
+        GLuint        mColorMapUBO;
+        GLuint        mUBOSize;
 
     public:
         window_impl(int pWidth, int pHeight, const char* pTitle,
@@ -50,6 +55,7 @@ class window_impl {
         void setFont(const std::shared_ptr<font_impl>& pFont);
         void setTitle(const char* pTitle);
         void setPos(int pX, int pY);
+        void setColorMap(fg::ColorMap cmap);
 
         void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
 
@@ -59,6 +65,7 @@ class window_impl {
         int height() const;
         GLEWContext* glewContext() const;
         GLFWwindow* get() const;
+        const std::shared_ptr<colormap_impl>& colorMapPtr() const;
 
         void hide();
         void show();
@@ -111,6 +118,10 @@ class _Window {
 
         inline void setPos(int pX, int pY) {
             wnd->setPos(pX, pY);
+        }
+
+        inline void setColorMap(fg::ColorMap cmap) {
+            wnd->setColorMap(cmap);
         }
 
         inline ContextHandle context() const {

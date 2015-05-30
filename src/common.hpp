@@ -38,6 +38,11 @@ class AbstractRenderable {
          * @return nothing.
          */
         virtual void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const = 0;
+
+        /* virtual function to set colormap, a derviced class might
+         * use it or ignore it if it doesnt have a need for color maps */
+        virtual void setColorMapUBOParams(GLuint ubo, GLuint size) {
+        }
 };
 
 GLenum FGMode_to_GLColor(fg::ColorMode mode);
@@ -49,13 +54,13 @@ char* loadFile(const char *fname, GLint &fSize);
 GLuint initShaders(const char* vshader_code, const char* fshader_code);
 
 template<typename T>
-GLuint createBuffer(size_t size, const T* data, GLenum usage)
+GLuint createBuffer(GLenum target, size_t size, const T* data, GLenum usage)
 {
     GLuint ret_val = 0;
-    glGenBuffers(1,&ret_val);
-    glBindBuffer(GL_ARRAY_BUFFER,ret_val);
-    glBufferData(GL_ARRAY_BUFFER,size*sizeof(T),data,usage);
-    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glGenBuffers(1, &ret_val);
+    glBindBuffer(target, ret_val);
+    glBufferData(target, size*sizeof(T), data, usage);
+    glBindBuffer(target, 0);
     return ret_val;
 }
 

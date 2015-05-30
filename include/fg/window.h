@@ -38,6 +38,7 @@ class Window {
         FGAPI void setFont(Font* pFont);
         FGAPI void setTitle(const char* pTitle);
         FGAPI void setPos(int pX, int pY);
+        FGAPI void setColorMap(ColorMap cmap);
 
         FGAPI ContextHandle context() const;
         FGAPI DisplayHandle display() const;
