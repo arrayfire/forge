@@ -72,6 +72,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
     else
         glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+    glfwWindowHint(GLFW_SAMPLES, 4);
     // create glfw window
     // if pWindow is not null, then the window created in this
     // constructor call will share the context with pWindow
@@ -149,7 +150,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     /* set the colormap to default */
     mColorMapUBO = mCMap->defaultMap();
     mUBOSize = mCMap->defaultLen();
-
+    glEnable(GL_MULTISAMPLE);
     CheckGL("End Window::Window");
 }
 
