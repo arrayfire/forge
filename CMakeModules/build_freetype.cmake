@@ -4,7 +4,7 @@ SET(prefix ${CMAKE_BINARY_DIR}/third_party/freetype)
 
 ExternalProject_Add(
     freetype-ext
-    GIT_REPOSITORY git://git.sv.nongnu.org/freetype/freetype2.git
+    GIT_REPOSITORY http://git.sv.nongnu.org/r/freetype/freetype2.git
     GIT_TAG 14df6b1a63f5c5773bb498063205cb79aac21173
     PREFIX "${prefix}"
     UPDATE_COMMAND ""
