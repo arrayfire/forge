@@ -36,7 +36,9 @@
         #define true  1
     #endif
     #define __PRETTY_FUNCTION__ __FUNCSIG__
-    #define snprintf sprintf_s
+    #if _MSC_VER < 1900
+        #define snprintf sprintf_s
+    #endif
     #define FG_STATIC_ static
 #else
     #define FGAPI   __attribute__((visibility("default")))
