@@ -36,8 +36,8 @@ void plot_impl::unbindResources() const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-plot_impl::plot_impl(GLuint pNumPoints, GLenum pDataType)
-    : AbstractChart2D(), mNumPoints(pNumPoints), mDataType(pDataType),
+plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType)
+    : AbstractChart2D(), mNumPoints(pNumPoints), mDataType(FGTypeToGLenum(pDataType)),
       mMainVBO(0), mMainVBOsize(0), mPointIndex(0)
 {
     unsigned total_points = 2*mNumPoints;
@@ -60,7 +60,7 @@ plot_impl::plot_impl(GLuint pNumPoints, GLenum pDataType)
             mMainVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(unsigned char);
             break;
-        default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
+        default: fg::TypeError("Plot::Plot", __LINE__, 1, GLenumToFGType(mDataType));
     }
     mPointIndex = borderProgramPointIndex();
 }
@@ -128,7 +128,7 @@ void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
 namespace fg
 {
 
-Plot::Plot(GLuint pNumPoints, GLenum pDataType)
+Plot::Plot(unsigned pNumPoints, fg::FGType pDataType)
 {
     value = new internal::_Plot(pNumPoints, pDataType);
 }
@@ -183,12 +183,12 @@ float Plot::ymin() const
     return value->ymin();
 }
 
-GLuint Plot::vbo() const
+unsigned Plot::vbo() const
 {
     return value->vbo();
 }
 
-size_t Plot::size() const
+unsigned Plot::size() const
 {
     return value->size();
 }

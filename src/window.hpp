@@ -23,8 +23,8 @@ namespace internal
 
 class window_impl {
     private:
-        ContextHandle mCxt;
-        DisplayHandle mDsp;
+        long long     mCxt;
+        long long     mDsp;
         int           mID;
         int           mWidth;
         int           mHeight;
@@ -54,8 +54,8 @@ class window_impl {
 
         void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
 
-        ContextHandle context() const;
-        DisplayHandle display() const;
+        long long context() const;
+        long long display() const;
         int width() const;
         int height() const;
         GLEWContext* glewContext() const;
@@ -119,11 +119,11 @@ class _Window {
             wnd->setColorMap(cmap);
         }
 
-        inline ContextHandle context() const {
+        inline long long context() const {
             return wnd->context() ;
         }
 
-        inline DisplayHandle display() const {
+        inline long long display() const {
             return wnd->display();
         }
 

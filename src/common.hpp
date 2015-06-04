@@ -10,13 +10,26 @@
 #pragma once
 
 #include <fg/defines.h>
+
+#ifdef OS_WIN
+    #define GLFW_EXPOSE_NATIVE_WIN32
+    #define GLFW_EXPOSE_NATIVE_WGL
+#endif
+
+#ifdef OS_LNX
+    #define GLFW_EXPOSE_NATIVE_X11
+    #define GLFW_EXPOSE_NATIVE_GLX
+#endif
+
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
 #include <fg/exception.h>
 #include <err_common.hpp>
 
 static const float GRAY[]  = {0.0f   , 0.0f   , 0.0f   , 1.0f};
 static const float WHITE[] = {1.0f   , 1.0f   , 1.0f   , 1.0f};
-static const float BLUE[4] = {0.0588f, 0.1137f, 0.2745f, 1.0f};
-static const float RED[4]  = {1.0f   , 0.0f   , 0.0f   , 1.0f};
+static const float BLUE[]  = {0.0588f, 0.1137f, 0.2745f, 1.0f};
+static const float RED[]   = {1.0f   , 0.0f   , 0.0f   , 1.0f};
 
 /* Basic renderable class
  *
@@ -45,9 +58,13 @@ class AbstractRenderable {
         }
 };
 
-GLenum FGMode_to_GLColor(fg::ColorMode mode);
+GLenum FGTypeToGLenum(fg::FGType val);
 
-fg::ColorMode GLMode_to_FGColor(GLenum mode);
+fg::FGType GLenumToFGType(GLenum val);
+
+GLenum FGModeToGLColor(fg::ColorMode mode);
+
+fg::ColorMode GLModeToFGColor(GLenum mode);
 
 char* loadFile(const char *fname, GLint &fSize);
 

@@ -24,7 +24,7 @@ class Plot {
         internal::_Plot* value;
 
     public:
-        FGAPI Plot(GLuint pNumPoints, GLenum pDataType);
+        FGAPI Plot(unsigned pNumPoints, FGType pDataType);
         FGAPI Plot(const Plot& other);
         FGAPI ~Plot();
 
@@ -37,8 +37,8 @@ class Plot {
         FGAPI float xmin() const;
         FGAPI float ymax() const;
         FGAPI float ymin() const;
-        FGAPI GLuint vbo() const;
-        FGAPI size_t size() const;
+        FGAPI unsigned vbo() const;
+        FGAPI unsigned size() const;
         FGAPI internal::_Plot* get() const;
 
         FGAPI void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;

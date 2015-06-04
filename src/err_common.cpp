@@ -7,18 +7,20 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common.hpp>
 #include <err_common.hpp>
 #include <fg/exception.h>
+#include <sstream>
 
 void commonErrorCheck(const char *pMsg, const char* pFile, int pLine)
 {
     GLenum x = glGetError();
 
     if (x != GL_NO_ERROR) {
-        char buffer[256];
-        sprintf(buffer, "GL Error at: %s:%d Message: %s Error Code: %d \"%s\"\n",
-                pFile, pLine, pMsg, x, gluErrorString(x));
-        throw fg::Error(pFile, pLine, buffer, fg::FG_ERR_GL_ERROR);
+        std::stringstream ss;
+        ss << "GL Error at: "<< pFile << ":"<<pLine
+           <<" Message: "<<pMsg<<" Error Code: "<< x << std::endl;
+        throw fg::Error(pFile, pLine, ss.str().c_str(), fg::FG_ERR_GL_ERROR);
     }
 }
 

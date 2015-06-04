@@ -42,7 +42,7 @@ class hist_impl : public AbstractChart2D {
         void unbindResources() const;
 
     public:
-        hist_impl(GLuint pNBins, GLenum pDataType);
+        hist_impl(unsigned pNBins, fg::FGType pDataType);
         ~hist_impl();
 
         void setBarColor(float r, float g, float b);
@@ -57,7 +57,7 @@ class _Histogram {
         std::shared_ptr<hist_impl> hst;
 
     public:
-        _Histogram(GLuint pNBins, GLenum pDataType)
+        _Histogram(unsigned pNBins, fg::FGType pDataType)
             : hst(std::make_shared<hist_impl>(pNBins, pDataType)) {}
 
         inline const std::shared_ptr<hist_impl>& impl() const {

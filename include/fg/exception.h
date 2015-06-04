@@ -56,7 +56,7 @@ public:
     TypeError(const char * const pFuncName,
               const int pLine,
               const int pIndex,
-              const GLenum pType);
+              const FGType pType);
 
     const char* typeName() const;
 

@@ -24,16 +24,16 @@ class Image {
         internal::_Image* value;
 
     public:
-        FGAPI Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, GLenum pDataType);
+        FGAPI Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, FGType pDataType);
         FGAPI Image(const Image& other);
         FGAPI ~Image();
 
         FGAPI unsigned width() const;
         FGAPI unsigned height() const;
         FGAPI ColorMode pixelFormat() const;
-        FGAPI GLenum channelType() const;
-        FGAPI GLuint pbo() const;
-        FGAPI size_t size() const;
+        FGAPI FGType channelType() const;
+        FGAPI unsigned pbo() const;
+        FGAPI unsigned size() const;
         FGAPI internal::_Image* get() const;
 
         FGAPI void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;

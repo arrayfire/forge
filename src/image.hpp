@@ -37,7 +37,7 @@ class image_impl : public AbstractRenderable {
         void unbindResources() const;
 
     public:
-        image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType);
+        image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, fg::FGType pDataType);
         ~image_impl();
 
         void setColorMapUBOParams(GLuint ubo, GLuint size);
@@ -45,9 +45,9 @@ class image_impl : public AbstractRenderable {
         unsigned width() const;
         unsigned height() const;
         fg::ColorMode pixelFormat() const;
-        GLenum channelType() const;
-        GLuint pbo() const;
-        size_t size() const;
+        fg::FGType channelType() const;
+        unsigned pbo() const;
+        unsigned size() const;
 
         void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
 };
@@ -57,7 +57,7 @@ class _Image {
         std::shared_ptr<image_impl> img;
 
     public:
-        _Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType)
+        _Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, fg::FGType pDataType)
             : img(std::make_shared<image_impl>(pWidth, pHeight, pFormat, pDataType)) {}
 
         inline const std::shared_ptr<image_impl>& impl() const { return img; }
@@ -68,7 +68,7 @@ class _Image {
 
         inline fg::ColorMode pixelFormat() const { return img->pixelFormat(); }
 
-        inline GLenum channelType() const { return img->channelType(); }
+        inline fg::FGType channelType() const { return img->channelType(); }
 
         inline GLuint pbo() const { return img->pbo(); }
 

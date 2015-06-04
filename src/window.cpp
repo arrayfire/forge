@@ -10,9 +10,9 @@
 // Parts of this code sourced from SnopyDogy
 // https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
 
+#include <common.hpp>
 #include <fg/window.h>
 #include <window.hpp>
-#include <common.hpp>
 #include <memory>
 
 using namespace fg;
@@ -39,24 +39,21 @@ void MakeContextCurrent(const window_impl* pWindow)
     CheckGL("End MakeContextCurrent");
 }
 
-//FIXME we have to take care of this error callback in
-// multithreaded scenario
-static void windowErrorCallback(int pError, const char* pDescription)
-{
-    fputs(pDescription, stderr);
-}
-
 window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                         std::weak_ptr<window_impl> pWindow, const bool invisible)
     : mWidth(pWidth), mHeight(pHeight), mWindow(nullptr),
       mRows(0), mCols(0)
 {
-    glfwSetErrorCallback(windowErrorCallback);
-
     if (!glfwInit()) {
         std::cerr << "ERROR: GLFW wasn't able to initalize\n";
         GLFW_THROW_ERROR("glfw initilization failed", fg::FG_ERR_GL_ERROR)
     }
+
+    auto wndErrCallback = [](int errCode, const char* pDescription)
+    {
+        fputs(pDescription, stderr);
+    };
+    glfwSetErrorCallback(wndErrCallback);
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -130,13 +127,13 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     };
 
     glfwSetKeyCallback(mWindow, keyboardCallback);
-#ifdef WINDOWS_OS
-    mCxt = glfwGetWGLContext(mWindow);
-    mDsp = GetDC(glfwGetWin32Window(mWindow));
+#ifdef OS_WIN
+    mCxt = reinterpret_cast<long long>(glfwGetWGLContext(mWindow));
+    mDsp = reinterpret_cast<long long>(GetDC(glfwGetWin32Window(mWindow)));
 #endif
-#ifdef LINUX_OS
-    mCxt = glfwGetGLXContext(mWindow);
-    mDsp = glfwGetX11Display();
+#ifdef OS_LNX
+    mCxt = reinterpret_cast<long long>(glfwGetGLXContext(mWindow));
+    mDsp = reinterpret_cast<long long>(glfwGetX11Display());
 #endif
     /* copy colormap shared pointer if
      * this window shares context with another window
@@ -219,12 +216,12 @@ void window_impl::keyboardHandler(int pKey, int scancode, int pAction, int pMods
     }
 }
 
-ContextHandle window_impl::context() const
+long long  window_impl::context() const
 {
     return mCxt;
 }
 
-DisplayHandle window_impl::display() const
+long long  window_impl::display() const
 {
     return mDsp;
 }
@@ -399,12 +396,12 @@ void Window::setColorMap(ColorMap cmap)
     value->setColorMap(cmap);
 }
 
-ContextHandle Window::context() const
+long long Window::context() const
 {
     return value->context();
 }
 
-DisplayHandle Window::display() const
+long long Window::display() const
 {
     return value->display();
 }
