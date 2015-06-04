@@ -40,7 +40,7 @@ FIND_LIBRARY(GLFW_LIBRARY DOC "Absolute path to GLFW library."
   NAMES glfw GLFW.lib glfw3
   HINTS
   $ENV{GLFW_ROOT}
-  PATH_SUFFIXES lib/win32 #For finding the library file under the root of the glfw expanded archive, typically on Windows.
+  PATH_SUFFIXES lib/x64 release debug #For finding the library file under the root of the glfw expanded archive, typically on Windows.
   PATHS
   /usr/lib
   /usr/lib64
@@ -50,7 +50,10 @@ FIND_LIBRARY(GLFW_LIBRARY DOC "Absolute path to GLFW library."
   /usr/local/lib64
   /sw/lib
   /opt/local/lib
-  ${GLFW_ROOT_DIR}/lib-msvc100/release # added by ptr
+  ${GLFW_ROOT_DIR}/lib-msvc100 # added by ptr
+  ${GLFW_ROOT_DIR}/lib-msvc110
+  ${GLFW_ROOT_DIR}/lib-msvc120
+  ${GLFW_ROOT_DIR}/lib
 )
 
 SET(GLFW_FOUND 0)
