@@ -9,11 +9,6 @@
 
 #pragma once
 
-#include <fg/font.h>
-#include <fg/image.h>
-#include <fg/plot.h>
-#include <fg/histogram.h>
-
 #include <common.hpp>
 #include <colormap.hpp>
 #include <font.hpp>
