@@ -23,7 +23,7 @@ class Histogram {
         internal::_Histogram* value;
 
     public:
-        FGAPI Histogram(GLuint pNBins, GLenum pDataType);
+        FGAPI Histogram(unsigned pNBins, FGType pDataType);
         FGAPI Histogram(const Histogram& other);
         FGAPI ~Histogram();
 
@@ -37,8 +37,8 @@ class Histogram {
         FGAPI float ymax() const;
         FGAPI float ymin() const;
 
-        FGAPI GLuint vbo() const;
-        FGAPI size_t size() const;
+        FGAPI unsigned vbo() const;
+        FGAPI unsigned size() const;
         FGAPI internal::_Histogram* get() const;
 
         FGAPI void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;

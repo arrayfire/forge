@@ -65,7 +65,7 @@ internal::_Font& getChartFont()
     static std::once_flag flag;
 
     std::call_once(flag, []() {
-#if defined(WINDOWS_OS)
+#if defined(OS_WIN)
         mChartFont.loadSystemFont("Calibri", 32);
 #else
         mChartFont.loadSystemFont("Vera", 32);

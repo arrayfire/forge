@@ -34,7 +34,7 @@ class plot_impl : public AbstractChart2D {
         void unbindResources() const;
 
     public:
-        plot_impl(GLuint pNumPoints, GLenum pDataType);
+        plot_impl(unsigned pNumPoints, fg::FGType pDataType);
         ~plot_impl();
 
         void setColor(float r, float g, float b);
@@ -49,7 +49,7 @@ class _Plot {
         std::shared_ptr<plot_impl> plt;
 
     public:
-        _Plot(GLuint pNumPoints, GLenum pDataType)
+        _Plot(unsigned pNumPoints, fg::FGType pDataType)
             : plt(std::make_shared<plot_impl>(pNumPoints, pDataType)) {}
 
         inline const std::shared_ptr<plot_impl>& impl() const {

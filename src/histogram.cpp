@@ -7,15 +7,15 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common.hpp>
 #include <fg/histogram.h>
 #include <histogram.hpp>
-#include <common.hpp>
-
-#include <cmath>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <cmath>
 
 using namespace std;
 
@@ -73,11 +73,11 @@ void hist_impl::unbindResources() const
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-hist_impl::hist_impl(GLuint pNBins, GLenum pDataType)
- : AbstractChart2D(), mDataType(pDataType), mNBins(pNBins),
-    mHistogramVBO(0), mHistogramVBOSize(0), mHistBarProgram(0),
-    mHistBarMatIndex(0), mHistBarColorIndex(0), mHistBarYMaxIndex(0),
-    mPointIndex(0), mFreqIndex(0)
+hist_impl::hist_impl(unsigned pNBins, fg::FGType pDataType)
+ : AbstractChart2D(), mDataType(FGTypeToGLenum(pDataType)), mNBins(pNBins),
+   mHistogramVBO(0), mHistogramVBOSize(0), mHistBarProgram(0),
+   mHistBarMatIndex(0), mHistBarColorIndex(0), mHistBarYMaxIndex(0),
+   mPointIndex(0), mFreqIndex(0)
 {
     mHistBarProgram = initShaders(gHistBarVertexShaderSrc, gHistBarFragmentShaderSrc);
     CheckGL("Histogram::Shaders");
@@ -106,7 +106,7 @@ hist_impl::hist_impl(GLuint pNBins, GLenum pDataType)
             mHistogramVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(unsigned char);
             break;
-        default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
+        default: fg::TypeError("Plot::Plot", __LINE__, 1, GLenumToFGType(mDataType));
     }
 }
 
@@ -182,7 +182,7 @@ void hist_impl::render(int pX, int pY, int pVPW, int pVPH) const
 namespace fg
 {
 
-Histogram::Histogram(GLuint pNBins, GLenum pDataType)
+Histogram::Histogram(unsigned pNBins, fg::FGType pDataType)
 {
     value = new internal::_Histogram(pNBins, pDataType);
 }
@@ -237,12 +237,12 @@ float Histogram::ymin() const
     return value->ymin();
 }
 
-GLuint Histogram::vbo() const
+unsigned Histogram::vbo() const
 {
     return value->vbo();
 }
 
-size_t Histogram::size() const
+unsigned Histogram::size() const
 {
     return value->size();
 }

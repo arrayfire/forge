@@ -18,7 +18,7 @@ using std::string;
 using std::stringstream;
 using std::cerr;
 
-std::string getName(GLenum pType)
+std::string getName(fg::FGType pType)
 {
     // FIXME
     return std::string("test");
@@ -26,7 +26,7 @@ std::string getName(GLenum pType)
 
 void stringcopy(char* dest, const char* src, size_t len)
 {
-#ifdef WINDOWS_OS
+#ifdef OS_WIN
     strncpy_s(dest, MAX_ERR_STR_LEN, src, len);
 #else
     strncpy(dest, src, len);
@@ -56,7 +56,7 @@ Error::~Error() throw() {}
 
 
 TypeError::TypeError(const char * const pFuncName, const int pLine,
-                     const int pIndex, const GLenum pType)
+                     const int pIndex, const fg::FGType pType)
     : Error(pFuncName, pLine, "Invalid data type", FG_ERR_INVALID_TYPE), mArgIndex(pIndex)
 {
     std::string str = getName(pType); /* TODO getName has to be defined */

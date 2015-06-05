@@ -117,11 +117,13 @@ void image_impl::unbindResources() const
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-image_impl::image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType)
-    : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType)
+image_impl::image_impl(unsigned pWidth, unsigned pHeight,
+                       fg::ColorMode pFormat, fg::FGType pDataType)
+    : mWidth(pWidth), mHeight(pHeight),
+      mFormat(pFormat), mDataType(FGTypeToGLenum(pDataType))
 {
     CheckGL("Begin Image::Image");
-    mGLformat = FGMode_to_GLColor(mFormat);
+    mGLformat = FGModeToGLColor(mFormat);
 
     // Initialize OpenGL Items
     glGenTextures(1, &(mTex));
@@ -131,18 +133,19 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, mGLformat, mWidth, mHeight, 0, mGLformat, mDataType, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, mGLformat,
+                 mWidth, mHeight, 0, mGLformat, mDataType, NULL);
 
     CheckGL("Before PBO Initialization");
     glGenBuffers(1, &mPBO);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     size_t typeSize = 0;
     switch(mDataType) {
-        case GL_FLOAT:          typeSize = sizeof(float);           break;
         case GL_INT:            typeSize = sizeof(int  );           break;
         case GL_UNSIGNED_INT:   typeSize = sizeof(unsigned int);    break;
         case GL_BYTE:           typeSize = sizeof(char );           break;
         case GL_UNSIGNED_BYTE:  typeSize = sizeof(unsigned char);   break;
+        default: typeSize = sizeof(float); break;
     }
     mPBOsize = mWidth * mHeight * mFormat * typeSize;
     glBufferData(GL_PIXEL_UNPACK_BUFFER, mPBOsize, NULL, GL_STREAM_COPY);
@@ -175,11 +178,11 @@ unsigned image_impl::height() const { return mHeight; }
 
 fg::ColorMode image_impl::pixelFormat() const { return mFormat; }
 
-GLenum image_impl::channelType() const { return mDataType; }
+fg::FGType image_impl::channelType() const { return GLenumToFGType(mDataType); }
 
-GLuint image_impl::pbo() const { return mPBO; }
+unsigned image_impl::pbo() const { return mPBO; }
 
-size_t image_impl::size() const { return mPBOsize; }
+unsigned image_impl::size() const { return mPBOsize; }
 
 void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
 {
@@ -233,7 +236,7 @@ void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight)
 namespace fg
 {
 
-Image::Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, GLenum pDataType) {
+Image::Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, fg::FGType pDataType) {
     value = new internal::_Image(pWidth, pHeight, pFormat, pDataType);
 }
 
@@ -257,7 +260,7 @@ ColorMode Image::pixelFormat() const {
     return value->pixelFormat();
 }
 
-GLenum Image::channelType() const {
+fg::FGType Image::channelType() const {
     return value->channelType();
 }
 
@@ -265,7 +268,7 @@ GLuint Image::pbo() const {
     return value->pbo();
 }
 
-size_t Image::size() const {
+unsigned Image::size() const {
     return value->size();
 }
 

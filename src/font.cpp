@@ -23,7 +23,7 @@
 #include <ftglyph.h>
 #include FT_FREETYPE_H
 
-#ifndef WINDOWS_OS
+#ifndef OS_WIN
 #include <fontconfig/fontconfig.h>
 #endif
 
@@ -92,8 +92,9 @@ void font_impl::extractGlyph(int pCharacter)
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glGenTextures(1, &(mCharTextures[pIndex]));
     glBindTexture(GL_TEXTURE_2D, mCharTextures[pIndex]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
-        (pCharacter==32 ? NULL : &glyphData.front()));
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                 w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
+                 (pCharacter==32 ? NULL : &glyphData.front()));
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -230,7 +231,7 @@ void font_impl::loadSystemFont(const char* const pName, int pFontSize)
     //TODO do error checking once it is working
     std::string ttf_file_path;
 
-#ifndef WINDOWS_OS
+#ifndef OS_WIN
     // use fontconfig to get the file
     FcConfig* config = FcInitLoadConfigAndFonts();
     if (!config) {

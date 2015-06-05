@@ -9,18 +9,7 @@
 
 #pragma once
 
-#if defined(_WIN32) || defined(_WIN64) || defined(_MSC_VER) ||  defined(_WINDOWS_) || defined(__WIN32__) || defined(__WINDOWS__)
-#define WINDOWS_OS
-#elif defined(__APPLE__) || defined(__MACH__)
-#define APPLE_OS
-#else
-#define LINUX_OS
-#endif
-
-// Print for OpenGL errors
-// Returns 1 if an OpenGL error occurred, 0 otherwise.
-
-#ifdef WINDOWS_OS
+#ifdef OS_WIN
     // http://msdn.microsoft.com/en-us/library/b0084kay(v=VS.80).aspx
     // http://msdn.microsoft.com/en-us/library/3y1sfaz2%28v=VS.80%29.aspx
     #ifdef FGDLL // libfg
@@ -29,12 +18,11 @@
         #define FGAPI  __declspec(dllimport)
     #endif
 
-// bool
     #ifndef __cplusplus
-        #define bool unsigned char
         #define false 0
         #define true  1
     #endif
+
     #define __PRETTY_FUNCTION__ __FUNCSIG__
     #if _MSC_VER < 1900
         #define snprintf sprintf_s
@@ -49,27 +37,8 @@
 
 #include <GL/glew.h>
 
-#ifdef WINDOWS_OS
-#define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_EXPOSE_NATIVE_WGL
-#else
-#define GLFW_EXPOSE_NATIVE_X11
-#define GLFW_EXPOSE_NATIVE_GLX
-#endif
-
-#include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
-
-#ifdef WINDOWS_OS
-typedef HGLRC ContextHandle;
-typedef HDC DisplayHandle;
-#else
-typedef GLXContext ContextHandle;
-typedef Display* DisplayHandle;
-#endif
-
 // Required to be defined for GLEW MX to work,
-// along with the GLEW_MX define in the perprocessor!
+// // along with the GLEW_MX define in the perprocessor!
 FGAPI GLEWContext* glewGetContext();
 
 namespace fg
@@ -108,6 +77,14 @@ enum ColorMap {
     FG_MOOD     = 4,
     FG_HEAT     = 5,
     FG_BLUEMAP  = 6
+};
+
+enum FGType {
+    FG_BYTE         = 0,
+    FG_UNSIGNED_BYTE= 1,
+    FG_INT          = 2,
+    FG_UNSIGNED_INT = 3,
+    FG_FLOAT        = 4,
 };
 
 }

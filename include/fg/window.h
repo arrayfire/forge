@@ -31,7 +31,7 @@ class Window {
 
     public:
         FGAPI Window(int pWidth, int pHeight, const char* pTitle,
-                    const Window* pWindow=NULL, const bool invisible = false);
+                    const Window* pWindow=0, const bool invisible = false);
         FGAPI Window(const Window& other);
         FGAPI ~Window();
 
@@ -40,8 +40,8 @@ class Window {
         FGAPI void setPos(int pX, int pY);
         FGAPI void setColorMap(ColorMap cmap);
 
-        FGAPI ContextHandle context() const;
-        FGAPI DisplayHandle display() const;
+        FGAPI long long context() const;
+        FGAPI long long display() const;
         FGAPI int width() const;
         FGAPI int height() const;
         FGAPI internal::_Window* get() const;
@@ -63,9 +63,9 @@ class Window {
 
         /* below draw call uses zero-based indexing
          * for referring to cells within the grid */
-        FGAPI void draw(int pColId, int pRowId, const Image& pImage, const char* pTitle=NULL);
-        FGAPI void draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle = NULL);
-        FGAPI void draw(int pColId, int pRowId, const Histogram& pHist, const char* pTitle = NULL);
+        FGAPI void draw(int pColId, int pRowId, const Image& pImage, const char* pTitle=0);
+        FGAPI void draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle = 0);
+        FGAPI void draw(int pColId, int pRowId, const Histogram& pHist, const char* pTitle = 0);
 
         FGAPI void draw();
 };

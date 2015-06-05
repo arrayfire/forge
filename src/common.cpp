@@ -21,24 +21,46 @@ typedef struct {
     GLuint fragment;
 } shaders_t;
 
-GLenum FGMode_to_GLColor(ColorMode mode)
+GLenum FGTypeToGLenum(fg::FGType val)
+{
+    switch(val) {
+        case FG_BYTE:           return GL_BYTE;
+        case FG_UNSIGNED_BYTE:  return GL_UNSIGNED_BYTE;
+        case FG_INT:            return GL_INT;
+        case FG_UNSIGNED_INT:   return GL_UNSIGNED_INT;
+        default:                return GL_FLOAT;
+    }
+}
+
+fg::FGType GLenumToFGType(GLenum val)
+{
+    switch(val) {
+        case GL_BYTE:           return FG_BYTE;
+        case GL_UNSIGNED_BYTE:  return FG_UNSIGNED_BYTE;
+        case GL_INT:            return FG_INT;
+        case GL_UNSIGNED_INT:   return FG_UNSIGNED_INT;
+        default:                return FG_FLOAT;
+    }
+}
+
+GLenum FGModeToGLColor(ColorMode mode)
 {
     GLenum color = GL_RGBA;
     switch(mode) {
         case FG_RED : color = GL_RED;  break;
         case FG_RGB : color = GL_RGB;  break;
-        case FG_RGBA: color = GL_RGBA; break;
+        default     : color = GL_RGBA; break;
     }
     return color;
 }
 
-ColorMode GLMode_to_FGColor(GLenum mode)
+ColorMode GLModeToFGColor(GLenum mode)
 {
     ColorMode color = FG_RGBA;
     switch(mode) {
         case GL_RED : color = FG_RED;  break;
         case GL_RGB : color = FG_RGB;  break;
-        case GL_RGBA: color = FG_RGBA; break;
+        default     : color = FG_RGBA; break;
     }
     return color;
 }
