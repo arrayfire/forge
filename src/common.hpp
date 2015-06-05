@@ -22,7 +22,9 @@
 #endif
 
 #include <GLFW/glfw3.h>
+#ifndef OS_MAC
 #include <GLFW/glfw3native.h>
+#endif
 #include <fg/exception.h>
 #include <err_common.hpp>
 
