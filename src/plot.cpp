@@ -22,18 +22,31 @@ using namespace std;
 namespace internal
 {
 
-void plot_impl::bindResources() const
+void plot_impl::bindResources(const void* pWnd)
 {
-    // attach plot vertices
-    glEnableVertexAttribArray(mPointIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, mMainVBO);
-    glVertexAttribPointer(mPointIndex, 2, mDataType, GL_FALSE, 0, 0);
+    if (mVAOMap.find(pWnd) == mVAOMap.end()) {
+        GLsizei size = sizeof(glm::vec2);
+        GLuint vao = 0;
+        /* create a vertex array object
+         * with appropriate bindings */
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        // attach plot vertices
+        glEnableVertexAttribArray(mPointIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mMainVBO);
+        glVertexAttribPointer(mPointIndex, 2, mDataType, GL_FALSE, 0, 0);
+        glBindVertexArray(0);
+        /* store the vertex array object corresponding to
+         * the window instance in the map */
+        mVAOMap[pWnd] = vao;
+    }
+
+    glBindVertexArray(mVAOMap[pWnd]);
 }
 
 void plot_impl::unbindResources() const
 {
-    glDisableVertexAttribArray(mPointIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType)
@@ -90,7 +103,7 @@ size_t plot_impl::size() const
     return mMainVBOsize;
 }
 
-void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
+void plot_impl::render(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
 {
     float graph_scale_x = 1/(xmax() - xmin());
     float graph_scale_y = 1/(ymax() - ymin());
@@ -109,7 +122,7 @@ void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
     glUniform4fv(borderColorIndex(), 1, mLineColor);
 
     /* render the plot data */
-    bindResources();
+    bindResources(pWnd);
     glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
     unbindResources();
 
@@ -118,7 +131,7 @@ void plot_impl::render(int pX, int pY, int pVPW, int pVPH) const
     unbindBorderProgram();
 
     /* render graph border and axes */
-    renderChart(pX, pY, pVPW, pVPH);
+    renderChart(pWnd, pX, pY, pVPW, pVPH);
 
     CheckGL("End Plot::render");
 }

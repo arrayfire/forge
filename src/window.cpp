@@ -63,16 +63,19 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
      * for Forge renderable objects while being rendered
      * onto different windows(windows that share context) on the fly.
      * */
-    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     if (invisible)
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
     else
         glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+
     glfwWindowHint(GLFW_SAMPLES, 4);
-    // create glfw window
-    // if pWindow is not null, then the window created in this
-    // constructor call will share the context with pWindow
+    /* create glfw window if pWindow is not null,
+     * then the window created in this  constructor
+     *  call will share the context with pWindow
+     */
     GLFWwindow* temp = nullptr;
     if (auto observe = pWindow.lock()) {
         temp = glfwCreateWindow(pWidth, pHeight, pTitle, nullptr, observe->get());
@@ -86,7 +89,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     }
     mWindow = temp;
 
-    // create glew context so that it will bind itself to windows
+    /* create glew context so that it will bind itself to windows */
     if (auto observe = pWindow.lock()) {
         mGLEWContext = observe->glewContext();
     } else {
@@ -98,10 +101,10 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
         }
     }
 
-    // Set context (before glewInit())
+    /* Set context (before glewInit()) */
     MakeContextCurrent(this);
 
-    //GLEW Initialization - Must be done
+    /* GLEW Initialization - Must be done */
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     if (err != GLEW_OK) {
@@ -112,9 +115,10 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     }
     err = glGetError();
     if (err!=GL_NO_ERROR && err!=GL_INVALID_ENUM) {
-        // ignore this error, as GLEW is known to
-        // have this issue with 3.2+ core profiles
-        // they are yet to fix this in GLEW
+        /* ignore this error, as GLEW is known to
+         * have this issue with 3.2+ core profiles
+         * they are yet to fix this in GLEW
+         */
         ForceCheckGL("GLEW initilization failed");
         GLFW_THROW_ERROR("GLEW initilization failed", fg::FG_ERR_GL_ERROR)
     }
@@ -280,7 +284,7 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(0, 0, wind_width, wind_height);
+    pRenderable->render(this, 0, 0, wind_width, wind_height);
 
     glfwSwapBuffers(mWindow);
     glfwPollEvents();
@@ -329,7 +333,7 @@ void window_impl::draw(int pColId, int pRowId,
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(x_off, y_off, mCellWidth, mCellHeight);
+    pRenderable->render(this, x_off, y_off, mCellWidth, mCellHeight);
 
     glDisable(GL_SCISSOR_TEST);
     glViewport(x_off, y_off, mCellWidth, mCellHeight);
@@ -338,7 +342,7 @@ void window_impl::draw(int pColId, int pRowId,
         mFont->setOthro2D(mCellWidth, mCellHeight);
         pos[0] = mCellWidth / 3.0f;
         pos[1] = mCellHeight*0.92f;
-        mFont->render(pos, RED, pTitle, 16);
+        mFont->render(this, pos, RED, pTitle, 16);
     }
 
     CheckGL("End show(column, row)");

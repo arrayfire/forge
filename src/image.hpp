@@ -33,7 +33,7 @@ class image_impl : public AbstractRenderable {
 
         /* helper functions to bind and unbind
          * resources for render quad primitive */
-        void bindResources() const;
+        void bindResources(const void* pWnd);
         void unbindResources() const;
 
     public:
@@ -49,7 +49,7 @@ class image_impl : public AbstractRenderable {
         unsigned pbo() const;
         unsigned size() const;
 
-        void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
+        void render(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
 };
 
 class _Image {

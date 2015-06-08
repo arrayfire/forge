@@ -33,6 +33,9 @@ static const float WHITE[] = {1.0f   , 1.0f   , 1.0f   , 1.0f};
 static const float BLUE[]  = {0.0588f, 0.1137f, 0.2745f, 1.0f};
 static const float RED[]   = {1.0f   , 0.0f   , 0.0f   , 1.0f};
 
+namespace internal
+{
+
 /* Basic renderable class
  *
  * Any object that is renderable to a window should inherit from this
@@ -52,13 +55,16 @@ class AbstractRenderable {
          *
          * @return nothing.
          */
-        virtual void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const = 0;
+        virtual void render(const void* pWnd,
+                int pX, int pY, int pViewPortWidth, int pViewPortHeight) = 0;
 
         /* virtual function to set colormap, a derviced class might
          * use it or ignore it if it doesnt have a need for color maps */
         virtual void setColorMapUBOParams(GLuint ubo, GLuint size) {
         }
 };
+
+}
 
 GLenum FGTypeToGLenum(fg::FGType val);
 

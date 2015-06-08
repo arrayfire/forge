@@ -130,22 +130,31 @@ void font_impl::extractGlyph(int pCharacter)
     }
 }
 
-void font_impl::bindResources() const
+void font_impl::bindResources(const void* pWnd)
 {
-    GLsizei size = sizeof(glm::vec2);
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, size*2, 0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, (void*)(size));
+    if (mVAOMap.find(pWnd) == mVAOMap.end()) {
+        GLsizei size = sizeof(glm::vec2);
+        GLuint vao = 0;
+        /* create a vertex array object
+         * with appropriate bindings */
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, size*2, 0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, (void*)(size));
+        glBindVertexArray(0);
+        /* store the vertex array object corresponding to
+         * the window instance in the map */
+        mVAOMap[pWnd] = vao;
+    }
+    glBindVertexArray(mVAOMap[pWnd]);
 }
 
 void font_impl::unbindResources() const
 {
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void font_impl::destroyGLResources()
@@ -273,7 +282,9 @@ void font_impl::loadSystemFont(const char* const pName, int pFontSize)
     loadFont(ttf_file_path.c_str(), pFontSize);
 }
 
-void font_impl::render(const float pPos[], const float pColor[], const char* pText, int pFontSize, bool pIsVertical)
+void font_impl::render(const void* pWnd,
+                       const float pPos[], const float pColor[], const char* pText,
+                       int pFontSize, bool pIsVertical)
 {
     if(!mIsFontLoaded) {
         std::cerr<<"No font was loaded!, hence skipping text rendering."<<std::endl;
@@ -302,7 +313,7 @@ void font_impl::render(const float pPos[], const float pColor[], const char* pTe
         pFontSize = mLoadedPixelSize;
     float scale_factor = float(pFontSize) / float(mLoadedPixelSize);
 
-    bindResources();
+    bindResources(pWnd);
     CheckGL("After Font::render bind resources");
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(tex_loc, 0);

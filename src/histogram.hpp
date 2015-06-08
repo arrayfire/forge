@@ -12,6 +12,7 @@
 #include <common.hpp>
 #include <chart.hpp>
 #include <memory>
+#include <map>
 
 namespace internal
 {
@@ -36,9 +37,11 @@ class hist_impl : public AbstractChart2D {
         GLuint    mPointIndex;
         GLuint    mFreqIndex;
 
+        std::map<const void*, GLuint> mVAOMap;
+
         /* bind and unbind helper functions
          * for rendering resources */
-        void bindResources() const;
+        void bindResources(const void* pWnd);
         void unbindResources() const;
 
     public:
@@ -49,7 +52,7 @@ class hist_impl : public AbstractChart2D {
         GLuint vbo() const;
         size_t size() const;
 
-        void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
+        void render(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
 };
 
 class _Histogram {
