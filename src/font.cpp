@@ -394,10 +394,4 @@ internal::_Font* Font::get() const
     return value;
 }
 
-void Font::render(const float pPos[2], const float pColor[4],
-                  const char* pText, int pFontSize, bool pIsVertical)
-{
-    value->render(pPos, pColor, pText, pFontSize, pIsVertical);
-}
-
 }

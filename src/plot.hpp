@@ -95,10 +95,6 @@ class _Plot {
         inline size_t size() const {
             return plt->size();
         }
-
-        inline void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
-            plt->render(pX, pY, pViewPortWidth, pViewPortHeight);
-        }
 };
 
 }

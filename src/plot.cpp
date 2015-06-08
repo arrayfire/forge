@@ -198,9 +198,4 @@ internal::_Plot* Plot::get() const
     return value;
 }
 
-void Plot::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
-{
-    value->render(pX, pY, pViewPortWidth, pViewPortHeight);
-}
-
 }

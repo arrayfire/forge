@@ -82,11 +82,6 @@ class _Font {
         inline void loadSystemFont(const char* const pName, int pFontSize) {
             fnt->loadSystemFont(pName, pFontSize);
         }
-
-        inline void render(const float pPos[2], const float pColor[4], const char* pText,
-                int pFontSize = -1, bool pIsVertical = false) {
-            fnt->render(pPos, pColor, pText, pFontSize, pIsVertical);
-        }
 };
 
 }

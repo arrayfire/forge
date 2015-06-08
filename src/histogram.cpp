@@ -252,9 +252,4 @@ internal::_Histogram* Histogram::get() const
     return value;
 }
 
-void Histogram::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
-{
-    value->render(pX, pY, pViewPortWidth, pViewPortHeight);
-}
-
 }

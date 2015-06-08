@@ -103,10 +103,6 @@ class _Histogram {
         inline size_t size() const {
             return hst->size();
         }
-
-        inline void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
-            hst->render(pX, pY, pViewPortWidth, pViewPortHeight);
-        }
 };
 
 }

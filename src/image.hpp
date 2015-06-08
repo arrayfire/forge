@@ -73,10 +73,6 @@ class _Image {
         inline GLuint pbo() const { return img->pbo(); }
 
         inline size_t size() const { return img->size(); }
-
-        inline void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
-            img->render(pX, pY, pViewPortWidth, pViewPortHeight);
-        }
 };
 
 }

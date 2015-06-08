@@ -59,7 +59,7 @@ const char *gChartSpriteFragmentShaderSrc =
 "       outputColor = tick_color;\n"
 "}";
 
-internal::_Font& getChartFont()
+const std::shared_ptr<internal::font_impl>& getChartFont()
 {
     static internal::_Font mChartFont;
     static std::once_flag flag;
@@ -72,7 +72,7 @@ internal::_Font& getChartFont()
 #endif
     });
 
-    return mChartFont;
+    return mChartFont.impl();
 }
 
 namespace internal
@@ -315,7 +315,7 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
     glDisable(GL_POINT_SPRITE);
 
     auto &fonter = getChartFont();
-    fonter.setOthro2D(int(w), int(h));
+    fonter->setOthro2D(int(w), int(h));
 
     float pos[2];
     /* render tick marker texts for y axis */
@@ -325,7 +325,7 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[0] -= (pVPW-w)*0.50f;
-        fonter.render(pos, WHITE, it->c_str(), 15);
+        fonter->render(pos, WHITE, it->c_str(), 15);
     }
     /* render tick marker texts for x axis */
     for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
@@ -336,7 +336,7 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] -= (pVPH-h)*0.32f;
-        fonter.render(pos, WHITE, it->c_str(), 15);
+        fonter->render(pos, WHITE, it->c_str(), 15);
     }
     /* render chart axes titles */
     if (!mYTitle.empty()) {
@@ -344,14 +344,14 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[0] -= (pVPW-w)*0.70f;
-        fonter.render(pos, WHITE, mYTitle.c_str(), 15, true);
+        fonter->render(pos, WHITE, mYTitle.c_str(), 15, true);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] -= (pVPH-h)*0.70f;
-        fonter.render(pos, WHITE, mXTitle.c_str(), 15);
+        fonter->render(pos, WHITE, mXTitle.c_str(), 15);
     }
 
     CheckGL("End Chart::render");

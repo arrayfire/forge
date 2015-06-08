@@ -32,9 +32,6 @@ class Font {
 
         FGAPI void setOthro2D(int pWidth, int pHeight);
         FGAPI internal::_Font* get() const;
-
-        FGAPI void render(const float pPos[2], const float pColor[4],
-                          const char* pText, int pFontSize=-1, bool pIsVertical=false);
 };
 
 }

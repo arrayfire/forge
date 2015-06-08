@@ -276,8 +276,4 @@ internal::_Image* Image::get() const {
     return value;
 }
 
-void Image::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
-    value->render(pX, pY, pViewPortWidth, pViewPortHeight);
-}
-
 }
