@@ -11,6 +11,7 @@
 #include <image.hpp>
 #include <common.hpp>
 #include <mutex>
+#include <map>
 
 static const char* vertex_shader_code =
 "#version 330\n"
@@ -51,70 +52,54 @@ static const char* fragment_shader_code =
 "    fragColor = vec4(r_ch, g_ch , b_ch, 1);\n"
 "}\n";
 
-
-GLuint imageQuadVBO()
+GLuint imageQuadVAO(const void* pWnd)
 {
-    static GLuint vbo = 0;
-    static std::once_flag flag;
+    static std::map<const void*, GLuint> mVAOMap;
 
-    std::call_once(flag, [] () {
-            const float vertices[12] = {-1.0f,-1.0f,0.0,
-                                        1.0f,-1.0f,0.0,
-                                        1.0f, 1.0f,0.0,
-                                        -1.0f, 1.0f,0.0};
-            vbo  = createBuffer(GL_ARRAY_BUFFER, 12, vertices, GL_STATIC_DRAW);
-        });
-    return vbo;
-}
+    if (mVAOMap.find(pWnd)==mVAOMap.end()) {
+        static const float vertices[12] = {-1.0f,-1.0f,0.0,
+                                    1.0f,-1.0f,0.0,
+                                    1.0f, 1.0f,0.0,
+                                    -1.0f, 1.0f,0.0};
+        static const float texcords[8]  = {0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0};
+        static const unsigned indices[6]= {0,1,2,0,2,3};
+        GLuint vbo  = createBuffer(GL_ARRAY_BUFFER, 12, vertices, GL_STATIC_DRAW);
+        GLuint tbo  = createBuffer(GL_ARRAY_BUFFER, 8, texcords, GL_STATIC_DRAW);
+        GLuint ibo  = createBuffer(GL_ELEMENT_ARRAY_BUFFER, 6, indices, GL_STATIC_DRAW);
 
-GLuint imageQuadTBO()
-{
-    static GLuint tbo = 0;
-    static std::once_flag flag;
+        GLuint vao = 0;
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        // attach vbo
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+        // attach tbo
+        glBindBuffer(GL_ARRAY_BUFFER, tbo);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+        // attach ibo
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBindVertexArray(0);
+        /* store the vertex array object corresponding to
+         * the window instance in the map */
+        mVAOMap[pWnd] = vao;
+    }
 
-    std::call_once(flag, [] () {
-            const float texcords[8] = {0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0};
-            tbo  = createBuffer(GL_ARRAY_BUFFER, 8, texcords, GL_STATIC_DRAW);
-        });
-    return tbo;
-}
-
-GLuint imageQuadIBO()
-{
-    static GLuint ibo = 0;
-    static std::once_flag flag;
-
-    std::call_once(flag, [] () {
-            const unsigned indices[6] = {0,1,2,0,2,3};
-            ibo = createBuffer(GL_ELEMENT_ARRAY_BUFFER, 6, indices, GL_STATIC_DRAW);
-        });
-    return ibo;
+    return mVAOMap[pWnd];
 }
 
 namespace internal
 {
 
-void image_impl::bindResources() const
+void image_impl::bindResources(const void* pWnd)
 {
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    // attach vbo
-    glBindBuffer(GL_ARRAY_BUFFER, imageQuadVBO());
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    // attach tbo
-    glBindBuffer(GL_ARRAY_BUFFER, imageQuadTBO());
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-    // attach ibo
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, imageQuadIBO());
+    glBindVertexArray(imageQuadVAO(pWnd));
 }
 
 void image_impl::unbindResources() const
 {
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    // Unbind resources
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 image_impl::image_impl(unsigned pWidth, unsigned pHeight,
@@ -184,7 +169,7 @@ unsigned image_impl::pbo() const { return mPBO; }
 
 unsigned image_impl::size() const { return mPBOsize; }
 
-void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
+void image_impl::render(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight)
 {
     static const float matrix[16] = {
         1.0f, 0.0f, 0.0f, 0.0f,
@@ -219,7 +204,7 @@ void image_impl::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight)
     CheckGL("Before render");
 
     // Draw to screen
-    bindResources();
+    bindResources(pWnd);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     unbindResources();
 
@@ -274,10 +259,6 @@ unsigned Image::size() const {
 
 internal::_Image* Image::get() const {
     return value;
-}
-
-void Image::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
-    value->render(pX, pY, pViewPortWidth, pViewPortHeight);
 }
 
 }

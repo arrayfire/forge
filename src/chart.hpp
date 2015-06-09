@@ -12,6 +12,7 @@
 #include <common.hpp>
 #include <vector>
 #include <string>
+#include <map>
 
 namespace internal
 {
@@ -48,6 +49,12 @@ class AbstractChart2D : public AbstractRenderable {
         GLuint    mSpriteMatIndex;
         GLuint    mSpriteTickcolorIndex;
         GLuint    mSpriteTickaxisIndex;
+        /* VAO map to store a vertex array object
+         * for each valid window context */
+        std::map<const void*, GLuint> mVAOMap;
+
+        void bindResources(const void* pWnd);
+        void unbindResources() const;
 
     protected:
         void bindBorderProgram() const;
@@ -80,11 +87,11 @@ class AbstractChart2D : public AbstractRenderable {
         float xmin() const;
         float ymax() const;
         float ymin() const;
-        void renderChart(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
+        void renderChart(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
 
         virtual GLuint vbo() const = 0;
         virtual size_t size() const = 0;
-        virtual void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const = 0;
+        virtual void render(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight) = 0;
 };
 
 }

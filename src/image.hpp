@@ -33,7 +33,7 @@ class image_impl : public AbstractRenderable {
 
         /* helper functions to bind and unbind
          * resources for render quad primitive */
-        void bindResources() const;
+        void bindResources(const void* pWnd);
         void unbindResources() const;
 
     public:
@@ -49,7 +49,7 @@ class image_impl : public AbstractRenderable {
         unsigned pbo() const;
         unsigned size() const;
 
-        void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
+        void render(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
 };
 
 class _Image {
@@ -73,10 +73,6 @@ class _Image {
         inline GLuint pbo() const { return img->pbo(); }
 
         inline size_t size() const { return img->size(); }
-
-        inline void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const {
-            img->render(pX, pY, pViewPortWidth, pViewPortHeight);
-        }
 };
 
 }

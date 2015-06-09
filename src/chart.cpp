@@ -59,7 +59,7 @@ const char *gChartSpriteFragmentShaderSrc =
 "       outputColor = tick_color;\n"
 "}";
 
-internal::_Font& getChartFont()
+const std::shared_ptr<internal::font_impl>& getChartFont()
 {
     static internal::_Font mChartFont;
     static std::once_flag flag;
@@ -72,11 +72,36 @@ internal::_Font& getChartFont()
 #endif
     });
 
-    return mChartFont;
+    return mChartFont.impl();
 }
 
 namespace internal
 {
+
+void AbstractChart2D::bindResources(const void* pWnd)
+{
+    if (mVAOMap.find(pWnd) == mVAOMap.end()) {
+        GLuint vao = 0;
+        /* create a vertex array object
+         * with appropriate bindings */
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glEnableVertexAttribArray(mBorderPointIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
+        glVertexAttribPointer(mBorderPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glBindVertexArray(0);
+        /* store the vertex array object corresponding to
+         * the window instance in the map */
+        mVAOMap[pWnd] = vao;
+    }
+
+    glBindVertexArray(mVAOMap[pWnd]);
+}
+
+void AbstractChart2D::unbindResources() const
+{
+    glBindVertexArray(0);
+}
 
 void AbstractChart2D::bindBorderProgram() const
 {
@@ -259,7 +284,7 @@ float AbstractChart2D::xmin() const { return mXMin; }
 float AbstractChart2D::ymax() const { return mYMax; }
 float AbstractChart2D::ymin() const { return mYMin; }
 
-void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
+void AbstractChart2D::renderChart(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
 {
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
@@ -270,9 +295,7 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
 
     CheckGL("Begin Chart::render");
 
-    glEnableVertexAttribArray(mBorderPointIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
-    glVertexAttribPointer(mBorderPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    bindResources(pWnd);
 
     /* bind the plotting shader program  */
     glUseProgram(mBorderProgram);
@@ -294,8 +317,6 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
     /* bind the sprite shader program to
      * draw ticks on x and y axes */
     glPointSize((GLfloat)mTickSize);
-    /* Following line is required for opengl compatibility profile */
-    glEnable(GL_POINT_SPRITE);
 
     glUseProgram(mSpriteProgram);
     glUniform4fv(mSpriteTickcolorIndex, 1, WHITE);
@@ -309,13 +330,10 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
 
     glUseProgram(0);
     glPointSize(1);
-    glDisableVertexAttribArray(mBorderPointIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    /* Following line is required for opengl compatibility profile */
-    glDisable(GL_POINT_SPRITE);
+    unbindResources();
 
     auto &fonter = getChartFont();
-    fonter.setOthro2D(int(w), int(h));
+    fonter->setOthro2D(int(w), int(h));
 
     float pos[2];
     /* render tick marker texts for y axis */
@@ -325,7 +343,7 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[0] -= (pVPW-w)*0.50f;
-        fonter.render(pos, WHITE, it->c_str(), 15);
+        fonter->render(pWnd, pos, WHITE, it->c_str(), 15);
     }
     /* render tick marker texts for x axis */
     for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
@@ -336,7 +354,7 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] -= (pVPH-h)*0.32f;
-        fonter.render(pos, WHITE, it->c_str(), 15);
+        fonter->render(pWnd, pos, WHITE, it->c_str(), 15);
     }
     /* render chart axes titles */
     if (!mYTitle.empty()) {
@@ -344,14 +362,14 @@ void AbstractChart2D::renderChart(int pX, int pY, int pVPW, int pVPH) const
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[0] -= (pVPW-w)*0.70f;
-        fonter.render(pos, WHITE, mYTitle.c_str(), 15, true);
+        fonter->render(pWnd, pos, WHITE, mYTitle.c_str(), 15, true);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] -= (pVPH-h)*0.70f;
-        fonter.render(pos, WHITE, mXTitle.c_str(), 15);
+        fonter->render(pWnd, pos, WHITE, mXTitle.c_str(), 15);
     }
 
     CheckGL("End Chart::render");

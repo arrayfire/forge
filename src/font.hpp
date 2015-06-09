@@ -12,6 +12,7 @@
 #include <common.hpp>
 #include <vector>
 #include <memory>
+#include <map>
 
 static const int NUM_CHARS = 95;
 
@@ -20,6 +21,10 @@ namespace internal
 
 class font_impl {
     private:
+        /* VAO map to store a vertex array object
+         * for each valid window context */
+        std::map<const void*, GLuint> mVAOMap;
+
         /* attributes */
         bool mIsFontLoaded;
         std::string mTTFfile;
@@ -42,7 +47,7 @@ class font_impl {
 
         /* helper functions to bind and unbind
          * rendering resources */
-        void bindResources() const;
+        void bindResources(const void* pWnd);
         void unbindResources() const;
 
         /* helper to destroy GL objects created for
@@ -57,7 +62,9 @@ class font_impl {
         void loadFont(const char* const pFile, int pFontSize);
         void loadSystemFont(const char* const pName, int pFontSize);
 
-        void render(const float pPos[2], const float pColor[4], const char* pText, int pFontSize = -1, bool pIsVertical = false);
+        void render(const void* pWnd,
+                    const float pPos[2], const float pColor[4], const char* pText,
+                    int pFontSize = -1, bool pIsVertical = false);
 };
 
 class _Font {
@@ -81,11 +88,6 @@ class _Font {
 
         inline void loadSystemFont(const char* const pName, int pFontSize) {
             fnt->loadSystemFont(pName, pFontSize);
-        }
-
-        inline void render(const float pPos[2], const float pColor[4], const char* pText,
-                int pFontSize = -1, bool pIsVertical = false) {
-            fnt->render(pPos, pColor, pText, pFontSize, pIsVertical);
         }
 };
 

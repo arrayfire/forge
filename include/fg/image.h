@@ -35,8 +35,6 @@ class Image {
         FGAPI unsigned pbo() const;
         FGAPI unsigned size() const;
         FGAPI internal::_Image* get() const;
-
-        FGAPI void render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const;
 };
 
 }

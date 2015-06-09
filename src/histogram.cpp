@@ -52,25 +52,37 @@ const char *gHistBarFragmentShaderSrc =
 namespace internal
 {
 
-void hist_impl::bindResources() const
+void hist_impl::bindResources(const void* pWnd)
 {
-    glEnableVertexAttribArray(mPointIndex);
-    glEnableVertexAttribArray(mFreqIndex);
-    // attach histogram bar vertices
-    glBindBuffer(GL_ARRAY_BUFFER, rectangleVBO());
-    glVertexAttribPointer(mPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
-    // attach histogram frequencies
-    glBindBuffer(GL_ARRAY_BUFFER, mHistogramVBO);
-    glVertexAttribPointer(mFreqIndex, 1, mDataType, GL_FALSE, 0, 0);
-    glVertexAttribDivisor(mFreqIndex, 1);
+    if (mVAOMap.find(pWnd) == mVAOMap.end()) {
+        GLsizei size = sizeof(glm::vec2);
+        GLuint vao = 0;
+        /* create a vertex array object
+         * with appropriate bindings */
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glEnableVertexAttribArray(mPointIndex);
+        glEnableVertexAttribArray(mFreqIndex);
+        // attach histogram bar vertices
+        glBindBuffer(GL_ARRAY_BUFFER, rectangleVBO());
+        glVertexAttribPointer(mPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        // attach histogram frequencies
+        glBindBuffer(GL_ARRAY_BUFFER, mHistogramVBO);
+        glVertexAttribPointer(mFreqIndex, 1, mDataType, GL_FALSE, 0, 0);
+        glVertexAttribDivisor(mFreqIndex, 1);
+        glBindVertexArray(0);
+        /* store the vertex array object corresponding to
+         * the window instance in the map */
+        mVAOMap[pWnd] = vao;
+    }
+
+    glBindVertexArray(mVAOMap[pWnd]);
 }
 
 void hist_impl::unbindResources() const
 {
-    glVertexAttribDivisor(mFreqIndex, 0);
-    glDisableVertexAttribArray(mPointIndex);
-    glDisableVertexAttribArray(mFreqIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    //glVertexAttribDivisor(mFreqIndex, 0);
 }
 
 hist_impl::hist_impl(unsigned pNBins, fg::FGType pDataType)
@@ -134,7 +146,7 @@ size_t hist_impl::size() const
     return mHistogramVBOSize;
 }
 
-void hist_impl::render(int pX, int pY, int pVPW, int pVPH) const
+void hist_impl::render(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
 {
     float w = float(pVPW - (leftMargin()+rightMargin()+tickSize()));
     float h = float(pVPH - (bottomMargin()+topMargin()+tickSize()));
@@ -165,7 +177,7 @@ void hist_impl::render(int pX, int pY, int pVPW, int pVPH) const
      * rectangle is scaled and translated accordingly
      * for each bin. This is done by OpenGL feature of
      * instanced rendering */
-    bindResources();
+    bindResources(pWnd);
     glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, mNBins);
     unbindResources();
 
@@ -173,7 +185,7 @@ void hist_impl::render(int pX, int pY, int pVPW, int pVPH) const
     /* Stop clipping */
     glDisable(GL_SCISSOR_TEST);
 
-    renderChart(pX, pY, pVPW, pVPH);
+    renderChart(pWnd, pX, pY, pVPW, pVPH);
     CheckGL("End Histogram::render");
 }
 
@@ -250,11 +262,6 @@ unsigned Histogram::size() const
 internal::_Histogram* Histogram::get() const
 {
     return value;
-}
-
-void Histogram::render(int pX, int pY, int pViewPortWidth, int pViewPortHeight) const
-{
-    value->render(pX, pY, pViewPortWidth, pViewPortHeight);
 }
 
 }
