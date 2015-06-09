@@ -192,8 +192,10 @@ void image_impl::render(const void* pWnd, int pX, int pY, int pViewPortWidth, in
     glBindTexture(GL_TEXTURE_2D, mTex);
     // bind PBO to load data into texture
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight,
                     mGLformat, mDataType, 0);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, matrix);
 
