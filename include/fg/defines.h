@@ -46,22 +46,50 @@ namespace fg
 
 enum ErrorCode {
     FG_SUCCESS            = 0,
-    FG_ERR_INTERNAL       = 1,
-    FG_ERR_NOMEM          = 2,
-    FG_ERR_DRIVER         = 3,
-    FG_ERR_RUNTIME        = 4,
-    FG_ERR_INVALID_ARRAY  = 5,
-    FG_ERR_ARG            = 6,
-    FG_ERR_SIZE           = 7,
-    FG_ERR_DIFF_TYPE      = 8,
-    FG_ERR_NOT_SUPPORTED  = 9,
-    FG_ERR_NOT_CONFIGURED = 10,
-    FG_ERR_INVALID_TYPE   = 11,
-    FG_ERR_INVALID_ARG    = 12,
-    FG_ERR_GL_ERROR       = 13,
-    FG_ERR_FREETYPE_ERROR = 14,
-    FG_ERR_FILE_NOT_FOUND = 15,
-    FG_ERR_UNKNOWN        = 16
+    /*
+     * Arguement related error codes that are
+     * generated when invalid arguments are
+     * provided to any function. All these
+     * codes match the following pattern
+     * '1***'
+     * */
+    FG_ERR_SIZE           = 1001,
+    FG_ERR_INVALID_TYPE   = 1002,
+    FG_ERR_INVALID_ARG    = 1003,
+    /*
+     * OpenGL related error codes
+     * match the following pattern
+     * '2***'
+     * */
+    FG_ERR_GL_ERROR       = 2001,
+    /*
+     * FreeType related error codes
+     * match the following pattern
+     * '3***'
+     * */
+    FG_ERR_FREETYPE_ERROR = 3001,
+    /*
+     * File IO related error codes
+     * match the following pattern
+     * '4***'
+     * */
+    FG_ERR_FILE_NOT_FOUND = 4001,
+    /*
+     * Unsupported configurations
+     * and other similar error codes
+     * match the following pattern
+     * '5***'
+     * */
+    FG_ERR_NOT_SUPPORTED  = 5001,
+    FG_ERR_NOT_CONFIGURED = 5002,
+    /*
+     * other error codes
+     * match the following pattern
+     * '9**'
+     * */
+    FG_ERR_INTERNAL       = 9001,
+    FG_ERR_RUNTIME        = 9002,
+    FG_ERR_UNKNOWN        = 9003
 };
 
 enum ColorMode {
