@@ -27,6 +27,7 @@
 #endif
 #include <fg/exception.h>
 #include <err_common.hpp>
+#include <vector>
 
 static const float GRAY[]  = {0.0f   , 0.0f   , 0.0f   , 1.0f};
 static const float WHITE[] = {1.0f   , 1.0f   , 1.0f   , 1.0f};
@@ -92,3 +93,7 @@ GLuint createBuffer(GLenum target, size_t size, const T* data, GLenum usage)
 int next_p2(int value);
 
 float clampTo01(float a);
+
+#ifdef OS_WIN
+void getFontFilePaths(std::vector<std::string>& pFiles, std::string pDir, std::string pExt);
+#endif

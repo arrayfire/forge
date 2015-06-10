@@ -15,6 +15,7 @@
 #include <cmath>
 
 using namespace fg;
+using namespace std;
 
 typedef struct {
     GLuint vertex;
@@ -190,3 +191,64 @@ float clampTo01(float a)
 {
     return (a < 0.0f ? 0.0f : (a>1.0f ? 1.0f : a));
 }
+
+#ifdef OS_WIN
+#include <strsafe.h>
+
+void getFontFilePaths(std::vector<std::string>& pFiles, std::string pDir, std::string pExt)
+{
+   WIN32_FIND_DATA ffd;
+   LARGE_INTEGER filesize;
+   TCHAR szDir[MAX_PATH];
+   size_t length_of_arg;
+   DWORD dwError=0;
+   HANDLE hFind = INVALID_HANDLE_VALUE;
+
+   // Check that the input path plus 3 is not longer than MAX_PATH.
+   // Three characters are for the "\*" plus NULL appended below.
+   StringCchLength(pDir.c_str(), MAX_PATH, &length_of_arg);
+
+   if (length_of_arg > (MAX_PATH - 3)) {
+       throw fg::Error("getImageFilePaths", __LINE__,
+           "WIN API call: Directory path is too long",
+           FG_ERR_FILE_NOT_FOUND);
+   }
+
+   //printf("\nTarget directory is %s\n\n", pDir.c_str());
+   // Prepare string for use with FindFile functions.  First, copy the
+   // string to a buffer, then append '\*' to the directory name.
+   StringCchCopy(szDir, MAX_PATH, pDir.c_str());
+   std::string wildcard = "\\*" + pExt;
+   StringCchCat(szDir, MAX_PATH, wildcard.c_str());
+
+   // Find the first file in the directory.
+   hFind = FindFirstFile(szDir, &ffd);
+   if (INVALID_HANDLE_VALUE == hFind) {
+       throw fg::Error("getImageFilePaths", __LINE__,
+           "WIN API call: file fetch in DIR failed",
+           FG_ERR_FILE_NOT_FOUND);
+   }
+
+   // List all the files in the directory with some info about them.
+   do {
+      if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+         // It is a directory, skip the entry
+         //_tprintf(TEXT("  %s   <DIR>\n"), ffd.cFileName);
+      } else {
+         filesize.LowPart = ffd.nFileSizeLow;
+         filesize.HighPart = ffd.nFileSizeHigh;
+         //_tprintf(TEXT("  %s   %ld bytes\n"), ffd.cFileName, filesize.QuadPart);
+         pFiles.push_back(std::string(ffd.cFileName));
+      }
+   } while (FindNextFile(hFind, &ffd) != 0);
+
+   dwError = GetLastError();
+   if (dwError != ERROR_NO_MORE_FILES) {
+       throw fg::Error("getImageFilePaths", __LINE__,
+           "WIN API call: files fetch returned no files",
+           FG_ERR_FILE_NOT_FOUND);
+   }
+
+   FindClose(hFind);
+}
+#endif

@@ -27,6 +27,10 @@
 #include <fontconfig/fontconfig.h>
 #endif
 
+#ifdef OS_WIN
+#include <regex>
+#endif
+
 /* freetype library types */
 static FT_Library  gFTLib;
 static FT_Face     gFTFace;
@@ -273,10 +277,26 @@ void font_impl::loadSystemFont(const char* const pName, int pFontSize)
 #else
     char buf[512];
     GetWindowsDirectory(buf, 512);
+
+    std::regex fontRegex(std::string(pName), std::regex_constants::egrep | std::regex_constants::icase);
+    std::vector<std::string> fontFiles;
+    std::vector<std::string> matchedFontFiles;
+
+    getFontFilePaths(fontFiles, std::string(buf)+"\\Fonts\\", std::string("ttf"));
+    for (const auto &fontName : fontFiles) {
+        if (std::regex_search(fontName, fontRegex)) {
+            matchedFontFiles.push_back(fontName);
+        }
+    }
+    /* out of all the possible matches, we choose the
+       first possible match for given input font name parameter
+    */
+    if (matchedFontFiles.size()==0)
+        FT_THROW_ERROR("loadSystemFont failed to find the given font name", fg::FG_ERR_FREETYPE_ERROR);
+
     ttf_file_path = buf;
     ttf_file_path += "\\Fonts\\";
-    ttf_file_path += pName;
-    ttf_file_path += ".ttf";
+    ttf_file_path += matchedFontFiles[0];
 #endif
 
     loadFont(ttf_file_path.c_str(), pFontSize);
