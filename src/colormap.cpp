@@ -23,13 +23,13 @@ colormap_impl::colormap_impl()
     mBlueMapBuffer(0)
 {
     size_t channel_bytes = sizeof(float)*4; /* 4 is for 4 channels */
-    mDefMapLen  = sizeof(cmap_default)/channel_bytes;
-    mSpecMapLen = sizeof(cmap_spectrum)/channel_bytes;
-    mColsMapLen = sizeof(cmap_colors)/channel_bytes;
-    mRedMapLen  = sizeof(cmap_red)/channel_bytes;
-    mMoodMapLen = sizeof(cmap_mood)/channel_bytes;
-    mHeatMapLen = sizeof(cmap_heat)/channel_bytes;
-    mBlueMapLen = sizeof(cmap_blue)/channel_bytes;
+    mDefMapLen  = (GLuint)sizeof(cmap_default)/channel_bytes;
+    mSpecMapLen = (GLuint)sizeof(cmap_spectrum)/channel_bytes;
+    mColsMapLen = (GLuint)sizeof(cmap_colors)/channel_bytes;
+    mRedMapLen  = (GLuint)sizeof(cmap_red)/channel_bytes;
+    mMoodMapLen = (GLuint)sizeof(cmap_mood)/channel_bytes;
+    mHeatMapLen = (GLuint)sizeof(cmap_heat)/channel_bytes;
+    mBlueMapLen = (GLuint)sizeof(cmap_blue)/channel_bytes;
 
     mDefaultMapBuffer = CREATE_UNIFORM_BUFFER(cmap_default, mDefMapLen);
     mSpecMapBuffer    = CREATE_UNIFORM_BUFFER(cmap_spectrum, mSpecMapLen);
