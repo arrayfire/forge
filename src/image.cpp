@@ -167,7 +167,7 @@ fg::FGType image_impl::channelType() const { return GLenumToFGType(mDataType); }
 
 unsigned image_impl::pbo() const { return mPBO; }
 
-unsigned image_impl::size() const { return mPBOsize; }
+unsigned image_impl::size() const { return (unsigned)mPBOsize; }
 
 void image_impl::render(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight)
 {
@@ -199,7 +199,7 @@ void image_impl::render(const void* pWnd, int pX, int pY, int pViewPortWidth, in
 
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, matrix);
 
-    glUniform1f(cml_loc, mUBOSize);
+    glUniform1f(cml_loc, (GLfloat)mUBOSize);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, mColorMapUBO);
     glUniformBlockBinding(mProgram, ubo_idx, 0);
 
@@ -256,7 +256,7 @@ GLuint Image::pbo() const {
 }
 
 unsigned Image::size() const {
-    return value->size();
+    return (unsigned)value->size();
 }
 
 internal::_Image* Image::get() const {

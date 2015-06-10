@@ -203,7 +203,7 @@ unsigned Plot::vbo() const
 
 unsigned Plot::size() const
 {
-    return value->size();
+    return (unsigned)value->size();
 }
 
 internal::_Plot* Plot::get() const

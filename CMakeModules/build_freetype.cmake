@@ -2,6 +2,11 @@ INCLUDE(ExternalProject)
 
 SET(prefix ${CMAKE_BINARY_DIR}/third_party/freetype)
 
+IF(UNIX)
+    SET(CXXFLAGS "${CMAKE_CXX_FLAGS} -w -fPIC")
+    SET(CFLAGS "${CMAKE_C_FLAGS} -w -fPIC")
+ENDIF(UNIX)
+
 ExternalProject_Add(
     freetype-ext
     GIT_REPOSITORY http://git.sv.nongnu.org/r/freetype/freetype2.git
@@ -10,9 +15,9 @@ ExternalProject_Add(
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -Wno-dev "-G${CMAKE_GENERATOR}" ${prefix}/src/freetype-ext
     -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-    "-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS} -w -fPIC"
+    -DCMAKE_CXX_FLAGS:STRING=${CXXFLAGS}
     -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-    "-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS} -w -fPIC"
+    -DCMAKE_C_FLAGS:STRING=${CFLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
     -DCMAKE_INSTALL_PREFIX:STRING=${prefix}
     )

@@ -256,7 +256,7 @@ unsigned Histogram::vbo() const
 
 unsigned Histogram::size() const
 {
-    return value->size();
+    return (unsigned)value->size();
 }
 
 internal::_Histogram* Histogram::get() const
