@@ -61,8 +61,6 @@ class Font {
          */
         FGAPI void loadSystemFont(const char* const pName, int pFontSize);
 
-        FGAPI void setOthro2D(int pWidth, int pHeight);
-
         /**
            Get handle for internal implementation of Font object
          */
