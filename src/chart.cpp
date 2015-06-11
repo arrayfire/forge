@@ -22,6 +22,8 @@
 using namespace std;
 typedef std::vector<std::string>::const_iterator StringIter;
 
+static const int CHART2D_FONT_SIZE = 15;
+
 std::string toString(float pVal, const int n = 2)
 {
     std::ostringstream out;
@@ -340,10 +342,13 @@ void AbstractChart2D::renderChart(const void* pWnd, int pX, int pY, int pVPW, in
     for (StringIter it = mYText.begin(); it!=mYText.end(); ++it) {
         int idx = int(it - mYText.begin());
         glm::vec4 res = trans * glm::vec4(mTickTextX[idx], mTickTextY[idx], 0, 1);
+        /* convert text position from [-1,1] range to
+         * [0, 1) range and then offset horizontally
+         * to compensate for margins and ticksize */
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[0] -= (pVPW-w)*0.50f;
-        fonter->render(pWnd, pos, WHITE, it->c_str(), 15);
+        pos[0] -= (pVPW-w)*0.60f;
+        fonter->render(pWnd, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
     }
     /* render tick marker texts for x axis */
     for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
@@ -351,25 +356,31 @@ void AbstractChart2D::renderChart(const void* pWnd, int pX, int pY, int pVPW, in
         /* mTickCount offset is needed while reading point coordinates for
          * x axis tick marks */
         glm::vec4 res = trans * glm::vec4(mTickTextX[idx+mTickCount], mTickTextY[idx+mTickCount], 0, 1);
+        /* convert text position from [-1,1] range to
+         * [0, 1) range and then offset vertically
+         * to compensate for margins and ticksize */
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[1] -= (pVPH-h)*0.32f;
-        fonter->render(pWnd, pos, WHITE, it->c_str(), 15);
+        pos[1] -= (pVPH-h)*0.34f;
+        /* offset horizontally based on text size to align
+         * text center with tick mark position */
+        pos[0] -= (CHART2D_FONT_SIZE*(it->length()-2)/2.0f);
+        fonter->render(pWnd, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
     }
     /* render chart axes titles */
     if (!mYTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[0] -= (pVPW-w)*0.70f;
-        fonter->render(pWnd, pos, WHITE, mYTitle.c_str(), 15, true);
+        pos[0] -= (pVPW-w)*0.76;
+        fonter->render(pWnd, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[1] -= (pVPH-h)*0.70f;
-        fonter->render(pWnd, pos, WHITE, mXTitle.c_str(), 15);
+        pos[1] -= (pVPH-h)*0.66;
+        fonter->render(pWnd, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
     CheckGL("End Chart::render");
