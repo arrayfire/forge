@@ -415,11 +415,6 @@ void Font::loadSystemFont(const char* const pName, int pFontSize)
     value->loadSystemFont(pName, pFontSize);
 }
 
-void Font::setOthro2D(int pWidth, int pHeight)
-{
-    value->setOthro2D(pWidth, pHeight);
-}
-
 internal::_Font* Font::get() const
 {
     return value;

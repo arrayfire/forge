@@ -19,21 +19,79 @@ class _Image;
 namespace fg
 {
 
+/**
+   \class Image
+ */
 class Image {
     private:
         internal::_Image* value;
 
     public:
+        /**
+           Creates a Image object
+
+           \param[in] pWidth Width of the image
+           \param[in] pHeight Height of the image
+           \param[in] pFormat Color channel format of image, uses one of the values
+                      of \ref ColorMode
+           \param[in] pDataType takes one of the values of \ref FGType that indicates
+                      the integral data type of histogram data
+         */
         FGAPI Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, FGType pDataType);
+
+        /**
+           Copy constructor of Image
+
+           \param[in] other is the Image of which we make a copy of.
+         */
         FGAPI Image(const Image& other);
+
+        /**
+           Image Destructor
+         */
         FGAPI ~Image();
 
+        /**
+           Get Image width
+           \return image width
+         */
         FGAPI unsigned width() const;
+
+        /**
+           Get Image height
+           \return image width
+         */
         FGAPI unsigned height() const;
+
+        /**
+           Get Image's channel format
+           \return \ref ColorMode value of Image
+         */
         FGAPI ColorMode pixelFormat() const;
+
+        /**
+           Get Image's integral data type
+           \return \ref FGType value of Image
+         */
         FGAPI FGType channelType() const;
+
+        /**
+           Get the OpenGL Pixel Buffer Object identifier
+
+           \return OpenGL PBO resource id.
+         */
         FGAPI unsigned pbo() const;
+
+        /**
+           Get the OpenGL Pixel Buffer Object resource size
+
+           \return OpenGL PBO resource size.
+         */
         FGAPI unsigned size() const;
+
+        /**
+           Get the handle to internal implementation of Image
+         */
         FGAPI internal::_Image* get() const;
 };
 
