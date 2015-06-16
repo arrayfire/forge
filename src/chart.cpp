@@ -170,30 +170,70 @@ void AbstractChart2D::setTickCount(int pTickCount)
     std::vector<float> decorData;
     std::copy(border, border+nValues, std::back_inserter(decorData));
 
-    float step = 2.0f/(mTickCount+1);
-    float yRange = mYMax-mYMin;
-    float xRange = mXMax-mXMin;
-    /* push tick points for y axis */
-    for (int i = 1; i <= mTickCount; i++) {
-        float temp = -1.0f+i*step;
-        /* (-1,-1) to (-1, 1)*/
+    float step = 2.0f/(mTickCount-1);
+    /* push tick points for y axis:
+     * push (0,0) first followed by
+     * [-1, 0) ticks and then
+     * (0, 1] ticks  */
+    int ticksLeft = mTickCount/2;
+    decorData.push_back(-1.0f);
+    decorData.push_back(0.0f);
+    mTickTextX.push_back(-1.0f);
+    mTickTextY.push_back(0.0f);
+    mYText.push_back(toString(0));
+
+    for(int i=1; i<=ticksLeft; ++i) {
+        /* [-1, 0) to [-1, -1] */
+        float neg = i*-step;
         decorData.push_back(-1.0f);
-        decorData.push_back(temp);
-        /* push tick text marker coordinates and the display text */
+        decorData.push_back(neg);
+        /* puch tick marks */
         mTickTextX.push_back(-1.0f);
-        mTickTextY.push_back(temp);
-        mYText.push_back(toString(mYMin+i*step*yRange/2));
+        mTickTextY.push_back(neg);
+        /* push tick text label */
+        mYText.push_back(toString(neg));
+
+        /* [-1, 0) to [-1, 1] */
+        float pos = i*step;
+        decorData.push_back(-1.0f);
+        decorData.push_back(pos);
+        /* puch tick marks */
+        mTickTextX.push_back(-1.0f);
+        mTickTextY.push_back(pos);
+        /* push tick text label */
+        mYText.push_back(toString(pos));
     }
-    /* push tick points for x axis */
-    for (int i = 1; i <= mTickCount; i++) {
-        float temp = -1.0f+i*step;
-        /* (-1,-1) to (1, -1)*/
-        decorData.push_back(-1.0f+i*step);
-        decorData.push_back(-1);
-        /* push tick text marker coordinates and the display text */
-        mTickTextX.push_back(temp);
+
+    /* push tick points for x axis:
+     * push (0,0) first followed by
+     * [-1, 0) ticks and then
+     * (0, 1] ticks  */
+    decorData.push_back(0.0f);
+    decorData.push_back(-1.0f);
+    mTickTextX.push_back(0.0f);
+    mTickTextY.push_back(-1.0f);
+    mXText.push_back(toString(0));
+
+    for(int i=1; i<=ticksLeft; ++i) {
+        /* (0, -1] to [-1, -1] */
+        float neg = i*-step;
+        decorData.push_back(neg);
+        decorData.push_back(-1.0f);
+        /* puch tick marks */
+        mTickTextX.push_back(neg);
         mTickTextY.push_back(-1.0f);
-        mXText.push_back(toString(mXMin+i*step*xRange/2));
+        /* push tick text label */
+        mXText.push_back(toString(neg));
+
+        /* (0, -1] to [1, -1] */
+        float pos = i*step;
+        decorData.push_back(pos);
+        decorData.push_back(-1.0f);
+        /* puch tick marks */
+        mTickTextX.push_back(pos);
+        mTickTextY.push_back(-1.0f);
+        /* push tick text label */
+        mXText.push_back(toString(pos));
     }
 
     /* check if decoration VBO has been already used(case where
@@ -206,7 +246,7 @@ void AbstractChart2D::setTickCount(int pTickCount)
 }
 
 AbstractChart2D::AbstractChart2D()
-    : mTickCount(8), mTickSize(10),
+    : mTickCount(9), mTickSize(10),
       mLeftMargin(64), mRightMargin(10), mTopMargin(10), mBottomMargin(32),
       mXMax(1), mXMin(0), mYMax(1), mYMin(0),
       mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
@@ -256,18 +296,21 @@ void AbstractChart2D::setAxesLimits(float pXmax, float pXmin, float pYmax, float
     mXText.clear();
     mYText.clear();
 
-    float step = 2.0f/(mTickCount+1);
-    float yRange = mYMax-mYMin;
-    float xRange = mXMax-mXMin;
+    float step = 2.0f/(mTickCount-1);
+    float xmid   = (mXMax+mXMin)/2.0f;
+    float ymid   = (mYMax+mYMin)/2.0f;
+    int ticksLeft = mTickCount/2;
     /* push tick points for y axis */
-    for (int i = 1; i <= mTickCount; i++) {
-        float temp = (i*step)/2;
-        mYText.push_back(toString(mYMin+temp*yRange));
+    mYText.push_back(toString(ymid));
+    for (int i = 1; i <= ticksLeft; i++) {
+        mYText.push_back(toString(ymid + i*-step));
+        mYText.push_back(toString(ymid + i*step));
     }
     /* push tick points for x axis */
-    for (int i = 1; i <= mTickCount; i++) {
-        float temp = (i*step)/2;
-        mXText.push_back(toString(mXMin+temp*xRange));
+    mXText.push_back(toString(xmid));
+    for (int i = 1; i <= ticksLeft; i++) {
+        mXText.push_back(toString(xmid + i*-step));
+        mXText.push_back(toString(xmid + i*step));
     }
 }
 
@@ -290,8 +333,8 @@ void AbstractChart2D::renderChart(const void* pWnd, int pX, int pY, int pVPW, in
 {
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
-    float offset_x = (2.0f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
-    float offset_y = (2.0f * (mBottomMargin+mTickSize) + (h - pVPH)) / pVPH;
+    float offset_x = (1.9f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
+    float offset_y = (1.9f * (mBottomMargin+mTickSize) + (h - pVPH)) / pVPH;
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 

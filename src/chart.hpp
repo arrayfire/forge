@@ -25,7 +25,7 @@ class AbstractChart2D : public AbstractRenderable {
         std::vector<float> mTickTextY;
         std::vector<std::string> mXText;
         std::vector<std::string> mYText;
-        int       mTickCount;
+        int       mTickCount;                       /* should be an odd number always */
         int       mTickSize;
         int       mLeftMargin;
         int       mRightMargin;
