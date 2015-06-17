@@ -57,7 +57,7 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
                             SDL_WINDOWPOS_UNDEFINED,
                             pWidth, pHeight,
                             (invisible ? SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN
-                             : SDL_WINDOW_OPENGL)
+                             : SDL_WINDOW_OPENGL) | SDL_WINDOW_RESIZABLE
                             );
     mContext = SDL_GL_CreateContext(mWindow);
 
