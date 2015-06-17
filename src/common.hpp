@@ -10,21 +10,6 @@
 #pragma once
 
 #include <fg/defines.h>
-
-#ifdef OS_WIN
-    #define GLFW_EXPOSE_NATIVE_WIN32
-    #define GLFW_EXPOSE_NATIVE_WGL
-#endif
-
-#ifdef OS_LNX
-    #define GLFW_EXPOSE_NATIVE_X11
-    #define GLFW_EXPOSE_NATIVE_GLX
-#endif
-
-#include <GLFW/glfw3.h>
-#ifndef OS_MAC
-#include <GLFW/glfw3native.h>
-#endif
 #include <fg/exception.h>
 #include <err_common.hpp>
 #include <vector>
