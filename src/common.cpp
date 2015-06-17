@@ -193,6 +193,7 @@ float clampTo01(float a)
 }
 
 #ifdef OS_WIN
+#include <windows.h>
 #include <strsafe.h>
 
 void getFontFilePaths(std::vector<std::string>& pFiles, std::string pDir, std::string pExt)

@@ -28,6 +28,7 @@
 #endif
 
 #ifdef OS_WIN
+#include <windows.h>
 #include <regex>
 #endif
 

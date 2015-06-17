@@ -12,6 +12,8 @@
 
 #ifndef OS_WIN
 #include <GL/glx.h>
+#else
+#include <windows.h>
 #endif
 
 #include <iostream>
