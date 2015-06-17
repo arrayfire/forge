@@ -10,6 +10,13 @@
 #pragma once
 
 #include <common.hpp>
+
+#if defined(USE_GLFW)
+#include <glfw/window.hpp>
+#elif defined(USE_SDL)
+#include <sdl/window.hpp>
+#endif
+
 #include <colormap.hpp>
 #include <font.hpp>
 #include <image.hpp>
@@ -28,7 +35,7 @@ class window_impl {
         int           mID;
         int           mWidth;
         int           mHeight;
-        GLFWwindow*   mWindow;
+        wtk::Widget*  mWindow;
         int           mRows;
         int           mCols;
         int           mCellWidth;
@@ -52,14 +59,12 @@ class window_impl {
         void setPos(int pX, int pY);
         void setColorMap(fg::ColorMap cmap);
 
-        void keyboardHandler(int pKey, int scancode, int pAction, int pMods);
-
         long long context() const;
         long long display() const;
         int width() const;
         int height() const;
         GLEWContext* glewContext() const;
-        GLFWwindow* get() const;
+        const wtk::Widget* get() const;
         const std::shared_ptr<colormap_impl>& colorMapPtr() const;
 
         void hide();

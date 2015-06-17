@@ -17,9 +17,6 @@
 
 using namespace fg;
 
-#define GLFW_THROW_ERROR(msg, err) \
-    throw fg::Error("Window constructor", __LINE__, msg, err);
-
 static GLEWContext* current = nullptr;
 
 GLEWContext* glewGetContext()
@@ -33,7 +30,7 @@ namespace internal
 void MakeContextCurrent(const window_impl* pWindow)
 {
     if (pWindow != NULL) {
-        glfwMakeContextCurrent(pWindow->get());
+        pWindow->get()->makeContextCurrent();
         current = pWindow->glewContext();
     }
     CheckGL("End MakeContextCurrent");
@@ -41,53 +38,16 @@ void MakeContextCurrent(const window_impl* pWindow)
 
 window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                         std::weak_ptr<window_impl> pWindow, const bool invisible)
-    : mWidth(pWidth), mHeight(pHeight), mWindow(nullptr),
+    : mWidth(pWidth), mHeight(pHeight),
       mRows(0), mCols(0)
 {
-    if (!glfwInit()) {
-        std::cerr << "ERROR: GLFW wasn't able to initalize\n";
-        GLFW_THROW_ERROR("glfw initilization failed", fg::FG_ERR_GL_ERROR)
-    }
-
-    auto wndErrCallback = [](int errCode, const char* pDescription)
-    {
-        fputs(pDescription, stderr);
-    };
-    glfwSetErrorCallback(wndErrCallback);
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    /* we are currently avoiding compatibility profile to avoid
-     * issues with Vertex Arrays Objects being not sharable among
-     * contexts. Not being able to share VAOs resulted in some issues
-     * for Forge renderable objects while being rendered
-     * onto different windows(windows that share context) on the fly.
-     * */
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    if (invisible)
-        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-    else
-        glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
-
-    glfwWindowHint(GLFW_SAMPLES, 4);
-    /* create glfw window if pWindow is not null,
-     * then the window created in this  constructor
-     *  call will share the context with pWindow
-     */
-    GLFWwindow* temp = nullptr;
     if (auto observe = pWindow.lock()) {
-        temp = glfwCreateWindow(pWidth, pHeight, pTitle, nullptr, observe->get());
+        mWindow = new wtk::Widget(pWidth, pHeight, pTitle, observe->get(), invisible);
     } else {
-        temp = glfwCreateWindow(pWidth, pHeight, pTitle, nullptr, nullptr);
+        /* when windows are not sharing any context, just create
+         * a dummy wtk::Widget object and pass it on */
+        mWindow = new wtk::Widget(pWidth, pHeight, pTitle, nullptr, invisible);
     }
-
-    if (!temp) {
-        std::cerr<<"Error: Could not Create GLFW Window!\n";
-        GLFW_THROW_ERROR("glfw window creation failed", fg::FG_ERR_GL_ERROR)
-    }
-    mWindow = temp;
 
     /* create glew context so that it will bind itself to windows */
     if (auto observe = pWindow.lock()) {
@@ -96,8 +56,8 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
         mGLEWContext = new GLEWContext();
         if (mGLEWContext == NULL) {
             std::cerr<<"Error: Could not create GLEW Context!\n";
-            glfwDestroyWindow(mWindow);
-            GLFW_THROW_ERROR("GLEW context creation failed", fg::FG_ERR_GL_ERROR)
+            throw fg::Error("window_impl constructor", __LINE__,
+                    "GLEW context creation failed", fg::FG_ERR_GL_ERROR);
         }
     }
 
@@ -110,8 +70,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     if (err != GLEW_OK) {
         char buffer[128];
         sprintf(buffer, "GLEW init failed: Error: %s\n", glewGetErrorString(err));
-        glfwDestroyWindow(mWindow);
-        GLFW_THROW_ERROR(buffer, fg::FG_ERR_GL_ERROR);
+        throw fg::Error("window_impl constructor", __LINE__, buffer, fg::FG_ERR_GL_ERROR);
     }
     err = glGetError();
     if (err!=GL_NO_ERROR && err!=GL_INVALID_ENUM) {
@@ -120,24 +79,15 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
          * they are yet to fix this in GLEW
          */
         ForceCheckGL("GLEW initilization failed");
-        GLFW_THROW_ERROR("GLEW initilization failed", fg::FG_ERR_GL_ERROR)
+        throw fg::Error("window_impl constructor", __LINE__,
+                "GLEW initilization failed", fg::FG_ERR_GL_ERROR);
     }
 
-    glfwSetWindowUserPointer(mWindow, this);
-
-    auto keyboardCallback = [](GLFWwindow* w, int a, int b, int c, int d)
-    {
-        static_cast<window_impl*>(glfwGetWindowUserPointer(w))->keyboardHandler(a, b, c, d);
-    };
-
-    glfwSetKeyCallback(mWindow, keyboardCallback);
 #ifdef OS_WIN
-    mCxt = reinterpret_cast<long long>(glfwGetWGLContext(mWindow));
-    mDsp = reinterpret_cast<long long>(GetDC(glfwGetWin32Window(mWindow)));
+    mCxt = mWindow->getGLContextHandle();
 #endif
 #ifdef OS_LNX
-    mCxt = reinterpret_cast<long long>(glfwGetGLXContext(mWindow));
-    mDsp = reinterpret_cast<long long>(glfwGetX11Display());
+    mDsp = mWindow->getDisplayHandle();
 #endif
     /* copy colormap shared pointer if
      * this window shares context with another window
@@ -157,7 +107,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 
 window_impl::~window_impl()
 {
-    glfwDestroyWindow(mWindow);
+    delete mWindow;
 }
 
 void window_impl::setFont(const std::shared_ptr<font_impl>& pFont)
@@ -167,16 +117,12 @@ void window_impl::setFont(const std::shared_ptr<font_impl>& pFont)
 
 void window_impl::setTitle(const char* pTitle)
 {
-    CheckGL("Begin Window::setTitle");
-    glfwSetWindowTitle(mWindow, pTitle);
-    CheckGL("End Window::setTitle");
+    mWindow->setTitle(pTitle);
 }
 
 void window_impl::setPos(int pX, int pY)
 {
-    CheckGL("Begin Window::setPos");
-    glfwSetWindowPos(mWindow, pX, pY);
-    CheckGL("End Window::setPos");
+    mWindow->setPos(pX, pY);
 }
 
 void window_impl::setColorMap(fg::ColorMap cmap)
@@ -213,13 +159,6 @@ void window_impl::setColorMap(fg::ColorMap cmap)
     }
 }
 
-void window_impl::keyboardHandler(int pKey, int scancode, int pAction, int pMods)
-{
-    if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS) {
-        glfwSetWindowShouldClose(mWindow, GL_TRUE);
-    }
-}
-
 long long  window_impl::context() const
 {
     return mCxt;
@@ -245,7 +184,7 @@ GLEWContext* window_impl::glewContext() const
     return mGLEWContext;
 }
 
-GLFWwindow* window_impl::get() const
+const wtk::Widget* window_impl::get() const
 {
     return mWindow;
 }
@@ -257,26 +196,26 @@ const std::shared_ptr<colormap_impl>& window_impl::colorMapPtr() const
 
 void window_impl::hide()
 {
-    glfwHideWindow(mWindow);
+    mWindow->hide();
 }
 
 void window_impl::show()
 {
-    glfwShowWindow(mWindow);
+    mWindow->show();
 }
 
 bool window_impl::close()
 {
-    return glfwWindowShouldClose(mWindow) != 0;
+    return mWindow->close();
 }
 
 void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 {
     CheckGL("Begin drawImage");
-    glfwMakeContextCurrent(mWindow);
+    MakeContextCurrent(this);
 
     int wind_width, wind_height;
-    glfwGetFramebufferSize(mWindow, &wind_width, &wind_height);
+    mWindow->getFrameBufferSize(&wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
 
     // clear color and depth buffers
@@ -286,8 +225,8 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
     pRenderable->render(this, 0, 0, wind_width, wind_height);
 
-    glfwSwapBuffers(mWindow);
-    glfwPollEvents();
+    mWindow->swapBuffers();
+    mWindow->pollEvents();
     CheckGL("End drawImage");
 }
 
@@ -297,7 +236,7 @@ void window_impl::grid(int pRows, int pCols)
     mCols= pCols;
 
     int wind_width, wind_height;
-    glfwGetFramebufferSize(mWindow, &wind_width, &wind_height);
+    mWindow->getFrameBufferSize(&wind_width, &wind_height);
     glViewport(0, 0, wind_width, wind_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -311,7 +250,7 @@ void window_impl::draw(int pColId, int pRowId,
                         const char* pTitle)
 {
     CheckGL("Begin show(column, row)");
-    glfwMakeContextCurrent(mWindow);
+    MakeContextCurrent(this);
 
     float pos[2] = {0.0, 0.0};
     int c     = pColId;
@@ -350,10 +289,8 @@ void window_impl::draw(int pColId, int pRowId,
 
 void window_impl::draw()
 {
-    CheckGL("Begin show");
-    glfwSwapBuffers(mWindow);
-    glfwPollEvents();
-    CheckGL("End show");
+    mWindow->swapBuffers();
+    mWindow->pollEvents();
 }
 
 }
