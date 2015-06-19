@@ -67,6 +67,7 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
     }
 
     SDL_GL_SetSwapInterval(1);
+    mWindowId = SDL_GetWindowID(mWindow);
 }
 
 Widget::~Widget()
@@ -128,11 +129,13 @@ void Widget::swapBuffers()
 
 void Widget::hide()
 {
+    mClose = true;
     SDL_HideWindow(mWindow);
 }
 
 void Widget::show()
 {
+    mClose = false;
     SDL_ShowWindow(mWindow);
 }
 
@@ -141,21 +144,36 @@ bool Widget::close()
     return mClose;
 }
 
+void Widget::resetCloseFlag()
+{
+    if(mClose==true) {
+        show();
+    }
+}
+
 void Widget::pollEvents()
 {
     SDL_Event evnt;
     SDL_PollEvent(&evnt);
 
-    if (evnt.type == SDL_WINDOWEVENT) {
+    /* handle window events that are triggered
+       when 'this' window was in focus
+     */
+    if (evnt.type == SDL_WINDOWEVENT && evnt.window.windowID == mWindowId) {
         switch(evnt.window.event) {
             case SDL_WINDOWEVENT_CLOSE:
-                mClose = true;
+                hide();
                 break;
         }
-    } else if (evnt.type == SDL_KEYDOWN) {
+    }
+
+    /* handle keyboard press down events that are triggered
+       when 'this' window was in focus
+     */
+    if (evnt.type == SDL_KEYDOWN && evnt.key.windowID == mWindowId) {
         switch(evnt.key.keysym.sym) {
             case SDLK_ESCAPE:
-                mClose = true;
+                hide();
                 break;
         }
     }

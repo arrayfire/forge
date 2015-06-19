@@ -21,6 +21,7 @@ class Widget {
         SDL_Window*     mWindow;
         SDL_GLContext   mContext;
         bool            mClose;
+        uint32_t        mWindowId;
 
         Widget();
 
@@ -54,6 +55,8 @@ class Widget {
         void show();
 
         bool close();
+
+        void resetCloseFlag();
 
         void pollEvents();
 

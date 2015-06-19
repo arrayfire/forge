@@ -213,6 +213,7 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 {
     CheckGL("Begin drawImage");
     MakeContextCurrent(this);
+    mWindow->resetCloseFlag();
 
     int wind_width, wind_height;
     mWindow->getFrameBufferSize(&wind_width, &wind_height);
@@ -251,6 +252,7 @@ void window_impl::draw(int pColId, int pRowId,
 {
     CheckGL("Begin show(column, row)");
     MakeContextCurrent(this);
+    mWindow->resetCloseFlag();
 
     float pos[2] = {0.0, 0.0};
     int c     = pColId;

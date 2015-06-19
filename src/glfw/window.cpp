@@ -19,12 +19,14 @@ namespace wtk
 {
 
 Widget::Widget()
-    : mWindow(NULL)
+    : mWindow(NULL), mClose(false)
 {
 }
 
 Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
 {
+    mClose = false;
+
     if (!glfwInit()) {
         std::cerr << "ERROR: GLFW wasn't able to initalize\n";
         GLFW_THROW_ERROR("glfw initilization failed", fg::FG_ERR_GL_ERROR)
@@ -121,23 +123,32 @@ void Widget::swapBuffers()
 
 void Widget::hide()
 {
+    mClose = true;
     glfwHideWindow(mWindow);
 }
 
 void Widget::show()
 {
+    mClose = false;
     glfwShowWindow(mWindow);
 }
 
 bool Widget::close()
 {
-    return glfwWindowShouldClose(mWindow) != 0;
+    return mClose;
+}
+
+void Widget::resetCloseFlag()
+{
+    if(mClose==true) {
+        show();
+    }
 }
 
 void Widget::keyboardHandler(int pKey, int pScancode, int pAction, int pMods)
 {
     if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS) {
-        glfwSetWindowShouldClose(mWindow, GL_TRUE);
+        hide();
     }
 }
 
