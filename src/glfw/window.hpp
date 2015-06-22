@@ -32,6 +32,7 @@ namespace wtk
 class Widget {
     private:
         GLFWwindow* mWindow;
+        bool        mClose;
 
         Widget();
 
@@ -61,6 +62,8 @@ class Widget {
         void show();
 
         bool close();
+
+        void resetCloseFlag();
 
         void keyboardHandler(int pKey, int pScancode, int pAction, int pMods);
 
