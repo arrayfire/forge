@@ -83,12 +83,8 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                 "GLEW initilization failed", fg::FG_ERR_GL_ERROR);
     }
 
-#ifdef OS_WIN
     mCxt = mWindow->getGLContextHandle();
-#endif
-#ifdef OS_LNX
     mDsp = mWindow->getDisplayHandle();
-#endif
     /* copy colormap shared pointer if
      * this window shares context with another window
      * */

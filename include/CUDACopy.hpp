@@ -10,6 +10,19 @@
 #ifndef __CUDA_DATA_COPY_H__
 #define __CUDA_DATA_COPY_H__
 
+#include <cuda_gl_interop.h>
+#include <cstdio>
+
+static void handleCUDAError(cudaError_t err, const char *file, int line)
+{
+    if (err != cudaSuccess) {
+        printf( "%s in %s at line %d\n", cudaGetErrorString(err), file, line);
+        exit(EXIT_FAILURE);
+    }
+}
+
+#define CUDA_ERROR_CHECK(err) (handleCUDAError(err, __FILE__, __LINE__ ))
+
 namespace fg
 {
 
@@ -17,16 +30,16 @@ template<typename T>
 void copy(fg::Image& out, const T * devicePtr)
 {
     cudaGraphicsResource *cudaPBOResource;
-    cudaGraphicsGLRegisterBuffer(&cudaPBOResource, out.pbo(), cudaGraphicsMapFlagsWriteDiscard);
+    CUDA_ERROR_CHECK(cudaGraphicsGLRegisterBuffer(&cudaPBOResource, out.pbo(), cudaGraphicsMapFlagsWriteDiscard));
 
     size_t num_bytes;
     T* pboDevicePtr = NULL;
 
-    cudaGraphicsMapResources(1, &cudaPBOResource, 0);
-    cudaGraphicsResourceGetMappedPointer((void **)&pboDevicePtr, &num_bytes, cudaPBOResource);
-    cudaMemcpy(pboDevicePtr, devicePtr, num_bytes, cudaMemcpyDeviceToDevice);
-    cudaGraphicsUnmapResources(1, &cudaPBOResource, 0);
-    cudaGraphicsUnregisterResource(cudaPBOResource);
+    CUDA_ERROR_CHECK(cudaGraphicsMapResources(1, &cudaPBOResource, 0));
+    CUDA_ERROR_CHECK(cudaGraphicsResourceGetMappedPointer((void **)&pboDevicePtr, &num_bytes, cudaPBOResource));
+    CUDA_ERROR_CHECK(cudaMemcpy(pboDevicePtr, devicePtr, num_bytes, cudaMemcpyDeviceToDevice));
+    CUDA_ERROR_CHECK(cudaGraphicsUnmapResources(1, &cudaPBOResource, 0));
+    CUDA_ERROR_CHECK(cudaGraphicsUnregisterResource(cudaPBOResource));
 }
 
 /*
@@ -42,16 +55,16 @@ template<class Renderable, typename T>
 void copy(Renderable& out, const T * devicePtr)
 {
     cudaGraphicsResource *cudaVBOResource;
-    cudaGraphicsGLRegisterBuffer(&cudaVBOResource, out.vbo(), cudaGraphicsMapFlagsWriteDiscard);
+    CUDA_ERROR_CHECK(cudaGraphicsGLRegisterBuffer(&cudaVBOResource, out.vbo(), cudaGraphicsMapFlagsWriteDiscard));
 
     size_t num_bytes;
     T* vboDevicePtr = NULL;
 
-    cudaGraphicsMapResources(1, &cudaVBOResource, 0);
-    cudaGraphicsResourceGetMappedPointer((void **)&vboDevicePtr, &num_bytes, cudaVBOResource);
-    cudaMemcpy(vboDevicePtr, devicePtr, num_bytes, cudaMemcpyDeviceToDevice);
-    cudaGraphicsUnmapResources(1, &cudaVBOResource, 0);
-    cudaGraphicsUnregisterResource(cudaVBOResource);
+    CUDA_ERROR_CHECK(cudaGraphicsMapResources(1, &cudaVBOResource, 0));
+    CUDA_ERROR_CHECK(cudaGraphicsResourceGetMappedPointer((void **)&vboDevicePtr, &num_bytes, cudaVBOResource));
+    CUDA_ERROR_CHECK(cudaMemcpy(vboDevicePtr, devicePtr, num_bytes, cudaMemcpyDeviceToDevice));
+    CUDA_ERROR_CHECK(cudaGraphicsUnmapResources(1, &cudaVBOResource, 0));
+    CUDA_ERROR_CHECK(cudaGraphicsUnregisterResource(cudaVBOResource));
 }
 
 }

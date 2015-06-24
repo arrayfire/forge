@@ -15,7 +15,7 @@ namespace fg
 
 static void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& queue)
 {
-    cl::Buffer pboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, out.pbo(), NULL);
+    cl::BufferGL pboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, out.pbo(), NULL);
 
     std::vector<cl::Memory> shared_objects;
     shared_objects.push_back(pboMapBuffer);
@@ -25,7 +25,6 @@ static void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& q
     queue.enqueueCopyBuffer(in, pboMapBuffer, 0, 0, out.size(), NULL, NULL);
     queue.finish();
     queue.enqueueReleaseGLObjects(&shared_objects);
-    queue.finish();
 }
 
 /*
@@ -40,7 +39,7 @@ static void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& q
 template<class Renderable>
 void copy(Renderable& out, const cl::Buffer& in, const cl::CommandQueue& queue)
 {
-    cl::Buffer vboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, out.vbo(), NULL);
+    cl::BufferGL vboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, out.vbo(), NULL);
 
     std::vector<cl::Memory> shared_objects;
     shared_objects.push_back(vboMapBuffer);
@@ -50,7 +49,6 @@ void copy(Renderable& out, const cl::Buffer& in, const cl::CommandQueue& queue)
     queue.enqueueCopyBuffer(in, vboMapBuffer, 0, 0, out.size(), NULL, NULL);
     queue.finish();
     queue.enqueueReleaseGLObjects(&shared_objects);
-    queue.finish();
 }
 
 }
