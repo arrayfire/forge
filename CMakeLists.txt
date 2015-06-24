@@ -69,18 +69,18 @@ IF(GLEWmx_FOUND AND OPENGL_FOUND)
         ${OPENGL_gl_LIBRARY}
         ${GLEWmx_LIBRARY})
 ELSE()
-	IF(NOT GLEWmx_FOUND)
-		MESSAGE(FATAL_ERROR "GLEW-MX not found")
-	ENDIF()
-	IF(NOT OPENGL_FOUND)
-		MESSAGE(FATAL_ERROR "OpenGL not found")
-	ENDIF()
+    IF(NOT GLEWmx_FOUND)
+        MESSAGE(FATAL_ERROR "GLEW-MX not found")
+    ENDIF()
+    IF(NOT OPENGL_FOUND)
+        MESSAGE(FATAL_ERROR "OpenGL not found")
+    ENDIF()
 ENDIF()
 
 INCLUDE_DIRECTORIES(
-	"${PROJECT_SOURCE_DIR}/include"
-	${GL_INC_DIR}
-	)
+    "${PROJECT_SOURCE_DIR}/include"
+    ${GL_INC_DIR}
+    )
 
 SET(X11_LIBS "")
 IF(APPLE)

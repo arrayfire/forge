@@ -19,65 +19,65 @@ FIND_PATH(GLEW_INCLUDE_DIR GL/glew.h
     )
 
 IF (WIN32)
-	IF (USE_GLEWmx_STATIC)
-		FIND_LIBRARY( GLEWmxs_LIBRARY
-			NAMES glewmxs GLEWmxs glew32mxs glew32mxs
-			PATHS
-			$ENV{PROGRAMFILES}/GLEW/lib
-			${GLEW_ROOT_DIR}/lib
-			${GLEW_ROOT_DIR}
-			${PROJECT_SOURCE_DIR}/../dependencies/glew/lib
-			PATH_SUFFIXES "Release MX/x64" "lib64"
-			DOC "The GLEWmxs Static library"
-		)
-	ELSE (USE_GLEWmx_STATIC)
-		FIND_LIBRARY( GLEWmxd_LIBRARY
-			NAMES glewmx GLEWmx glew32mx glew32mx
-			PATHS
-			$ENV{PROGRAMFILES}/GLEW/lib
-			${GLEW_ROOT_DIR}/lib
-			${GLEW_ROOT_DIR}
-			${PROJECT_SOURCE_DIR}/../dependencies/glew/lib
-			PATH_SUFFIXES "Release MX/x64" "lib64"
-			DOC "The GLEWmx library"
-		)
-	ENDIF (USE_GLEWmx_STATIC)
+    IF (USE_GLEWmx_STATIC)
+        FIND_LIBRARY( GLEWmxs_LIBRARY
+            NAMES glewmxs GLEWmxs glew32mxs glew32mxs
+            PATHS
+            $ENV{PROGRAMFILES}/GLEW/lib
+            ${GLEW_ROOT_DIR}/lib
+            ${GLEW_ROOT_DIR}
+            ${PROJECT_SOURCE_DIR}/../dependencies/glew/lib
+            PATH_SUFFIXES "Release MX/x64" "lib64"
+            DOC "The GLEWmxs Static library"
+        )
+    ELSE (USE_GLEWmx_STATIC)
+        FIND_LIBRARY( GLEWmxd_LIBRARY
+            NAMES glewmx GLEWmx glew32mx glew32mx
+            PATHS
+            $ENV{PROGRAMFILES}/GLEW/lib
+            ${GLEW_ROOT_DIR}/lib
+            ${GLEW_ROOT_DIR}
+            ${PROJECT_SOURCE_DIR}/../dependencies/glew/lib
+            PATH_SUFFIXES "Release MX/x64" "lib64"
+            DOC "The GLEWmx library"
+        )
+    ENDIF (USE_GLEWmx_STATIC)
 ELSE (WIN32)
-	IF (USE_GLEWmx_STATIC)
-		SET(PX ${CMAKE_STATIC_LIBRARY_PREFIX})
-		SET(SX ${CMAKE_STATIC_LIBRARY_SUFFIX})
-		FIND_LIBRARY( GLEWmxs_LIBRARY
-			NAMES ${PX}GLEWmx${SX} ${PX}glewmx${SX}
-			PATHS
-			/usr/lib64
-			/usr/lib
-			/usr/lib/x86_64-linux-gnu
-			/usr/lib/arm-linux-gnueabihf
-			/usr/local/lib64
-			/usr/local/lib
-			/sw/lib
-			/opt/local/lib
-			${GLEW_ROOT_DIR}/lib
-			NO_DEFAULT_PATH
-			DOC "The GLEWmx library")
-		UNSET(PX)
-		UNSET(SX)
-	ELSE (USE_GLEWmx_STATIC)
-		FIND_LIBRARY( GLEWmxd_LIBRARY
-			NAMES GLEWmx glewmx
-			PATHS
-			/usr/lib64
-			/usr/lib
-			/usr/lib/x86_64-linux-gnu
-			/usr/lib/arm-linux-gnueabihf
-			/usr/local/lib64
-			/usr/local/lib
-			/sw/lib
-			/opt/local/lib
-			${GLEW_ROOT_DIR}/lib
-			NO_DEFAULT_PATH
-			DOC "The GLEWmx library")
-	ENDIF (USE_GLEWmx_STATIC)
+    IF (USE_GLEWmx_STATIC)
+        SET(PX ${CMAKE_STATIC_LIBRARY_PREFIX})
+        SET(SX ${CMAKE_STATIC_LIBRARY_SUFFIX})
+        FIND_LIBRARY( GLEWmxs_LIBRARY
+            NAMES ${PX}GLEWmx${SX} ${PX}glewmx${SX}
+            PATHS
+            /usr/lib64
+            /usr/lib
+            /usr/lib/x86_64-linux-gnu
+            /usr/lib/arm-linux-gnueabihf
+            /usr/local/lib64
+            /usr/local/lib
+            /sw/lib
+            /opt/local/lib
+            ${GLEW_ROOT_DIR}/lib
+            NO_DEFAULT_PATH
+            DOC "The GLEWmx library")
+        UNSET(PX)
+        UNSET(SX)
+    ELSE (USE_GLEWmx_STATIC)
+        FIND_LIBRARY( GLEWmxd_LIBRARY
+            NAMES GLEWmx glewmx
+            PATHS
+            /usr/lib64
+            /usr/lib
+            /usr/lib/x86_64-linux-gnu
+            /usr/lib/arm-linux-gnueabihf
+            /usr/local/lib64
+            /usr/local/lib
+            /sw/lib
+            /opt/local/lib
+            ${GLEW_ROOT_DIR}/lib
+            NO_DEFAULT_PATH
+            DOC "The GLEWmx library")
+    ENDIF (USE_GLEWmx_STATIC)
 ENDIF (WIN32)
 
 IF(USE_GLEWmx_STATIC)
