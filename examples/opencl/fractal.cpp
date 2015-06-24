@@ -209,7 +209,6 @@ int main(void)
         fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::FG_UNSIGNED_BYTE);
 
 
-        cl_int errCode;
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU
 #if defined(OS_MAC)
@@ -268,7 +267,6 @@ int main(void)
     } catch (cl::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     }
-    getchar();
 
     return 0;
 }
