@@ -1,6 +1,16 @@
 INCLUDE(ExternalProject)
 
 SET(prefix ${CMAKE_BINARY_DIR}/third_party/freetype)
+SET(freetype_location ${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}freetype${CMAKE_STATIC_LIBRARY_SUFFIX})
+IF(CMAKE_VERSION VERSION_LESS 3.2)
+    IF(CMAKE_GENERATOR MATCHES "Ninja")
+        MESSAGE(WARNING "Building freetype with Ninja has known issues with CMake older than 3.2")
+    endif()
+    SET(byproducts)
+ELSE()
+    SET(byproducts BYPRODUCTS ${freetype_location})
+ENDIF()
+
 
 IF(UNIX)
     SET(CXXFLAGS "${CMAKE_CXX_FLAGS} -w -fPIC")
@@ -20,6 +30,7 @@ ExternalProject_Add(
     -DCMAKE_C_FLAGS:STRING=${CFLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
     -DCMAKE_INSTALL_PREFIX:STRING=${prefix}
+    ${byproducts}
     )
 
 ADD_LIBRARY(freetype IMPORTED STATIC)
