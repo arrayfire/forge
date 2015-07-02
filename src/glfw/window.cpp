@@ -85,9 +85,10 @@ long long Widget::getGLContextHandle()
 {
 #ifdef OS_WIN
     return reinterpret_cast<long long>(glfwGetWGLContext(mWindow));
-#endif
-#ifdef OS_LNX
+#elif OS_LNX
     return reinterpret_cast<long long>(glfwGetGLXContext(mWindow));
+#else
+    return 0;
 #endif
 }
 
@@ -95,9 +96,10 @@ long long Widget::getDisplayHandle()
 {
 #ifdef OS_WIN
     return reinterpret_cast<long long>(GetDC(glfwGetWin32Window(mWindow)));
-#endif
-#ifdef OS_LNX
+#elif OS_LNX
     return reinterpret_cast<long long>(glfwGetX11Display());
+#else
+    return 0;
 #endif
 }
 

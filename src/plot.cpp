@@ -25,7 +25,6 @@ namespace internal
 void plot_impl::bindResources(const void* pWnd)
 {
     if (mVAOMap.find(pWnd) == mVAOMap.end()) {
-        GLsizei size = sizeof(glm::vec2);
         GLuint vao = 0;
         /* create a vertex array object
          * with appropriate bindings */
