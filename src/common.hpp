@@ -82,3 +82,5 @@ float clampTo01(float a);
 #ifdef OS_WIN
 void getFontFilePaths(std::vector<std::string>& pFiles, std::string pDir, std::string pExt);
 #endif
+
+std::string toString(float pVal, const int n = 2);

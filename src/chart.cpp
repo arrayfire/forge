@@ -12,7 +12,6 @@
 
 #include <cmath>
 #include <sstream>
-#include <iomanip>
 #include <mutex>
 
 #include <glm/glm.hpp>
@@ -23,13 +22,6 @@ using namespace std;
 typedef std::vector<std::string>::const_iterator StringIter;
 
 static const int CHART2D_FONT_SIZE = 15;
-
-std::string toString(float pVal, const int n = 2)
-{
-    std::ostringstream out;
-    out << std::fixed << std::setprecision(n) << pVal;
-    return out.str();
-}
 
 const char *gChartVertexShaderSrc =
 "#version 330\n"
