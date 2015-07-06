@@ -135,9 +135,9 @@ void font_impl::extractGlyph(int pCharacter)
     }
 }
 
-void font_impl::bindResources(const void* pWnd)
+void font_impl::bindResources(int pWindowId)
 {
-    if (mVAOMap.find(pWnd) == mVAOMap.end()) {
+    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
         GLsizei size = sizeof(glm::vec2);
         GLuint vao = 0;
         /* create a vertex array object
@@ -152,9 +152,9 @@ void font_impl::bindResources(const void* pWnd)
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
-        mVAOMap[pWnd] = vao;
+        mVAOMap[pWindowId] = vao;
     }
-    glBindVertexArray(mVAOMap[pWnd]);
+    glBindVertexArray(mVAOMap[pWindowId]);
 }
 
 void font_impl::unbindResources() const
@@ -303,7 +303,7 @@ void font_impl::loadSystemFont(const char* const pName, int pFontSize)
     loadFont(ttf_file_path.c_str(), pFontSize);
 }
 
-void font_impl::render(const void* pWnd,
+void font_impl::render(int pWindowId,
                        const float pPos[], const float pColor[], const char* pText,
                        int pFontSize, bool pIsVertical)
 {
@@ -334,7 +334,7 @@ void font_impl::render(const void* pWnd,
         pFontSize = mLoadedPixelSize;
     float scale_factor = float(pFontSize) / float(mLoadedPixelSize);
 
-    bindResources(pWnd);
+    bindResources(pWindowId);
     CheckGL("After Font::render bind resources");
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(tex_loc, 0);
