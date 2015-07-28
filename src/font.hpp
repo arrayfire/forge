@@ -23,7 +23,7 @@ class font_impl {
     private:
         /* VAO map to store a vertex array object
          * for each valid window context */
-        std::map<const void*, GLuint> mVAOMap;
+        std::map<int, GLuint> mVAOMap;
 
         /* attributes */
         bool mIsFontLoaded;
@@ -47,7 +47,7 @@ class font_impl {
 
         /* helper functions to bind and unbind
          * rendering resources */
-        void bindResources(const void* pWnd);
+        void bindResources(int pWindowId);
         void unbindResources() const;
 
         /* helper to destroy GL objects created for
@@ -62,7 +62,7 @@ class font_impl {
         void loadFont(const char* const pFile, int pFontSize);
         void loadSystemFont(const char* const pName, int pFontSize);
 
-        void render(const void* pWnd,
+        void render(int pWindowId,
                     const float pPos[2], const float pColor[4], const char* pText,
                     int pFontSize = -1, bool pIsVertical = false);
 };

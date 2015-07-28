@@ -51,9 +51,9 @@ class AbstractChart2D : public AbstractRenderable {
         GLuint    mSpriteTickaxisIndex;
         /* VAO map to store a vertex array object
          * for each valid window context */
-        std::map<const void*, GLuint> mVAOMap;
+        std::map<int, GLuint> mVAOMap;
 
-        void bindResources(const void* pWnd);
+        void bindResources(int pWindowId);
         void unbindResources() const;
 
     protected:
@@ -87,11 +87,11 @@ class AbstractChart2D : public AbstractRenderable {
         float xmin() const;
         float ymax() const;
         float ymin() const;
-        void renderChart(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
+        void renderChart(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
 
         virtual GLuint vbo() const = 0;
         virtual size_t size() const = 0;
-        virtual void render(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight) = 0;
+        virtual void render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight) = 0;
 };
 
 }

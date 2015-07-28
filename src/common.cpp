@@ -11,7 +11,9 @@
 #include <window.hpp>
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
+#include <sstream>
 #include <cmath>
 
 using namespace fg;
@@ -253,3 +255,10 @@ void getFontFilePaths(std::vector<std::string>& pFiles, std::string pDir, std::s
    FindClose(hFind);
 }
 #endif
+
+std::string toString(float pVal, const int n)
+{
+    std::ostringstream out;
+    out << std::fixed << std::setprecision(n) << pVal;
+    return out.str();
+}

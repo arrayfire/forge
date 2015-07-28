@@ -14,6 +14,7 @@
 #include <fg/window.h>
 #include <window.hpp>
 #include <memory>
+#include <mutex>
 
 using namespace fg;
 
@@ -22,6 +23,16 @@ static GLEWContext* current = nullptr;
 GLEWContext* glewGetContext()
 {
     return current;
+}
+
+/* following function is thread safe */
+int getNextUniqueId()
+{
+    static int wndUnqIdTracker = 0;
+    static std::mutex wndUnqIdMutex;
+
+    std::lock_guard<std::mutex> lock(wndUnqIdMutex);
+    return wndUnqIdTracker++;
 }
 
 namespace internal
@@ -38,7 +49,7 @@ void MakeContextCurrent(const window_impl* pWindow)
 
 window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                         std::weak_ptr<window_impl> pWindow, const bool invisible)
-    : mWidth(pWidth), mHeight(pHeight),
+    : mID(getNextUniqueId()), mWidth(pWidth), mHeight(pHeight),
       mRows(0), mCols(0)
 {
     if (auto observe = pWindow.lock()) {
@@ -220,7 +231,7 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(this, 0, 0, wind_width, wind_height);
+    pRenderable->render(mID, 0, 0, wind_width, wind_height);
 
     mWindow->swapBuffers();
     mWindow->pollEvents();
@@ -270,7 +281,7 @@ void window_impl::draw(int pColId, int pRowId,
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(this, x_off, y_off, mCellWidth, mCellHeight);
+    pRenderable->render(mID, x_off, y_off, mCellWidth, mCellHeight);
 
     glDisable(GL_SCISSOR_TEST);
     glViewport(x_off, y_off, mCellWidth, mCellHeight);
@@ -279,7 +290,7 @@ void window_impl::draw(int pColId, int pRowId,
         mFont->setOthro2D(mCellWidth, mCellHeight);
         pos[0] = mCellWidth / 3.0f;
         pos[1] = mCellHeight*0.92f;
-        mFont->render(this, pos, RED, pTitle, 16);
+        mFont->render(mID, pos, RED, pTitle, 16);
     }
 
     CheckGL("End show(column, row)");

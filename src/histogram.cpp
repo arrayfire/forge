@@ -52,9 +52,9 @@ const char *gHistBarFragmentShaderSrc =
 namespace internal
 {
 
-void hist_impl::bindResources(const void* pWnd)
+void hist_impl::bindResources(int pWindowId)
 {
-    if (mVAOMap.find(pWnd) == mVAOMap.end()) {
+    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
         GLuint vao = 0;
         /* create a vertex array object
          * with appropriate bindings */
@@ -72,10 +72,10 @@ void hist_impl::bindResources(const void* pWnd)
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
-        mVAOMap[pWnd] = vao;
+        mVAOMap[pWindowId] = vao;
     }
 
-    glBindVertexArray(mVAOMap[pWnd]);
+    glBindVertexArray(mVAOMap[pWindowId]);
 }
 
 void hist_impl::unbindResources() const
@@ -145,7 +145,7 @@ size_t hist_impl::size() const
     return mHistogramVBOSize;
 }
 
-void hist_impl::render(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
+void hist_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
     float w = float(pVPW - (leftMargin()+rightMargin()+tickSize()));
     float h = float(pVPH - (bottomMargin()+topMargin()+tickSize()));
@@ -176,7 +176,7 @@ void hist_impl::render(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
      * rectangle is scaled and translated accordingly
      * for each bin. This is done by OpenGL feature of
      * instanced rendering */
-    bindResources(pWnd);
+    bindResources(pWindowId);
     glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, mNBins);
     unbindResources();
 
@@ -184,7 +184,7 @@ void hist_impl::render(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
     /* Stop clipping */
     glDisable(GL_SCISSOR_TEST);
 
-    renderChart(pWnd, pX, pY, pVPW, pVPH);
+    renderChart(pWindowId, pX, pY, pVPW, pVPH);
     CheckGL("End Histogram::render");
 }
 

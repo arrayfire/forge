@@ -52,11 +52,11 @@ static const char* fragment_shader_code =
 "    fragColor = vec4(r_ch, g_ch , b_ch, 1);\n"
 "}\n";
 
-GLuint imageQuadVAO(const void* pWnd)
+GLuint imageQuadVAO(int pWindowId)
 {
-    static std::map<const void*, GLuint> mVAOMap;
+    static std::map<int, GLuint> mVAOMap;
 
-    if (mVAOMap.find(pWnd)==mVAOMap.end()) {
+    if (mVAOMap.find(pWindowId)==mVAOMap.end()) {
         static const float vertices[12] = {-1.0f,-1.0f,0.0,
                                     1.0f,-1.0f,0.0,
                                     1.0f, 1.0f,0.0,
@@ -83,18 +83,18 @@ GLuint imageQuadVAO(const void* pWnd)
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
-        mVAOMap[pWnd] = vao;
+        mVAOMap[pWindowId] = vao;
     }
 
-    return mVAOMap[pWnd];
+    return mVAOMap[pWindowId];
 }
 
 namespace internal
 {
 
-void image_impl::bindResources(const void* pWnd)
+void image_impl::bindResources(int pWindowId)
 {
-    glBindVertexArray(imageQuadVAO(pWnd));
+    glBindVertexArray(imageQuadVAO(pWindowId));
 }
 
 void image_impl::unbindResources() const
@@ -169,7 +169,7 @@ unsigned image_impl::pbo() const { return mPBO; }
 
 unsigned image_impl::size() const { return (unsigned)mPBOsize; }
 
-void image_impl::render(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight)
+void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight)
 {
     static const float matrix[16] = {
         1.0f, 0.0f, 0.0f, 0.0f,
@@ -206,7 +206,7 @@ void image_impl::render(const void* pWnd, int pX, int pY, int pViewPortWidth, in
     CheckGL("Before render");
 
     // Draw to screen
-    bindResources(pWnd);
+    bindResources(pWindowId);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     unbindResources();
 

@@ -37,11 +37,11 @@ class hist_impl : public AbstractChart2D {
         GLuint    mPointIndex;
         GLuint    mFreqIndex;
 
-        std::map<const void*, GLuint> mVAOMap;
+        std::map<int, GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
-        void bindResources(const void* pWnd);
+        void bindResources(int pWindowId);
         void unbindResources() const;
 
     public:
@@ -52,7 +52,7 @@ class hist_impl : public AbstractChart2D {
         GLuint vbo() const;
         size_t size() const;
 
-        void render(const void* pWnd, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
+        void render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
 };
 
 class _Histogram {

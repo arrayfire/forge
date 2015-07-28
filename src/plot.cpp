@@ -22,9 +22,9 @@ using namespace std;
 namespace internal
 {
 
-void plot_impl::bindResources(const void* pWnd)
+void plot_impl::bindResources(int pWindowId)
 {
-    if (mVAOMap.find(pWnd) == mVAOMap.end()) {
+    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
         GLuint vao = 0;
         /* create a vertex array object
          * with appropriate bindings */
@@ -37,10 +37,10 @@ void plot_impl::bindResources(const void* pWnd)
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
-        mVAOMap[pWnd] = vao;
+        mVAOMap[pWindowId] = vao;
     }
 
-    glBindVertexArray(mVAOMap[pWnd]);
+    glBindVertexArray(mVAOMap[pWindowId]);
 }
 
 void plot_impl::unbindResources() const
@@ -102,7 +102,7 @@ size_t plot_impl::size() const
     return mMainVBOsize;
 }
 
-void plot_impl::render(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
+void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
     float graph_scale_x = 1/(xmax() - xmin());
     float graph_scale_y = 1/(ymax() - ymin());
@@ -121,7 +121,7 @@ void plot_impl::render(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
     glUniform4fv(borderColorIndex(), 1, mLineColor);
 
     /* render the plot data */
-    bindResources(pWnd);
+    bindResources(pWindowId);
     glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
     unbindResources();
 
@@ -130,7 +130,7 @@ void plot_impl::render(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
     unbindBorderProgram();
 
     /* render graph border and axes */
-    renderChart(pWnd, pX, pY, pVPW, pVPH);
+    renderChart(pWindowId, pX, pY, pVPW, pVPH);
 
     CheckGL("End Plot::render");
 }

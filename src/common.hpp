@@ -41,7 +41,7 @@ class AbstractRenderable {
          *
          * @return nothing.
          */
-        virtual void render(const void* pWnd,
+        virtual void render(int pWindowId,
                 int pX, int pY, int pViewPortWidth, int pViewPortHeight) = 0;
 
         /* virtual function to set colormap, a derviced class might
@@ -82,3 +82,5 @@ float clampTo01(float a);
 #ifdef OS_WIN
 void getFontFilePaths(std::vector<std::string>& pFiles, std::string pDir, std::string pExt);
 #endif
+
+std::string toString(float pVal, const int n = 2);

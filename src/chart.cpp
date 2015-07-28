@@ -12,7 +12,6 @@
 
 #include <cmath>
 #include <sstream>
-#include <iomanip>
 #include <mutex>
 
 #include <glm/glm.hpp>
@@ -23,13 +22,6 @@ using namespace std;
 typedef std::vector<std::string>::const_iterator StringIter;
 
 static const int CHART2D_FONT_SIZE = 15;
-
-std::string toString(float pVal, const int n = 2)
-{
-    std::ostringstream out;
-    out << std::fixed << std::setprecision(n) << pVal;
-    return out.str();
-}
 
 const char *gChartVertexShaderSrc =
 "#version 330\n"
@@ -80,9 +72,9 @@ const std::shared_ptr<internal::font_impl>& getChartFont()
 namespace internal
 {
 
-void AbstractChart2D::bindResources(const void* pWnd)
+void AbstractChart2D::bindResources(int pWindowId)
 {
-    if (mVAOMap.find(pWnd) == mVAOMap.end()) {
+    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
         GLuint vao = 0;
         /* create a vertex array object
          * with appropriate bindings */
@@ -94,10 +86,10 @@ void AbstractChart2D::bindResources(const void* pWnd)
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
-        mVAOMap[pWnd] = vao;
+        mVAOMap[pWindowId] = vao;
     }
 
-    glBindVertexArray(mVAOMap[pWnd]);
+    glBindVertexArray(mVAOMap[pWindowId]);
 }
 
 void AbstractChart2D::unbindResources() const
@@ -329,7 +321,7 @@ float AbstractChart2D::xmin() const { return mXMin; }
 float AbstractChart2D::ymax() const { return mYMax; }
 float AbstractChart2D::ymin() const { return mYMin; }
 
-void AbstractChart2D::renderChart(const void* pWnd, int pX, int pY, int pVPW, int pVPH)
+void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
@@ -340,7 +332,7 @@ void AbstractChart2D::renderChart(const void* pWnd, int pX, int pY, int pVPW, in
 
     CheckGL("Begin Chart::render");
 
-    bindResources(pWnd);
+    bindResources(pWindowId);
 
     /* bind the plotting shader program  */
     glUseProgram(mBorderProgram);
@@ -391,7 +383,7 @@ void AbstractChart2D::renderChart(const void* pWnd, int pX, int pY, int pVPW, in
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[0] -= (pVPW-w)*0.60f;
-        fonter->render(pWnd, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
     }
     /* render tick marker texts for x axis */
     for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
@@ -408,7 +400,7 @@ void AbstractChart2D::renderChart(const void* pWnd, int pX, int pY, int pVPW, in
         /* offset horizontally based on text size to align
          * text center with tick mark position */
         pos[0] -= (CHART2D_FONT_SIZE*(it->length()-2)/2.0f);
-        fonter->render(pWnd, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
     }
     /* render chart axes titles */
     if (!mYTitle.empty()) {
@@ -416,14 +408,14 @@ void AbstractChart2D::renderChart(const void* pWnd, int pX, int pY, int pVPW, in
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[0] -= (pVPW-w)*0.76;
-        fonter->render(pWnd, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
+        fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] -= (pVPH-h)*0.66;
-        fonter->render(pWnd, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
+        fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
     CheckGL("End Chart::render");
