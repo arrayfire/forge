@@ -57,6 +57,7 @@ class window_impl {
         void setFont(const std::shared_ptr<font_impl>& pFont);
         void setTitle(const char* pTitle);
         void setPos(int pX, int pY);
+        void setSize(unsigned pWidth, unsigned pHeight);
         void setColorMap(fg::ColorMap cmap);
 
         long long context() const;
@@ -118,6 +119,10 @@ class _Window {
 
         inline void setPos(int pX, int pY) {
             wnd->setPos(pX, pY);
+        }
+
+        inline void setSize(unsigned pWidth, int pHeight) {
+            wnd->setSize(pWidth, pHeight);
         }
 
         inline void setColorMap(fg::ColorMap cmap) {

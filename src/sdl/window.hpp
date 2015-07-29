@@ -46,6 +46,8 @@ class Widget {
 
         void setPos(int pX, int pY);
 
+        void setSize(unsigned pW, unsigned pH);
+
         void setClose(bool pClose);
 
         void swapBuffers();
