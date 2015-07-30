@@ -122,6 +122,11 @@ void Widget::setPos(int pX, int pY)
     SDL_SetWindowPosition(mWindow, pX, pY);
 }
 
+void Widget::setSize(unsigned pW, unsigned pH)
+{
+    SDL_SetWindowSize(mWindow, pW, pH);
+}
+
 void Widget::swapBuffers()
 {
     SDL_GL_SwapWindow(mWindow);

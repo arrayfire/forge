@@ -85,6 +85,14 @@ class Window {
         FGAPI void setPos(int pX, int pY);
 
         /**
+           Set the size of the window programmatically
+
+           \param[in] pWidth target width
+           \param[in] pHeight target height
+         */
+        FGAPI void setSize(unsigned pWidth, unsigned pHeight);
+
+        /**
            Set the colormap to be used for subsequent rendering calls
 
            \param[in] cmap should be one of the enum values from \ref ColorMap

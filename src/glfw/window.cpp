@@ -118,6 +118,11 @@ void Widget::setPos(int pX, int pY)
     glfwSetWindowPos(mWindow, pX, pY);
 }
 
+void Widget::setSize(unsigned pW, unsigned pH)
+{
+    glfwSetWindowSize(mWindow, pW, pH);
+}
+
 void Widget::swapBuffers()
 {
     glfwSwapBuffers(mWindow);

@@ -148,7 +148,7 @@ void font_impl::bindResources(int pWindowId)
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, size*2, 0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, (void*)(size));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, reinterpret_cast<void*>(size));
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */

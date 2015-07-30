@@ -132,6 +132,11 @@ void window_impl::setPos(int pX, int pY)
     mWindow->setPos(pX, pY);
 }
 
+void window_impl::setSize(unsigned pW, unsigned pH)
+{
+    mWindow->setSize(pW, pH);
+}
+
 void window_impl::setColorMap(fg::ColorMap cmap)
 {
     switch(cmap) {
@@ -339,6 +344,11 @@ void Window::setTitle(const char* pTitle)
 void Window::setPos(int pX, int pY)
 {
     value->setPos(pX, pY);
+}
+
+void Window::setSize(unsigned pW, unsigned pH)
+{
+    value->setSize(pW, pH);
 }
 
 void Window::setColorMap(ColorMap cmap)
