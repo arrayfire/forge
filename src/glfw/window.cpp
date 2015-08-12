@@ -58,11 +58,18 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
     }
 
     glfwSetWindowUserPointer(mWindow, this);
+
     auto kbCallback = [](GLFWwindow* w, int pKey, int pScancode, int pAction, int pMods)
     {
         static_cast<Widget*>(glfwGetWindowUserPointer(w))->keyboardHandler(pKey, pScancode, pAction, pMods);
     };
     glfwSetKeyCallback(mWindow, kbCallback);
+
+    auto closeCallback = [](GLFWwindow* w)
+    {
+        static_cast<Widget*>(glfwGetWindowUserPointer(w))->hide();
+    };
+    glfwSetWindowCloseCallback(mWindow, closeCallback);
 }
 
 Widget::~Widget()
