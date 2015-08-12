@@ -15,7 +15,7 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
     PATH_SUFFIXES
     SDL2
     # path suffixes to search inside ENV{SDL2_ROOT_DIR}
-    include/SDL include
+    include/SDL2 include
     )
 
 FIND_LIBRARY(SDL2_LIBRARY
