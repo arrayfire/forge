@@ -104,19 +104,35 @@ size_t plot_impl::size() const
 
 void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
-    float graph_scale_x = 1/(xmax() - xmin());
-    float graph_scale_y = 1/(ymax() - ymin());
+    float range_x = xmax() - xmin();
+    float range_y = ymax() - ymin();
+    //float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 1/xmin() : 2/(xmax() - xmin());
+    //float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 1/ymin() : 2/(ymax() - ymin());
+    float graph_scale_x = 2/(xmax() - xmin());
+    float graph_scale_y = 2/(ymax() - ymin());
 
     CheckGL("Begin Plot::render");
-    /* Enavle scissor test to discard anything drawn beyond viewport.
+    float viewWidth    = pVPW - (leftMargin()+rightMargin()+tickSize());
+    float viewHeight   = pVPH - (bottomMargin()+topMargin()+tickSize());
+    //float view_scale_x = std::abs(range_x) < 1.0e-3 ? 0.98f : viewWidth/pVPW;
+    //float view_scale_y = std::abs(range_y) < 1.0e-3 ? 0.98f : viewHeight/pVPH;
+    float view_scale_x = viewWidth/pVPW;
+    float view_scale_y = viewHeight/pVPH;
+    float offset_x = (2.0f * (leftMargin()+tickSize()) + (viewWidth - pVPW)) / pVPW;
+    float offset_y = (2.0f * (bottomMargin()+tickSize()) + (viewHeight - pVPH)) / pVPH;
+    /* Enable scissor test to discard anything drawn beyond viewport.
      * Set scissor rectangle to clip fragments outside of viewport */
-    glScissor(pX+leftMargin()+tickSize(), pY+bottomMargin()+tickSize(),
-            pVPW - (leftMargin()+rightMargin()+tickSize()),
-            pVPH - (bottomMargin()+topMargin()+tickSize()));
+    glScissor(pX + leftMargin() + tickSize()/2, pY+bottomMargin() + tickSize()/2,
+              pVPW - leftMargin()   - rightMargin() - tickSize()/2,
+              pVPH - bottomMargin() - topMargin()   - tickSize()/2);
     glEnable(GL_SCISSOR_TEST);
 
     bindBorderProgram();
-    glm::mat4 transform = glm::scale(glm::mat4(1.0f), glm::vec3(graph_scale_x, graph_scale_y, 1));
+    glm::mat4 scaleTransform = glm::scale(glm::mat4(1.0f),
+                                          glm::vec3(view_scale_x*graph_scale_x,
+                                                    view_scale_y*graph_scale_y, 1));
+    glm::mat4 transform = glm::translate(scaleTransform,
+                                         glm::vec3(offset_x, offset_y, 0));
     glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
     glUniform4fv(borderColorIndex(), 1, mLineColor);
 

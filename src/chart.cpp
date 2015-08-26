@@ -162,7 +162,7 @@ void AbstractChart2D::setTickCount(int pTickCount)
     std::vector<float> decorData;
     std::copy(border, border+nValues, std::back_inserter(decorData));
 
-    float step = 2.0f/(mTickCount-1);
+    float step = 2.0f/(mTickCount);
     /* push tick points for y axis:
      * push (0,0) first followed by
      * [-1, 0) ticks and then
@@ -239,7 +239,7 @@ void AbstractChart2D::setTickCount(int pTickCount)
 
 AbstractChart2D::AbstractChart2D()
     : mTickCount(9), mTickSize(10),
-      mLeftMargin(64), mRightMargin(10), mTopMargin(10), mBottomMargin(32),
+      mLeftMargin(68), mRightMargin(8), mTopMargin(8), mBottomMargin(32),
       mXMax(1), mXMin(0), mYMax(1), mYMin(0),
       mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
 {
@@ -288,7 +288,7 @@ void AbstractChart2D::setAxesLimits(float pXmax, float pXmin, float pYmax, float
     mXText.clear();
     mYText.clear();
 
-    float step = 2.0f/(mTickCount-1);
+    float step = 2.0f/(mTickCount);
     float xmid   = (mXMax+mXMin)/2.0f;
     float ymid   = (mYMax+mYMin)/2.0f;
     int ticksLeft = mTickCount/2;
@@ -325,8 +325,8 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 {
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
-    float offset_x = (1.9f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
-    float offset_y = (1.9f * (mBottomMargin+mTickSize) + (h - pVPH)) / pVPH;
+    float offset_x = (2.0f * (leftMargin()+tickSize()) + (w - pVPW)) / pVPW;
+    float offset_y = (2.0f * (bottomMargin()+tickSize()) + (h - pVPH)) / pVPH;
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 
@@ -339,9 +339,9 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 
     /* set uniform attributes of shader
      * for drawing the plot borders */
-    glm::mat4 trans = glm::scale(glm::translate(glm::mat4(1),
-                                                glm::vec3(offset_x, offset_y, 0)),
-                                 glm::vec3(scale_x, scale_y, 1));
+    glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
+                                                glm::vec3(scale_x, scale_y, 1)),
+                                     glm::vec3(offset_x, offset_y, 0));
     glUniformMatrix4fv(mBorderMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderColorIndex, 1, WHITE);
 
@@ -382,7 +382,9 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
          * to compensate for margins and ticksize */
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[0] -= (pVPW-w)*0.60f;
+        /* offset horizontally based on text size to align
+         * text center with tick mark position */
+        pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f)+(mTickSize * (w/pVPW)));
         fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
     }
     /* render tick marker texts for x axis */
@@ -396,7 +398,7 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
          * to compensate for margins and ticksize */
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[1] -= (pVPH-h)*0.34f;
+        pos[1] -= ((CHART2D_FONT_SIZE*h/pVPH)+(mTickSize * (w/pVPW)));
         /* offset horizontally based on text size to align
          * text center with tick mark position */
         pos[0] -= (CHART2D_FONT_SIZE*(it->length()-2)/2.0f);
@@ -407,14 +409,14 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[0] -= (pVPW-w)*0.76;
+        pos[0] += (mTickSize * (w/pVPW));
         fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[1] -= (pVPH-h)*0.66;
+        pos[1] += (mTickSize * (h/pVPH));
         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
