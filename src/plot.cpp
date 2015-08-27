@@ -106,16 +106,14 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
     float range_x = xmax() - xmin();
     float range_y = ymax() - ymin();
-    //float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 1/xmin() : 2/(xmax() - xmin());
-    //float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 1/ymin() : 2/(ymax() - ymin());
-    float graph_scale_x = 2/(xmax() - xmin());
-    float graph_scale_y = 2/(ymax() - ymin());
+    // set scale to zero if input is constant array
+    // otherwise compute scale factor by standard equation
+    float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(xmax() - xmin());
+    float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(ymax() - ymin());
 
     CheckGL("Begin Plot::render");
     float viewWidth    = pVPW - (leftMargin()+rightMargin()+tickSize());
     float viewHeight   = pVPH - (bottomMargin()+topMargin()+tickSize());
-    //float view_scale_x = std::abs(range_x) < 1.0e-3 ? 0.98f : viewWidth/pVPW;
-    //float view_scale_y = std::abs(range_y) < 1.0e-3 ? 0.98f : viewHeight/pVPH;
     float view_scale_x = viewWidth/pVPW;
     float view_scale_y = viewHeight/pVPH;
     float offset_x = (2.0f * (leftMargin()+tickSize()) + (viewWidth - pVPW)) / pVPW;
