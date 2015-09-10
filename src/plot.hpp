@@ -23,9 +23,11 @@ class plot_impl : public AbstractChart2D {
         GLuint    mNumPoints;
         GLenum    mDataType;
         float     mLineColor[4];
+        fg::FGMarkerType mMarkerType;
         /* OpenGL Objects */
         GLuint    mMainVBO;
         size_t    mMainVBOsize;
+        GLuint    mMarkerProgram;
         /* shared variable index locations */
         GLuint    mPointIndex;
 
@@ -37,7 +39,7 @@ class plot_impl : public AbstractChart2D {
         void unbindResources() const;
 
     public:
-        plot_impl(unsigned pNumPoints, fg::FGType pDataType);
+        plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType=fg::FG_NONE);
         ~plot_impl();
 
         void setColor(float r, float g, float b);
@@ -52,8 +54,8 @@ class _Plot {
         std::shared_ptr<plot_impl> plt;
 
     public:
-        _Plot(unsigned pNumPoints, fg::FGType pDataType)
-            : plt(std::make_shared<plot_impl>(pNumPoints, pDataType)) {}
+        _Plot(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType=fg::FG_NONE)
+            : plt(std::make_shared<plot_impl>(pNumPoints, pDataType, pMarkerType)) {}
 
         inline const std::shared_ptr<plot_impl>& impl() const {
             return plt;

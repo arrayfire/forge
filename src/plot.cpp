@@ -19,6 +19,28 @@
 
 using namespace std;
 
+const char *gMarkerVertexShaderSrc =
+"#version 330\n"
+"in vec2 point;\n"
+"uniform mat4 transform;\n"
+"void main(void) {\n"
+"   gl_Position = vec4(point.xy, 0, 1);\n"
+"   gl_PointSize = 10;\n"
+"}";
+
+
+const char *gMarkerSpriteFragmentShaderSrc =
+"#version 330\n"
+"uniform vec4 tick_color;\n"
+"out vec4 outputColor;\n"
+"void main(void) {\n"
+"   bool in_bounds = ( (gl_PointCoord.x - 0.5) * (gl_PointCoord.x-0.5) + (gl_PointCoord.y-0.5) * (gl_PointCoord.y-0.5) ) > 0.07;\n"
+"   if(in_bounds)\n"
+"       discard;\n"
+"   else\n"
+"       outputColor = tick_color;\n"
+"}";
+
 namespace internal
 {
 
@@ -48,7 +70,7 @@ void plot_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType)
+plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType)
     : AbstractChart2D(), mNumPoints(pNumPoints), mDataType(FGTypeToGLenum(pDataType)),
       mMainVBO(0), mMainVBOsize(0), mPointIndex(0)
 {
@@ -75,6 +97,8 @@ plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType)
         default: fg::TypeError("Plot::Plot", __LINE__, 1, GLenumToFGType(mDataType));
     }
     mPointIndex = borderProgramPointIndex();
+    mMarkerType = pMarkerType;
+    mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
 }
 
 plot_impl::~plot_impl()
@@ -125,24 +149,33 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
               pVPH - bottomMargin() - topMargin()   - tickSize()/2);
     glEnable(GL_SCISSOR_TEST);
 
-    bindBorderProgram();
     glm::mat4 scaleTransform = glm::scale(glm::mat4(1.0f),
                                           glm::vec3(view_scale_x*graph_scale_x,
                                                     view_scale_y*graph_scale_y, 1));
     glm::mat4 transform = glm::translate(scaleTransform,
                                          glm::vec3(offset_x, offset_y, 0));
-    glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-    glUniform4fv(borderColorIndex(), 1, mLineColor);
 
-    /* render the plot data */
-    bindResources(pWindowId);
-    glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
-    unbindResources();
-
+    if(mMarkerType == fg::FG_NONE){
+        bindBorderProgram();
+        glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+        glUniform4fv(borderColorIndex(), 1, mLineColor);
+        bindResources(pWindowId);
+        glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
+        unbindResources();
+        unbindBorderProgram();
+    }else{
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        glUseProgram(mMarkerProgram);
+        glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+        glUniform4fv(borderColorIndex(), 1, mLineColor);
+        bindResources(pWindowId);
+        glDrawArrays(GL_POINTS, 0, mNumPoints);
+        unbindResources();
+        glUseProgram(0);
+        glDisable(GL_PROGRAM_POINT_SIZE);
+    }
     /* Stop clipping and reset viewport to window dimensions */
     glDisable(GL_SCISSOR_TEST);
-    unbindBorderProgram();
-
     /* render graph border and axes */
     renderChart(pWindowId, pX, pY, pVPW, pVPH);
 
@@ -154,9 +187,9 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 namespace fg
 {
 
-Plot::Plot(unsigned pNumPoints, fg::FGType pDataType)
+Plot::Plot(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType)
 {
-    value = new internal::_Plot(pNumPoints, pDataType);
+    value = new internal::_Plot(pNumPoints, pDataType, pMarkerType);
 }
 
 Plot::Plot(const Plot& other)

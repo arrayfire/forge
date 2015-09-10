@@ -122,4 +122,13 @@ enum FGType {
     FG_FLOAT        = 4                     ///< Float (32-bits)
 };
 
+enum FGMarkerType {
+    FG_NONE         = 0,
+    FG_POINT        = 1,
+    FG_CIRCLE       = 2,
+    FG_TRIANGLE     = 3,
+    FG_STAR         = 4,
+    FG_SQUARE       = 5
+};
+
 }
