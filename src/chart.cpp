@@ -288,21 +288,22 @@ void AbstractChart2D::setAxesLimits(float pXmax, float pXmin, float pYmax, float
     mXText.clear();
     mYText.clear();
 
-    float step = 2.0f/(mTickCount);
-    float xmid   = (mXMax+mXMin)/2.0f;
-    float ymid   = (mYMax+mYMin)/2.0f;
+    float xstep = (mXMax-mXMin)/(mTickCount);
+    float ystep = (mYMax-mYMin)/(mTickCount);
+    float xmid = mXMin + (mXMax-mXMin)/2.0f;
+    float ymid = mYMin + (mYMax-mYMin)/2.0f;
     int ticksLeft = mTickCount/2;
     /* push tick points for y axis */
     mYText.push_back(toString(ymid));
     for (int i = 1; i <= ticksLeft; i++) {
-        mYText.push_back(toString(ymid + i*-step));
-        mYText.push_back(toString(ymid + i*step));
+        mYText.push_back(toString(ymid + i*-ystep));
+        mYText.push_back(toString(ymid + i*ystep));
     }
     /* push tick points for x axis */
     mXText.push_back(toString(xmid));
     for (int i = 1; i <= ticksLeft; i++) {
-        mXText.push_back(toString(xmid + i*-step));
-        mXText.push_back(toString(xmid + i*step));
+        mXText.push_back(toString(xmid + i*-xstep));
+        mXText.push_back(toString(xmid + i*xstep));
     }
 }
 
