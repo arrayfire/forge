@@ -159,7 +159,7 @@ class Window {
            to call Window::draw() after this function is called upon for rendering
            an image
          */
-        FGAPI void draw(const Image& pImage);
+        FGAPI void draw(const Image& pImage, const bool pKeepAspectRatio=true);
 
         /**
            Render a Plot to Window
@@ -211,7 +211,7 @@ class Window {
            Window::draw() once all draw calls corresponding to all sub-regions are called
            when in multiview mode.
          */
-        FGAPI void draw(int pColId, int pRowId, const Image& pImage, const char* pTitle=0);
+        FGAPI void draw(int pColId, int pRowId, const Image& pImage, const char* pTitle=0, const bool pKeepAspectRatio=true);
 
         /**
            Render Plot to given sub-region of the window in multiview mode

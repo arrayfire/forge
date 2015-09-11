@@ -30,6 +30,7 @@ class image_impl : public AbstractRenderable {
 
         GLuint   mColorMapUBO;
         GLuint   mUBOSize;
+        bool     mKeepARatio;
 
         /* helper functions to bind and unbind
          * resources for render quad primitive */
@@ -41,6 +42,7 @@ class image_impl : public AbstractRenderable {
         ~image_impl();
 
         void setColorMapUBOParams(GLuint ubo, GLuint size);
+        void keepAspectRatio(const bool keep=true);
 
         unsigned width() const;
         unsigned height() const;
@@ -61,6 +63,8 @@ class _Image {
             : img(std::make_shared<image_impl>(pWidth, pHeight, pFormat, pDataType)) {}
 
         inline const std::shared_ptr<image_impl>& impl() const { return img; }
+
+        inline void keepAspectRatio(const bool keep) { img->keepAspectRatio(keep); }
 
         inline unsigned width() const { return img->width(); }
 
