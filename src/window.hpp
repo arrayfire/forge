@@ -77,8 +77,8 @@ class window_impl {
         void grid(int pRows, int pCols);
 
         void draw(int pColId, int pRowId,
-                const std::shared_ptr<AbstractRenderable>& pRenderable,
-                const char* pTitle = NULL);
+                  const std::shared_ptr<AbstractRenderable>& pRenderable,
+                  const char* pTitle);
 
         void draw();
 };
@@ -161,7 +161,8 @@ class _Window {
             return wnd->close();
         }
 
-        inline void draw(const _Image* pImage) {
+        inline void draw(_Image* pImage, const bool pKeepAspectRatio) {
+            pImage->keepAspectRatio(pKeepAspectRatio);
             wnd->draw(pImage->impl()) ;
         }
 
@@ -182,7 +183,12 @@ class _Window {
         }
 
         template<typename T>
-        void draw(int pColId, int pRowId, const T* pRenderable, const char* pTitle = NULL) {
+        void draw(int pColId, int pRowId, T* pRenderable, const char* pTitle) {
+            wnd->draw(pColId, pRowId, pRenderable->impl(), pTitle);
+        }
+
+        void draw(int pColId, int pRowId, _Image* pRenderable, const char* pTitle, const bool pKeepAspectRatio) {
+            pRenderable->keepAspectRatio(pKeepAspectRatio);
             wnd->draw(pColId, pRowId, pRenderable->impl(), pTitle);
         }
 };
