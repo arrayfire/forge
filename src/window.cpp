@@ -259,8 +259,8 @@ void window_impl::grid(int pRows, int pCols)
 
 
 void window_impl::draw(int pColId, int pRowId,
-                        const std::shared_ptr<AbstractRenderable>& pRenderable,
-                        const char* pTitle)
+                       const std::shared_ptr<AbstractRenderable>& pRenderable,
+                       const char* pTitle)
 {
     CheckGL("Begin show(column, row)");
     MakeContextCurrent(this);
@@ -401,9 +401,9 @@ void Window::makeCurrent()
     value->makeCurrent();
 }
 
-void Window::draw(const Image& pImage)
+void Window::draw(const Image& pImage, const bool pKeepAspectRatio)
 {
-    value->draw(pImage.get());
+    value->draw(pImage.get(), pKeepAspectRatio);
 }
 
 void Window::draw(const Plot& pPlot)
@@ -421,9 +421,9 @@ void Window::grid(int pRows, int pCols)
     value->grid(pRows, pCols);
 }
 
-void Window::draw(int pColId, int pRowId, const Image& pImage, const char* pTitle)
+void Window::draw(int pColId, int pRowId, const Image& pImage, const char* pTitle, const bool pKeepAspectRatio)
 {
-    value->draw(pColId, pRowId, pImage.get(), pTitle);
+    value->draw(pColId, pRowId, pImage.get(), pTitle, pKeepAspectRatio);
 }
 
 void Window::draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle)

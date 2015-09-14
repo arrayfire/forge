@@ -13,6 +13,10 @@
 #include <mutex>
 #include <map>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 static const char* vertex_shader_code =
 "#version 330\n"
 "layout(location = 0) in vec3 pos;\n"
@@ -157,6 +161,11 @@ void image_impl::setColorMapUBOParams(GLuint ubo, GLuint size)
     mUBOSize = size;
 }
 
+void image_impl::keepAspectRatio(const bool keep)
+{
+    mKeepARatio = keep;
+}
+
 unsigned image_impl::width() const { return mWidth; }
 
 unsigned image_impl::height() const { return mHeight; }
@@ -171,11 +180,22 @@ unsigned image_impl::size() const { return (unsigned)mPBOsize; }
 
 void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight)
 {
-    static const float matrix[16] = {
-        1.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f};
+    float xscale = 1.f;
+    float yscale = 1.f;
+    if (mKeepARatio) {
+        if (mWidth > mHeight) {
+            float trgtH = pViewPortWidth * float(mHeight)/float(mWidth);
+            float trgtW = trgtH * float(mWidth)/float(mHeight);
+            xscale = trgtW/pViewPortWidth;
+            yscale = trgtH/pViewPortHeight;
+        } else {
+            float trgtW = pViewPortHeight * float(mWidth)/float(mHeight);
+            float trgtH = trgtW * float(mHeight)/float(mWidth);
+            xscale = trgtW/pViewPortWidth;
+            yscale = trgtH/pViewPortHeight;
+        }
+    }
+    glm::mat4 strans = glm::scale(glm::mat4(1.0f), glm::vec3(xscale, yscale, 1));
 
     glUseProgram(mProgram);
     // get uniform locations
@@ -193,11 +213,10 @@ void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int p
     // bind PBO to load data into texture
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight,
-                    mGLformat, mDataType, 0);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, mGLformat, mDataType, 0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
-    glUniformMatrix4fv(mat_loc, 1, GL_FALSE, matrix);
+    glUniformMatrix4fv(mat_loc, 1, GL_FALSE, glm::value_ptr(strans));
 
     glUniform1f(cml_loc, (GLfloat)mUBOSize);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, mColorMapUBO);
