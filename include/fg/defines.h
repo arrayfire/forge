@@ -126,9 +126,11 @@ enum FGMarkerType {
     FG_NONE         = 0,
     FG_POINT        = 1,
     FG_CIRCLE       = 2,
-    FG_TRIANGLE     = 3,
-    FG_STAR         = 4,
-    FG_SQUARE       = 5
+    FG_SQUARE       = 3,
+    FG_TRIANGLE     = 4,
+    FG_X            = 5,
+    FG_PLUS         = 6,
+    FG_STAR         = 7
 };
 
 }

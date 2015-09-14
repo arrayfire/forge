@@ -30,6 +30,7 @@ class plot_impl : public AbstractChart2D {
         GLuint    mMarkerProgram;
         /* shared variable index locations */
         GLuint    mPointIndex;
+        GLuint    mMarkerTypeIndex;
 
         std::map<int, GLuint> mVAOMap;
 
@@ -37,6 +38,7 @@ class plot_impl : public AbstractChart2D {
          * for rendering resources */
         void bindResources(int pWindowId);
         void unbindResources() const;
+        GLuint markerTypeIndex() const;
 
     public:
         plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType=fg::FG_NONE);

@@ -25,20 +25,53 @@ const char *gMarkerVertexShaderSrc =
 "uniform mat4 transform;\n"
 "void main(void) {\n"
 "   gl_Position = vec4(point.xy, 0, 1);\n"
-"   gl_PointSize = 10;\n"
+"   gl_PointSize = 13;\n"
 "}";
 
 
 const char *gMarkerSpriteFragmentShaderSrc =
 "#version 330\n"
-"uniform vec4 tick_color;\n"
+"uniform int marker_type;\n"
+"uniform vec4 line_color;\n"
 "out vec4 outputColor;\n"
 "void main(void) {\n"
-"   bool in_bounds = ( (gl_PointCoord.x - 0.5) * (gl_PointCoord.x-0.5) + (gl_PointCoord.y-0.5) * (gl_PointCoord.y-0.5) ) > 0.07;\n"
-"   if(in_bounds)\n"
+"   float dist = sqrt( (gl_PointCoord.x - 0.5) * (gl_PointCoord.x-0.5) + (gl_PointCoord.y-0.5) * (gl_PointCoord.y-0.5) );\n"
+"   bool in_bounds;\n"
+"   switch(marker_type) {\n"
+"       case 1:\n"
+"           in_bounds = dist < 0.25;\n"
+"           break;\n"
+"       case 2:\n"
+"           in_bounds = ( (dist > 0.3) && (dist<0.5) );\n"
+"           break;\n"
+"       case 3:\n"
+"           in_bounds = ((gl_PointCoord.x < 0.15) || (gl_PointCoord.x > 0.85)) ||\n"
+"                       ((gl_PointCoord.y < 0.15) || (gl_PointCoord.y > 0.85));\n"
+"           break;\n"
+"       case 4:\n"
+"           in_bounds = (2*(gl_PointCoord.x - 0.25) - (gl_PointCoord.y + 0.5) < 0) && (2*(gl_PointCoord.x - 0.25) + (gl_PointCoord.y + 0.5) > 1);\n"
+"           break;\n"
+"       case 5:\n"
+"           in_bounds = abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.13 - 0.2*dist ||\n"
+"           abs((gl_PointCoord.x - 0.5) - (gl_PointCoord.y - 0.5) ) < 0.13 - 0.2*dist;\n"
+"           break;\n"
+"       case 6:\n"
+"           in_bounds = abs((gl_PointCoord.x - 0.5)) < 0.07 ||\n"
+"           abs((gl_PointCoord.y - 0.5)) < 0.07;\n"
+"           break;\n"
+"       case 7:\n"
+"           in_bounds = abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.13 - 0.4*dist ||\n"
+"           abs((gl_PointCoord.x - 0.5) - (gl_PointCoord.y - 0.5) ) < 0.13 - 0.4*dist ||\n"
+"           abs((gl_PointCoord.x - 0.5)) < 0.1 - 0.1*dist ||\n"
+"           abs((gl_PointCoord.y - 0.5)) < 0.1 - 0.1*dist;\n"
+"           break;\n"
+"       default:\n"
+"           in_bounds = true;\n"
+"   }\n"
+"   if(!in_bounds)\n"
 "       discard;\n"
 "   else\n"
-"       outputColor = tick_color;\n"
+"       outputColor = line_color;\n"
 "}";
 
 namespace internal
@@ -99,6 +132,8 @@ plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType
     mPointIndex = borderProgramPointIndex();
     mMarkerType = pMarkerType;
     mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
+
+    mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
 }
 
 plot_impl::~plot_impl()
@@ -166,8 +201,11 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     }else{
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
+
         glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
         glUniform4fv(borderColorIndex(), 1, mLineColor);
+        glUniform1i(markerTypeIndex(), mMarkerType);
+
         bindResources(pWindowId);
         glDrawArrays(GL_POINTS, 0, mNumPoints);
         unbindResources();
@@ -180,6 +218,11 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     renderChart(pWindowId, pX, pY, pVPW, pVPH);
 
     CheckGL("End Plot::render");
+}
+
+GLuint plot_impl::markerTypeIndex() const
+{
+    return mMarkerTypeIndex;
 }
 
 }
