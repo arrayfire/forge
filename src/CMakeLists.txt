@@ -1,7 +1,14 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 IF(USE_SYSTEM_GLM)
-    FIND_PACKAGE(GLM REQUIRED)
+    # Prior to GLM 0.9.7.0, the package is found by the FindGLM.cmake module.
+    # This was removed with GLM 0.9.7.0, instead a glm-config.cmake configuration
+    # file is provided. Therefore, both FIND_PACKAGE calls are necessary.
+    FIND_PACKAGE(GLM QUIET)
+    FIND_PACKAGE(glm QUIET)
+    IF(NOT glm_FOUND AND NOT GLM_FOUND)
+        MESSAGE(FATAL_ERROR "GLM Not Found")
+    ENDIF()
 ELSE(USE_SYSTEM_GLM)
     INCLUDE("${CMAKE_MODULE_PATH}/build_glm.cmake")
 ENDIF(USE_SYSTEM_GLM)
