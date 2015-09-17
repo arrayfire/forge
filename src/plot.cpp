@@ -171,12 +171,12 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(ymax() - ymin());
 
     CheckGL("Begin Plot::render");
-    float viewWidth    = pVPW - (leftMargin()+rightMargin()+tickSize());
-    float viewHeight   = pVPH - (bottomMargin()+topMargin()+tickSize());
+    float viewWidth    = pVPW - (leftMargin() + rightMargin() + tickSize()/2 );
+    float viewHeight   = pVPH - (bottomMargin() + topMargin() + tickSize() );
     float view_scale_x = viewWidth/pVPW;
     float view_scale_y = viewHeight/pVPH;
-    float offset_x = (2.0f * (leftMargin()+tickSize()) + (viewWidth - pVPW)) / pVPW;
-    float offset_y = (2.0f * (bottomMargin()+tickSize()) + (viewHeight - pVPH)) / pVPH;
+    float view_offset_x = (2.0f * (leftMargin() + tickSize()/2 )/ pVPW ) ;
+    float view_offset_y = (2.0f * (bottomMargin() + tickSize() )/ pVPH ) ;
     /* Enable scissor test to discard anything drawn beyond viewport.
      * Set scissor rectangle to clip fragments outside of viewport */
     glScissor(pX + leftMargin() + tickSize()/2, pY+bottomMargin() + tickSize()/2,
@@ -184,11 +184,12 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
               pVPH - bottomMargin() - topMargin()   - tickSize()/2);
     glEnable(GL_SCISSOR_TEST);
 
-    glm::mat4 scaleTransform = glm::scale(glm::mat4(1.0f),
-                                          glm::vec3(view_scale_x*graph_scale_x,
-                                                    view_scale_y*graph_scale_y, 1));
-    glm::mat4 transform = glm::translate(scaleTransform,
-                                         glm::vec3(offset_x, offset_y, 0));
+    float coor_offset_x = ( -xmin() * graph_scale_x * view_scale_x);
+    float coor_offset_y = ( -ymin() * graph_scale_y * view_scale_y);
+    glm::mat4 transform = glm::translate(glm::mat4(1.f),
+            glm::vec3(-1 + view_offset_x + coor_offset_x  , -1 + view_offset_y + coor_offset_y, 0));
+    transform = glm::scale(transform,
+            glm::vec3(graph_scale_x * view_scale_x , graph_scale_y * view_scale_y ,1));
 
     if(mMarkerType == fg::FG_NONE){
         bindBorderProgram();
