@@ -24,7 +24,7 @@ const char *gMarkerVertexShaderSrc =
 "in vec2 point;\n"
 "uniform mat4 transform;\n"
 "void main(void) {\n"
-"   gl_Position = vec4(point.xy, 0, 1);\n"
+"   gl_Position = transform * vec4(point.xy, 0, 1);\n"
 "   gl_PointSize = 13;\n"
 "}";
 
@@ -134,6 +134,7 @@ plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType
     mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
 
     mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
+    mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
 }
 
 plot_impl::~plot_impl()
@@ -203,7 +204,7 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 
-        glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+        glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
         glUniform4fv(borderColorIndex(), 1, mLineColor);
         glUniform1i(markerTypeIndex(), mMarkerType);
 
@@ -224,6 +225,11 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 GLuint plot_impl::markerTypeIndex() const
 {
     return mMarkerTypeIndex;
+}
+
+GLuint plot_impl::spriteMatIndex() const
+{
+    return mSpriteTMatIndex;
 }
 
 }
