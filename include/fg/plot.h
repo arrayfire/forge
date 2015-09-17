@@ -36,7 +36,7 @@ class Plot {
            \param[in] pDataType takes one of the values of \ref FGType that indicates
                       the integral data type of plot data
          */
-        FGAPI Plot(unsigned pNumPoints, FGType pDataType, fg::FGMarkerType=fg::FG_NONE);
+        FGAPI Plot(unsigned pNumPoints, FGType pDataType, fg::FGPlotType=fg::FG_LINE, fg::FGMarkerType=fg::FG_NONE);
 
         /**
            Copy constructor for Plot

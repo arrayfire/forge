@@ -11,6 +11,7 @@
 
 #include <common.hpp>
 #include <chart.hpp>
+#include <scatter.hpp>
 #include <memory>
 #include <map>
 
@@ -58,8 +59,18 @@ class _Plot {
         std::shared_ptr<plot_impl> plt;
 
     public:
-        _Plot(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType=fg::FG_NONE)
-            : plt(std::make_shared<plot_impl>(pNumPoints, pDataType, pMarkerType)) {}
+        _Plot(unsigned pNumPoints, fg::FGType pDataType, fg::FGPlotType pPlotType=fg::FG_LINE, fg::FGMarkerType pMarkerType=fg::FG_NONE){
+            switch(pPlotType){
+                case(fg::FG_LINE):
+                    plt = std::make_shared<plot_impl>(pNumPoints, pDataType, pMarkerType);
+                    break;
+                case(fg::FG_SCATTER):
+                    plt = std::make_shared<scatter_impl>(pNumPoints, pDataType, pMarkerType);
+                    break;
+                default:
+                    plt = std::make_shared<plot_impl>(pNumPoints, pDataType, pMarkerType);
+            };
+        }
 
         inline const std::shared_ptr<plot_impl>& impl() const {
             return plt;

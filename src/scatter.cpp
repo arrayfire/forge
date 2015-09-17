@@ -9,7 +9,6 @@
 
 #include <fg/plot.h>
 #include <plot.hpp>
-#include <scatter.hpp>
 #include <common.hpp>
 
 #include <cmath>
@@ -238,7 +237,7 @@ GLuint plot_impl::spriteMatIndex() const
 namespace fg
 {
 
-Plot::Plot(unsigned pNumPoints, fg::FGType pDataType, fg::FGPlotType pPlotType, fg::FGMarkerType pMarkerType)
+Plot::Plot(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType)
 {
     value = new internal::_Plot(pNumPoints, pDataType, pMarkerType);
 }
@@ -309,3 +308,4 @@ internal::_Plot* Plot::get() const
 }
 
 }
+
