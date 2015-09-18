@@ -54,8 +54,12 @@ int main(void){
     /* Create a plot object which creates the necessary
      * vertex buffer objects to hold the plot
      */
-    fg::Plot plt(function.size()/2, fg::FG_FLOAT);
-    plt.setColor(1.0f, 0.f, 0.f);
+    fg::Plot plt(function.size()/2, fg::FG_FLOAT);                                //create a default plot
+    //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_SCATTER, fg::POINT);   //or specify a specific plot type
+
+    //plt.setColor(fg::GREEN);                                                    //use a forge predefined color
+    plt.setColor((fg::Color) 0xABFF01FF);                                         //or any hex-valued color
+
     plt.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
     copy(plt, &function[0]);
 

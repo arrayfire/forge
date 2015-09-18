@@ -48,6 +48,7 @@ class plot_impl : public AbstractChart2D {
         plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType=fg::FG_NONE);
         ~plot_impl();
 
+        void setColor(fg::Color col);
         void setColor(float r, float g, float b);
         GLuint vbo() const;
         size_t size() const;
@@ -84,6 +85,10 @@ class _Plot {
 
         inline const std::shared_ptr<plot_impl>& impl() const {
             return plt;
+        }
+
+        inline void setColor(fg::Color col) {
+            plt->setColor(col);
         }
 
         inline void setColor(float r, float g, float b) {

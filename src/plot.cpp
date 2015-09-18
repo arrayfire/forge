@@ -144,6 +144,14 @@ plot_impl::~plot_impl()
     CheckGL("End Plot::~Plot");
 }
 
+void plot_impl::setColor(fg::Color col)
+{
+    mLineColor[0] = (((int) col >> 24 ) & 0xFF ) / 255.f;
+    mLineColor[1] = (((int) col >> 16 ) & 0xFF ) / 255.f;
+    mLineColor[2] = (((int) col >> 8  ) & 0xFF ) / 255.f;
+    mLineColor[3] = (((int) col       ) & 0xFF ) / 255.f;
+}
+
 void plot_impl::setColor(float r, float g, float b)
 {
     mLineColor[0] = clampTo01(r);
@@ -273,6 +281,11 @@ Plot::Plot(const Plot& other)
 Plot::~Plot()
 {
     delete value;
+}
+
+void Plot::setColor(fg::Color col)
+{
+    value->setColor(col);
 }
 
 void Plot::setColor(float r, float g, float b)

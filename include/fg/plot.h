@@ -53,6 +53,13 @@ class Plot {
         /**
            Set the color of line graph(plot)
 
+           \param[in] col takes values of fg::Color to define plot color
+        */
+        FGAPI void setColor(fg::Color col);
+
+        /**
+           Set the color of line graph(plot)
+
            \param[in] pRed is Red component in range [0, 1]
            \param[in] pGreen is Green component in range [0, 1]
            \param[in] pBlue is Blue component in range [0, 1]
