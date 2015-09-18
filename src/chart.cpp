@@ -325,7 +325,6 @@ float AbstractChart2D::ymin() const { return mYMin; }
 
 void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
-    //TODO: fix offsets 
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
     float offset_x = (2.0f * (leftMargin()+tickSize()) + (w - pVPW)) / pVPW;
