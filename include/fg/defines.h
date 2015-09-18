@@ -116,13 +116,13 @@ enum ColorMap {
 
 enum Color {
     //RED     = 0xFF0000FF, //TODO figure out naming/usage
-    GREEN   = 0x00FF00FF,
-    BLUE    = 0x0000FFFF,
-    YELLOW  = 0xFFFF00FF,
-    CYAN    = 0x00FFFFFF,
-    MAGENTA = 0xFF00FFFF,
-    WHITE   = 0xFFFFFFFF,
-    BLACK   = 0x000000FF
+    FG_GREEN   = 0x00FF00FF,
+    FG_BLUE    = 0x0000FFFF,
+    FG_YELLOW  = 0xFFFF00FF,
+    FG_CYAN    = 0x00FFFFFF,
+    FG_MAGENTA = 0xFF00FFFF,
+    FG_WHITE   = 0xFFFFFFFF,
+    FG_BLACK   = 0x000000FF
 };
 
 enum FGType {
@@ -144,7 +144,7 @@ enum FGMarkerType {
     FG_CIRCLE       = 2,
     FG_SQUARE       = 3,
     FG_TRIANGLE     = 4,
-    FG_X            = 5,
+    FG_CROSS        = 5,
     FG_PLUS         = 6,
     FG_STAR         = 7
 };

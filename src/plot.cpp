@@ -30,45 +30,63 @@ const char *gMarkerVertexShaderSrc =
 
 
 const char *gMarkerSpriteFragmentShaderSrc =
-"#version 330\n"
+"#version 400\n"
 "uniform int marker_type;\n"
 "uniform vec4 line_color;\n"
 "out vec4 outputColor;\n"
-"void main(void) {\n"
-"   float dist = sqrt( (gl_PointCoord.x - 0.5) * (gl_PointCoord.x-0.5) + (gl_PointCoord.y-0.5) * (gl_PointCoord.y-0.5) );\n"
-"   bool in_bounds;\n"
-"   switch(marker_type) {\n"
-"       case 1:\n"
-"           in_bounds = dist < 0.3;\n"
-"           break;\n"
-"       case 2:\n"
-"           in_bounds = ( (dist > 0.3) && (dist<0.5) );\n"
-"           break;\n"
-"       case 3:\n"
-"           in_bounds = ((gl_PointCoord.x < 0.15) || (gl_PointCoord.x > 0.85)) ||\n"
-"                       ((gl_PointCoord.y < 0.15) || (gl_PointCoord.y > 0.85));\n"
-"           break;\n"
-"       case 4:\n"
-"           in_bounds = (2*(gl_PointCoord.x - 0.25) - (gl_PointCoord.y + 0.5) < 0) && (2*(gl_PointCoord.x - 0.25) + (gl_PointCoord.y + 0.5) > 1);\n"
-"           break;\n"
-"       case 5:\n"
-"           in_bounds = abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.13  ||\n"
+"subroutine bool bounds_t(float);\n"
+"subroutine uniform bounds_t inBounds;\n"
+"\n"
+"subroutine(bounds_t)\n"
+"bool allBounds(float dist){\n"
+"   return true;\n"
+"}\n"
+"\n"
+"\n"
+"subroutine(bounds_t)\n"
+"bool pointBounds(float dist){\n"
+"   return dist < 0.3;\n"
+"}\n"
+"\n"
+"subroutine(bounds_t)\n"
+"bool circleBounds(float dist){\n"
+"   return ( (dist > 0.3) && (dist<0.5) );\n"
+"}\n"
+"\n"
+"subroutine(bounds_t)\n"
+"bool squareBounds(float dist){\n"
+"   return ((gl_PointCoord.x < 0.15) || (gl_PointCoord.x > 0.85)) ||\n"
+"          ((gl_PointCoord.y < 0.15) || (gl_PointCoord.y > 0.85));\n"
+"}\n"
+"\n"
+"subroutine(bounds_t)\n"
+"bool triangleBounds(float dist){\n"
+"   return (2*(gl_PointCoord.x - 0.25) - (gl_PointCoord.y + 0.5) < 0) && (2*(gl_PointCoord.x - 0.25) + (gl_PointCoord.y + 0.5) > 1);\n"
+"}\n"
+"\n"
+"subroutine(bounds_t)\n"
+"bool crossBounds(float dist){\n"
+"   return  abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.13  ||\n"
 "           abs((gl_PointCoord.x - 0.5) - (gl_PointCoord.y - 0.5) ) < 0.13  ;\n"
-"           break;\n"
-"       case 6:\n"
-"           in_bounds = abs((gl_PointCoord.x - 0.5)) < 0.07 ||\n"
+"}\n"
+"\n"
+"subroutine(bounds_t)\n"
+"bool plusBounds(float dist){\n"
+"    return abs((gl_PointCoord.x - 0.5)) < 0.07 ||\n"
 "           abs((gl_PointCoord.y - 0.5)) < 0.07;\n"
-"           break;\n"
-"       case 7:\n"
-"           in_bounds = abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.07 ||\n"
+"}\n"
+"\n"
+"subroutine(bounds_t)\n"
+"bool starBounds(float dist){\n"
+"    return abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.07 ||\n"
 "           abs((gl_PointCoord.x - 0.5) - (gl_PointCoord.y - 0.5) ) < 0.07 ||\n"
 "           abs((gl_PointCoord.x - 0.5)) < 0.07 ||\n"
 "           abs((gl_PointCoord.y - 0.5)) < 0.07;\n"
-"           break;\n"
-"       default:\n"
-"           in_bounds = true;\n"
-"   }\n"
-"   if(!in_bounds)\n"
+"}\n"
+"\n"
+"void main(void) {\n"
+"   float dist = sqrt( (gl_PointCoord.x - 0.5) * (gl_PointCoord.x-0.5) + (gl_PointCoord.y-0.5) * (gl_PointCoord.y-0.5) );\n"
+"   if(!inBounds(dist))\n"
 "       discard;\n"
 "   else\n"
 "       outputColor = line_color;\n"
@@ -133,8 +151,34 @@ plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType
     mMarkerType = pMarkerType;
     mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
 
-    mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
     mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
+
+    switch(mMarkerType){
+        case fg::FG_NONE:
+            mMarkerRoutineIndex = glGetSubroutineIndex(mMarkerProgram, GL_FRAGMENT_SHADER, "allBounds");
+            break;
+        case fg::FG_POINT:
+            mMarkerRoutineIndex = glGetSubroutineIndex(mMarkerProgram, GL_FRAGMENT_SHADER, "pointBounds");
+            break;
+        case fg::FG_CIRCLE:
+            mMarkerRoutineIndex = glGetSubroutineIndex(mMarkerProgram, GL_FRAGMENT_SHADER, "circleBounds");
+            break;
+        case fg::FG_SQUARE:
+            mMarkerRoutineIndex = glGetSubroutineIndex(mMarkerProgram, GL_FRAGMENT_SHADER, "squareBounds");
+            break;
+        case fg::FG_TRIANGLE:
+            mMarkerRoutineIndex = glGetSubroutineIndex(mMarkerProgram, GL_FRAGMENT_SHADER, "triangleBounds");
+            break;
+        case fg::FG_CROSS:
+            mMarkerRoutineIndex = glGetSubroutineIndex(mMarkerProgram, GL_FRAGMENT_SHADER, "crossBounds");
+            break;
+        case fg::FG_PLUS:
+            mMarkerRoutineIndex = glGetSubroutineIndex(mMarkerProgram, GL_FRAGMENT_SHADER, "plusBounds");
+            break;
+        case fg::FG_STAR:
+            mMarkerRoutineIndex = glGetSubroutineIndex(mMarkerProgram, GL_FRAGMENT_SHADER, "starBounds");
+            break;
+    };
 }
 
 plot_impl::~plot_impl()
@@ -219,13 +263,13 @@ void plot_impl::renderGraph(int pWindowId, glm::mat4 transform){
     unbindResources();
     unbindBorderProgram();
 
-    if(mMarkerType != fg::FG_NONE){
+    if (mMarkerType != fg::FG_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 
         glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
         glUniform4fv(borderColorIndex(), 1, mLineColor);
-        glUniform1i(markerTypeIndex(), mMarkerType);
+        glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, markerRoutineIndex());
 
         bindResources(pWindowId);
         glDrawArrays(GL_POINTS, 0, mNumPoints);
@@ -235,9 +279,9 @@ void plot_impl::renderGraph(int pWindowId, glm::mat4 transform){
     }
 }
 
-GLuint plot_impl::markerTypeIndex() const
+GLuint* plot_impl::markerRoutineIndex()
 {
-    return mMarkerTypeIndex;
+    return &mMarkerRoutineIndex;
 }
 
 GLuint plot_impl::spriteMatIndex() const
@@ -253,7 +297,7 @@ void scatter_impl::renderGraph(int pWindowId, glm::mat4 transform){
 
         glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
         glUniform4fv(borderColorIndex(), 1, mLineColor);
-        glUniform1i(markerTypeIndex(), mMarkerType);
+        glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, markerRoutineIndex());
 
         bindResources(pWindowId);
         glDrawArrays(GL_POINTS, 0, mNumPoints);

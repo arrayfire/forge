@@ -31,7 +31,7 @@ class plot_impl : public AbstractChart2D {
         GLuint    mMarkerProgram;
         /* shared variable index locations */
         GLuint    mPointIndex;
-        GLuint    mMarkerTypeIndex;
+        GLuint    mMarkerRoutineIndex;
         GLuint    mSpriteTMatIndex;
 
         std::map<int, GLuint> mVAOMap;
@@ -40,7 +40,7 @@ class plot_impl : public AbstractChart2D {
          * for rendering resources */
         void bindResources(int pWindowId);
         void unbindResources() const;
-        GLuint markerTypeIndex() const;
+        GLuint* markerRoutineIndex();
         GLuint spriteMatIndex() const;
         virtual void renderGraph(int pWindowId, glm::mat4 transform);
 

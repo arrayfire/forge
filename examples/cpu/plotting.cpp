@@ -57,7 +57,7 @@ int main(void){
     fg::Plot plt(function.size()/2, fg::FG_FLOAT);                                //create a default plot
     //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_SCATTER, fg::POINT);   //or specify a specific plot type
 
-    //plt.setColor(fg::GREEN);                                                    //use a forge predefined color
+    //plt.setColor(fg::FG_GREEN);                                                    //use a forge predefined color
     plt.setColor((fg::Color) 0xABFF01FF);                                         //or any hex-valued color
 
     plt.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
