@@ -11,15 +11,15 @@
 
 #include <common.hpp>
 #include <chart.hpp>
-#include <scatter.hpp>
 #include <memory>
 #include <map>
+#include <glm/glm.hpp>
 
 namespace internal
 {
 
 class plot_impl : public AbstractChart2D {
-    private:
+    protected:
         /* plot points characteristics */
         GLuint    mNumPoints;
         GLenum    mDataType;
@@ -42,6 +42,7 @@ class plot_impl : public AbstractChart2D {
         void unbindResources() const;
         GLuint markerTypeIndex() const;
         GLuint spriteMatIndex() const;
+        virtual void renderGraph(int pWindowId, glm::mat4 transform);
 
     public:
         plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType=fg::FG_NONE);
@@ -52,6 +53,15 @@ class plot_impl : public AbstractChart2D {
         size_t size() const;
 
         void render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
+};
+
+class scatter_impl : public plot_impl {
+   private:
+        void renderGraph(int pWindowId, glm::mat4 transform);
+
+   public:
+       scatter_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType=fg::FG_NONE) : plot_impl(pNumPoints, pDataType, pMarkerType)   {}
+       ~scatter_impl() {}
 };
 
 class _Plot {

@@ -9,7 +9,6 @@
 
 #include <fg/plot.h>
 #include <plot.hpp>
-#include <scatter.hpp>
 #include <common.hpp>
 
 #include <cmath>
@@ -26,7 +25,7 @@ const char *gMarkerVertexShaderSrc =
 "uniform mat4 transform;\n"
 "void main(void) {\n"
 "   gl_Position = transform * vec4(point.xy, 0, 1);\n"
-"   gl_PointSize = 13;\n"
+"   gl_PointSize = 10;\n"
 "}";
 
 
@@ -40,7 +39,7 @@ const char *gMarkerSpriteFragmentShaderSrc =
 "   bool in_bounds;\n"
 "   switch(marker_type) {\n"
 "       case 1:\n"
-"           in_bounds = dist < 0.25;\n"
+"           in_bounds = dist < 0.3;\n"
 "           break;\n"
 "       case 2:\n"
 "           in_bounds = ( (dist > 0.3) && (dist<0.5) );\n"
@@ -53,18 +52,18 @@ const char *gMarkerSpriteFragmentShaderSrc =
 "           in_bounds = (2*(gl_PointCoord.x - 0.25) - (gl_PointCoord.y + 0.5) < 0) && (2*(gl_PointCoord.x - 0.25) + (gl_PointCoord.y + 0.5) > 1);\n"
 "           break;\n"
 "       case 5:\n"
-"           in_bounds = abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.13 - 0.2*dist ||\n"
-"           abs((gl_PointCoord.x - 0.5) - (gl_PointCoord.y - 0.5) ) < 0.13 - 0.2*dist;\n"
+"           in_bounds = abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.13  ||\n"
+"           abs((gl_PointCoord.x - 0.5) - (gl_PointCoord.y - 0.5) ) < 0.13  ;\n"
 "           break;\n"
 "       case 6:\n"
 "           in_bounds = abs((gl_PointCoord.x - 0.5)) < 0.07 ||\n"
 "           abs((gl_PointCoord.y - 0.5)) < 0.07;\n"
 "           break;\n"
 "       case 7:\n"
-"           in_bounds = abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.13 - 0.4*dist ||\n"
-"           abs((gl_PointCoord.x - 0.5) - (gl_PointCoord.y - 0.5) ) < 0.13 - 0.4*dist ||\n"
-"           abs((gl_PointCoord.x - 0.5)) < 0.1 - 0.1*dist ||\n"
-"           abs((gl_PointCoord.y - 0.5)) < 0.1 - 0.1*dist;\n"
+"           in_bounds = abs((gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) ) < 0.07 ||\n"
+"           abs((gl_PointCoord.x - 0.5) - (gl_PointCoord.y - 0.5) ) < 0.07 ||\n"
+"           abs((gl_PointCoord.x - 0.5)) < 0.07 ||\n"
+"           abs((gl_PointCoord.y - 0.5)) < 0.07;\n"
 "           break;\n"
 "       default:\n"
 "           in_bounds = true;\n"
@@ -193,15 +192,26 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     transform = glm::scale(transform,
             glm::vec3(graph_scale_x * view_scale_x , graph_scale_y * view_scale_y ,1));
 
-    if(mMarkerType == fg::FG_NONE){
-        bindBorderProgram();
-        glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform4fv(borderColorIndex(), 1, mLineColor);
-        bindResources(pWindowId);
-        glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
-        unbindResources();
-        unbindBorderProgram();
-    }else{
+    renderGraph(pWindowId, transform);
+
+    /* Stop clipping and reset viewport to window dimensions */
+    glDisable(GL_SCISSOR_TEST);
+    /* render graph border and axes */
+    renderChart(pWindowId, pX, pY, pVPW, pVPH);
+
+    CheckGL("End Plot::render");
+}
+
+void plot_impl::renderGraph(int pWindowId, glm::mat4 transform){
+    bindBorderProgram();
+    glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+    glUniform4fv(borderColorIndex(), 1, mLineColor);
+    bindResources(pWindowId);
+    glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
+    unbindResources();
+    unbindBorderProgram();
+
+    if(mMarkerType != fg::FG_NONE){
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 
@@ -215,12 +225,6 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
         glUseProgram(0);
         glDisable(GL_PROGRAM_POINT_SIZE);
     }
-    /* Stop clipping and reset viewport to window dimensions */
-    glDisable(GL_SCISSOR_TEST);
-    /* render graph border and axes */
-    renderChart(pWindowId, pX, pY, pVPW, pVPH);
-
-    CheckGL("End Plot::render");
 }
 
 GLuint plot_impl::markerTypeIndex() const
@@ -233,6 +237,24 @@ GLuint plot_impl::spriteMatIndex() const
     return mSpriteTMatIndex;
 }
 
+
+void scatter_impl::renderGraph(int pWindowId, glm::mat4 transform){
+    if(mMarkerType != fg::FG_NONE){
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        glUseProgram(mMarkerProgram);
+
+        glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+        glUniform4fv(borderColorIndex(), 1, mLineColor);
+        glUniform1i(markerTypeIndex(), mMarkerType);
+
+        bindResources(pWindowId);
+        glDrawArrays(GL_POINTS, 0, mNumPoints);
+        unbindResources();
+        glUseProgram(0);
+        glDisable(GL_PROGRAM_POINT_SIZE);
+    }
+}
+
 }
 
 namespace fg
@@ -240,7 +262,7 @@ namespace fg
 
 Plot::Plot(unsigned pNumPoints, fg::FGType pDataType, fg::FGPlotType pPlotType, fg::FGMarkerType pMarkerType)
 {
-    value = new internal::_Plot(pNumPoints, pDataType, pMarkerType);
+    value = new internal::_Plot(pNumPoints, pDataType, pPlotType, pMarkerType);
 }
 
 Plot::Plot(const Plot& other)
