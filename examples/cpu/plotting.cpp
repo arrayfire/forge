@@ -55,15 +55,8 @@ int main(void){
      * vertex buffer objects to hold the plot
      */
     fg::Plot plt(function.size()/2, fg::FG_FLOAT);
-    //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_POINT   );
-    //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_CIRCLE  );
-    //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_SQUARE  );
-    //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_TRIANGLE);
-    //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_X       );
-    //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_PLUS    );
-    //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_STAR    );
     plt.setColor(1.0f, 0.f, 0.f);
-    plt.setAxesLimits(FRANGE_END, FRANGE_START, 1.0f, 0.f);
+    plt.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
     copy(plt, &function[0]);
 
     /* copy your data into the pixel buffer object exposed by
