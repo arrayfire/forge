@@ -298,6 +298,8 @@ void window_impl::draw(int pColId, int pRowId,
         mFont->render(mID, pos, RED, pTitle, 16);
     }
 
+    mWindow->swapBuffers();
+    mWindow->pollEvents();
     CheckGL("End show(column, row)");
 }
 
