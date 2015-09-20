@@ -382,7 +382,7 @@ void font_impl::render(int pWindowId,
     glUseProgram(0);
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);//TODO: verify correct fix?
     CheckGL("After Font::render ");
 }
 
