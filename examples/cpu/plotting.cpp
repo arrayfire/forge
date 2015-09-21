@@ -14,8 +14,10 @@
 #include <vector>
 #include <iostream>
 
-const unsigned DIMX = 512;
-const unsigned DIMY = 512;
+const unsigned DIMX = 800;
+const unsigned DIMY = 800;
+const unsigned WIN_ROWS = 2;
+const unsigned WIN_COLS = 2;
 
 const float FRANGE_START = 0.f;
 const float FRANGE_END = 2.f * 3.1415926f;
@@ -51,17 +53,34 @@ int main(void){
 #endif
     wnd.setFont(&fnt);
 
-    /* Create a plot object which creates the necessary
-     * vertex buffer objects to hold the plot
+    /*
+     * Split the window into grid regions
      */
-    fg::Plot plt(function.size()/2, fg::FG_FLOAT);                                //create a default plot
-    //fg::Plot plt(function.size()/2, fg::FG_FLOAT, fg::FG_SCATTER, fg::POINT);   //or specify a specific plot type
+    wnd.grid(WIN_ROWS, WIN_COLS);
 
-    //plt.setColor(fg::FG_GREEN);                                                    //use a forge predefined color
-    plt.setColor((fg::Color) 0xABFF01FF);                                         //or any hex-valued color
+    /* Create several plot objects which creates the necessary
+     * vertex buffer objects to hold the different plot types
+     */
+    fg::Plot plt0(function.size()/2, fg::FG_FLOAT);                              //create a default plot
+    fg::Plot plt1(function.size()/2, fg::FG_FLOAT, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
+    fg::Plot plt2(function.size()/2, fg::FG_FLOAT, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
+    fg::Plot plt3(function.size()/2, fg::FG_FLOAT, fg::FG_SCATTER, fg::FG_POINT);
 
-    plt.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-    copy(plt, &function[0]);
+    /*
+     * Set plot colors
+     */
+    plt0.setColor(fg::FG_YELLOW);
+    plt1.setColor(fg::FG_BLUE);
+    plt2.setColor(fg::FG_WHITE);                                                  //use a forge predefined color
+    plt3.setColor((fg::Color) 0xABFF01FF);                                        //or any hex-valued color
+
+    /*
+     * Set draw limits for plots
+     */
+    plt0.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
+    plt1.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
+    plt2.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
+    plt3.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
 
     /* copy your data into the pixel buffer object exposed by
      * fg::Plot class and then proceed to rendering.
@@ -69,9 +88,20 @@ int main(void){
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
+    copy(plt0, &function[0]);
+    copy(plt1, &function[0]);
+    copy(plt2, &function[0]);
+    copy(plt3, &function[0]);
 
     do {
-        wnd.draw(plt);
+        wnd.draw(0, 0, plt0,  NULL                );
+        wnd.draw(0, 1, plt1, "sinf_line_blue"     );
+        wnd.draw(1, 1, plt2, "sinf_line_triangle" );
+        wnd.draw(1, 0, plt3, "sinf_scatter_point" );
+        /*
+         * draw window and poll for events last
+         */
+        wnd.draw();
     } while(!wnd.close());
 
     return 0;
