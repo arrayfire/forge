@@ -1,17 +1,8 @@
-/*******************************************************
- * Copyright (c) 2015-2019, ArrayFire
- * All rights reserved.
- *
- * This file is distributed under 3-clause BSD license.
- * The complete license agreement can be obtained at:
- * http://arrayfire.com/licenses/BSD-3-Clause
- ********************************************************/
-
 #include <forge.h>
-#include <CPUCopy.hpp>
-#include <complex>
-#include <cmath>
-#include <vector>
+#include <cuda_runtime.h>
+#include <cuComplex.h>
+#include <CUDACopy.hpp>
+#include <cstdio>
 #include <iostream>
 
 const unsigned DIMX = 1000;
@@ -19,21 +10,16 @@ const unsigned DIMY = 800;
 const unsigned WIN_ROWS = 2;
 const unsigned WIN_COLS = 2;
 
-const float FRANGE_START = 0.f;
-const float FRANGE_END = 2.f * 3.1415926f;
+const float    dx = 0.1;
+const float    FRANGE_START = 0.f;
+const float    FRANGE_END = 2 * 3.141592f;
+const size_t   SIZE = ( FRANGE_END - FRANGE_START ) / dx;
 
-using namespace std;
-void map_range_to_vec_vbo(float range_start, float range_end, float dx, std::vector<float> &vec, float (*map) (float)){
-    if(range_start > range_end && dx > 0) return;
-    for(float i=range_start; i < range_end; i+=dx){
-        vec.push_back(i);
-        vec.push_back((*map)(i));
-    }
-}
+void kernel(float* dev_out);
 
-int main(void){
-    std::vector<float> function;
-    map_range_to_vec_vbo(FRANGE_START, FRANGE_END, 0.1f, function, &sinf);
+int main(void)
+{
+    float *dev_out;
 
     /*
      * First Forge call should be a window creation call
@@ -42,6 +28,7 @@ int main(void){
      */
     fg::Window wnd(DIMX, DIMY, "Plotting Demo");
     wnd.makeCurrent();
+    wnd.grid(1,2);
     /* create an font object and load necessary font
      * and later pass it on to window object so that
      * it can be used for rendering text */
@@ -61,10 +48,10 @@ int main(void){
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt0(function.size()/2, fg::FG_FLOAT);                              //create a default plot
-    fg::Plot plt1(function.size()/2, fg::FG_FLOAT, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
-    fg::Plot plt2(function.size()/2, fg::FG_FLOAT, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
-    fg::Plot plt3(function.size()/2, fg::FG_FLOAT, fg::FG_SCATTER, fg::FG_POINT);
+    fg::Plot plt0( SIZE, fg::FG_FLOAT);                              //create a default plot
+    fg::Plot plt1( SIZE, fg::FG_FLOAT, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
+    fg::Plot plt2( SIZE, fg::FG_FLOAT, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
+    fg::Plot plt3( SIZE, fg::FG_FLOAT, fg::FG_SCATTER, fg::FG_POINT);
 
     /*
      * Set plot colors
@@ -82,16 +69,18 @@ int main(void){
     plt2.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
     plt3.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
 
-    /* copy your data into the pixel buffer object exposed by
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, sizeof(float) * SIZE * 2));
+    kernel(dev_out);
+    /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copy(plt0, &function[0]);
-    copy(plt1, &function[0]);
-    copy(plt2, &function[0]);
-    copy(plt3, &function[0]);
+    fg::copy(plt0, dev_out);
+    fg::copy(plt1, dev_out);
+    fg::copy(plt2, dev_out);
+    fg::copy(plt3, dev_out);
 
     do {
         wnd.draw(0, 0, plt0,  NULL                );
@@ -102,6 +91,33 @@ int main(void){
         wnd.draw();
     } while(!wnd.close());
 
+    CUDA_ERROR_CHECK(cudaFree(dev_out));
     return 0;
 }
 
+
+__global__
+void simple_sinf(float* out)
+{
+    int x = blockIdx.x * blockDim.x  + threadIdx.x;
+
+    if (x<SIZE) {
+        // now calculate the value at that position
+
+        out[2*x] = x * dx;
+        out[2*x+1] = sin(x*dx);
+    }
+}
+
+inline int divup(int a, int b)
+{
+    return (a+b-1)/b;
+}
+
+void kernel(float* dev_out)
+{
+    static const dim3 threads(SIZE);
+    dim3 blocks(1);
+
+    simple_sinf<<< blocks, threads >>>(dev_out);
+}
