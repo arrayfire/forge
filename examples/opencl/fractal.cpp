@@ -17,6 +17,7 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
+#include "cl_helpers.h"
 
 using namespace cl;
 using namespace std;
@@ -24,15 +25,6 @@ using namespace std;
 const unsigned DIMX = 512;
 const unsigned DIMY = 512;
 const unsigned IMG_SIZE = DIMX * DIMY * 4;
-static const std::string NVIDIA_PLATFORM = "NVIDIA CUDA";
-static const std::string AMD_PLATFORM = "AMD Accelerated Parallel Processing";
-static const std::string INTEL_PLATFORM = "Intel(R) OpenCL";
-
-#if defined (OS_MAC)
-static const std::string CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
-#else
-static const std::string CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
-#endif
 
 static const std::string fractal_ocl_kernel =
 "float magnitude(float2 a)\n"
@@ -84,72 +76,6 @@ static const std::string fractal_ocl_kernel =
 "        out[offset*4 + 3] = 255;\n"
 "    }\n"
 "}\n";
-
-Platform getPlatform(std::string pName, cl_int &error)
-{
-    typedef std::vector<Platform>::iterator PlatformIter;
-
-    Platform ret_val;
-    error = 0;
-    try {
-        // Get available platforms
-        std::vector<Platform> platforms;
-        Platform::get(&platforms);
-        int found = -1;
-        for(PlatformIter it=platforms.begin(); it<platforms.end(); ++it) {
-            std::string temp = it->getInfo<CL_PLATFORM_NAME>();
-            if (temp==pName) {
-                found = it - platforms.begin();
-                std::cout<<"Found platform: "<<temp<<std::endl;
-                break;
-            }
-        }
-        if (found==-1) {
-            // Going towards + numbers to avoid conflict with OpenCl error codes
-            error = +1; // requested platform not found
-        } else {
-            ret_val = platforms[found];
-        }
-    } catch(Error err) {
-        std::cout << err.what() << "(" << err.err() << ")" << std::endl;
-        error = err.err();
-    }
-    return ret_val;
-}
-
-Platform getPlatform()
-{
-    cl_int errCode;
-    Platform plat = getPlatform(NVIDIA_PLATFORM, errCode);
-    if (errCode != CL_SUCCESS) {
-        Platform plat = getPlatform(AMD_PLATFORM, errCode);
-        if (errCode != CL_SUCCESS) {
-            Platform plat = getPlatform(INTEL_PLATFORM, errCode);
-            if (errCode != CL_SUCCESS) {
-                exit(255);
-            } else
-                return plat;
-        } else
-            return plat;
-    }
-    return plat;
-}
-
-bool checkExtnAvailability(const Device &pDevice, std::string pName)
-{
-    bool ret_val = false;
-    // find the extension required
-    std::string exts = pDevice.getInfo<CL_DEVICE_EXTENSIONS>();
-    std::stringstream ss(exts);
-    std::string item;
-    while (std::getline(ss,item,' ')) {
-        if (item==pName) {
-            ret_val = true;
-            break;
-        }
-    }
-    return ret_val;
-}
 
 inline int divup(int a, int b)
 {
