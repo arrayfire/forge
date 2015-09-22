@@ -102,16 +102,9 @@ void simple_sinf(float* out)
     int x = blockIdx.x * blockDim.x  + threadIdx.x;
 
     if (x<SIZE) {
-        // now calculate the value at that position
-
-        out[2*x] = x * dx;
-        out[2*x+1] = sin(x*dx);
+        out[ 2 * x ] = x * dx;
+        out[ 2 * x + 1 ] = sin(x*dx);
     }
-}
-
-inline int divup(int a, int b)
-{
-    return (a+b-1)/b;
 }
 
 void kernel(float* dev_out)

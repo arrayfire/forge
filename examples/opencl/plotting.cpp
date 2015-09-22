@@ -17,6 +17,7 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
+#include "cl_helpers.h"
 
 using namespace cl;
 using namespace std;
@@ -31,96 +32,15 @@ const float    FRANGE_START = 0.f;
 const float    FRANGE_END = 2 * 3.141592f;
 const unsigned SIZE = ( FRANGE_END - FRANGE_START ) / dx;
 
-static const std::string NVIDIA_PLATFORM = "NVIDIA CUDA";
-static const std::string AMD_PLATFORM = "AMD Accelerated Parallel Processing";
-static const std::string INTEL_PLATFORM = "Intel(R) OpenCL";
-
-#if defined (OS_MAC)
-static const std::string CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
-#else
-static const std::string CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
-#endif
-
-static const std::string fractal_ocl_kernel =
-"kernel\n"
-"void julia(global float* out, float dx, unsigned SIZE)\n"
+static const std::string sinf_ocl_kernel =
+"kernel void sinf(global float* out, const float dx, const unsigned SIZE)\n"
 "{\n"
-"    int x = get_group_id(0) * get_num_groups(0) + get_local_id(0);\n"
-"\n"
-"    out[2 * x] = x * dx;\n"
-"    out[2 * x + 1] = cos(x*dx);\n"
+"    unsigned x = get_global_id(0);\n"
+"    if(x < SIZE){\n"
+"        out[2 * x] = x * dx ;\n"
+"        out[2 * x + 1] = sin(x*dx);\n"
+"    }\n"
 "}\n";
-
-Platform getPlatform(std::string pName, cl_int &error)
-{
-    typedef std::vector<Platform>::iterator PlatformIter;
-
-    Platform ret_val;
-    error = 0;
-    try {
-        // Get available platforms
-        std::vector<Platform> platforms;
-        Platform::get(&platforms);
-        int found = -1;
-        for(PlatformIter it=platforms.begin(); it<platforms.end(); ++it) {
-            std::string temp = it->getInfo<CL_PLATFORM_NAME>();
-            if (temp==pName) {
-                found = it - platforms.begin();
-                std::cout<<"Found platform: "<<temp<<std::endl;
-                break;
-            }
-        }
-        if (found==-1) {
-            // Going towards + numbers to avoid conflict with OpenCl error codes
-            error = +1; // requested platform not found
-        } else {
-            ret_val = platforms[found];
-        }
-    } catch(Error err) {
-        std::cout << err.what() << "(" << err.err() << ")" << std::endl;
-        error = err.err();
-    }
-    return ret_val;
-}
-
-Platform getPlatform()
-{
-    cl_int errCode;
-    Platform plat = getPlatform(NVIDIA_PLATFORM, errCode);
-    if (errCode != CL_SUCCESS) {
-        Platform plat = getPlatform(AMD_PLATFORM, errCode);
-        if (errCode != CL_SUCCESS) {
-            Platform plat = getPlatform(INTEL_PLATFORM, errCode);
-            if (errCode != CL_SUCCESS) {
-                exit(255);
-            } else
-                return plat;
-        } else
-            return plat;
-    }
-    return plat;
-}
-
-bool checkExtnAvailability(const Device &pDevice, std::string pName)
-{
-    bool ret_val = false;
-    // find the extension required
-    std::string exts = pDevice.getInfo<CL_DEVICE_EXTENSIONS>();
-    std::stringstream ss(exts);
-    std::string item;
-    while (std::getline(ss,item,' ')) {
-        if (item==pName) {
-            ret_val = true;
-            break;
-        }
-    }
-    return ret_val;
-}
-
-inline int divup(int a, int b)
-{
-    return (a+b-1)/b;
-}
 
 void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
 {
@@ -130,20 +50,16 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
 
     std::call_once(compileFlag,
         [queue]() {
-        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), fractal_ocl_kernel, true);
-            kern = cl::Kernel(prog, "julia");
+        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), sinf_ocl_kernel, true);
+            kern = cl::Kernel(prog, "sinf");
         });
 
-    //auto juliaOp = cl::make_kernel<Buffer, unsigned, unsigned>(kern);
-
-    static const NDRange local(1, 1);
-    NDRange global(SIZE * 2);
+    static const NDRange global(SIZE * 2);
 
     kern.setArg(0, devOut);
     kern.setArg(1, dx);
     kern.setArg(2, SIZE);
-    queue.enqueueNDRangeKernel(kern, cl::NullRange, global, local);
-
+    queue.enqueueNDRangeKernel(kern, cl::NullRange, global);
 }
 
 int main(void)
@@ -175,7 +91,7 @@ int main(void)
         /* Create several plot objects which creates the necessary
          * vertex buffer objects to hold the different plot types
          */
-        fg::Plot plt0(SIZE, fg::FG_FLOAT);                              //create a default plot
+        fg::Plot plt0(SIZE, fg::FG_FLOAT);                                 //create a default plot
         fg::Plot plt1(SIZE, fg::FG_FLOAT, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
         fg::Plot plt2(SIZE, fg::FG_FLOAT, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
         fg::Plot plt3(SIZE, fg::FG_FLOAT, fg::FG_SCATTER, fg::FG_POINT);
@@ -185,8 +101,8 @@ int main(void)
          */
         plt0.setColor(fg::FG_YELLOW);
         plt1.setColor(fg::FG_BLUE);
-        plt2.setColor(fg::FG_WHITE);                                                  //use a forge predefined color
-        plt3.setColor((fg::Color) 0xABFF01FF);                                        //or any hex-valued color
+        plt2.setColor(fg::FG_WHITE);                                        //use a forge predefined color
+        plt3.setColor((fg::Color) 0xABFF01FF);                              //or any hex-valued color
 
         /*
          * Set draw limits for plots
@@ -235,15 +151,15 @@ int main(void)
         Context context(device, cps);
         CommandQueue queue(context, device);
 
-        /* copy your data into the pixel buffer object exposed by
-         * fg::Image class and then proceed to rendering.
+        cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * SIZE * 2);
+        kernel(devOut, queue);
+
+        /* copy your data into the vertex buffer object exposed by
+         * fg::Plot class and then proceed to rendering.
          * To help the users with copying the data from compute
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        cl::Buffer devOut(context, CL_MEM_READ_WRITE, SIZE * 2);
-
-        kernel(devOut, queue);
         fg::copy(plt0, devOut, queue);
         fg::copy(plt1, devOut, queue);
         fg::copy(plt2, devOut, queue);
@@ -262,6 +178,5 @@ int main(void)
     } catch (cl::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     }
-
     return 0;
 }

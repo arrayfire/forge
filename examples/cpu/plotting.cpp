@@ -18,10 +18,6 @@ const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 const unsigned WIN_ROWS = 2;
 const unsigned WIN_COLS = 2;
-const unsigned DIMX = 800;
-const unsigned DIMY = 800;
-const unsigned WIN_ROWS = 2;
-const unsigned WIN_COLS = 2;
 
 const float FRANGE_START = 0.f;
 const float FRANGE_END = 2.f * 3.1415926f;
