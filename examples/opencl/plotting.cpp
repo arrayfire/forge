@@ -22,65 +22,25 @@
 using namespace cl;
 using namespace std;
 
-const unsigned DIMX = 512;
-const unsigned DIMY = 512;
-const unsigned IMG_SIZE = DIMX * DIMY * 4;
+const unsigned DIMX = 1000;
+const unsigned DIMY = 800;
+const unsigned WIN_ROWS = 2;
+const unsigned WIN_COLS = 2;
 
-static const std::string fractal_ocl_kernel =
-"float magnitude(float2 a)\n"
+const float    dx = 0.1;
+const float    FRANGE_START = 0.f;
+const float    FRANGE_END = 2 * 3.141592f;
+const unsigned SIZE = ( FRANGE_END - FRANGE_START ) / dx;
+
+static const std::string sinf_ocl_kernel =
+"kernel void sinf(global float* out, const float dx, const unsigned SIZE)\n"
 "{\n"
-"    return sqrt(a.s0*a.s0+a.s1*a.s1);\n"
-"}\n"
-"\n"
-"float2 mul(float2 a, float2 b)\n"
-"{\n"
-"    return (float2)(a.s0*b.s0-a.s1*b.s1, a.s1*b.s0+a.s0*b.s1);\n"
-"}\n"
-"\n"
-"float2 add(float2 a, float2 b)\n"
-"{\n"
-"    return (float2)(a.s0+b.s0, a.s1+b.s1);\n"
-"}\n"
-"\n"
-"int pixel(int x, int y, int width, int height)\n"
-"{\n"
-"\n"
-"    const float scale = 1.5;\n"
-"    float jx = scale * (float)(width/2.0f - x)/(width/2.0f);\n"
-"    float jy = scale * (float)(height/2.0f - y)/(height/2.0f);\n"
-"\n"
-"    float2 c = (float2)(-0.8f, 0.156f);\n"
-"    float2 a = (float2)(jx, jy);\n"
-"\n"
-"    for (int i=0; i<200; i++) {\n"
-"        a = add(mul(a, a), c);\n"
-"        if (magnitude(a) > 1000.0f)\n"
-"            return 0;\n"
-"    }\n"
-"\n"
-"    return 1;\n"
-"}\n"
-"\n"
-"kernel\n"
-"void julia(global unsigned char* out, const unsigned w, const unsigned h)\n"
-"{\n"
-"    int x = get_group_id(0) * get_num_groups(0) + get_local_id(0);\n"
-"    int y = get_group_id(1) * get_num_groups(1) + get_local_id(1);\n"
-"\n"
-"    if (x<w && y<h) {\n"
-"        int offset        = x + y * w;\n"
-"        int juliaValue    = pixel(x, y, w, h);\n"
-"        out[offset*4 + 0] = 255 * juliaValue;\n"
-"        out[offset*4 + 1] = 0;\n"
-"        out[offset*4 + 2] = 0;\n"
-"        out[offset*4 + 3] = 255;\n"
+"    unsigned x = get_global_id(0);\n"
+"    if(x < SIZE){\n"
+"        out[2 * x] = x * dx ;\n"
+"        out[2 * x + 1] = sin(x*dx);\n"
 "    }\n"
 "}\n";
-
-inline int divup(int a, int b)
-{
-    return (a+b-1)/b;
-}
 
 void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
 {
@@ -90,22 +50,16 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
 
     std::call_once(compileFlag,
         [queue]() {
-        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), fractal_ocl_kernel, true);
-            kern = cl::Kernel(prog, "julia");
+        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), sinf_ocl_kernel, true);
+            kern = cl::Kernel(prog, "sinf");
         });
 
-    //auto juliaOp = cl::make_kernel<Buffer, unsigned, unsigned>(kern);
-
-    static const NDRange local(8, 8);
-    NDRange global(local[0] * divup(DIMX, local[0]),
-                   local[1] * divup(DIMY, local[1]));
+    static const NDRange global(SIZE * 2);
 
     kern.setArg(0, devOut);
-    kern.setArg(1, DIMX);
-    kern.setArg(2, DIMY);
-    queue.enqueueNDRangeKernel(kern, cl::NullRange, global, local);
-
-    //juliaOp(EnqueueArgs(queue, global, local), devOut, DIMX, DIMY);
+    kern.setArg(1, dx);
+    kern.setArg(2, SIZE);
+    queue.enqueueNDRangeKernel(kern, cl::NullRange, global);
 }
 
 int main(void)
@@ -129,11 +83,34 @@ int main(void)
 #endif
         wnd.setFont(&fnt);
 
-        /* Create an image object which creates the necessary
-        * textures and pixel buffer objects to hold the image
-        * */
-        fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::FG_UNSIGNED_BYTE);
+        /*
+         * Split the window into grid regions
+         */
+        wnd.grid(WIN_ROWS, WIN_COLS);
 
+        /* Create several plot objects which creates the necessary
+         * vertex buffer objects to hold the different plot types
+         */
+        fg::Plot plt0(SIZE, fg::FG_FLOAT);                                 //create a default plot
+        fg::Plot plt1(SIZE, fg::FG_FLOAT, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
+        fg::Plot plt2(SIZE, fg::FG_FLOAT, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
+        fg::Plot plt3(SIZE, fg::FG_FLOAT, fg::FG_SCATTER, fg::FG_POINT);
+
+        /*
+         * Set plot colors
+         */
+        plt0.setColor(fg::FG_YELLOW);
+        plt1.setColor(fg::FG_BLUE);
+        plt2.setColor(fg::FG_WHITE);                                        //use a forge predefined color
+        plt3.setColor((fg::Color) 0xABFF01FF);                              //or any hex-valued color
+
+        /*
+         * Set draw limits for plots
+         */
+        plt0.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
+        plt1.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
+        plt2.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
+        plt3.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
 
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU
@@ -174,25 +151,32 @@ int main(void)
         Context context(device, cps);
         CommandQueue queue(context, device);
 
-        /* copy your data into the pixel buffer object exposed by
-         * fg::Image class and then proceed to rendering.
+        cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * SIZE * 2);
+        kernel(devOut, queue);
+
+        /* copy your data into the vertex buffer object exposed by
+         * fg::Plot class and then proceed to rendering.
          * To help the users with copying the data from compute
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        cl::Buffer devOut(context, CL_MEM_READ_WRITE, IMG_SIZE);
-
-        kernel(devOut, queue);
-        fg::copy(img, devOut, queue);
+        fg::copy(plt0, devOut, queue);
+        fg::copy(plt1, devOut, queue);
+        fg::copy(plt2, devOut, queue);
+        fg::copy(plt3, devOut, queue);
 
         do {
-            wnd.draw(img);
+            wnd.draw(0, 0, plt0,  NULL                );
+            wnd.draw(0, 1, plt1, "sinf_line_blue"     );
+            wnd.draw(1, 1, plt2, "sinf_line_triangle" );
+            wnd.draw(1, 0, plt3, "sinf_scatter_point" );
+            // draw window and poll for events last
+            wnd.draw();
         } while(!wnd.close());
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     }
-
     return 0;
 }

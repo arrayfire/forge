@@ -114,6 +114,17 @@ enum ColorMap {
     FG_BLUEMAP  = 6                         ///< Blue color map
 };
 
+enum Color {
+    //RED     = 0xFF0000FF, //TODO figure out naming/usage
+    FG_GREEN   = 0x00FF00FF,
+    FG_BLUE    = 0x0000FFFF,
+    FG_YELLOW  = 0xFFFF00FF,
+    FG_CYAN    = 0x00FFFFFF,
+    FG_MAGENTA = 0xFF00FFFF,
+    FG_WHITE   = 0xFFFFFFFF,
+    FG_BLACK   = 0x000000FF
+};
+
 enum FGType {
     FG_BYTE         = 0,                    ///< Signed byte (8-bits)
     FG_UNSIGNED_BYTE= 1,                    ///< Unsigned byte (8-bits)
@@ -121,5 +132,22 @@ enum FGType {
     FG_UNSIGNED_INT = 3,                    ///< Unsigned integer (32-bits)
     FG_FLOAT        = 4                     ///< Float (32-bits)
 };
+
+enum FGPlotType {
+    FG_LINE         = 0,
+    FG_SCATTER      = 1
+};
+
+enum FGMarkerType {
+    FG_NONE         = 0,
+    FG_POINT        = 1,
+    FG_CIRCLE       = 2,
+    FG_SQUARE       = 3,
+    FG_TRIANGLE     = 4,
+    FG_CROSS        = 5,
+    FG_PLUS         = 6,
+    FG_STAR         = 7
+};
+
 
 }

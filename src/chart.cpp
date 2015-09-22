@@ -256,6 +256,7 @@ AbstractChart2D::AbstractChart2D()
     mBorderPointIndex     = glGetAttribLocation (mBorderProgram, "point");
     mBorderColorIndex     = glGetUniformLocation(mBorderProgram, "color");
     mBorderMatIndex       = glGetUniformLocation(mBorderProgram, "transform");
+
     mSpriteTickcolorIndex = glGetUniformLocation(mSpriteProgram, "tick_color");
     mSpriteMatIndex       = glGetUniformLocation(mSpriteProgram, "transform");
     mSpriteTickaxisIndex  = glGetUniformLocation(mSpriteProgram, "isYAxis");

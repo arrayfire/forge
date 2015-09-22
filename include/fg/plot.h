@@ -34,9 +34,9 @@ class Plot {
 
            \param[in] pNumPoints is number of data points to display
            \param[in] pDataType takes one of the values of \ref FGType that indicates
-                      the integral data type of histogram data
+                      the integral data type of plot data
          */
-        FGAPI Plot(unsigned pNumPoints, FGType pDataType);
+        FGAPI Plot(unsigned pNumPoints, FGType pDataType, fg::FGPlotType=fg::FG_LINE, fg::FGMarkerType=fg::FG_NONE);
 
         /**
            Copy constructor for Plot
@@ -49,6 +49,13 @@ class Plot {
            Plot Destructor
          */
         FGAPI ~Plot();
+
+        /**
+           Set the color of line graph(plot)
+
+           \param[in] col takes values of fg::Color to define plot color
+        */
+        FGAPI void setColor(fg::Color col);
 
         /**
            Set the color of line graph(plot)

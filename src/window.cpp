@@ -266,6 +266,11 @@ void window_impl::draw(int pColId, int pRowId,
     MakeContextCurrent(this);
     mWindow->resetCloseFlag();
 
+    int wind_width, wind_height;
+    mWindow->getFrameBufferSize(&wind_width, &wind_height);
+    mCellWidth = wind_width / mCols;
+    mCellHeight = wind_height / mRows;
+
     float pos[2] = {0.0, 0.0};
     int c     = pColId;
     int r     = pRowId;
@@ -298,6 +303,7 @@ void window_impl::draw(int pColId, int pRowId,
         mFont->render(mID, pos, RED, pTitle, 16);
     }
 
+
     CheckGL("End show(column, row)");
 }
 
@@ -305,6 +311,7 @@ void window_impl::draw()
 {
     mWindow->swapBuffers();
     mWindow->pollEvents();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 }
