@@ -11,6 +11,7 @@
 #include <CPUCopy.hpp>
 #include <complex>
 #include <cmath>
+#include <cstdlib>
 #include <vector>
 #include <iostream>
 
@@ -33,6 +34,7 @@ void destroyBitmap(Bitmap& bmp);
 void kernel(Bitmap& bmp);
 
 float perlinNoise(float x, float y, float z);
+float octavesPerlin(float x, float y, float z, int octaves, float persistence);
 int noise(int x, int y, int width, int height);
 
 int main(void) {
@@ -92,6 +94,8 @@ int main(void) {
     fg::copy(hist, htest);
 
     do {
+        kernel(bmp);
+        fg::copy(img, bmp.ptr);
         wnd.draw(0, 0, img,  NULL );
         wnd.draw(1, 0, hist, NULL );
         // draw window and poll for events last
@@ -117,12 +121,13 @@ void destroyBitmap(Bitmap& bmp)
 }
 
 void kernel(Bitmap& bmp) {
+    static float t=0.1;
     for (unsigned y=0; y<bmp.height; ++y) {
         for (unsigned x=0; x<bmp.width; ++x) {
             int offset  = x + y * bmp.width;
-            float juliaVal= perlinNoise((float)x/DIMX, (float)y/DIMY, 0);
+            float juliaVal= octavesPerlin((float)x, (float)y, 0, 4, 0.1);
             bmp.ptr[offset*4 + 0]   = 255 * juliaVal;
-            bmp.ptr[offset*4 + 1]   = 128 * juliaVal;
+            bmp.ptr[offset*4 + 1]   = 255 * juliaVal;
             bmp.ptr[offset*4 + 2]   = 255 * juliaVal;
             bmp.ptr[offset*4 + 3]   = 255;
         }
@@ -159,38 +164,39 @@ struct vec3{
 float interp(float t){
     return ((6 * t - 15) * t + 10) * t * t * t;
 }
-static const int permutation[] = { 151,160,137,91,90,15,
-        131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
-        190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
-        88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
-        77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,
-        102,143,54, 65,25,63,161, 1,216,80,73,209,76,132,187,208, 89,18,169,200,196,
-        135,130,116,188,159,86,164,100,109,198,173,186, 3,64,52,217,226,250,124,123,
-        5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,
-        223,183,170,213,119,248,152, 2,44,154,163, 70,221,153,101,155,167, 43,172,9,
-        129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
-        251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
-        49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
-        138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
-};
+const inline float lerp (float x0, float x1, float t) {
+        return x0 + (x1 - x0) * t;
+}
+
 static const vec3 default_gradients[] = { {1,1,0}, {-1,1,0}, {1,-1,0}, {-1,-1,0} };
 
 float perlinNoise(float x, float y, float z){
     x=fmod(x,1.f);
     y=fmod(y,1.f);
     z=fmod(z,1.f);
-    vec3 influence_vecs[4];
-    influence_vecs[0] = (vec3(x,y,z) - default_gradients[0]) ;
-    influence_vecs[1] = (vec3(x,y,z) - default_gradients[1]) ;
-    influence_vecs[2] = (vec3(x,y,z) - default_gradients[2]) ;
-    influence_vecs[3] = (vec3(x,y,z) - default_gradients[3]) ;
-//default_gradients[0]
-//default_gradients[1]
-//default_gradients[2]    float final_influence = 
-//default_gradients[3]
+    float u = interp(x);
+    float v = interp(y);
+    float w = interp(z);
 
-    //for(int i=0; i<4; ++i)
-        //cout<<influence_vecs[i].x<<','<<influence_vecs[i].y<<endl;
+    unsigned rand_id = rand() % 4;
+    float influence_vecs[4];
+    influence_vecs[0] = (vec3(x,y,z) - default_gradients[0]) * default_gradients[rand_id];
+    influence_vecs[1] = (vec3(x,y,z) - default_gradients[1]) * default_gradients[rand_id];
+    influence_vecs[2] = (vec3(x,y,z) - default_gradients[2]) * default_gradients[rand_id];
+    influence_vecs[3] = (vec3(x,y,z) - default_gradients[3]) * default_gradients[rand_id];
 
-    return x;
+    return lerp(lerp(influence_vecs[0], influence_vecs[1], u), lerp(influence_vecs[2], influence_vecs[3], u), v);
+}
+
+float octavesPerlin(float x, float y, float z, int octaves, float persistence){
+    float total=0, max_value=0;
+    float amplitude=1, frequency=1;
+    for(int i=0; i<octaves; ++i){
+        total += perlinNoise( (x+frequency)/DIMX, (y+frequency)/DIMY, z+frequency) * amplitude;
+        max_value += amplitude;
+
+        amplitude *= persistence;
+        frequency *= 2;
+    }
+    return total/max_value;
 }
