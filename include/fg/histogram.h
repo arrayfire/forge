@@ -53,6 +53,13 @@ class Histogram {
         /**
            Set the color of bar in the bar graph(histogram)
 
+           \param[in] col takes values of type fg::Color to define bar color
+         */
+        FGAPI void setBarColor(fg::Color col);
+
+        /**
+           Set the color of bar in the bar graph(histogram)
+
            \param[in] pRed is Red component in range [0, 1]
            \param[in] pGreen is Green component in range [0, 1]
            \param[in] pBlue is Blue component in range [0, 1]
