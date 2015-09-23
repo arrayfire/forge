@@ -1,0 +1,232 @@
+/*******************************************************
+ * Copyright (c) 2015-2019, ArrayFire
+ * All rights reserved.
+ *
+ * This file is distributed under 3-clause BSD license.
+ * The complete license agreement can be obtained at:
+ * http://arrayfire.com/licenses/BSD-3-Clause
+ ********************************************************/
+
+#include <forge.h>
+#define __CL_ENABLE_EXCEPTIONS
+#include <cl.hpp>
+#include <OpenCLCopy.hpp>
+#include <mutex>
+#include <vector>
+#include <sstream>
+#include <iostream>
+#include <iterator>
+#include <algorithm>
+#include "cl_helpers.h"
+
+using namespace cl;
+using namespace std;
+
+const unsigned DIMX = 1000;
+const unsigned DIMY = 800;
+const unsigned IMG_SIZE = DIMX * DIMY * 4;
+
+const unsigned WIN_ROWS = 1;
+const unsigned WIN_COLS = 2;
+
+const unsigned NBINS = 9;
+
+/*
+Bitmap createBitmap(unsigned w, unsigned h);
+void destroyBitmap(Bitmap& bmp);
+void kernel(Bitmap& bmp);
+void hist_freq(Bitmap& bmp, int *hist_array, const unsigned nbins);
+*/
+
+float perlinNoise(float x, float y, float z, int tileSize);
+float octavesPerlin(float x, float y, float z, int octaves, float persistence, int tileSize);
+
+
+static const std::string fractal_ocl_kernel =
+"float magnitude(float2 a)\n"
+"{\n"
+"    return sqrt(a.s0*a.s0+a.s1*a.s1);\n"
+"}\n"
+"\n"
+"float2 mul(float2 a, float2 b)\n"
+"{\n"
+"    return (float2)(a.s0*b.s0-a.s1*b.s1, a.s1*b.s0+a.s0*b.s1);\n"
+"}\n"
+"\n"
+"float2 add(float2 a, float2 b)\n"
+"{\n"
+"    return (float2)(a.s0+b.s0, a.s1+b.s1);\n"
+"}\n"
+"\n"
+"int pixel(int x, int y, int width, int height)\n"
+"{\n"
+"\n"
+"    const float scale = 1.5;\n"
+"    float jx = scale * (float)(width/2.0f - x)/(width/2.0f);\n"
+"    float jy = scale * (float)(height/2.0f - y)/(height/2.0f);\n"
+"\n"
+"    float2 c = (float2)(-0.8f, 0.156f);\n"
+"    float2 a = (float2)(jx, jy);\n"
+"\n"
+"    for (int i=0; i<200; i++) {\n"
+"        a = add(mul(a, a), c);\n"
+"        if (magnitude(a) > 1000.0f)\n"
+"            return 0;\n"
+"    }\n"
+"\n"
+"    return 1;\n"
+"}\n"
+"\n"
+"kernel\n"
+"void julia(global unsigned char* out, const unsigned w, const unsigned h)\n"
+"{\n"
+"    int x = get_group_id(0) * get_num_groups(0) + get_local_id(0);\n"
+"    int y = get_group_id(1) * get_num_groups(1) + get_local_id(1);\n"
+"\n"
+"    if (x<w && y<h) {\n"
+"        int offset        = x + y * w;\n"
+"        int juliaValue    = pixel(x, y, w, h);\n"
+"        out[offset*4 + 0] = 255 * juliaValue;\n"
+"        out[offset*4 + 1] = 0;\n"
+"        out[offset*4 + 2] = 0;\n"
+"        out[offset*4 + 3] = 255;\n"
+"    }\n"
+"}\n";
+
+inline int divup(int a, int b)
+{
+    return (a+b-1)/b;
+}
+
+void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
+{
+    static std::once_flag   compileFlag;
+    static cl::Program      prog;
+    static cl::Kernel       kern;
+
+    std::call_once(compileFlag,
+        [queue]() {
+        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), fractal_ocl_kernel, true);
+            kern = cl::Kernel(prog, "julia");
+        });
+
+    static const NDRange local(8, 8);
+    NDRange global(local[0] * divup(DIMX, local[0]),
+                   local[1] * divup(DIMY, local[1]));
+
+    kern.setArg(0, devOut);
+    kern.setArg(1, DIMX);
+    kern.setArg(2, DIMY);
+    queue.enqueueNDRangeKernel(kern, cl::NullRange, global, local);
+
+}
+
+int main(void)
+{
+    try {
+        /*
+        * First Forge call should be a window creation call
+        * so that necessary OpenGL context is created for any
+        * other fg::* object to be created successfully
+        */
+        fg::Window wnd(DIMX, DIMY, "Fractal Demo");
+        wnd.makeCurrent();
+        /* create an font object and load necessary font
+        * and later pass it on to window object so that
+        * it can be used for rendering text */
+        fg::Font fnt;
+#ifdef OS_WIN
+        fnt.loadSystemFont("Calibri", 32);
+#else
+        fnt.loadSystemFont("Vera", 32);
+#endif
+        wnd.setFont(&fnt);
+
+        /*
+         * Split the window into grid regions
+         */
+        wnd.grid(WIN_ROWS, WIN_COLS);
+
+        /* Create an image object which creates the necessary
+        * textures and pixel buffer objects to hold the image
+        * */
+        fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::FG_UNSIGNED_BYTE);
+        /*
+         * Create histogram object while specifying desired number of bins
+         */
+        fg::Histogram hist(NBINS, fg::FG_UNSIGNED_BYTE);
+
+        /*
+         * Set histogram colors and generate image
+         */
+        hist.setBarColor(fg::FG_YELLOW);
+
+
+        Platform plat = getPlatform();
+        // Select the default platform and create a context using this platform and the GPU
+#if defined(OS_MAC)
+        CGLContextObj cgl_current_ctx = CGLGetCurrentContext();
+        CGLShareGroupObj cgl_share_group = CGLGetShareGroup(cgl_current_ctx);
+
+        cl_context_properties cps[] = {
+            CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE, (cl_context_properties)cgl_share_group,
+            0
+        };
+#elif defined(OS_LNX)
+        cl_context_properties cps[] = {
+            CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
+            CL_GLX_DISPLAY_KHR, (cl_context_properties)wnd.display(),
+            CL_CONTEXT_PLATFORM, (cl_context_properties)plat(),
+            0
+        };
+#else /* OS_WIN */
+        cl_context_properties cps[] = {
+            CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
+            CL_WGL_HDC_KHR, (cl_context_properties)wnd.display(),
+            CL_CONTEXT_PLATFORM, (cl_context_properties)plat(),
+            0
+        };
+#endif
+        std::vector<Device> devs;
+        plat.getDevices(CL_DEVICE_TYPE_GPU, &devs);
+
+        Device device;
+        for (auto& d : devs) {
+            if (checkExtnAvailability(d, CL_GL_SHARING_EXT)) {
+                device = d;
+                break;
+            }
+        }
+
+        Context context(device, cps);
+        CommandQueue queue(context, device);
+
+        /* copy your data into the pixel buffer object exposed by
+         * fg::Image class and then proceed to rendering.
+         * To help the users with copying the data from compute
+         * memory to display memory, Forge provides copy headers
+         * along with the library to help with this task
+         */
+        cl::Buffer devOut(context, CL_MEM_READ_WRITE, IMG_SIZE);
+
+        /*
+         * generate image, and prepare data to pass into
+         * Histogram's underlying vertex buffer object
+         */
+        kernel(devOut, queue);
+        fg::copy(img, devOut, queue);
+
+        do {
+            wnd.draw(0, 0, img,  NULL );
+            wnd.draw(1, 0, hist, NULL );
+            // draw window and poll for events last
+            wnd.draw();
+        } while(!wnd.close());
+    }catch (fg::Error err) {
+        std::cout << err.what() << "(" << err.err() << ")" << std::endl;
+    } catch (cl::Error err) {
+        std::cout << err.what() << "(" << err.err() << ")" << std::endl;
+    }
+
+    return 0;
+}
