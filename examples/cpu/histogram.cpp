@@ -32,6 +32,7 @@ struct Bitmap {
 Bitmap createBitmap(unsigned w, unsigned h);
 void destroyBitmap(Bitmap& bmp);
 void kernel(Bitmap& bmp);
+void hist_freq(Bitmap& bmp, int *hist_array, const unsigned nbins);
 
 float perlinNoise(float x, float y, float z, int tileSize);
 float octavesPerlin(float x, float y, float z, int octaves, float persistence, int tileSize);
@@ -74,8 +75,6 @@ int main(void) {
      */
     hist.setBarColor(fg::FG_YELLOW);
 
-    hist.setAxesLimits(9, 0, 6.f, -1.1f);
-
     /*
      * generate image, and prepare data to pass into
      * Histogram's underlying vertex buffer object
@@ -83,18 +82,30 @@ int main(void) {
     kernel(bmp);
     fg::copy(img, bmp.ptr);
 
+    /* set x axis limits to maximum and minimum values of data
+     * and y axis limits to range [0, nBins]*/
+    hist.setAxesLimits(1, 0, NBINS, 0);
+
     /* copy your data into the vertex buffer object exposed by
      * fg::Histogram class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    unsigned htest[] = {1,5,20,5,60,255,4,9,2};
-    fg::copy(hist, htest);
+    int histogram_array[NBINS] = {0};
+    hist_freq(bmp, &histogram_array[0], NBINS);
+    fg::copy(hist, histogram_array);
 
     do {
         kernel(bmp);
         fg::copy(img, bmp.ptr);
+
+        int histogram_array[NBINS] = {0};
+        hist_freq(bmp, &histogram_array[0], NBINS);
+//TODO: testing
+        int histogram_array1[NBINS] = {1,2,1,2,1,1,2,3,1};
+        fg::copy(hist, histogram_array);
+
         wnd.draw(0, 0, img,  NULL );
         wnd.draw(1, 0, hist, NULL );
         // draw window and poll for events last
@@ -125,15 +136,26 @@ void kernel(Bitmap& bmp) {
     for (unsigned y=0; y<bmp.height; ++y) {
         for (unsigned x=0; x<bmp.width; ++x) {
             int offset  = x + y * bmp.width;
-            float noiseVal= octavesPerlin((float)x, (float)y, 0, 4, t, tileSize);
-            bmp.ptr[offset*4 + 0]   = 255 * noiseVal;
-            bmp.ptr[offset*4 + 1]   = 255 * noiseVal;
-            bmp.ptr[offset*4 + 2]   = 255 * noiseVal;
+            unsigned char noiseVal = 255 * octavesPerlin((float)x, (float)y, 0, 4, t, tileSize);
+            bmp.ptr[offset*4 + 0]   = noiseVal;
+            bmp.ptr[offset*4 + 1]   = noiseVal;
+            bmp.ptr[offset*4 + 2]   = noiseVal;
             bmp.ptr[offset*4 + 3]   = 255;
         }
     }
     t+=0.02;
     tileSize++;
+}
+
+void hist_freq(Bitmap& bmp, int *hist_array, const unsigned nbins){
+    for (unsigned y=0; y<bmp.height; ++y) {
+        for (unsigned x=0; x<bmp.width; ++x) {
+            int offset  = x + y * bmp.width;
+            unsigned char noiseVal = bmp.ptr[offset*4];
+            hist_array[(int)((float)noiseVal/255.f * 10)]++;
+        }
+    }
+
 }
 
 struct vec3{
@@ -200,7 +222,7 @@ float octavesPerlin(float x, float y, float z, int octaves, float persistence, i
     float total = 0, max_value = 0;
     float amplitude = 1, frequency = 1;
     for(int i=0; i<octaves; ++i){
-        total += abs(perlinNoise( (x*frequency), (y*frequency), z*frequency, tileSize) * amplitude);
+        total += perlinNoise( (x*frequency), (y*frequency), z*frequency, tileSize) * amplitude;
         max_value += amplitude;
 
         amplitude *= persistence;
