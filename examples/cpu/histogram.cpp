@@ -33,9 +33,8 @@ Bitmap createBitmap(unsigned w, unsigned h);
 void destroyBitmap(Bitmap& bmp);
 void kernel(Bitmap& bmp);
 
-float perlinNoise(float x, float y, float z);
-float octavesPerlin(float x, float y, float z, int octaves, float persistence);
-int noise(int x, int y, int width, int height);
+float perlinNoise(float x, float y, float z, int tileSize);
+float octavesPerlin(float x, float y, float z, int octaves, float persistence, int tileSize);
 
 int main(void) {
 
@@ -122,33 +121,19 @@ void destroyBitmap(Bitmap& bmp)
 
 void kernel(Bitmap& bmp) {
     static float t=0.1;
+    static unsigned tileSize=100;
     for (unsigned y=0; y<bmp.height; ++y) {
         for (unsigned x=0; x<bmp.width; ++x) {
             int offset  = x + y * bmp.width;
-            float juliaVal= octavesPerlin((float)x, (float)y, 0, 4, 0.1);
-            bmp.ptr[offset*4 + 0]   = 255 * juliaVal;
-            bmp.ptr[offset*4 + 1]   = 255 * juliaVal;
-            bmp.ptr[offset*4 + 2]   = 255 * juliaVal;
+            float noiseVal= octavesPerlin((float)x, (float)y, 0, 4, t, tileSize);
+            bmp.ptr[offset*4 + 0]   = 255 * noiseVal;
+            bmp.ptr[offset*4 + 1]   = 255 * noiseVal;
+            bmp.ptr[offset*4 + 2]   = 255 * noiseVal;
             bmp.ptr[offset*4 + 3]   = 255;
         }
     }
-}
-
-int noise(int x, int y, int width, int height) {
-    const float scale = 1.5;
-    float jx = scale * (float)(width/2.0f - x)/(width/2.0f);
-    float jy = scale * (float)(height/2.0f - y)/(height/2.0f);
-
-    std::complex<float> c(-0.8f, 0.156f);
-    std::complex<float> a(jx, jy);
-
-    for (int i=0; i<200; i++) {
-        a = a * a + c;
-        if (abs(a) > 1000)
-            return 0;
-    }
-
-    return 1;
+    t+=0.02;
+    tileSize++;
 }
 
 struct vec3{
@@ -168,31 +153,54 @@ const inline float lerp (float x0, float x1, float t) {
         return x0 + (x1 - x0) * t;
 }
 
+static const int perm[] = { 26, 58, 229, 82, 132, 72, 144, 251, 196, 192, 127, 16,
+    68, 118, 104, 213, 91, 105, 203, 61, 59, 93, 136, 249, 27, 137, 141, 223, 119,
+    193, 155, 43, 71, 244, 170, 115, 201, 150, 165, 78, 208, 53, 90, 232, 209, 83,
+    45, 174, 140, 178, 220, 184, 70, 6, 202, 17, 128, 212, 117, 200, 254, 57, 248,
+    62, 164, 172, 19, 177, 241, 103, 48, 38, 210, 129, 23, 211, 8, 112, 107,  126,
+    252,  198, 32, 123, 111,  176,  206, 15, 219, 221, 147, 245, 67, 92, 108, 143,
+    54, 102, 169, 22, 74, 124, 181, 186, 138, 18, 7, 34, 81, 46, 120, 236, 89,228,
+    197, 205, 13, 63, 134,  242, 157, 135, 237, 35, 234, 49, 85, 76, 148, 188, 98,
+    87, 173, 84, 226, 11, 125, 122, 2, 94, 191, 179, 175, 187, 133, 231, 154,  44,
+    28, 110, 247, 121, 146, 240, 97, 88, 130,195, 30, 25, 56, 171, 80, 69, 139, 9,
+    238, 160, 227, 204, 31, 40, 66, 77, 21, 159,  162, 207,  167, 214, 10, 3, 149,
+    194, 239, 166,  145, 235, 20, 50, 113, 189, 99, 37, 86, 42, 168, 114, 96, 246,
+    183, 250, 233, 156, 52,  65, 131, 47,  255, 5, 33, 217, 73, 4, 60, 64, 109, 0,
+    215, 100, 180, 12, 24, 190, 222, 106, 41, 216, 230, 161, 55, 152, 79, 75, 142,
+    36, 101, 1, 253, 225, 51, 224, 182, 116, 218, 95, 39, 158,  14, 243, 151, 163,
+    29, 153, 199, 185
+};
 static const vec3 default_gradients[] = { {1,1,0}, {-1,1,0}, {1,-1,0}, {-1,-1,0} };
 
-float perlinNoise(float x, float y, float z){
-    x=fmod(x,1.f);
-    y=fmod(y,1.f);
-    z=fmod(z,1.f);
+float perlinNoise(float x, float y, float z, int tileSize){
+    int x_grid = (int)x/tileSize;
+    int y_grid = (int)y/tileSize;
+    unsigned rand_id0 = perm[(x_grid+2*y_grid) % 256 ] % 4;
+    unsigned rand_id1 = perm[(x_grid+1+2*y_grid) % 256 ] % 4;
+    unsigned rand_id2 = perm[(x_grid+2*(y_grid+1)) % 256 ] % 4;
+    unsigned rand_id3 = perm[(x_grid+1+2*(y_grid+1)) % 256 ] % 4;
+
+    x=fmod(x,tileSize)/tileSize;
+    y=fmod(y,tileSize)/tileSize;
+    z=fmod(z,tileSize)/tileSize;
     float u = interp(x);
     float v = interp(y);
     float w = interp(z);
 
-    unsigned rand_id = rand() % 4;
     float influence_vecs[4];
-    influence_vecs[0] = (vec3(x,y,z) - default_gradients[0]) * default_gradients[rand_id];
-    influence_vecs[1] = (vec3(x,y,z) - default_gradients[1]) * default_gradients[rand_id];
-    influence_vecs[2] = (vec3(x,y,z) - default_gradients[2]) * default_gradients[rand_id];
-    influence_vecs[3] = (vec3(x,y,z) - default_gradients[3]) * default_gradients[rand_id];
+    influence_vecs[0] = (vec3(x,y,z) - vec3(0,0,0)) * default_gradients[rand_id0];
+    influence_vecs[1] = (vec3(x,y,z) - vec3(1,0,0)) * default_gradients[rand_id1];
+    influence_vecs[2] = (vec3(x,y,z) - vec3(0,1,0)) * default_gradients[rand_id2];
+    influence_vecs[3] = (vec3(x,y,z) - vec3(1,1,0)) * default_gradients[rand_id3];
 
     return lerp(lerp(influence_vecs[0], influence_vecs[1], u), lerp(influence_vecs[2], influence_vecs[3], u), v);
 }
 
-float octavesPerlin(float x, float y, float z, int octaves, float persistence){
-    float total=0, max_value=0;
-    float amplitude=1, frequency=1;
+float octavesPerlin(float x, float y, float z, int octaves, float persistence, int tileSize){
+    float total = 0, max_value = 0;
+    float amplitude = 1, frequency = 1;
     for(int i=0; i<octaves; ++i){
-        total += perlinNoise( (x+frequency)/DIMX, (y+frequency)/DIMY, z+frequency) * amplitude;
+        total += abs(perlinNoise( (x*frequency), (y*frequency), z*frequency, tileSize) * amplitude);
         max_value += amplitude;
 
         amplitude *= persistence;
