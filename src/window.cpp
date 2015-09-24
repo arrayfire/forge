@@ -418,6 +418,11 @@ void Window::draw(const Plot& pPlot)
     value->draw(pPlot.get());
 }
 
+void Window::draw(const Plot3& pPlot)
+{
+    value->draw(pPlot.get());
+}
+
 void Window::draw(const Histogram& pHist)
 {
     value->draw(pHist.get());

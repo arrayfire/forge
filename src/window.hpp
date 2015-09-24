@@ -21,6 +21,7 @@
 #include <font.hpp>
 #include <image.hpp>
 #include <plot.hpp>
+#include <plot3.hpp>
 #include <histogram.hpp>
 
 #include <memory>
@@ -167,6 +168,10 @@ class _Window {
         }
 
         inline void draw(const _Plot* pPlot) {
+            wnd->draw(pPlot->impl()) ;
+        }
+
+        inline void draw(const _Plot3* pPlot) {
             wnd->draw(pPlot->impl()) ;
         }
 

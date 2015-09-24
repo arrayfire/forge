@@ -13,6 +13,7 @@
 #include <fg/font.h>
 #include <fg/image.h>
 #include <fg/plot.h>
+#include <fg/plot3.h>
 #include <fg/histogram.h>
 
 namespace internal
@@ -172,6 +173,16 @@ class Window {
          */
         FGAPI void draw(const Plot& pPlot);
 
+        /**
+           Render a Plot3 to Window
+
+           \param[in] pPlot is an object of class Plot
+
+           \note this draw call does a OpenGL swap buffer, so we do not need
+           to call Window::draw() after this function is called upon for rendering
+           a plot
+         */
+        FGAPI void draw(const Plot3& pPlot);
         /**
            Render Histogram to Window
 
