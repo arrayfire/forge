@@ -51,7 +51,7 @@ int main(void)
     /* Create an image object which creates the necessary
      * textures and pixel buffer objects to hold the image
      * */
-    fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::FG_UNSIGNED_BYTE);
+    fg::Image img(DIMX, DIMY, fg::FG_C4, fg::u8);
     /* copy your data into the pixel buffer object exposed by
      * fg::Image class and then proceed to rendering.
      * To help the users with copying the data from compute

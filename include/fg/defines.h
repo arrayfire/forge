@@ -94,9 +94,9 @@ enum ErrorCode {
 };
 
 enum ColorMode {
-    FG_RED =1,                              ///< Single channel
-    FG_RGB =3,                              ///< Three(Red, Green & Blue) channels
-    FG_RGBA=4                               ///< Four(Red, Green, Blue & Alpha) channels
+    FG_C1 = 1,                              ///< Single channel
+    FG_C3 = 3,                              ///< Three(Red, Green & Blue) channels
+    FG_C4 = 4                               ///< Four(Red, Green, Blue & Alpha) channels
 };
 
 /**
@@ -105,17 +105,17 @@ enum ColorMode {
    \image html gfx_palette.png
  */
 enum ColorMap {
-    FG_DEFAULT  = 0,                        ///< Default [0-255] grayscale colormap
-    FG_SPECTRUM = 1,                        ///< Spectrum color
-    FG_COLORS   = 2,                        ///< Pure Colors
-    FG_REDMAP   = 3,                        ///< Red color map
-    FG_MOOD     = 4,                        ///< Mood color map
-    FG_HEAT     = 5,                        ///< Heat color map
-    FG_BLUEMAP  = 6                         ///< Blue color map
+    FG_DEFAULT_MAP  = 0,                    ///< Default [0-255] grayscale colormap
+    FG_SPECTRUM_MAP = 1,                    ///< Spectrum color
+    FG_COLORS_MAP   = 2,                    ///< Pure Colors
+    FG_RED_MAP      = 3,                    ///< Red color map
+    FG_MOOD_MAP     = 4,                    ///< Mood color map
+    FG_HEAT_MAP     = 5,                    ///< Heat color map
+    FG_BLUE_MAP     = 6                     ///< Blue color map
 };
 
 enum Color {
-    //RED     = 0xFF0000FF, //TODO figure out naming/usage
+    FG_RED     = 0xFF0000FF,
     FG_GREEN   = 0x00FF00FF,
     FG_BLUE    = 0x0000FFFF,
     FG_YELLOW  = 0xFFFF00FF,
@@ -126,11 +126,11 @@ enum Color {
 };
 
 enum dtype {
-    FG_BYTE         = 0,                    ///< Signed byte (8-bits)
-    FG_UNSIGNED_BYTE= 1,                    ///< Unsigned byte (8-bits)
-    FG_INT          = 2,                    ///< Signed integer (32-bits)
-    FG_UNSIGNED_INT = 3,                    ///< Unsigned integer (32-bits)
-    FG_FLOAT        = 4                     ///< Float (32-bits)
+    s8  = 0,                                ///< Signed byte (8-bits)
+    u8  = 1,                                ///< Unsigned byte (8-bits)
+    s32 = 2,                                ///< Signed integer (32-bits)
+    u32 = 3,                                ///< Unsigned integer (32-bits)
+    f32 = 4                                 ///< Float (32-bits)
 };
 
 enum PlotType {

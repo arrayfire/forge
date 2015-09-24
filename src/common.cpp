@@ -27,21 +27,21 @@ typedef struct {
 GLenum gl_dtype(fg::dtype val)
 {
     switch(val) {
-        case FG_BYTE:           return GL_BYTE;
-        case FG_UNSIGNED_BYTE:  return GL_UNSIGNED_BYTE;
-        case FG_INT:            return GL_INT;
-        case FG_UNSIGNED_INT:   return GL_UNSIGNED_INT;
-        default:                return GL_FLOAT;
+        case s8:  return GL_BYTE;
+        case u8:  return GL_UNSIGNED_BYTE;
+        case s32: return GL_INT;
+        case u32: return GL_UNSIGNED_INT;
+        default:  return GL_FLOAT;
     }
 }
 
 GLenum gl_ctype(ColorMode mode)
 {
     switch(mode) {
-        case FG_RED : return GL_RED;
-        case FG_RGB : return GL_RGB;
-        case FG_RGBA: return GL_RGBA;
-        default     : return GL_RGBA;
+        case FG_C1: return GL_RED;
+        case FG_C3: return GL_RGB;
+        case FG_C4: return GL_RGBA;
+        default   : return GL_RGBA;
     }
 }
 

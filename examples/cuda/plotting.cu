@@ -48,10 +48,10 @@ int main(void)
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt0( SIZE, fg::FG_FLOAT);                              //create a default plot
-    fg::Plot plt1( SIZE, fg::FG_FLOAT, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
-    fg::Plot plt2( SIZE, fg::FG_FLOAT, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
-    fg::Plot plt3( SIZE, fg::FG_FLOAT, fg::FG_SCATTER, fg::FG_POINT);
+    fg::Plot plt0( SIZE, fg::f32);                              //create a default plot
+    fg::Plot plt1( SIZE, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
+    fg::Plot plt2( SIZE, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
+    fg::Plot plt3( SIZE, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
 
     /*
      * Set plot colors
