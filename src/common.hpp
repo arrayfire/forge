@@ -52,13 +52,9 @@ class AbstractRenderable {
 
 }
 
-GLenum FGTypeToGLenum(fg::FGType val);
+GLenum gl_dtype(fg::dtype val);
 
-fg::FGType GLenumToFGType(GLenum val);
-
-GLenum FGModeToGLColor(fg::ColorMode mode);
-
-fg::ColorMode GLModeToFGColor(GLenum mode);
+GLenum gl_ctype(fg::ColorMode mode);
 
 char* loadFile(const char *fname, GLint &fSize);
 

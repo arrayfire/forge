@@ -24,7 +24,7 @@ typedef struct {
     GLuint fragment;
 } shaders_t;
 
-GLenum FGTypeToGLenum(fg::FGType val)
+GLenum gl_dtype(fg::dtype val)
 {
     switch(val) {
         case FG_BYTE:           return GL_BYTE;
@@ -35,37 +35,14 @@ GLenum FGTypeToGLenum(fg::FGType val)
     }
 }
 
-fg::FGType GLenumToFGType(GLenum val)
+GLenum gl_ctype(ColorMode mode)
 {
-    switch(val) {
-        case GL_BYTE:           return FG_BYTE;
-        case GL_UNSIGNED_BYTE:  return FG_UNSIGNED_BYTE;
-        case GL_INT:            return FG_INT;
-        case GL_UNSIGNED_INT:   return FG_UNSIGNED_INT;
-        default:                return FG_FLOAT;
-    }
-}
-
-GLenum FGModeToGLColor(ColorMode mode)
-{
-    GLenum color = GL_RGBA;
     switch(mode) {
-        case FG_RED : color = GL_RED;  break;
-        case FG_RGB : color = GL_RGB;  break;
-        default     : color = GL_RGBA; break;
+        case FG_RED : return GL_RED;
+        case FG_RGB : return GL_RGB;
+        case FG_RGBA: return GL_RGBA;
+        default     : return GL_RGBA;
     }
-    return color;
-}
-
-ColorMode GLModeToFGColor(GLenum mode)
-{
-    ColorMode color = FG_RGBA;
-    switch(mode) {
-        case GL_RED : color = FG_RED;  break;
-        case GL_RGB : color = FG_RGB;  break;
-        default     : color = FG_RGBA; break;
-    }
-    return color;
 }
 
 char* loadFile(const char * fname, GLint &fSize)

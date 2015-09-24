@@ -88,7 +88,7 @@ void plot_impl::bindResources(int pWindowId)
         // attach plot vertices
         glEnableVertexAttribArray(mPointIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mMainVBO);
-        glVertexAttribPointer(mPointIndex, 2, mDataType, GL_FALSE, 0, 0);
+        glVertexAttribPointer(mPointIndex, 2, mGLType, GL_FALSE, 0, 0);
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
@@ -103,14 +103,15 @@ void plot_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType)
-    : AbstractChart2D(), mNumPoints(pNumPoints), mDataType(FGTypeToGLenum(pDataType)),
+plot_impl::plot_impl(unsigned pNumPoints, fg::dtype pDataType, fg::MarkerType pMarkerType)
+    : AbstractChart2D(), mNumPoints(pNumPoints),
+      mDataType(pDataType), mGLType(gl_dtype(mDataType)),
       mMainVBO(0), mMainVBOsize(0), mPointIndex(0)
 {
     unsigned total_points = 2*mNumPoints;
     // buffersubdata calls on mMainVBO
     // will only update the points data
-    switch(mDataType) {
+    switch(mGLType) {
         case GL_FLOAT:
             mMainVBO = createBuffer<float>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(float);
@@ -127,7 +128,7 @@ plot_impl::plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType
             mMainVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(unsigned char);
             break;
-        default: fg::TypeError("Plot::Plot", __LINE__, 1, GLenumToFGType(mDataType));
+        default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
     }
     mPointIndex = borderProgramPointIndex();
     mMarkerType = pMarkerType;
@@ -268,7 +269,7 @@ void scatter_impl::renderGraph(int pWindowId, glm::mat4 transform){
 namespace fg
 {
 
-Plot::Plot(unsigned pNumPoints, fg::FGType pDataType, fg::FGPlotType pPlotType, fg::FGMarkerType pMarkerType)
+Plot::Plot(unsigned pNumPoints, fg::dtype pDataType, fg::PlotType pPlotType, fg::MarkerType pMarkerType)
 {
     value = new internal::_Plot(pNumPoints, pDataType, pPlotType, pMarkerType);
 }

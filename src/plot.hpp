@@ -22,9 +22,10 @@ class plot_impl : public AbstractChart2D {
     protected:
         /* plot points characteristics */
         GLuint    mNumPoints;
-        GLenum    mDataType;
+        fg::dtype mDataType;
+        GLenum    mGLType;
         float     mLineColor[4];
-        fg::FGMarkerType mMarkerType;
+        fg::MarkerType mMarkerType;
         /* OpenGL Objects */
         GLuint    mMainVBO;
         size_t    mMainVBOsize;
@@ -45,7 +46,7 @@ class plot_impl : public AbstractChart2D {
         virtual void renderGraph(int pWindowId, glm::mat4 transform);
 
     public:
-        plot_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType=fg::FG_NONE);
+        plot_impl(unsigned pNumPoints, fg::dtype pDataType, fg::MarkerType=fg::FG_NONE);
         ~plot_impl();
 
         void setColor(fg::Color col);
@@ -61,7 +62,7 @@ class scatter_impl : public plot_impl {
         void renderGraph(int pWindowId, glm::mat4 transform);
 
    public:
-       scatter_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType=fg::FG_NONE) : plot_impl(pNumPoints, pDataType, pMarkerType)   {}
+       scatter_impl(unsigned pNumPoints, fg::dtype pDataType, fg::MarkerType pMarkerType=fg::FG_NONE) : plot_impl(pNumPoints, pDataType, pMarkerType)   {}
        ~scatter_impl() {}
 };
 
@@ -70,7 +71,7 @@ class _Plot {
         std::shared_ptr<plot_impl> plt;
 
     public:
-        _Plot(unsigned pNumPoints, fg::FGType pDataType, fg::FGPlotType pPlotType=fg::FG_LINE, fg::FGMarkerType pMarkerType=fg::FG_NONE){
+        _Plot(unsigned pNumPoints, fg::dtype pDataType, fg::PlotType pPlotType=fg::FG_LINE, fg::MarkerType pMarkerType=fg::FG_NONE){
             switch(pPlotType){
                 case(fg::FG_LINE):
                     plt = std::make_shared<plot_impl>(pNumPoints, pDataType, pMarkerType);

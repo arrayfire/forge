@@ -107,12 +107,12 @@ void image_impl::unbindResources() const
 }
 
 image_impl::image_impl(unsigned pWidth, unsigned pHeight,
-                       fg::ColorMode pFormat, fg::FGType pDataType)
+                       fg::ColorMode pFormat, fg::dtype pDataType)
     : mWidth(pWidth), mHeight(pHeight),
-      mFormat(pFormat), mDataType(FGTypeToGLenum(pDataType))
+      mFormat(pFormat), mGLformat(gl_ctype(mFormat)),
+      mDataType(pDataType), mGLType(gl_dtype(mDataType))
 {
     CheckGL("Begin Image::Image");
-    mGLformat = FGModeToGLColor(mFormat);
 
     // Initialize OpenGL Items
     glGenTextures(1, &(mTex));
@@ -123,13 +123,13 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
     glTexImage2D(GL_TEXTURE_2D, 0, mGLformat,
-                 mWidth, mHeight, 0, mGLformat, mDataType, NULL);
+                 mWidth, mHeight, 0, mGLformat, mGLType, NULL);
 
     CheckGL("Before PBO Initialization");
     glGenBuffers(1, &mPBO);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     size_t typeSize = 0;
-    switch(mDataType) {
+    switch(mGLType) {
         case GL_INT:            typeSize = sizeof(int  );           break;
         case GL_UNSIGNED_INT:   typeSize = sizeof(unsigned int);    break;
         case GL_BYTE:           typeSize = sizeof(char );           break;
@@ -172,7 +172,7 @@ unsigned image_impl::height() const { return mHeight; }
 
 fg::ColorMode image_impl::pixelFormat() const { return mFormat; }
 
-fg::FGType image_impl::channelType() const { return GLenumToFGType(mDataType); }
+fg::dtype image_impl::channelType() const { return mDataType; }
 
 unsigned image_impl::pbo() const { return mPBO; }
 
@@ -213,7 +213,7 @@ void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int p
     // bind PBO to load data into texture
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, mGLformat, mDataType, 0);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, mGLformat, mGLType, 0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, glm::value_ptr(strans));
@@ -242,7 +242,7 @@ void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int p
 namespace fg
 {
 
-Image::Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, fg::FGType pDataType) {
+Image::Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, fg::dtype pDataType) {
     value = new internal::_Image(pWidth, pHeight, pFormat, pDataType);
 }
 
@@ -266,7 +266,7 @@ ColorMode Image::pixelFormat() const {
     return value->pixelFormat();
 }
 
-fg::FGType Image::channelType() const {
+fg::dtype Image::channelType() const {
     return value->channelType();
 }
 

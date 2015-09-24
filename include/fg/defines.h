@@ -125,7 +125,7 @@ enum Color {
     FG_BLACK   = 0x000000FF
 };
 
-enum FGType {
+enum dtype {
     FG_BYTE         = 0,                    ///< Signed byte (8-bits)
     FG_UNSIGNED_BYTE= 1,                    ///< Unsigned byte (8-bits)
     FG_INT          = 2,                    ///< Signed integer (32-bits)
@@ -133,12 +133,12 @@ enum FGType {
     FG_FLOAT        = 4                     ///< Float (32-bits)
 };
 
-enum FGPlotType {
+enum PlotType {
     FG_LINE         = 0,
     FG_SCATTER      = 1
 };
 
-enum FGMarkerType {
+enum MarkerType {
     FG_NONE         = 0,
     FG_POINT        = 1,
     FG_CIRCLE       = 2,

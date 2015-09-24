@@ -33,10 +33,10 @@ class Histogram {
            Creates a Histogram object
 
            \param[in] pNBins is number of bins the data is sorted out
-           \param[in] pDataType takes one of the values of \ref FGType that indicates
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Histogram(unsigned pNBins, FGType pDataType);
+        FGAPI Histogram(unsigned pNBins, dtype pDataType);
 
         /**
            Copy constructor for Histogram
