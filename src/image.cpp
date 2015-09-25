@@ -107,9 +107,9 @@ void image_impl::unbindResources() const
 }
 
 image_impl::image_impl(unsigned pWidth, unsigned pHeight,
-                       fg::ColorMode pFormat, fg::dtype pDataType)
+                       fg::ChannelFormat pFormat, fg::dtype pDataType)
     : mWidth(pWidth), mHeight(pHeight),
-      mFormat(pFormat), mGLformat(gl_ctype(mFormat)),
+      mFormat(pFormat), mGLformat(gl_ctype(mFormat)), mGLiformat(gl_ictype(mFormat)),
       mDataType(pDataType), mGLType(gl_dtype(mDataType))
 {
     CheckGL("Begin Image::Image");
@@ -122,8 +122,7 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, mGLformat,
-                 mWidth, mHeight, 0, mGLformat, mGLType, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, mGLiformat, mWidth, mHeight, 0, mGLformat, mGLType, NULL);
 
     CheckGL("Before PBO Initialization");
     glGenBuffers(1, &mPBO);
@@ -170,7 +169,7 @@ unsigned image_impl::width() const { return mWidth; }
 
 unsigned image_impl::height() const { return mHeight; }
 
-fg::ColorMode image_impl::pixelFormat() const { return mFormat; }
+fg::ChannelFormat image_impl::pixelFormat() const { return mFormat; }
 
 fg::dtype image_impl::channelType() const { return mDataType; }
 
@@ -242,7 +241,7 @@ void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int p
 namespace fg
 {
 
-Image::Image(unsigned pWidth, unsigned pHeight, fg::ColorMode pFormat, fg::dtype pDataType) {
+Image::Image(unsigned pWidth, unsigned pHeight, fg::ChannelFormat pFormat, fg::dtype pDataType) {
     value = new internal::_Image(pWidth, pHeight, pFormat, pDataType);
 }
 
@@ -262,7 +261,7 @@ unsigned Image::height() const {
     return value->height();
 }
 
-ColorMode Image::pixelFormat() const {
+ChannelFormat Image::pixelFormat() const {
     return value->pixelFormat();
 }
 

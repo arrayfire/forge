@@ -93,10 +93,13 @@ enum ErrorCode {
     FG_ERR_UNKNOWN        = 9003            ///< Unkown error
 };
 
-enum ColorMode {
-    FG_C1 = 1,                              ///< Single channel
-    FG_C3 = 3,                              ///< Three(Red, Green & Blue) channels
-    FG_C4 = 4                               ///< Four(Red, Green, Blue & Alpha) channels
+enum ChannelFormat {
+    FG_R    = 0,                            ///< Single channel
+    FG_RG   = 1,                            ///< Three(Red, Green & Blue) channels
+    FG_RGB  = 2,                            ///< Three(Red, Green & Blue) channels
+    FG_BGR  = 3,                            ///< Three(Red, Green & Blue) channels
+    FG_RGBA = 4,                            ///< Four(Red, Green, Blue & Alpha) channels
+    FG_BGRA = 5                             ///< Four(Red, Green, Blue & Alpha) channels
 };
 
 /**

@@ -35,14 +35,28 @@ GLenum gl_dtype(fg::dtype val)
     }
 }
 
-GLenum gl_ctype(ColorMode mode)
+GLenum gl_ctype(ChannelFormat mode)
 {
     switch(mode) {
-        case FG_C1: return GL_RED;
-        case FG_C3: return GL_RGB;
-        case FG_C4: return GL_RGBA;
-        default   : return GL_RGBA;
+        case FG_R   : return GL_RED;
+        case FG_RG  : return GL_RG;
+        case FG_RGB : return GL_RGB;
+        case FG_BGR : return GL_BGR;
+        case FG_BGRA: return GL_BGRA;
+        default     : return GL_RGBA;
     }
+}
+
+GLenum gl_ictype(ChannelFormat mode)
+{
+    if (mode==FG_R)
+        return GL_RED;
+    else if (mode==FG_RG)
+        return GL_RG;
+    else if (mode==FG_RGB || mode==FG_BGR)
+        return GL_RGB;
+    else
+        return GL_RGBA;
 }
 
 char* loadFile(const char * fname, GLint &fSize)

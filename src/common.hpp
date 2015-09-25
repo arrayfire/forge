@@ -54,7 +54,9 @@ class AbstractRenderable {
 
 GLenum gl_dtype(fg::dtype val);
 
-GLenum gl_ctype(fg::ColorMode mode);
+GLenum gl_ctype(fg::ChannelFormat mode);
+
+GLenum gl_ictype(fg::ChannelFormat mode);
 
 char* loadFile(const char *fname, GLint &fSize);
 

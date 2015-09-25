@@ -33,11 +33,11 @@ class Image {
            \param[in] pWidth Width of the image
            \param[in] pHeight Height of the image
            \param[in] pFormat Color channel format of image, uses one of the values
-                      of \ref ColorMode
+                      of \ref ChannelFormat
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, dtype pDataType);
+        FGAPI Image(unsigned pWidth, unsigned pHeight, ChannelFormat pFormat, dtype pDataType);
 
         /**
            Copy constructor of Image
@@ -65,9 +65,9 @@ class Image {
 
         /**
            Get Image's channel format
-           \return \ref ColorMode value of Image
+           \return \ref ChannelFormat value of Image
          */
-        FGAPI ColorMode pixelFormat() const;
+        FGAPI ChannelFormat pixelFormat() const;
 
         /**
            Get Image's integral data type
