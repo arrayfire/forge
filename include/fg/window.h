@@ -13,7 +13,7 @@
 #include <fg/font.h>
 #include <fg/image.h>
 #include <fg/plot.h>
-#include <fg/plot3.h>
+#include <fg/surface.h>
 #include <fg/histogram.h>
 
 namespace internal
@@ -174,7 +174,7 @@ class Window {
         FGAPI void draw(const Plot& pPlot);
 
         /**
-           Render a Plot3 to Window
+           Render a Surface to Window
 
            \param[in] pPlot is an object of class Plot
 
@@ -182,7 +182,7 @@ class Window {
            to call Window::draw() after this function is called upon for rendering
            a plot
          */
-        FGAPI void draw(const Plot3& pPlot);
+        FGAPI void draw(const Surface& pPlot);
         /**
            Render Histogram to Window
 

@@ -18,7 +18,7 @@
 namespace internal
 {
 
-class plot3_impl : public AbstractChart3D {
+class surface_impl : public AbstractChart3D {
     protected:
         /* plot points characteristics */
         GLuint    mNumXPoints;
@@ -48,8 +48,8 @@ class plot3_impl : public AbstractChart3D {
         virtual void renderGraph(int pWindowId, glm::mat4 transform);
 
     public:
-        plot3_impl(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pDataType);
-        ~plot3_impl();
+        surface_impl(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pDataType);
+        ~surface_impl();
 
         void setColor(fg::Color col);
         void setColor(float r, float g, float b);
@@ -60,16 +60,16 @@ class plot3_impl : public AbstractChart3D {
 };
 
 
-class _Plot3 {
+class _Surface {
     private:
-        std::shared_ptr<plot3_impl> plt;
+        std::shared_ptr<surface_impl> plt;
 
     public:
-        _Plot3(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pDataType){
-                plt = std::make_shared<plot3_impl>(pNumXpoints, pNumYpoints, pDataType);
+        _Surface(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pDataType){
+                plt = std::make_shared<surface_impl>(pNumXpoints, pNumYpoints, pDataType);
         }
 
-        inline const std::shared_ptr<plot3_impl>& impl() const {
+        inline const std::shared_ptr<surface_impl>& impl() const {
             return plt;
         }
 

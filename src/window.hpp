@@ -21,7 +21,7 @@
 #include <font.hpp>
 #include <image.hpp>
 #include <plot.hpp>
-#include <plot3.hpp>
+#include <surface.hpp>
 #include <histogram.hpp>
 
 #include <memory>
@@ -171,7 +171,7 @@ class _Window {
             wnd->draw(pPlot->impl()) ;
         }
 
-        inline void draw(const _Plot3* pPlot) {
+        inline void draw(const _Surface* pPlot) {
             wnd->draw(pPlot->impl()) ;
         }
 

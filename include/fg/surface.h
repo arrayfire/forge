@@ -13,42 +13,43 @@
 
 namespace internal
 {
-class _Plot3;
+class _Surface;
 }
 
 namespace fg
 {
 
 /**
-   \class Plot3
+   \class Surface
 
    \brief 3d graph to display plots.
  */
-class Plot3 {
+class Surface {
     private:
-        internal::_Plot3* value;
+        internal::_Surface* value;
 
     public:
         /**
-           Creates a Plot3d object
+           Creates a Surface object
 
-           \param[in] pNumPoints is number of data points to display
+           \param[in] pNumXPoints is number of data points along X dimension
+           \param[in] pNumYPoints is number of data points along Y dimension
            \param[in] pDataType takes one of the values of \ref FGType that indicates
                       the integral data type of plot data
          */
-        FGAPI Plot3(unsigned pNumXpoints, unsigned pNumYpoints, FGType pDataType);
+        FGAPI Surface(unsigned pNumXpoints, unsigned pNumYpoints, FGType pDataType);
 
         /**
            Copy constructor for Plot
 
            \param[in] other is the Plot of which we make a copy of.
          */
-        FGAPI Plot3(const Plot3& other);
+        FGAPI Surface(const Surface& other);
 
         /**
            Plot Destructor
          */
-        FGAPI ~Plot3();
+        FGAPI ~Surface();
 
         /**
            Set the color of line graph(plot)
@@ -154,9 +155,9 @@ class Plot3 {
         FGAPI unsigned size() const;
 
         /**
-           Get the handle to internal implementation of Plot3
+           Get the handle to internal implementation of _Surface
          */
-        FGAPI internal::_Plot3* get() const;
+        FGAPI internal::_Surface* get() const;
 };
 
 }

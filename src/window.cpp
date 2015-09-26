@@ -418,7 +418,7 @@ void Window::draw(const Plot& pPlot)
     value->draw(pPlot.get());
 }
 
-void Window::draw(const Plot3& pPlot)
+void Window::draw(const Surface& pPlot)
 {
     value->draw(pPlot.get());
 }

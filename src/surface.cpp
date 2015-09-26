@@ -7,8 +7,8 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/plot3.h>
-#include <plot3.hpp>
+#include <fg/surface.h>
+#include <surface.hpp>
 #include <common.hpp>
 
 #include <cmath>
@@ -77,7 +77,7 @@ static const char *gMarkerSpriteFragmentShaderSrc =
 namespace internal
 {
 
-void plot3_impl::bindResources(int pWindowId)
+void surface_impl::bindResources(int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
         GLuint vao = 0;
@@ -100,7 +100,7 @@ void plot3_impl::bindResources(int pWindowId)
     glBindVertexArray(mVAOMap[pWindowId]);
 }
 
-void plot3_impl::unbindResources() const
+void surface_impl::unbindResources() const
 {
     glBindVertexArray(0);
 }
@@ -125,7 +125,7 @@ void generate_grid_indices(unsigned short rows, unsigned short cols, unsigned sh
     }
 }
 
-plot3_impl::plot3_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType)
+surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType)
     : AbstractChart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints), mDataType(FGTypeToGLenum(pDataType)),
       mMainVBO(0), mMainVBOsize(0), mIndexVBO(0), mIndexVBOsize(0), mPointIndex(0)
 {
@@ -168,14 +168,14 @@ plot3_impl::plot3_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pD
     mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
 }
 
-plot3_impl::~plot3_impl()
+surface_impl::~surface_impl()
 {
     CheckGL("Begin Plot::~Plot");
     glDeleteBuffers(1, &mMainVBO);
     CheckGL("End Plot::~Plot");
 }
 
-void plot3_impl::setColor(fg::Color col)
+void surface_impl::setColor(fg::Color col)
 {
     mLineColor[0] = (((int) col >> 24 ) & 0xFF ) / 255.f;
     mLineColor[1] = (((int) col >> 16 ) & 0xFF ) / 255.f;
@@ -183,7 +183,7 @@ void plot3_impl::setColor(fg::Color col)
     mLineColor[3] = (((int) col       ) & 0xFF ) / 255.f;
 }
 
-void plot3_impl::setColor(float r, float g, float b)
+void surface_impl::setColor(float r, float g, float b)
 {
     mLineColor[0] = clampTo01(r);
     mLineColor[1] = clampTo01(g);
@@ -191,17 +191,17 @@ void plot3_impl::setColor(float r, float g, float b)
     mLineColor[3] = 1.0f;
 }
 
-GLuint plot3_impl::vbo() const
+GLuint surface_impl::vbo() const
 {
     return mMainVBO;
 }
 
-size_t plot3_impl::size() const
+size_t surface_impl::size() const
 {
     return mMainVBOsize;
 }
 
-void plot3_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
+void surface_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
     float range_x = xmax() - xmin();
     float range_y = ymax() - ymin();
@@ -237,7 +237,7 @@ void plot3_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     CheckGL("End Plot::render");
 }
 
-void plot3_impl::renderGraph(int pWindowId, glm::mat4 transform){
+void surface_impl::renderGraph(int pWindowId, glm::mat4 transform){
     bindBorderProgram();
     glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
     glUniform4fv(borderColorIndex(), 1, mLineColor);
@@ -261,12 +261,12 @@ void plot3_impl::renderGraph(int pWindowId, glm::mat4 transform){
     glDisable(GL_PROGRAM_POINT_SIZE);
 }
 
-GLuint plot3_impl::markerTypeIndex() const
+GLuint surface_impl::markerTypeIndex() const
 {
     return mMarkerTypeIndex;
 }
 
-GLuint plot3_impl::spriteMatIndex() const
+GLuint surface_impl::spriteMatIndex() const
 {
     return mSpriteTMatIndex;
 }
@@ -276,93 +276,93 @@ GLuint plot3_impl::spriteMatIndex() const
 namespace fg
 {
 
-Plot3::Plot3(unsigned pNumXPoints, unsigned pNumYPoints, FGType pDataType)
+Surface::Surface(unsigned pNumXPoints, unsigned pNumYPoints, FGType pDataType)
 {
-    value = new internal::_Plot3(pNumXPoints, pNumYPoints, pDataType);
+    value = new internal::_Surface(pNumXPoints, pNumYPoints, pDataType);
 }
 
-Plot3::Plot3(const Plot3& other)
+Surface::Surface(const Surface& other)
 {
-    value = new internal::_Plot3(*other.get());
+    value = new internal::_Surface(*other.get());
 }
 
-Plot3::~Plot3()
+Surface::~Surface()
 {
     delete value;
 }
 
-void Plot3::setColor(fg::Color col)
+void Surface::setColor(fg::Color col)
 {
     value->setColor(col);
 }
 
-void Plot3::setColor(float r, float g, float b)
+void Surface::setColor(float r, float g, float b)
 {
     value->setColor(r, g, b);
 }
 
-void Plot3::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin)
+void Surface::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin)
 {
     value->setAxesLimits(pXmax, pXmin, pYmax, pYmin, pZmax, pZmin);
 }
 
-void Plot3::setXAxisTitle(const char* pTitle)
+void Surface::setXAxisTitle(const char* pTitle)
 {
     value->setXAxisTitle(pTitle);
 }
 
-void Plot3::setYAxisTitle(const char* pTitle)
+void Surface::setYAxisTitle(const char* pTitle)
 {
     value->setYAxisTitle(pTitle);
 }
 
-void Plot3::setZAxisTitle(const char* pTitle)
+void Surface::setZAxisTitle(const char* pTitle)
 {
     value->setZAxisTitle(pTitle);
 }
 
 
-float Plot3::xmax() const
+float Surface::xmax() const
 {
     return value->xmax();
 }
 
-float Plot3::xmin() const
+float Surface::xmin() const
 {
     return value->xmin();
 }
 
-float Plot3::ymax() const
+float Surface::ymax() const
 {
     return value->ymax();
 }
 
-float Plot3::ymin() const
+float Surface::ymin() const
 {
     return value->ymin();
 }
 
-float Plot3::zmax() const
+float Surface::zmax() const
 {
     return value->zmax();
 }
 
-float Plot3::zmin() const
+float Surface::zmin() const
 {
     return value->zmin();
 }
 
-unsigned Plot3::vbo() const
+unsigned Surface::vbo() const
 {
     return value->vbo();
 }
 
-unsigned Plot3::size() const
+unsigned Surface::size() const
 {
     return (unsigned)value->size();
 }
 
-internal::_Plot3* Plot3::get() const
+internal::_Surface* Surface::get() const
 {
     return value;
 }
