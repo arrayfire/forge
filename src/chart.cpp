@@ -773,13 +773,10 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
     /* set uniform attributes of shader
      * for drawing the plot borders */
     glm::mat4 model = glm::scale(glm::mat4(1.f), glm::vec3(0.9f, 0.9f, 0.9f)) *  glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
-    glm::mat4 view = glm::rotate(glm::mat4(1.f), glm::radians(45.f), glm::vec3(0,1,0)) * glm::translate(glm::mat4(1.f), glm::vec3(2.0f, 0.3f, -2.f));
-    glm::mat4 projection = glm::perspective(45.0f, (float)w/h, 0.1f, 100.f);
+    glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(0,-1,0),glm::vec3(0,1,0));
+    glm::mat4 projection = glm::ortho(2* (float)-w/(float)h, 2*(float)w/(float)h, -2.f, 2.f, -1.1f, 10.f);
     glm::mat4 mvp = projection * view * model;
 
-//   glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
-//                                               glm::vec3(scale_x, scale_y, 1)),
-//                                    glm::vec3(offset_x, offset_y, 0));
     glm::mat4 trans = mvp;
     glUniformMatrix4fv(mBorderMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderColorIndex, 1, WHITE);
@@ -814,60 +811,74 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
 
-//  float pos[2];
-//  /* render tick marker texts for y axis */
-//  for (StringIter it = mYText.begin(); it!=mYText.end(); ++it) {
-//      int idx = int(it - mYText.begin());
-//      glm::vec4 res = trans * glm::vec4(mTickTextX[idx], mTickTextY[idx], 0, 1);
-//      /* convert text position from [-1,1] range to
-//       * [0, 1) range and then offset horizontally
-//       * to compensate for margins and ticksize */
-//      pos[0] = w*(res.x+1.0f)/2.0f;
-//      pos[1] = h*(res.y+1.0f)/2.0f;
-//      /* offset horizontally based on text size to align
-//       * text center with tick mark position */
-//      pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f)+(mTickSize * (w/pVPW)));
-//      fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
-//  }
-//  /* render tick marker texts for x axis */
-//  for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
-//      int idx = int(it - mXText.begin());
-//      /* mTickCount offset is needed while reading point coordinates for
-//       * x axis tick marks */
-//      glm::vec4 res = trans * glm::vec4(mTickTextX[idx+mTickCount], mTickTextY[idx+mTickCount], 0, 1);
-//      /* convert text position from [-1,1] range to
-//       * [0, 1) range and then offset vertically
-//       * to compensate for margins and ticksize */
-//      pos[0] = w*(res.x+1.0f)/2.0f;
-//      pos[1] = h*(res.y+1.0f)/2.0f;
-//      pos[1] -= ((CHART2D_FONT_SIZE*h/pVPH)+(mTickSize * (w/pVPW)));
-//      /* offset horizontally based on text size to align
-//       * text center with tick mark position */
-//      pos[0] -= (CHART2D_FONT_SIZE*(it->length()-2)/2.0f);
-//      fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
-//  }
-//   /* render chart axes titles */
-//   if (!mZTitle.empty()) {
-//       glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-//       pos[0] = w*(res.x+1.0f)/2.0f;
-//       pos[1] = h*(res.y+1.0f)/2.0f;
-//       pos[0] += (mTickSize * (w/pVPW));
-//       fonter->render(pWindowId, pos, WHITE, mZTitle.c_str(), CHART2D_FONT_SIZE, true);
-//   }
-//   if (!mYTitle.empty()) {
-//       glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-//       pos[0] = w*(res.x+1.0f)/2.0f;
-//       pos[1] = h*(res.y+1.0f)/2.0f;
-//       pos[0] += (mTickSize * (w/pVPW));
-//       fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
-//   }
-//   if (!mXTitle.empty()) {
-//       glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
-//       pos[0] = w*(res.x+1.0f)/2.0f;
-//       pos[1] = h*(res.y+1.0f)/2.0f;
-//       pos[1] += (mTickSize * (h/pVPH));
-//       fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
-//   }
+    float pos[2];
+    /* render tick marker texts for z axis */
+    for (StringIter it = mZText.begin(); it!=mZText.end(); ++it) {
+        int idx = int(it - mZText.begin());
+        glm::vec4 res = trans * glm::vec4(mTickTextX[idx], mTickTextY[idx], mTickTextZ[idx], 1);
+        /* convert text position from [-1,1] range to
+         * [0, 1) range and then offset horizontally
+         * to compensate for margins and ticksize */
+        pos[0] = w*(res.x/res.w+1.0f)/2.0f;
+        pos[1] = h*(res.y/res.w+1.0f)/2.0f;
+        /* offset horizontally based on text size to align
+         * text center with tick mark position */
+        pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f)+(mTickSize * (w/pVPW)));
+        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+    }
+    /* render tick marker texts for y axis */
+    for (StringIter it = mYText.begin(); it!=mYText.end(); ++it) {
+        int idx = int(it - mYText.begin());
+        glm::vec4 res = trans * glm::vec4(mTickTextX[idx+mTickCount], mTickTextY[idx+mTickCount], mTickTextZ[idx+2*mTickCount], 1);
+        /* convert text position from [-1,1] range to
+         * [0, 1) range and then offset horizontally
+         * to compensate for margins and ticksize */
+        pos[0] = w*(res.x/res.w+1.0f)/2.0f;
+        pos[1] = h*(res.y/res.w+1.0f)/2.0f;
+        /* offset horizontally based on text size to align
+         * text center with tick mark position */
+        pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f)+(mTickSize * (w/pVPW)));
+        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+    }
+    /* render tick marker texts for x axis */
+    for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
+        int idx = int(it - mXText.begin());
+        /* mTickCount offset is needed while reading point coordinates for
+         * x axis tick marks */
+        glm::vec4 res = trans * glm::vec4(mTickTextX[idx+2*mTickCount], mTickTextY[idx+2*mTickCount], mTickTextZ[idx+2*mTickCount], 1);
+        /* convert text position from [-1,1] range to
+         * [0, 1) range and then offset vertically
+         * to compensate for margins and ticksize */
+        pos[0] = w*(res.x/res.w+1.0f)/2.0f;
+        pos[1] = h*(res.y/res.w+1.0f)/2.0f;
+        pos[1] -= ((CHART2D_FONT_SIZE*h/pVPH)+(mTickSize * (w/pVPW)));
+        /* offset horizontally based on text size to align
+         * text center with tick mark position */
+        pos[0] -= (CHART2D_FONT_SIZE*(it->length()-2)/2.0f);
+        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+    }
+     /* render chart axes titles */
+     if (!mZTitle.empty()) {
+         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
+         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
+         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
+         pos[0] += (mTickSize * (w/pVPW));
+         fonter->render(pWindowId, pos, WHITE, mZTitle.c_str(), CHART2D_FONT_SIZE, true);
+     }
+     if (!mYTitle.empty()) {
+         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
+         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
+         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
+         pos[0] += (mTickSize * (w/pVPW));
+         fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
+     }
+     if (!mXTitle.empty()) {
+         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
+         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
+         pos[1] += (mTickSize * (h/pVPH));
+         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
+     }
 
     CheckGL("End Chart::render");
 }

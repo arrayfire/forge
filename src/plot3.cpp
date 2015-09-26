@@ -21,10 +21,10 @@ using namespace std;
 
 static const char *gMarkerVertexShaderSrc =
 "#version 330\n"
-"in vec2 point;\n"
+"in vec3 point;\n"
 "uniform mat4 transform;\n"
 "void main(void) {\n"
-"   gl_Position = transform * vec4(point.xy, 0, 1);\n"
+"   gl_Position = transform * vec4(point.xyz, 1);\n"
 "   gl_PointSize = 10;\n"
 "}";
 
@@ -71,7 +71,7 @@ static const char *gMarkerSpriteFragmentShaderSrc =
 "   if(!in_bounds)\n"
 "       discard;\n"
 "   else\n"
-"       outputColor = line_color;\n"
+"       outputColor = line_color-vec4(0.1, 0.1, 0.1, 0);\n"
 "}";
 
 namespace internal
@@ -88,7 +88,9 @@ void plot3_impl::bindResources(int pWindowId)
         // attach plot vertices
         glEnableVertexAttribArray(mPointIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mMainVBO);
-        glVertexAttribPointer(mPointIndex, 2, mDataType, GL_FALSE, 0, 0);
+        glVertexAttribPointer(mPointIndex, 3, mDataType, GL_FALSE, 0, 0);
+        //attach indices
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexVBO);
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
@@ -103,11 +105,40 @@ void plot3_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-plot3_impl::plot3_impl(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pDataType)
-    : AbstractChart3D(), mNumXPoints(pNumXpoints),mNumYPoints(pNumYpoints), mDataType(FGTypeToGLenum(pDataType)),
-      mMainVBO(0), mMainVBOsize(0), mPointIndex(0)
+void generate_grid_indices(unsigned short rows, unsigned short cols, unsigned short *indices){
+    unsigned short idx = 0;
+    for(unsigned short r = 0; r < rows-1; ++r){
+        for(unsigned short c = 0; c < cols*2; ++c){
+            unsigned short i = c + (r * (cols*2));
+
+            if(c == cols * 2 - 1) {
+                *indices++ = idx;
+            }else{
+                *indices++ = idx;
+                if(i%2 == 0){
+                    idx += cols;
+                } else {
+                    idx -= (r%2 == 0) ? (cols-1) : (cols+1);
+                }
+            }
+        }
+    }
+}
+
+plot3_impl::plot3_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType)
+    : AbstractChart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints), mDataType(FGTypeToGLenum(pDataType)),
+      mMainVBO(0), mMainVBOsize(0), mIndexVBO(0), mIndexVBOsize(0), mPointIndex(0)
 {
-    unsigned total_points = mNumXPoints * mNumYPoints;
+    unsigned total_points = 3*(mNumXPoints * mNumYPoints);
+
+    mIndexVBOsize = (2 * mNumYPoints) * (mNumXPoints - 1);
+    unsigned short indices[mIndexVBOsize];
+    generate_grid_indices(mNumXPoints, mNumYPoints, indices);
+    mIndexVBO = createBuffer<unsigned short>(GL_ELEMENT_ARRAY_BUFFER, mIndexVBOsize, NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexVBO);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, mIndexVBOsize * sizeof(unsigned short), indices);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     // buffersubdata calls on mMainVBO
     // will only update the points data
     switch(mDataType) {
@@ -132,6 +163,7 @@ plot3_impl::plot3_impl(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pD
     mPointIndex = borderProgramPointIndex();
     mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
 
+    mMarkerType = fg::FG_POINT;
     mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
     mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
 }
@@ -185,13 +217,6 @@ void plot3_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     float view_scale_y = viewHeight/pVPH;
     float view_offset_x = (2.0f * (leftMargin() + tickSize()/2 )/ pVPW ) ;
     float view_offset_y = (2.0f * (bottomMargin() + tickSize() )/ pVPH ) ;
-    /* Enable scissor test to discard anything drawn beyond viewport.
-     * Set scissor rectangle to clip fragments outside of viewport */
-    glScissor(pX + leftMargin() + tickSize()/2, pY+bottomMargin() + tickSize()/2,
-              pVPW - leftMargin()   - rightMargin() - tickSize()/2,
-              pVPH - bottomMargin() - topMargin()   - tickSize()/2);
-    glEnable(GL_SCISSOR_TEST);
-
     float coor_offset_x = ( -xmin() * graph_scale_x * view_scale_x);
     float coor_offset_y = ( -ymin() * graph_scale_y * view_scale_y);
     glm::mat4 transform = glm::translate(glm::mat4(1.f),
@@ -199,10 +224,13 @@ void plot3_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     transform = glm::scale(transform,
             glm::vec3(graph_scale_x * view_scale_x , graph_scale_y * view_scale_y ,1));
 
-    //renderGraph(pWindowId, transform);
+    glm::mat4 model = glm::scale(glm::mat4(1.f), glm::vec3(0.9f, 0.9f, -0.9f)) *  glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
+    glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(0,-1,0),glm::vec3(0,1,0));
+    glm::mat4 projection = glm::ortho(2* (float)-viewWidth/(float)viewHeight, 2*(float)viewWidth/(float)viewHeight, -2.f, 2.f, -1.1f, 100.f);
+    glm::mat4 mvp = projection * view * model;
+    transform = mvp;
+    renderGraph(pWindowId, transform);
 
-    /* Stop clipping and reset viewport to window dimensions */
-    glDisable(GL_SCISSOR_TEST);
     /* render graph border and axes */
     renderChart(pWindowId, pX, pY, pVPW, pVPH);
 
@@ -214,24 +242,23 @@ void plot3_impl::renderGraph(int pWindowId, glm::mat4 transform){
     glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
     glUniform4fv(borderColorIndex(), 1, mLineColor);
     bindResources(pWindowId);
-    glDrawArrays(GL_LINE_STRIP, 0, mNumXPoints*mNumYPoints);
+    glDrawElements(GL_TRIANGLE_STRIP, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0 );
     unbindResources();
     unbindBorderProgram();
 
-    if(mMarkerType != fg::FG_NONE){
-        glEnable(GL_PROGRAM_POINT_SIZE);
-        glUseProgram(mMarkerProgram);
 
-        glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform4fv(borderColorIndex(), 1, mLineColor);
-        glUniform1i(markerTypeIndex(), mMarkerType);
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    glUseProgram(mMarkerProgram);
 
-        bindResources(pWindowId);
-        glDrawArrays(GL_POINTS, 0, mNumXPoints*mNumYPoints);
-        unbindResources();
-        glUseProgram(0);
-        glDisable(GL_PROGRAM_POINT_SIZE);
-    }
+    glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+    glUniform4fv(borderColorIndex(), 1, mLineColor);
+    glUniform1i(markerTypeIndex(), mMarkerType);
+
+    bindResources(pWindowId);
+    glDrawElements(GL_POINTS, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0 );
+    unbindResources();
+    glUseProgram(0);
+    glDisable(GL_PROGRAM_POINT_SIZE);
 }
 
 GLuint plot3_impl::markerTypeIndex() const

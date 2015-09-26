@@ -29,6 +29,8 @@ class plot3_impl : public AbstractChart3D {
         /* OpenGL Objects */
         GLuint    mMainVBO;
         size_t    mMainVBOsize;
+        GLuint    mIndexVBO;
+        size_t    mIndexVBOsize;
         GLuint    mMarkerProgram;
         /* shared variable index locations */
         GLuint    mPointIndex;
