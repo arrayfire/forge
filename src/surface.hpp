@@ -48,7 +48,7 @@ class surface_impl : public AbstractChart3D {
         virtual void renderGraph(int pWindowId, glm::mat4 transform);
 
     public:
-        surface_impl(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pDataType);
+        surface_impl(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType);
         ~surface_impl();
 
         void setColor(fg::Color col);
@@ -59,14 +59,31 @@ class surface_impl : public AbstractChart3D {
         void render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
 };
 
+class scatter3_impl : public surface_impl {
+   private:
+        void renderGraph(int pWindowId, glm::mat4 transform);
+
+   public:
+       scatter3_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType=fg::FG_NONE) : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType)   {}
+       ~scatter3_impl() {}
+};
 
 class _Surface {
     private:
         std::shared_ptr<surface_impl> plt;
 
     public:
-        _Surface(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pDataType){
-                plt = std::make_shared<surface_impl>(pNumXpoints, pNumYpoints, pDataType);
+        _Surface(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType, fg::FGPlotType pPlotType=fg::FG_SURFACE, fg::FGMarkerType pMarkerType=fg::FG_NONE){
+            switch(pPlotType){
+                case(fg::FG_SURFACE):
+                    plt = std::make_shared<surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
+                    break;
+                case(fg::FG_SCATTER):
+                    plt = std::make_shared<scatter3_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
+                    break;
+                default:
+                    plt = std::make_shared<surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
+            };
         }
 
         inline const std::shared_ptr<surface_impl>& impl() const {

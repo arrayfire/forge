@@ -37,7 +37,7 @@ class Surface {
            \param[in] pDataType takes one of the values of \ref FGType that indicates
                       the integral data type of plot data
          */
-        FGAPI Surface(unsigned pNumXpoints, unsigned pNumYpoints, FGType pDataType);
+        FGAPI Surface(unsigned pNumXPoints, unsigned pNumYPoints, FGType pDataType, FGPlotType pPlotType=fg::FG_SURFACE, FGMarkerType pMarkerType=fg::FG_NONE);
 
         /**
            Copy constructor for Plot

@@ -125,7 +125,7 @@ void generate_grid_indices(unsigned short rows, unsigned short cols, unsigned sh
     }
 }
 
-surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType)
+surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType)
     : AbstractChart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints), mDataType(FGTypeToGLenum(pDataType)),
       mMainVBO(0), mMainVBOsize(0), mIndexVBO(0), mIndexVBOsize(0), mPointIndex(0)
 {
@@ -161,9 +161,9 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGTyp
         default: fg::TypeError("Plot::Plot", __LINE__, 1, GLenumToFGType(mDataType));
     }
     mPointIndex = borderProgramPointIndex();
+    mMarkerType = pMarkerType;
     mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
 
-    mMarkerType = fg::FG_POINT;
     mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
     mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
 }
@@ -247,18 +247,20 @@ void surface_impl::renderGraph(int pWindowId, glm::mat4 transform){
     unbindBorderProgram();
 
 
-    glEnable(GL_PROGRAM_POINT_SIZE);
-    glUseProgram(mMarkerProgram);
+    if(mMarkerType != fg::FG_NONE){
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        glUseProgram(mMarkerProgram);
 
-    glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-    glUniform4fv(borderColorIndex(), 1, mLineColor);
-    glUniform1i(markerTypeIndex(), mMarkerType);
+        glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+        glUniform4fv(borderColorIndex(), 1, mLineColor);
+        glUniform1i(markerTypeIndex(), mMarkerType);
 
-    bindResources(pWindowId);
-    glDrawElements(GL_POINTS, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0 );
-    unbindResources();
-    glUseProgram(0);
-    glDisable(GL_PROGRAM_POINT_SIZE);
+        bindResources(pWindowId);
+        glDrawElements(GL_POINTS, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0 );
+        unbindResources();
+        glUseProgram(0);
+        glDisable(GL_PROGRAM_POINT_SIZE);
+    }
 }
 
 GLuint surface_impl::markerTypeIndex() const
@@ -271,14 +273,31 @@ GLuint surface_impl::spriteMatIndex() const
     return mSpriteTMatIndex;
 }
 
+void scatter3_impl::renderGraph(int pWindowId, glm::mat4 transform){
+    if(mMarkerType != fg::FG_NONE){
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        glUseProgram(mMarkerProgram);
+
+        glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+        glUniform4fv(borderColorIndex(), 1, mLineColor);
+        glUniform1i(markerTypeIndex(), mMarkerType);
+
+        bindResources(pWindowId);
+        glDrawElements(GL_POINTS, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0 );
+        unbindResources();
+        glUseProgram(0);
+        glDisable(GL_PROGRAM_POINT_SIZE);
+    }
+}
+
 }
 
 namespace fg
 {
 
-Surface::Surface(unsigned pNumXPoints, unsigned pNumYPoints, FGType pDataType)
+Surface::Surface(unsigned pNumXPoints, unsigned pNumYPoints, FGType pDataType, FGPlotType pPlotType, FGMarkerType pMarkerType)
 {
-    value = new internal::_Surface(pNumXPoints, pNumYPoints, pDataType);
+    value = new internal::_Surface(pNumXPoints, pNumYPoints, pDataType, pPlotType, pMarkerType);
 }
 
 Surface::Surface(const Surface& other)

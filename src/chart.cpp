@@ -25,10 +25,11 @@ static const int CHART2D_FONT_SIZE = 15;
 
 const char *gChartVertexShaderSrc =
 "#version 330\n"
-"in vec3 point;\n"
+"attribute vec3 point;\n"
 "uniform mat4 transform;\n"
 "void main(void) {\n"
 "   gl_Position = transform * vec4(point.xyz, 1);\n"
+"   gl_PointSize = 10;\n"
 "}";
 
 const char *gChartFragmentShaderSrc =
@@ -155,6 +156,15 @@ int AbstractChart2D::topMargin() const
     return mTopMargin;
 }
 
+template<typename T>
+void push_point(vector<T> &points, T x, T y){
+    points.push_back(x);
+    points.push_back(y);
+}
+void AbstractChart2D::push_ticktext_points(float x, float y){
+    AbstractChart2D::mTickTextX.push_back(x);
+    AbstractChart2D::mTickTextY.push_back(y);
+}
 void AbstractChart2D::setTickCount(int pTickCount)
 {
     static const float border[8] = { -1, -1, 1, -1, 1, 1, -1, 1 };
@@ -171,30 +181,24 @@ void AbstractChart2D::setTickCount(int pTickCount)
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
     int ticksLeft = mTickCount/2;
-    decorData.push_back(-1.0f);
-    decorData.push_back(0.0f);
-    mTickTextX.push_back(-1.0f);
-    mTickTextY.push_back(0.0f);
+    push_point(decorData, -1.0f, 0.0f);
+    push_ticktext_points(-1.0f, 0.0f);
     mYText.push_back(toString(0));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* [-1, 0) to [-1, -1] */
         float neg = i*-step;
-        decorData.push_back(-1.0f);
-        decorData.push_back(neg);
+        push_point(decorData, -1.0f, neg);
         /* puch tick marks */
-        mTickTextX.push_back(-1.0f);
-        mTickTextY.push_back(neg);
+        push_ticktext_points(-1.0f, neg);
         /* push tick text label */
         mYText.push_back(toString(neg));
 
         /* [-1, 0) to [-1, 1] */
         float pos = i*step;
-        decorData.push_back(-1.0f);
-        decorData.push_back(pos);
+        push_point(decorData, -1.0f, pos);
         /* puch tick marks */
-        mTickTextX.push_back(-1.0f);
-        mTickTextY.push_back(pos);
+        push_ticktext_points(-1.0f, pos);
         /* push tick text label */
         mYText.push_back(toString(pos));
     }
@@ -203,31 +207,21 @@ void AbstractChart2D::setTickCount(int pTickCount)
      * push (0,0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    decorData.push_back(0.0f);
-    decorData.push_back(-1.0f);
-    mTickTextX.push_back(0.0f);
-    mTickTextY.push_back(-1.0f);
+    push_point(decorData, 0.0f, -1.0f);
+    push_ticktext_points(0.0f, -1.0f);
     mXText.push_back(toString(0));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
         float neg = i*-step;
-        decorData.push_back(neg);
-        decorData.push_back(-1.0f);
-        /* puch tick marks */
-        mTickTextX.push_back(neg);
-        mTickTextY.push_back(-1.0f);
-        /* push tick text label */
+        push_point(decorData, neg, -1.0f);
+        push_ticktext_points(neg, -1.0f);
         mXText.push_back(toString(neg));
 
         /* (0, -1] to [1, -1] */
         float pos = i*step;
-        decorData.push_back(pos);
-        decorData.push_back(-1.0f);
-        /* puch tick marks */
-        mTickTextX.push_back(pos);
-        mTickTextY.push_back(-1.0f);
-        /* push tick text label */
+        push_point(decorData, pos, -1.0f);
+        push_ticktext_points(pos, -1.0f);
         mXText.push_back(toString(pos));
     }
 
@@ -512,6 +506,18 @@ int AbstractChart3D::topMargin() const
     return mTopMargin;
 }
 
+template<typename T>
+void push_point(vector<T> &points, T x, T y, T z){
+    points.push_back(x);
+    points.push_back(y);
+    points.push_back(z);
+}
+void AbstractChart3D::push_ticktext_points(float x, float y, float z){
+    AbstractChart3D::mTickTextX.push_back(x);
+    AbstractChart3D::mTickTextY.push_back(y);
+    AbstractChart3D::mTickTextZ.push_back(z);
+}
+
 void AbstractChart3D::setTickCount(int pTickCount)
 {
     static const float border[] = { -1, -1, -1,  1, -1, -1,  -1, -1, -1,  -1, 1, -1,  -1, 1, -1,  -1, 1, 1 };
@@ -528,38 +534,25 @@ void AbstractChart3D::setTickCount(int pTickCount)
      * push (0,0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    decorData.push_back(-1.0f);
-    decorData.push_back(1.0f);
-    decorData.push_back(0.0f);
-
-    mTickTextX.push_back(-1.0f);
-    mTickTextY.push_back(1.0f);
-    mTickTextZ.push_back(0.0f);
+    push_point(decorData, -1.0f, 1.0f, 0.0f);
+    push_ticktext_points(-1.0f, 1.0f, 0.0f);
     mZText.push_back(toString(0));
 
     int ticksLeft = mTickCount/2;
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
         float neg = i*-step;
-        decorData.push_back(-1.0f);
-        decorData.push_back(1.0f);
-        decorData.push_back(neg);
+        push_point(decorData, -1.0f, 1.0f, neg);
         /* push tick marks */
-        mTickTextX.push_back(-1.0f);
-        mTickTextY.push_back(1.0f);
-        mTickTextZ.push_back(neg);
+        push_ticktext_points(-1.0f, 1.0f, neg);
         /* push tick text label */
         mZText.push_back(toString(neg));
 
         /* (0, -1] to [1, -1] */
         float pos = i*step;
-        decorData.push_back(-1.0f);
-        decorData.push_back(1.0f);
-        decorData.push_back(pos);
-        /* puch tick marks */
-        mTickTextX.push_back(-1.0f);
-        mTickTextY.push_back(1.0f);
-        mTickTextZ.push_back(pos);
+        push_point(decorData, -1.0f, 1.0f, pos);
+        /* push tick marks */
+        push_ticktext_points(-1.0f, 1.0f, pos);
         /* push tick text label */
         mZText.push_back(toString(pos));
     }
@@ -567,38 +560,21 @@ void AbstractChart3D::setTickCount(int pTickCount)
      * push (0,0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    decorData.push_back(-1.0f);
-    decorData.push_back(0.0f);
-    decorData.push_back(-1.0f);
-
-    mTickTextX.push_back(-1.0f);
-    mTickTextY.push_back(0.0f);
-    mTickTextZ.push_back(-1.0f);
+    push_point(decorData, -1.0f, 0.0f, -1.0f);
+    push_ticktext_points(-1.0f, 0.0f, -1.0f);
     mYText.push_back(toString(0));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* [-1, 0) to [-1, -1] */
         float neg = i*-step;
-        decorData.push_back(-1.0f);
-        decorData.push_back(neg);
-        decorData.push_back(-1.0f);
-        /* puch tick marks */
-        mTickTextX.push_back(-1.0f);
-        mTickTextY.push_back(neg);
-        mTickTextZ.push_back(-1.0f);
-        /* push tick text label */
+        float pos = i*step;
+        push_point(decorData, -1.0f, neg, -1.0f);
+        push_ticktext_points(-1.0f, pos, -1.0f);
         mYText.push_back(toString(neg));
 
         /* [-1, 0) to [-1, 1] */
-        float pos = i*step;
-        decorData.push_back(-1.0f);
-        decorData.push_back(pos);
-        decorData.push_back(-1.0f);
-        /* puch tick marks */
-        mTickTextX.push_back(-1.0f);
-        mTickTextY.push_back(pos);
-        mTickTextZ.push_back(-1.0f);
-        /* push tick text label */
+        push_point(decorData, -1.0f, pos, -1.0f);
+        push_ticktext_points(-1.0f, neg, -1.0f);
         mYText.push_back(toString(pos));
     }
 
@@ -606,41 +582,24 @@ void AbstractChart3D::setTickCount(int pTickCount)
      * push (0,0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    decorData.push_back(0.0f);
-    decorData.push_back(-1.0f);
-    decorData.push_back(-1.0f);
- 
-    mTickTextX.push_back(0.0f);
-    mTickTextY.push_back(-1.0f);
-    mTickTextZ.push_back(-1.0f);
+    push_point(decorData, 0.0f, -1.0f, -1.0f);
+    push_ticktext_points( 0.0f, -1.0f, -1.0f);
     mXText.push_back(toString(0));
- 
+
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
         float neg = i*-step;
-        decorData.push_back(neg);
-        decorData.push_back(-1.0f);
-        decorData.push_back(-1.0f);
-        /* puch tick marks */
-        mTickTextX.push_back(neg);
-        mTickTextY.push_back(-1.0f);
-        mTickTextZ.push_back(-1.0f);
-        /* push tick text label */
+        push_point(decorData, neg, -1.0f, -1.0f);
+        push_ticktext_points( neg, -1.0f, -1.0f);
         mXText.push_back(toString(neg));
- 
-        /* (0, -1] to [1, -1] */
+
+        /* [-1, 0) to [-1, 1] */
         float pos = i*step;
-        decorData.push_back(pos);
-        decorData.push_back(-1.0f);
-        decorData.push_back(-1.0f);
-        /* puch tick marks */
-        mTickTextX.push_back(pos);
-        mTickTextY.push_back(-1.0f);
-        mTickTextZ.push_back(-1.0f);
-        /* push tick text label */
+        push_point(decorData, pos, -1.0f, -1.0f);
+        push_ticktext_points( pos, -1.0f, -1.0f);
         mXText.push_back(toString(pos));
     }
- 
+
     /* check if decoration VBO has been already used(case where
      * tick marks are being changed from default(21) */
     if (mDecorVBO != 0)
@@ -754,12 +713,32 @@ float AbstractChart3D::ymin() const { return mYMin; }
 float AbstractChart3D::zmax() const { return mZMax; }
 float AbstractChart3D::zmin() const { return mZMin; }
 
+void AbstractChart3D::render_tickmarker_text(int pWindowId, unsigned w, unsigned h, std::vector<std::string> &texts, glm::mat4 &transformation, int coor_offset){
+    auto &fonter = getChartFont();
+    fonter->setOthro2D(int(w), int(h));
+
+    float pos[2];
+    for (StringIter it = texts.begin(); it!=texts.end(); ++it) {
+        int idx = int(it - texts.begin());
+        glm::vec4 res = transformation * glm::vec4(mTickTextX[idx+coor_offset], mTickTextY[idx+coor_offset], mTickTextZ[idx+coor_offset], 1);
+
+        /* convert text position from [-1,1] range to
+         * [0, 1) range and then offset horizontally
+         * to compensate for margins and ticksize */
+        pos[0] = w*(res.x/res.w+1.0f)/2.0f;
+        pos[1] = h*(res.y/res.w+1.0f)/2.0f;
+        /* offset horizontally based on text size to align
+         * text center with tick mark position */
+        //pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f)+(mTickSize * (w/pVPW)));
+        if(coor_offset >= mTickCount && coor_offset < 2*mTickCount){
+        }
+        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+    }
+}
 void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
-    float offset_x = (2.0f * (leftMargin()+tickSize()) + (w - pVPW)) / pVPW;
-    float offset_y = (2.0f * (bottomMargin()+tickSize()) + (h - pVPH)) / pVPH;
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 
@@ -789,6 +768,7 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 
     /* bind the sprite shader program to
      * draw ticks on x and y axes */
+    glEnable(GL_PROGRAM_POINT_SIZE);
     glPointSize((GLfloat)mTickSize);
 
     glUseProgram(mSpriteProgram);
@@ -806,79 +786,41 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 
     glUseProgram(0);
     glPointSize(1);
+    glDisable(GL_PROGRAM_POINT_SIZE);
     unbindResources();
 
+    render_tickmarker_text(pWindowId, w, h, mZText, trans, 0);
+    render_tickmarker_text(pWindowId, w, h, mYText, trans, mTickCount);
+    render_tickmarker_text(pWindowId, w, h, mXText, trans, 2*mTickCount);
+
+     /* 
+      * render chart axes titles 
+      */
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
 
     float pos[2];
-    /* render tick marker texts for z axis */
-    for (StringIter it = mZText.begin(); it!=mZText.end(); ++it) {
-        int idx = int(it - mZText.begin());
-        glm::vec4 res = trans * glm::vec4(mTickTextX[idx], mTickTextY[idx], mTickTextZ[idx], 1);
-        /* convert text position from [-1,1] range to
-         * [0, 1) range and then offset horizontally
-         * to compensate for margins and ticksize */
+    if (!mZTitle.empty()) {
+        glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-        /* offset horizontally based on text size to align
-         * text center with tick mark position */
-        pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f)+(mTickSize * (w/pVPW)));
-        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+        pos[0] += (mTickSize * (w/pVPW));
+        fonter->render(pWindowId, pos, WHITE, mZTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
-    /* render tick marker texts for y axis */
-    for (StringIter it = mYText.begin(); it!=mYText.end(); ++it) {
-        int idx = int(it - mYText.begin());
-        glm::vec4 res = trans * glm::vec4(mTickTextX[idx+mTickCount], mTickTextY[idx+mTickCount], mTickTextZ[idx+2*mTickCount], 1);
-        /* convert text position from [-1,1] range to
-         * [0, 1) range and then offset horizontally
-         * to compensate for margins and ticksize */
+    if (!mYTitle.empty()) {
+        glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-        /* offset horizontally based on text size to align
-         * text center with tick mark position */
-        pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f)+(mTickSize * (w/pVPW)));
-        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+        pos[0] += (mTickSize * (w/pVPW));
+        fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
-    /* render tick marker texts for x axis */
-    for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
-        int idx = int(it - mXText.begin());
-        /* mTickCount offset is needed while reading point coordinates for
-         * x axis tick marks */
-        glm::vec4 res = trans * glm::vec4(mTickTextX[idx+2*mTickCount], mTickTextY[idx+2*mTickCount], mTickTextZ[idx+2*mTickCount], 1);
-        /* convert text position from [-1,1] range to
-         * [0, 1) range and then offset vertically
-         * to compensate for margins and ticksize */
+    if (!mXTitle.empty()) {
+        glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-        pos[1] -= ((CHART2D_FONT_SIZE*h/pVPH)+(mTickSize * (w/pVPW)));
-        /* offset horizontally based on text size to align
-         * text center with tick mark position */
-        pos[0] -= (CHART2D_FONT_SIZE*(it->length()-2)/2.0f);
-        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+        pos[1] += (mTickSize * (h/pVPH));
+        fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
-     /* render chart axes titles */
-     if (!mZTitle.empty()) {
-         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
-         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-         pos[0] += (mTickSize * (w/pVPW));
-         fonter->render(pWindowId, pos, WHITE, mZTitle.c_str(), CHART2D_FONT_SIZE, true);
-     }
-     if (!mYTitle.empty()) {
-         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
-         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-         pos[0] += (mTickSize * (w/pVPW));
-         fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
-     }
-     if (!mXTitle.empty()) {
-         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
-         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
-         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-         pos[1] += (mTickSize * (h/pVPH));
-         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
-     }
 
     CheckGL("End Chart::render");
 }

@@ -14,6 +14,8 @@
 #include <string>
 #include <map>
 
+#include <glm/glm.hpp>
+
 namespace internal
 {
 
@@ -54,6 +56,7 @@ class AbstractChart2D : public AbstractRenderable {
          * for each valid window context */
         std::map<int, GLuint> mVAOMap;
 
+        void push_ticktext_points(float x, float y);
         void bindResources(int pWindowId);
         void unbindResources() const;
 
@@ -135,6 +138,9 @@ class AbstractChart3D : public AbstractRenderable {
         /* VAO map to store a vertex array object
          * for each valid window context */
         std::map<int, GLuint> mVAOMap;
+        /* rendering helper functions */
+        void push_ticktext_points(float x, float y, float z);
+        void render_tickmarker_text(int pWindowId, unsigned w, unsigned h, std::vector<std::string> &texts, glm::mat4 &transformation, int coor_offset);
 
         void bindResources(int pWindowId);
         void unbindResources() const;
