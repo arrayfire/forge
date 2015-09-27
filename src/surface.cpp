@@ -71,7 +71,7 @@ static const char *gMarkerSpriteFragmentShaderSrc =
 "   if(!in_bounds)\n"
 "       discard;\n"
 "   else\n"
-"       outputColor = line_color-vec4(0.1, 0.1, 0.1, 0);\n"
+"       outputColor = line_color-vec4(0.3, 0.3, 0.3, 0);\n"
 "}";
 
 namespace internal
@@ -205,30 +205,26 @@ void surface_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
     float range_x = xmax() - xmin();
     float range_y = ymax() - ymin();
+    float range_z = zmax() - zmin();
     // set scale to zero if input is constant array
     // otherwise compute scale factor by standard equation
     float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(xmax() - xmin());
     float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(ymax() - ymin());
+    float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 0.0f : 2/(zmax() - zmin());
 
     CheckGL("Begin Plot::render");
-    float viewWidth    = pVPW - (leftMargin() + rightMargin() + tickSize()/2 );
-    float viewHeight   = pVPH - (bottomMargin() + topMargin() + tickSize() );
-    float view_scale_x = viewWidth/pVPW;
-    float view_scale_y = viewHeight/pVPH;
-    float view_offset_x = (2.0f * (leftMargin() + tickSize()/2 )/ pVPW ) ;
-    float view_offset_y = (2.0f * (bottomMargin() + tickSize() )/ pVPH ) ;
-    float coor_offset_x = ( -xmin() * graph_scale_x * view_scale_x);
-    float coor_offset_y = ( -ymin() * graph_scale_y * view_scale_y);
-    glm::mat4 transform = glm::translate(glm::mat4(1.f),
-            glm::vec3(-1 + view_offset_x + coor_offset_x  , -1 + view_offset_y + coor_offset_y, 0));
-    transform = glm::scale(transform,
-            glm::vec3(graph_scale_x * view_scale_x , graph_scale_y * view_scale_y ,1));
+    float viewWidth    = pVPW;// - (leftMargin() + rightMargin() + tickSize()/2 );
+    float viewHeight   = pVPH;//- (bottomMargin() + topMargin() + tickSize() );
 
-    glm::mat4 model = glm::scale(glm::mat4(1.f), glm::vec3(0.9f, 0.9f, -0.9f)) *  glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
+    float coor_offset_x = ( -xmin() * graph_scale_x);
+    float coor_offset_y = ( -ymin() * graph_scale_y);
+    float coor_offset_z = ( -zmin() * graph_scale_z);
+
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::translate(glm::mat4(1.f), glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z)) *  glm::scale(glm::mat4(1.f), glm::vec3(1.0f * graph_scale_x, -1.0f * graph_scale_y, 1.0f * graph_scale_z))  ;
     glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(0,-1,0),glm::vec3(0,1,0));
     glm::mat4 projection = glm::ortho(2* (float)-viewWidth/(float)viewHeight, 2*(float)viewWidth/(float)viewHeight, -2.f, 2.f, -1.1f, 100.f);
     glm::mat4 mvp = projection * view * model;
-    transform = mvp;
+    glm::mat4 transform = mvp;
     renderGraph(pWindowId, transform);
 
     /* render graph border and axes */
