@@ -113,6 +113,14 @@ hist_impl::hist_impl(unsigned pNBins, fg::dtype pDataType)
             mHistogramVBO = createBuffer<unsigned>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(unsigned);
             break;
+        case GL_SHORT:
+            mHistogramVBO = createBuffer<short>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
+            mHistogramVBOSize = mNBins*sizeof(short);
+            break;
+        case GL_UNSIGNED_SHORT:
+            mHistogramVBO = createBuffer<unsigned short>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
+            mHistogramVBOSize = mNBins*sizeof(unsigned short);
+            break;
         case GL_UNSIGNED_BYTE:
             mHistogramVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(unsigned char);

@@ -124,6 +124,14 @@ plot_impl::plot_impl(unsigned pNumPoints, fg::dtype pDataType, fg::MarkerType pM
             mMainVBO = createBuffer<unsigned>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(unsigned);
             break;
+        case GL_SHORT:
+            mMainVBO = createBuffer<short>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
+            mMainVBOsize = total_points*sizeof(short);
+            break;
+        case GL_UNSIGNED_SHORT:
+            mMainVBO = createBuffer<unsigned short>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
+            mMainVBOsize = total_points*sizeof(unsigned short);
+            break;
         case GL_UNSIGNED_BYTE:
             mMainVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(unsigned char);

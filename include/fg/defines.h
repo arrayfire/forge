@@ -133,7 +133,9 @@ enum dtype {
     u8  = 1,                                ///< Unsigned byte (8-bits)
     s32 = 2,                                ///< Signed integer (32-bits)
     u32 = 3,                                ///< Unsigned integer (32-bits)
-    f32 = 4                                 ///< Float (32-bits)
+    f32 = 4,                                ///< Float (32-bits)
+    s16 = 5,                                ///< Signed integer (16-bits)
+    u16 = 6                                 ///< Unsigned integer (16-bits)
 };
 
 enum PlotType {

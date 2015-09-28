@@ -131,6 +131,8 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight,
     switch(mGLType) {
         case GL_INT:            typeSize = sizeof(int  );           break;
         case GL_UNSIGNED_INT:   typeSize = sizeof(unsigned int);    break;
+        case GL_SHORT:          typeSize = sizeof(short  );         break;
+        case GL_UNSIGNED_SHORT: typeSize = sizeof(unsigned short);  break;
         case GL_BYTE:           typeSize = sizeof(char );           break;
         case GL_UNSIGNED_BYTE:  typeSize = sizeof(unsigned char);   break;
         default: typeSize = sizeof(float); break;

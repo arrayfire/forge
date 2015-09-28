@@ -31,6 +31,8 @@ GLenum gl_dtype(fg::dtype val)
         case u8:  return GL_UNSIGNED_BYTE;
         case s32: return GL_INT;
         case u32: return GL_UNSIGNED_INT;
+        case s16: return GL_SHORT;
+        case u16: return GL_UNSIGNED_SHORT;
         default:  return GL_FLOAT;
     }
 }
