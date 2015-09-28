@@ -32,10 +32,15 @@ class surface_impl : public AbstractChart3D {
         GLuint    mIndexVBO;
         size_t    mIndexVBOsize;
         GLuint    mMarkerProgram;
+        GLuint    mSurfProgram;
         /* shared variable index locations */
         GLuint    mPointIndex;
         GLuint    mMarkerTypeIndex;
+        GLuint    mMarkerColIndex;
         GLuint    mSpriteTMatIndex;
+        GLuint    mSurfPointIndex;
+        GLuint    mSurfTMatIndex;
+        GLuint    mSurfRangeIndex;
 
         std::map<int, GLuint> mVAOMap;
 
@@ -43,8 +48,13 @@ class surface_impl : public AbstractChart3D {
          * for rendering resources */
         void bindResources(int pWindowId);
         void unbindResources() const;
+        void bindSurfProgram() const;
+        void unbindSurfProgram() const;
         GLuint markerTypeIndex() const;
         GLuint spriteMatIndex() const;
+        GLuint markerColIndex() const;
+        GLuint surfRangeIndex() const;
+        GLuint surfMatIndex() const;
         virtual void renderGraph(int pWindowId, glm::mat4 transform);
 
     public:

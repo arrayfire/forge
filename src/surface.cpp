@@ -22,12 +22,32 @@ using namespace std;
 static const char *gMarkerVertexShaderSrc =
 "#version 330\n"
 "in vec3 point;\n"
+"uniform vec2 minmaxs[3];\n"
+"out vec4 hpoint;\n"
 "uniform mat4 transform;\n"
 "void main(void) {\n"
 "   gl_Position = transform * vec4(point.xyz, 1);\n"
-"   gl_PointSize = 10;\n"
+"   hpoint=vec4(point.xyz,1);\n"
+"   gl_PointSize=10;\n"
 "}";
 
+const char *gSurfFragmentShaderSrc =
+"#version 330\n"
+"uniform vec2 minmaxs[3];\n"
+"varying vec4 hpoint;\n"
+"out vec4 outputColor;\n"
+"vec3 hsv2rgb(vec3 c){\n"
+"   vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n"
+"   vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n"
+"   return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n"
+"}\n"
+"void main(void) {\n"
+"   bool nin_bounds = (hpoint.x > minmaxs[0].x || hpoint.x < minmaxs[0].y ||\n"
+"       hpoint.y > minmaxs[1].x || hpoint.y < minmaxs[1].y || hpoint.z < minmaxs[2].y);\n"
+"   float height = (minmaxs[2].x- hpoint.z)/(minmaxs[2].x-minmaxs[2].y);\n"
+"   if(nin_bounds) discard;\n"
+"   outputColor = vec4(hsv2rgb(vec3(height, 1.f, 1.f)),1);\n"
+"}";
 
 static const char *gMarkerSpriteFragmentShaderSrc =
 "#version 330\n"
@@ -65,14 +85,18 @@ static const char *gMarkerSpriteFragmentShaderSrc =
 "           abs((gl_PointCoord.x - 0.5)) < 0.07 ||\n"
 "           abs((gl_PointCoord.y - 0.5)) < 0.07;\n"
 "           break;\n"
+"       case 8:\n"
+"           in_bounds = true;\n"
+"           break;\n"
 "       default:\n"
 "           in_bounds = true;\n"
 "   }\n"
 "   if(!in_bounds)\n"
 "       discard;\n"
 "   else\n"
-"       outputColor = line_color-vec4(0.3, 0.3, 0.3, 0);\n"
+"       outputColor = line_color;\n"
 "}";
+
 
 namespace internal
 {
@@ -162,9 +186,15 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGTyp
     }
     mPointIndex = borderProgramPointIndex();
     mMarkerType = pMarkerType;
+    mSurfProgram   = initShaders(gMarkerVertexShaderSrc, gSurfFragmentShaderSrc);
     mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
 
-    mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
+    mSurfPointIndex   = glGetAttribLocation (mSurfProgram, "point");
+    mSurfTMatIndex    = glGetUniformLocation(mSurfProgram, "transform");
+    mSurfRangeIndex   = glGetUniformLocation(mSurfProgram, "minmaxs");
+
+    mMarkerTypeIndex  = glGetUniformLocation(mMarkerProgram, "marker_type");
+    mMarkerColIndex   = glGetUniformLocation(mMarkerProgram, "line_color");
     mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
 }
 
@@ -220,7 +250,7 @@ void surface_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     float coor_offset_y = ( -ymin() * graph_scale_y);
     float coor_offset_z = ( -zmin() * graph_scale_z);
 
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::translate(glm::mat4(1.f), glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z)) *  glm::scale(glm::mat4(1.f), glm::vec3(1.0f * graph_scale_x, -1.0f * graph_scale_y, 1.0f * graph_scale_z))  ;
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::translate(glm::mat4(1.f), glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z)) *  glm::scale(glm::mat4(1.f), glm::vec3(1.0f * graph_scale_x, -1.0f * graph_scale_y, 1.0f * graph_scale_z));
     glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(0,-1,0),glm::vec3(0,1,0));
     glm::mat4 projection = glm::ortho(2* (float)-viewWidth/(float)viewHeight, 2*(float)viewWidth/(float)viewHeight, -2.f, 2.f, -1.1f, 100.f);
     glm::mat4 mvp = projection * view * model;
@@ -234,13 +264,15 @@ void surface_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 }
 
 void surface_impl::renderGraph(int pWindowId, glm::mat4 transform){
-    bindBorderProgram();
-    glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+    bindSurfProgram();
+    GLfloat range[] = {xmax(), xmin(), ymax(), ymin(), zmax(), zmin()};
+    glUniform2fv(surfRangeIndex(), 3, range);
+    glUniformMatrix4fv(surfMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
     glUniform4fv(borderColorIndex(), 1, mLineColor);
     bindResources(pWindowId);
     glDrawElements(GL_TRIANGLE_STRIP, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0 );
     unbindResources();
-    unbindBorderProgram();
+    unbindSurfProgram();
 
 
     if(mMarkerType != fg::FG_NONE){
@@ -248,7 +280,7 @@ void surface_impl::renderGraph(int pWindowId, glm::mat4 transform){
         glUseProgram(mMarkerProgram);
 
         glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform4fv(borderColorIndex(), 1, mLineColor);
+        glUniform4fv(markerColIndex(), 1, WHITE);
         glUniform1i(markerTypeIndex(), mMarkerType);
 
         bindResources(pWindowId);
@@ -269,13 +301,39 @@ GLuint surface_impl::spriteMatIndex() const
     return mSpriteTMatIndex;
 }
 
+GLuint surface_impl::markerColIndex() const
+{
+    return mMarkerColIndex;
+}
+
+GLuint surface_impl::surfMatIndex() const
+{
+    return mSurfTMatIndex;
+}
+
+GLuint surface_impl::surfRangeIndex() const
+{
+    return mSurfRangeIndex;
+}
+
+void surface_impl::bindSurfProgram() const
+{
+    glUseProgram(mSurfProgram);
+}
+
+void surface_impl::unbindSurfProgram() const
+{
+    glUseProgram(0);
+}
+
+
 void scatter3_impl::renderGraph(int pWindowId, glm::mat4 transform){
     if(mMarkerType != fg::FG_NONE){
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 
         glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform4fv(borderColorIndex(), 1, mLineColor);
+        glUniform4fv(markerColIndex(), 1, mLineColor);
         glUniform1i(markerTypeIndex(), mMarkerType);
 
         bindResources(pWindowId);

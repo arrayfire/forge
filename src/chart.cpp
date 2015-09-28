@@ -25,19 +25,30 @@ static const int CHART2D_FONT_SIZE = 15;
 
 const char *gChartVertexShaderSrc =
 "#version 330\n"
-"attribute vec3 point;\n"
+"in vec3 point;\n"
+"out vec4 hpoint;\n"
 "uniform mat4 transform;\n"
 "void main(void) {\n"
 "   gl_Position = transform * vec4(point.xyz, 1);\n"
+"   hpoint=vec4(point.xyz,1);\n"
 "   gl_PointSize = 10;\n"
 "}";
 
 const char *gChartFragmentShaderSrc =
 "#version 330\n"
 "uniform vec4 color;\n"
+"uniform vec4 hrange;\n"
+"varying vec4 hpoint;\n"
 "out vec4 outputColor;\n"
+"vec3 hsv2rgb(vec3 c){\n"
+"   vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n"
+"   vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n"
+"   return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n"
+"}\n"
 "void main(void) {\n"
-"   outputColor = color;\n"
+"   float height = ((hpoint.z/hpoint.w));\n"
+//"   outputColor = color + vec4(height, height, height,0);\n"
+"   outputColor = vec4(hsv2rgb(vec3(height, 1, 1)),1);\n"
 "}";
 
 const char *gChartSpriteFragmentShaderSrc =
