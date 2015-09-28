@@ -94,12 +94,12 @@ enum ErrorCode {
 };
 
 enum ChannelFormat {
-    FG_R    = 0,                            ///< Single channel
-    FG_RG   = 1,                            ///< Three(Red, Green & Blue) channels
-    FG_RGB  = 2,                            ///< Three(Red, Green & Blue) channels
-    FG_BGR  = 3,                            ///< Three(Red, Green & Blue) channels
-    FG_RGBA = 4,                            ///< Four(Red, Green, Blue & Alpha) channels
-    FG_BGRA = 5                             ///< Four(Red, Green, Blue & Alpha) channels
+    FG_GRAYSCALE = 100,                     ///< Single channel
+    FG_RG        = 200,                     ///< Three(Red, Green & Blue) channels
+    FG_RGB       = 300,                     ///< Three(Red, Green & Blue) channels
+    FG_BGR       = 301,                     ///< Three(Red, Green & Blue) channels
+    FG_RGBA      = 400,                     ///< Four(Red, Green, Blue & Alpha) channels
+    FG_BGRA      = 401                      ///< Four(Red, Green, Blue & Alpha) channels
 };
 
 /**
