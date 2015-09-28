@@ -40,15 +40,8 @@ const char *gChartFragmentShaderSrc =
 "uniform vec4 hrange;\n"
 "varying vec4 hpoint;\n"
 "out vec4 outputColor;\n"
-"vec3 hsv2rgb(vec3 c){\n"
-"   vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n"
-"   vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n"
-"   return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n"
-"}\n"
 "void main(void) {\n"
-"   float height = ((hpoint.z/hpoint.w));\n"
-//"   outputColor = color + vec4(height, height, height,0);\n"
-"   outputColor = vec4(hsv2rgb(vec3(height, 1, 1)),1);\n"
+"   outputColor = color;\n"
 "}";
 
 const char *gChartSpriteFragmentShaderSrc =
@@ -738,10 +731,16 @@ void AbstractChart3D::render_tickmarker_text(int pWindowId, unsigned w, unsigned
          * to compensate for margins and ticksize */
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-        /* offset horizontally based on text size to align
+
+        /* offset based on text size to align
          * text center with tick mark position */
-        //pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f)+(mTickSize * (w/pVPW)));
-        if(coor_offset >= mTickCount && coor_offset < 2*mTickCount){
+        if(coor_offset < mTickCount){
+            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
+        }else if(coor_offset >= mTickCount && coor_offset < 2*mTickCount){
+            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
+            pos[1] -= ((CHART2D_FONT_SIZE));
+        }else{
+            pos[1] -= ((CHART2D_FONT_SIZE));
         }
         fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
     }
