@@ -762,8 +762,8 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
     /* set uniform attributes of shader
      * for drawing the plot borders */
     glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f)) ;
-    glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(0,-1,0),glm::vec3(0,1,0));
-    glm::mat4 projection = glm::ortho(2* (float)-w/(float)h, 2*(float)w/(float)h, -2.f, 2.f, -1.1f, 10.f);
+    glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(1,-1,-1),glm::vec3(0,1,0));
+    glm::mat4 projection = glm::ortho(2 * (float)-w/(float)h, 2*(float)w/(float)h, -2.f, 2.f, -1.1f, 10.f);
     glm::mat4 mvp = projection * view * model;
 
     glm::mat4 trans = mvp;

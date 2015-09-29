@@ -251,7 +251,7 @@ void surface_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     float coor_offset_z = ( -zmin() * graph_scale_z);
 
     glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::translate(glm::mat4(1.f), glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z)) *  glm::scale(glm::mat4(1.f), glm::vec3(1.0f * graph_scale_x, -1.0f * graph_scale_y, 1.0f * graph_scale_z));
-    glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(0,-1,0),glm::vec3(0,1,0));
+    glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(1,-1,-1),glm::vec3(0,1,0));
     glm::mat4 projection = glm::ortho(2* (float)-viewWidth/(float)viewHeight, 2*(float)viewWidth/(float)viewHeight, -2.f, 2.f, -1.1f, 100.f);
     glm::mat4 mvp = projection * view * model;
     glm::mat4 transform = mvp;
