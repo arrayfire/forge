@@ -1,20 +1,11 @@
-/*******************************************************
- * Copyright (c) 2015-2019, ArrayFire
- * All rights reserved.
- *
- * This file is distributed under 3-clause BSD license.
- * The complete license agreement can be obtained at:
- * http://arrayfire.com/licenses/BSD-3-Clause
- ********************************************************/
-
 #include <forge.h>
-#include <CPUCopy.hpp>
-#include <complex>
-#include <cmath>
-#include <vector>
+#include <cuda_runtime.h>
+#include <cuComplex.h>
+#include <CUDACopy.hpp>
+#include <cstdio>
 #include <iostream>
 
-const unsigned DIMX = 800;
+const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
 static const float XMIN = -1.0f;
@@ -26,20 +17,12 @@ const float DX = 0.01;
 const size_t XSIZE = (XMAX-XMIN)/DX+1;
 const size_t YSIZE = (YMAX-YMIN)/DX+1;
 
-bool set=false;
-using namespace std;
-void gen_surface(float t, float dx, std::vector<float> &vec ){
-    vec.clear();
-    for(float x=XMIN; x < XMAX; x+=dx){
-        for(float y=YMIN; y < YMAX; y+=dx){
-            vec.push_back(x);
-            vec.push_back(y);
-            vec.push_back(10*x*-abs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5);
-        }
-    }
-}
+void kernel(float t, float dx, float* dev_out);
 
-int main(void){
+int main(void)
+{
+    float *dev_out;
+
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
@@ -80,26 +63,54 @@ int main(void){
     surf.setYAxisTitle("y-axis");
     surf.setXAxisTitle("x-axis");
 
-    //generate a surface
-    std::vector<float> function;
     static float t=0;
-    gen_surface(t, DX, function);
-    /* copy your data into the pixel buffer object exposed by
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, sizeof(float) * XSIZE * YSIZE * 3));
+    kernel(t, DX, dev_out);
+    /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copy(surf, &function[0]);
+    fg::copy(surf, dev_out);
 
     do {
         t+=0.07;
-        gen_surface(t, DX, function);
-        copy(surf, &function[0]);
+        kernel(t, DX, dev_out);
+        //fg::copy(surf, dev_out);
         // draw window and poll for events last
         wnd.draw(surf);
     } while(!wnd.close());
 
+    CUDA_ERROR_CHECK(cudaFree(dev_out));
     return 0;
 }
 
+
+__global__
+void sincos_surf(float t, float dx, float* out)
+{
+    int i = blockIdx.x * blockDim.x  + threadIdx.x;
+    int j = blockIdx.y * blockDim.y  + threadIdx.y;
+    
+    float x=XMIN+i*dx;
+    float y=YMIN+j*dx;
+    if (i<DIMX && j<DIMY) {
+        out[ 3 * (j*DIMX+i)     ] = x;
+        out[ 3 * (j*DIMX+i) + 1 ] = y;
+        out[ 3 * (j*DIMX+i) + 2 ] = 10*x*-abs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5;
+    }
+}
+
+inline int divup(int a, int b)
+{
+    return (a+b-1)/b;
+}
+
+void kernel(float t, float dx, float* dev_out)
+{
+    static const dim3 threads(8, 8);
+    dim3 blocks(XSIZE, YSIZE);
+
+    sincos_surf<<< blocks, threads >>>(t, dx, dev_out);
+}
