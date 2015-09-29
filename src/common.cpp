@@ -40,7 +40,7 @@ GLenum gl_dtype(fg::dtype val)
 GLenum gl_ctype(ChannelFormat mode)
 {
     switch(mode) {
-        case FG_GRAY: return GL_RED;
+        case FG_GRAYSCALE: return GL_RED;
         case FG_RG  : return GL_RG;
         case FG_RGB : return GL_RGB;
         case FG_BGR : return GL_BGR;
@@ -51,7 +51,7 @@ GLenum gl_ctype(ChannelFormat mode)
 
 GLenum gl_ictype(ChannelFormat mode)
 {
-    if (mode==FG_GRAY)
+    if (mode==FG_GRAYSCALE)
         return GL_RED;
     else if (mode==FG_RG)
         return GL_RG;
