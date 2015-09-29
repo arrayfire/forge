@@ -25,7 +25,7 @@ class surface_impl : public AbstractChart3D {
         GLuint    mNumYPoints;
         GLenum    mDataType;
         float     mLineColor[4];
-        fg::FGMarkerType mMarkerType;
+        fg::MarkerType mMarkerType;
         /* OpenGL Objects */
         GLuint    mMainVBO;
         size_t    mMainVBOsize;
@@ -58,7 +58,7 @@ class surface_impl : public AbstractChart3D {
         virtual void renderGraph(int pWindowId, glm::mat4 transform);
 
     public:
-        surface_impl(unsigned pNumXpoints, unsigned pNumYpoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType);
+        surface_impl(unsigned pNumXpoints, unsigned pNumYpoints, fg::dtype pDataType, fg::MarkerType pMarkerType);
         ~surface_impl();
 
         void setColor(fg::Color col);
@@ -74,7 +74,7 @@ class scatter3_impl : public surface_impl {
         void renderGraph(int pWindowId, glm::mat4 transform);
 
    public:
-       scatter3_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType=fg::FG_NONE) : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType)   {}
+       scatter3_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::MarkerType pMarkerType=fg::FG_NONE) : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType)   {}
        ~scatter3_impl() {}
 };
 
@@ -83,7 +83,7 @@ class _Surface {
         std::shared_ptr<surface_impl> plt;
 
     public:
-        _Surface(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType, fg::FGPlotType pPlotType=fg::FG_SURFACE, fg::FGMarkerType pMarkerType=fg::FG_NONE){
+        _Surface(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::PlotType pPlotType=fg::FG_SURFACE, fg::MarkerType pMarkerType=fg::FG_NONE){
             switch(pPlotType){
                 case(fg::FG_SURFACE):
                     plt = std::make_shared<surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);

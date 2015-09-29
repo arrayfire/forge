@@ -149,8 +149,8 @@ void generate_grid_indices(unsigned short rows, unsigned short cols, unsigned sh
     }
 }
 
-surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType)
-    : AbstractChart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints), mDataType(FGTypeToGLenum(pDataType)),
+surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::MarkerType pMarkerType)
+    : AbstractChart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints), mDataType(gl_dtype(pDataType)),
       mMainVBO(0), mMainVBOsize(0), mIndexVBO(0), mIndexVBOsize(0), mPointIndex(0)
 {
     unsigned total_points = 3*(mNumXPoints * mNumYPoints);
@@ -182,7 +182,7 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::FGTyp
             mMainVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
             mMainVBOsize = total_points*sizeof(unsigned char);
             break;
-        default: fg::TypeError("Plot::Plot", __LINE__, 1, GLenumToFGType(mDataType));
+        default: fg::TypeError("Plot::Plot", __LINE__, 1, pDataType);
     }
     mPointIndex = borderProgramPointIndex();
     mMarkerType = pMarkerType;
@@ -349,7 +349,7 @@ void scatter3_impl::renderGraph(int pWindowId, glm::mat4 transform){
 namespace fg
 {
 
-Surface::Surface(unsigned pNumXPoints, unsigned pNumYPoints, FGType pDataType, FGPlotType pPlotType, FGMarkerType pMarkerType)
+Surface::Surface(unsigned pNumXPoints, unsigned pNumYPoints, dtype pDataType, PlotType pPlotType, MarkerType pMarkerType)
 {
     value = new internal::_Surface(pNumXPoints, pNumYPoints, pDataType, pPlotType, pMarkerType);
 }

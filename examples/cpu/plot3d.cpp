@@ -64,7 +64,7 @@ int main(void){
      */
     int xsize=(XMAX-XMIN)/DX+1;
     int ysize=(YMAX-YMIN)/DX+1;
-    fg::Surface surf(xsize, ysize, fg::FG_FLOAT, fg::FG_SURFACE);
+    fg::Surface surf(xsize, ysize, fg::f32, fg::FG_SURFACE);
 
     /*
      * Set plot colors
