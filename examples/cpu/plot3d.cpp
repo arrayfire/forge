@@ -22,29 +22,25 @@ static const float XMAX = 2.f;
 static const float YMIN = -1.0f;
 static const float YMAX = 1.f;
 
-static int xsize=0;
-static int ysize=0;
+const float DX = 0.01;
+
 bool set=false;
 using namespace std;
-void map_range_to_vec_vbo(float dx, std::vector<float> &vec, float (*map) (float), float t){
-    xsize=0;ysize=0;
+void gen_surface(float t, float dx, std::vector<float> &vec ){
     vec.clear();
-    for(float i=XMIN; i < XMAX; i+=dx){
-        xsize++;
-        for(float j=YMIN; j < YMAX; j+=dx){
-            if(!set)ysize++;
-            vec.push_back(i);
-            vec.push_back(j);
-            vec.push_back(10*i*-abs(j) * cos(i*i*(j+t))+sin(j*(i+t))-1.5);
+    for(float x=XMIN; x < XMAX; x+=dx){
+        for(float y=YMIN; y < YMAX; y+=dx){
+            vec.push_back(x);
+            vec.push_back(y);
+            vec.push_back(10*x*-abs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5);
         }
-        set=true;
     }
 }
 
 int main(void){
     std::vector<float> function;
     static float t=0;
-    map_range_to_vec_vbo(0.01, function, &sinf, t);
+    gen_surface(t, DX, function);
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
@@ -66,20 +62,22 @@ int main(void){
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
+    int xsize=(XMAX-XMIN)/DX+1;
+    int ysize=(YMAX-YMIN)/DX+1;
     fg::Surface surf(xsize, ysize, fg::FG_FLOAT, fg::FG_SURFACE);
-    fg::Plot plt(xsize*ysize, fg::FG_FLOAT, fg::FG_LINE_3D, fg::FG_NONE);       //or specify a specific plot type
 
     /*
      * Set plot colors
      */
     surf.setColor(fg::FG_YELLOW);
-    plt.setColor (fg::FG_WHITE );
 
     /*
      * Set draw limits for plots
      */
     surf.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, -5.f);
-    plt.setAxesLimits (1.1f, -1.1f, 1.1f, -1.1f, 10.f, -5.f);
+    surf.setZAxisTitle("z-axis");
+    surf.setYAxisTitle("y-axis");
+    surf.setXAxisTitle("x-axis");
 
     /* copy your data into the pixel buffer object exposed by
      * fg::Plot class and then proceed to rendering.
@@ -88,16 +86,13 @@ int main(void){
      * along with the library to help with this task
      */
     copy(surf, &function[0]);
-    copy(plt,  &function[0]);
 
     do {
-        t+=0.01;
-        map_range_to_vec_vbo(0.01f, function, &sinf, t);
+        t+=0.07;
+        gen_surface(t, DX, function);
         copy(surf, &function[0]);
-        copy(plt,  &function[0]);
         // draw window and poll for events last
         wnd.draw(surf);
-        //wnd.draw(plt);
     } while(!wnd.close());
 
     return 0;
