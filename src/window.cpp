@@ -140,31 +140,31 @@ void window_impl::setSize(unsigned pW, unsigned pH)
 void window_impl::setColorMap(fg::ColorMap cmap)
 {
     switch(cmap) {
-        case FG_DEFAULT:
+        case FG_DEFAULT_MAP:
             mColorMapUBO = mCMap->defaultMap();
             mUBOSize     = mCMap->defaultLen();
             break;
-        case FG_SPECTRUM:
+        case FG_SPECTRUM_MAP:
             mColorMapUBO = mCMap->spectrum();
             mUBOSize     = mCMap->spectrumLen();
             break;
-        case FG_COLORS:
+        case FG_COLORS_MAP:
             mColorMapUBO = mCMap->colors();
             mUBOSize     = mCMap->colorsLen();
             break;
-        case FG_REDMAP:
+        case FG_RED_MAP:
             mColorMapUBO = mCMap->red();
             mUBOSize     = mCMap->redLen();
             break;
-        case FG_MOOD:
+        case FG_MOOD_MAP:
             mColorMapUBO = mCMap->mood();
             mUBOSize     = mCMap->moodLen();
             break;
-        case FG_HEAT:
+        case FG_HEAT_MAP:
             mColorMapUBO = mCMap->heat();
             mUBOSize     = mCMap->heatLen();
             break;
-        case FG_BLUEMAP:
+        case FG_BLUE_MAP:
             mColorMapUBO = mCMap->blue();
             mUBOSize     = mCMap->blueLen();
             break;

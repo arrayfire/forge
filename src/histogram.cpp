@@ -67,7 +67,7 @@ void hist_impl::bindResources(int pWindowId)
         glVertexAttribPointer(mPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
         // attach histogram frequencies
         glBindBuffer(GL_ARRAY_BUFFER, mHistogramVBO);
-        glVertexAttribPointer(mFreqIndex, 1, mDataType, GL_FALSE, 0, 0);
+        glVertexAttribPointer(mFreqIndex, 1, mGLType, GL_FALSE, 0, 0);
         glVertexAttribDivisor(mFreqIndex, 1);
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
@@ -84,9 +84,9 @@ void hist_impl::unbindResources() const
     //glVertexAttribDivisor(mFreqIndex, 0);
 }
 
-hist_impl::hist_impl(unsigned pNBins, fg::FGType pDataType)
- : AbstractChart2D(), mDataType(FGTypeToGLenum(pDataType)), mNBins(pNBins),
-   mHistogramVBO(0), mHistogramVBOSize(0), mHistBarProgram(0),
+hist_impl::hist_impl(unsigned pNBins, fg::dtype pDataType)
+ : AbstractChart2D(), mDataType(pDataType), mGLType(gl_dtype(mDataType)),
+   mNBins(pNBins), mHistogramVBO(0), mHistogramVBOSize(0), mHistBarProgram(0),
    mHistBarMatIndex(0), mHistBarColorIndex(0), mHistBarYMaxIndex(0),
    mPointIndex(0), mFreqIndex(0)
 {
@@ -100,7 +100,7 @@ hist_impl::hist_impl(unsigned pNBins, fg::FGType pDataType)
     mHistBarNBinsIndex = glGetUniformLocation(mHistBarProgram, "nbins");
     mHistBarYMaxIndex  = glGetUniformLocation(mHistBarProgram, "ymax");
 
-    switch(mDataType) {
+    switch(mGLType) {
         case GL_FLOAT:
             mHistogramVBO = createBuffer<float>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(float);
@@ -113,11 +113,19 @@ hist_impl::hist_impl(unsigned pNBins, fg::FGType pDataType)
             mHistogramVBO = createBuffer<unsigned>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(unsigned);
             break;
+        case GL_SHORT:
+            mHistogramVBO = createBuffer<short>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
+            mHistogramVBOSize = mNBins*sizeof(short);
+            break;
+        case GL_UNSIGNED_SHORT:
+            mHistogramVBO = createBuffer<unsigned short>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
+            mHistogramVBOSize = mNBins*sizeof(unsigned short);
+            break;
         case GL_UNSIGNED_BYTE:
             mHistogramVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
             mHistogramVBOSize = mNBins*sizeof(unsigned char);
             break;
-        default: fg::TypeError("Plot::Plot", __LINE__, 1, GLenumToFGType(mDataType));
+        default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
     }
 }
 
@@ -193,7 +201,7 @@ void hist_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 namespace fg
 {
 
-Histogram::Histogram(unsigned pNBins, fg::FGType pDataType)
+Histogram::Histogram(unsigned pNBins, fg::dtype pDataType)
 {
     value = new internal::_Histogram(pNBins, pDataType);
 }

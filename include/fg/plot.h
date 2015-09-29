@@ -33,10 +33,10 @@ class Plot {
            Creates a Plot object
 
            \param[in] pNumPoints is number of data points to display
-           \param[in] pDataType takes one of the values of \ref FGType that indicates
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of plot data
          */
-        FGAPI Plot(unsigned pNumPoints, FGType pDataType, fg::FGPlotType=fg::FG_LINE, fg::FGMarkerType=fg::FG_NONE);
+        FGAPI Plot(unsigned pNumPoints, dtype pDataType, fg::PlotType=fg::FG_LINE, fg::MarkerType=fg::FG_NONE);
 
         /**
            Copy constructor for Plot
