@@ -77,6 +77,17 @@ class Plot {
         FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);
 
         /**
+           Set the chart axes limits
+
+           \param[in] pXmax is X-Axis maximum value
+           \param[in] pXmin is X-Axis minimum value
+           \param[in] pYmax is Y-Axis maximum value
+           \param[in] pYmin is Y-Axis minimum value
+           \param[in] pZmax is Z-Axis maximum value
+           \param[in] pZmin is Z-Axis minimum value
+         */
+        FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin);
+        /**
            Set X-Axis title in chart
 
            \param[in] pTitle is axis title

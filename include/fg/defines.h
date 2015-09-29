@@ -136,7 +136,8 @@ enum FGType {
 enum FGPlotType {
     FG_LINE         = 0,
     FG_SCATTER      = 1,
-    FG_SURFACE      = 2
+    FG_SURFACE      = 2,
+    FG_LINE_3D      = 3
 };
 
 enum FGMarkerType {
