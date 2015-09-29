@@ -24,48 +24,41 @@ typedef struct {
     GLuint fragment;
 } shaders_t;
 
-GLenum FGTypeToGLenum(fg::FGType val)
+GLenum gl_dtype(fg::dtype val)
 {
     switch(val) {
-        case FG_BYTE:           return GL_BYTE;
-        case FG_UNSIGNED_BYTE:  return GL_UNSIGNED_BYTE;
-        case FG_INT:            return GL_INT;
-        case FG_UNSIGNED_INT:   return GL_UNSIGNED_INT;
-        default:                return GL_FLOAT;
+        case s8:  return GL_BYTE;
+        case u8:  return GL_UNSIGNED_BYTE;
+        case s32: return GL_INT;
+        case u32: return GL_UNSIGNED_INT;
+        case s16: return GL_SHORT;
+        case u16: return GL_UNSIGNED_SHORT;
+        default:  return GL_FLOAT;
     }
 }
 
-fg::FGType GLenumToFGType(GLenum val)
+GLenum gl_ctype(ChannelFormat mode)
 {
-    switch(val) {
-        case GL_BYTE:           return FG_BYTE;
-        case GL_UNSIGNED_BYTE:  return FG_UNSIGNED_BYTE;
-        case GL_INT:            return FG_INT;
-        case GL_UNSIGNED_INT:   return FG_UNSIGNED_INT;
-        default:                return FG_FLOAT;
-    }
-}
-
-GLenum FGModeToGLColor(ColorMode mode)
-{
-    GLenum color = GL_RGBA;
     switch(mode) {
-        case FG_RED : color = GL_RED;  break;
-        case FG_RGB : color = GL_RGB;  break;
-        default     : color = GL_RGBA; break;
+        case FG_GRAYSCALE: return GL_RED;
+        case FG_RG  : return GL_RG;
+        case FG_RGB : return GL_RGB;
+        case FG_BGR : return GL_BGR;
+        case FG_BGRA: return GL_BGRA;
+        default     : return GL_RGBA;
     }
-    return color;
 }
 
-ColorMode GLModeToFGColor(GLenum mode)
+GLenum gl_ictype(ChannelFormat mode)
 {
-    ColorMode color = FG_RGBA;
-    switch(mode) {
-        case GL_RED : color = FG_RED;  break;
-        case GL_RGB : color = FG_RGB;  break;
-        default     : color = FG_RGBA; break;
-    }
-    return color;
+    if (mode==FG_GRAYSCALE)
+        return GL_RED;
+    else if (mode==FG_RG)
+        return GL_RG;
+    else if (mode==FG_RGB || mode==FG_BGR)
+        return GL_RGB;
+    else
+        return GL_RGBA;
 }
 
 char* loadFile(const char * fname, GLint &fSize)

@@ -33,11 +33,11 @@ class Image {
            \param[in] pWidth Width of the image
            \param[in] pHeight Height of the image
            \param[in] pFormat Color channel format of image, uses one of the values
-                      of \ref ColorMode
-           \param[in] pDataType takes one of the values of \ref FGType that indicates
+                      of \ref ChannelFormat
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Image(unsigned pWidth, unsigned pHeight, ColorMode pFormat, FGType pDataType);
+        FGAPI Image(unsigned pWidth, unsigned pHeight, ChannelFormat pFormat, dtype pDataType);
 
         /**
            Copy constructor of Image
@@ -65,15 +65,15 @@ class Image {
 
         /**
            Get Image's channel format
-           \return \ref ColorMode value of Image
+           \return \ref ChannelFormat value of Image
          */
-        FGAPI ColorMode pixelFormat() const;
+        FGAPI ChannelFormat pixelFormat() const;
 
         /**
            Get Image's integral data type
-           \return \ref FGType value of Image
+           \return \ref dtype value of Image
          */
-        FGAPI FGType channelType() const;
+        FGAPI dtype channelType() const;
 
         /**
            Get the OpenGL Pixel Buffer Object identifier
