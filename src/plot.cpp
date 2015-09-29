@@ -77,9 +77,6 @@ static const char *gMarkerSpriteFragmentShaderSrc =
 namespace internal
 {
 
-/*
- * Plot implementation
- */
 void plot_impl::bindResources(int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
@@ -248,9 +245,7 @@ GLuint plot_impl::spriteMatIndex() const
     return mSpriteTMatIndex;
 }
 
-/*
- * scatter implementation
- */
+
 void scatter_impl::renderGraph(int pWindowId, glm::mat4 transform){
     if(mMarkerType != fg::FG_NONE){
         glEnable(GL_PROGRAM_POINT_SIZE);
@@ -268,171 +263,6 @@ void scatter_impl::renderGraph(int pWindowId, glm::mat4 transform){
     }
 }
 
-/*
- * plot3 implementation
- */
-void plot3_impl::bindResources(int pWindowId)
-{
-    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
-        GLuint vao = 0;
-        /* create a vertex array object
-         * with appropriate bindings */
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-        // attach plot vertices
-        glEnableVertexAttribArray(mPointIndex);
-        glBindBuffer(GL_ARRAY_BUFFER, mMainVBO);
-        glVertexAttribPointer(mPointIndex, 3, mDataType, GL_FALSE, 0, 0);
-        //attach indices
-        glBindVertexArray(0);
-        /* store the vertex array object corresponding to
-         * the window instance in the map */
-        mVAOMap[pWindowId] = vao;
-    }
-
-    glBindVertexArray(mVAOMap[pWindowId]);
-}
-
-void plot3_impl::unbindResources() const
-{
-    glBindVertexArray(0);
-}
-
-plot3_impl::plot3_impl(unsigned pNumPoints, fg::FGType pDataType, fg::FGMarkerType pMarkerType)
-    : AbstractChart3D(), mNumPoints(pNumPoints), mDataType(FGTypeToGLenum(pDataType)),
-      mMainVBO(0), mMainVBOsize(0), mPointIndex(0)
-{
-    unsigned total_points = 3*mNumPoints;
-    // buffersubdata calls on mMainVBO
-    // will only update the points data
-    switch(mDataType) {
-        case GL_FLOAT:
-            mMainVBO = createBuffer<float>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
-            mMainVBOsize = total_points*sizeof(float);
-            break;
-        case GL_INT:
-            mMainVBO = createBuffer<int>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
-            mMainVBOsize = total_points*sizeof(int);
-            break;
-        case GL_UNSIGNED_INT:
-            mMainVBO = createBuffer<unsigned>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
-            mMainVBOsize = total_points*sizeof(unsigned);
-            break;
-        case GL_UNSIGNED_BYTE:
-            mMainVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, total_points, NULL, GL_DYNAMIC_DRAW);
-            mMainVBOsize = total_points*sizeof(unsigned char);
-            break;
-        default: fg::TypeError("Plot::Plot", __LINE__, 1, GLenumToFGType(mDataType));
-    }
-    mPointIndex = borderProgramPointIndex();
-    mMarkerType = pMarkerType;
-    mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
-
-    mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
-    mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
-}
-
-plot3_impl::~plot3_impl()
-{
-    CheckGL("Begin Plot::~Plot");
-    glDeleteBuffers(1, &mMainVBO);
-    CheckGL("End Plot::~Plot");
-}
-
-void plot3_impl::setColor(fg::Color col)
-{
-    mLineColor[0] = (((int) col >> 24 ) & 0xFF ) / 255.f;
-    mLineColor[1] = (((int) col >> 16 ) & 0xFF ) / 255.f;
-    mLineColor[2] = (((int) col >> 8  ) & 0xFF ) / 255.f;
-    mLineColor[3] = (((int) col       ) & 0xFF ) / 255.f;
-}
-
-void plot3_impl::setColor(float r, float g, float b)
-{
-    mLineColor[0] = clampTo01(r);
-    mLineColor[1] = clampTo01(g);
-    mLineColor[2] = clampTo01(b);
-    mLineColor[3] = 1.0f;
-}
-
-GLuint plot3_impl::vbo() const
-{
-    return mMainVBO;
-}
-
-size_t plot3_impl::size() const
-{
-    return mMainVBOsize;
-}
-
-void plot3_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
-{
-    return;
-    float range_x = xmax() - xmin();
-    float range_y = ymax() - ymin();
-    float range_z = zmax() - zmin();
-    // set scale to zero if input is constant array
-    // otherwise compute scale factor by standard equation
-    float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(xmax() - xmin());
-    float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(ymax() - ymin());
-    float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 0.0f : 2/(zmax() - zmin());
-
-    CheckGL("Begin Plot::render");
-    float viewWidth    = pVPW;// - (leftMargin() + rightMargin() + tickSize()/2 );
-    float viewHeight   = pVPH;//- (bottomMargin() + topMargin() + tickSize() );
-
-    float coor_offset_x = ( -xmin() * graph_scale_x);
-    float coor_offset_y = ( -ymin() * graph_scale_y);
-    float coor_offset_z = ( -zmin() * graph_scale_z);
-
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::translate(glm::mat4(1.f), glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z)) *  glm::scale(glm::mat4(1.f), glm::vec3(1.0f * graph_scale_x, -1.0f * graph_scale_y, 1.0f * graph_scale_z));
-    glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(0,-1,0),glm::vec3(0,1,0));
-    glm::mat4 projection = glm::ortho(2* (float)-viewWidth/(float)viewHeight, 2*(float)viewWidth/(float)viewHeight, -2.f, 2.f, -1.1f, 100.f);
-    glm::mat4 mvp = projection * view * model;
-    glm::mat4 transform = mvp;
-    cout<<"befgraph"<<endl;
-    renderGraph(pWindowId, transform);
-
-    /* render graph border and axes */
-    renderChart(pWindowId, pX, pY, pVPW, pVPH);
-
-    CheckGL("End Plot::render");
-}
-
-void plot3_impl::renderGraph(int pWindowId, glm::mat4 transform){
-    bindBorderProgram();
-    glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-    glUniform4fv(borderColorIndex(), 1, mLineColor);
-    bindResources(pWindowId);
-    glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
-    unbindResources();
-    unbindBorderProgram();
-
-    if(mMarkerType != fg::FG_NONE){
-        glEnable(GL_PROGRAM_POINT_SIZE);
-        glUseProgram(mMarkerProgram);
-
-        glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform4fv(borderColorIndex(), 1, mLineColor);
-        glUniform1i(markerTypeIndex(), mMarkerType);
-
-        bindResources(pWindowId);
-        glDrawArrays(GL_POINTS, 0, mNumPoints);
-        unbindResources();
-        glUseProgram(0);
-        glDisable(GL_PROGRAM_POINT_SIZE);
-    }
-}
-
-GLuint plot3_impl::markerTypeIndex() const
-{
-    return mMarkerTypeIndex;
-}
-
-GLuint plot3_impl::spriteMatIndex() const
-{
-    return mSpriteTMatIndex;
-}
 }
 
 namespace fg
@@ -466,11 +296,6 @@ void Plot::setColor(float r, float g, float b)
 void Plot::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
 {
     value->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
-}
-
-void Plot::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin)
-{
-    value->setAxesLimits(pXmax, pXmin, pYmax, pYmin, pZmax, pZmin);
 }
 
 void Plot::setXAxisTitle(const char* pTitle)
