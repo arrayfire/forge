@@ -34,7 +34,7 @@ static const char *gMarkerVertexShaderSrc =
 const char *gSurfFragmentShaderSrc =
 "#version 330\n"
 "uniform vec2 minmaxs[3];\n"
-"varying vec4 hpoint;\n"
+"in vec4 hpoint;\n"
 "out vec4 outputColor;\n"
 "vec3 hsv2rgb(vec3 c){\n"
 "   vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n"

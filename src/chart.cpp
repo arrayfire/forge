@@ -38,7 +38,7 @@ const char *gChartFragmentShaderSrc =
 "#version 330\n"
 "uniform vec4 color;\n"
 "uniform vec4 hrange;\n"
-"varying vec4 hpoint;\n"
+"in vec4 hpoint;\n"
 "out vec4 outputColor;\n"
 "void main(void) {\n"
 "   outputColor = color;\n"
@@ -811,24 +811,27 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 
     float pos[2];
     if (!mZTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 res = trans * glm::vec4(-1.0f, 1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-        pos[0] += (mTickSize * (w/pVPW));
+        pos[0] -= 6*(mTickSize * (w/pVPW));
+        pos[1] += mZTitle.length()/2 * CHART2D_FONT_SIZE;
         fonter->render(pWindowId, pos, WHITE, mZTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
     if (!mYTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, -1.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-        pos[0] += (mTickSize * (w/pVPW));
-        fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
+        pos[0] -= 2*(mTickSize * (w/pVPW)) + mYTitle.length()/2 * CHART2D_FONT_SIZE;
+        pos[1] -= 3*(mTickSize * (h/pVPH));
+        fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE);
     }
     if (!mXTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+        glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, -1.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-        pos[1] += (mTickSize * (h/pVPH));
+        pos[0] += 3*(mTickSize * (w/pVPW));
+        pos[1] -= 3*(mTickSize * (h/pVPH));
         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
