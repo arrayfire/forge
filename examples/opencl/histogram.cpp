@@ -124,6 +124,13 @@ static const std::string fractal_ocl_kernel =
 "        unsigned char noiseVal = out[offset*4 + 0];\n"
 "        atomic_add(hist_array + convert_int(nbins * convert_float(noiseVal)/255.f) , 1);\n"
 "    }\n"
+"}\n"
+"kernel\n"
+"void zero_buffer(global unsigned int* out, const unsigned size)\n"
+"{\n"
+"    if(get_global_id(0) < size) {\n"
+"        out[get_global_id(0)] = 0;\n"
+"    }\n"
 "}\n";
 
 inline int divup(int a, int b)
@@ -134,13 +141,14 @@ void kernel(cl::Buffer& devOut, cl::Buffer& histOut, cl::CommandQueue& queue)
 {
     static std::once_flag   compileFlag;
     static cl::Program      prog;
-    static cl::Kernel       kern_img, kern_hist;
+    static cl::Kernel       kern_img, kern_hist, kern_zero;
 
     std::call_once(compileFlag,
         [queue]() {
         prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), fractal_ocl_kernel, true);
             kern_img  = cl::Kernel(prog, "image_gen");
             kern_hist = cl::Kernel(prog, "hist_freq");
+            kern_zero = cl::Kernel(prog, "zero_buffer");
         });
 
     static const NDRange local(16, 16);
@@ -156,14 +164,16 @@ void kernel(cl::Buffer& devOut, cl::Buffer& histOut, cl::CommandQueue& queue)
     kern_img.setArg(4, tileSize);
     queue.enqueueNDRangeKernel(kern_img, cl::NullRange, global, local);
 
+    static const NDRange global_hist(NBINS);
+    kern_zero.setArg(0, histOut);
+    kern_zero.setArg(1, NBINS);
+    queue.enqueueNDRangeKernel(kern_zero, cl::NullRange, global_hist);
+
     kern_hist.setArg(0, devOut);
     kern_hist.setArg(1, histOut);
     kern_hist.setArg(2, DIMX);
     kern_hist.setArg(3, DIMY);
     kern_hist.setArg(4, NBINS);
-
-    int zero[]={0};
-    queue.enqueueFillBuffer<int*>(histOut, zero, 0, NBINS);
     queue.enqueueNDRangeKernel(kern_hist, cl::NullRange, global, local);
 }
 
