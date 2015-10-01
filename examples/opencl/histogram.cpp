@@ -213,14 +213,13 @@ int main(void)
         fg::Histogram hist(NBINS, fg::FG_UNSIGNED_BYTE);
 
         /*
-         * Set histogram colors and generate image
+         * Set histogram colors
          */
         hist.setBarColor(fg::FG_YELLOW);
-        
+
         /* set x axis limits to maximum and minimum values of data
          * and y axis limits to range [0, nBins]*/
         hist.setAxesLimits(1, 0, 1000, 0);
-
 
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU

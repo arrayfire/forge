@@ -71,7 +71,7 @@ int main(void) {
     fg::Histogram hist(NBINS, fg::FG_UNSIGNED_BYTE);
 
     /*
-     * Set histogram colors and generate image
+     * Set histogram colors
      */
     hist.setBarColor(fg::FG_YELLOW);
 
@@ -190,6 +190,7 @@ static const int perm[] = { 26, 58, 229, 82, 132, 72, 144, 251, 196, 192, 127, 1
     36, 101, 1, 253, 225, 51, 224, 182, 116, 218, 95, 39, 158,  14, 243, 151, 163,
     29, 153, 199, 185
 };
+
 static const vec3 default_gradients[] = { {1,1,0}, {-1,1,0}, {1,-1,0}, {-1,-1,0} };
 
 float perlinNoise(float x, float y, float z, int tileSize){
