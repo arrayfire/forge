@@ -20,7 +20,7 @@ const unsigned DIMY = 800;
 const unsigned WIN_ROWS = 1;
 const unsigned WIN_COLS = 2;
 
-const unsigned NBINS = 9;
+const unsigned NBINS = 5;
 
 using namespace std;
 
@@ -84,7 +84,7 @@ int main(void) {
 
     /* set x axis limits to maximum and minimum values of data
      * and y axis limits to range [0, nBins]*/
-    hist.setAxesLimits(1, 0, NBINS, 0);
+    hist.setAxesLimits(1, 0, 1000, 0);
 
     /* copy your data into the vertex buffer object exposed by
      * fg::Histogram class and then proceed to rendering.
@@ -102,8 +102,6 @@ int main(void) {
 
         int histogram_array[NBINS] = {0};
         hist_freq(bmp, &histogram_array[0], NBINS);
-//TODO: testing
-        int histogram_array1[NBINS] = {1,2,1,2,1,1,2,3,1};
         fg::copy(hist, histogram_array);
 
         wnd.draw(0, 0, img,  NULL );
@@ -152,7 +150,7 @@ void hist_freq(Bitmap& bmp, int *hist_array, const unsigned nbins){
         for (unsigned x=0; x<bmp.width; ++x) {
             int offset  = x + y * bmp.width;
             unsigned char noiseVal = bmp.ptr[offset*4];
-            hist_array[(int)((float)noiseVal/255.f * 10)]++;
+            hist_array[(int)((float)noiseVal/255.f * nbins)]++;
         }
     }
 

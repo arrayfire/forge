@@ -29,67 +29,100 @@ const unsigned IMG_SIZE = DIMX * DIMY * 4;
 const unsigned WIN_ROWS = 1;
 const unsigned WIN_COLS = 2;
 
-const unsigned NBINS = 9;
-
-/*
-Bitmap createBitmap(unsigned w, unsigned h);
-void destroyBitmap(Bitmap& bmp);
-void kernel(Bitmap& bmp);
-void hist_freq(Bitmap& bmp, int *hist_array, const unsigned nbins);
-*/
-
-float perlinNoise(float x, float y, float z, int tileSize);
-float octavesPerlin(float x, float y, float z, int octaves, float persistence, int tileSize);
-
+const unsigned NBINS = 5;
 
 static const std::string fractal_ocl_kernel =
-"float magnitude(float2 a)\n"
-"{\n"
-"    return sqrt(a.s0*a.s0+a.s1*a.s1);\n"
+"__constant int perm[] = { 26, 58, 229, 82, 132, 72, 144, 251, 196, 192, 127, 16,\n"
+"    68, 118, 104, 213, 91, 105, 203, 61, 59, 93, 136, 249, 27, 137, 141, 223, 119,\n"
+"    193, 155, 43, 71, 244, 170, 115, 201, 150, 165, 78, 208, 53, 90, 232, 209, 83,\n"
+"    45, 174, 140, 178, 220, 184, 70, 6, 202, 17, 128, 212, 117, 200, 254, 57, 248,\n"
+"    62, 164, 172, 19, 177, 241, 103, 48, 38, 210, 129, 23, 211, 8, 112, 107,  126,\n"
+"    252,  198, 32, 123, 111,  176,  206, 15, 219, 221, 147, 245, 67, 92, 108, 143,\n"
+"    54, 102, 169, 22, 74, 124, 181, 186, 138, 18, 7, 34, 81, 46, 120, 236, 89,228,\n"
+"    197, 205, 13, 63, 134,  242, 157, 135, 237, 35, 234, 49, 85, 76, 148, 188, 98,\n"
+"    87, 173, 84, 226, 11, 125, 122, 2, 94, 191, 179, 175, 187, 133, 231, 154,  44,\n"
+"    28, 110, 247, 121, 146, 240, 97, 88, 130,195, 30, 25, 56, 171, 80, 69, 139, 9,\n"
+"    238, 160, 227, 204, 31, 40, 66, 77, 21, 159,  162, 207,  167, 214, 10, 3, 149,\n"
+"    194, 239, 166,  145, 235, 20, 50, 113, 189, 99, 37, 86, 42, 168, 114, 96, 246,\n"
+"    183, 250, 233, 156, 52,  65, 131, 47,  255, 5, 33, 217, 73, 4, 60, 64, 109, 0,\n"
+"    215, 100, 180, 12, 24, 190, 222, 106, 41, 216, 230, 161, 55, 152, 79, 75, 142,\n"
+"    36, 101, 1, 253, 225, 51, 224, 182, 116, 218, 95, 39, 158,  14, 243, 151, 163,\n"
+"    29, 153, 199, 185\n"
+"};\n"
+"\n"
+"__constant float2 default_gradients[4] = {(float2) (1,1), (float2)(-1,1), (float2)(1,-1), (float2)(-1,-1) };\n"
+"\n"
+"float interp(float t){\n"
+"    return ((6 * t - 15) * t + 10) * t * t * t;\n"
 "}\n"
 "\n"
-"float2 mul(float2 a, float2 b)\n"
-"{\n"
-"    return (float2)(a.s0*b.s0-a.s1*b.s1, a.s1*b.s0+a.s0*b.s1);\n"
+"float lerp (float x0, float x1, float t) {\n"
+"        return x0 + (x1 - x0) * t;\n"
 "}\n"
 "\n"
-"float2 add(float2 a, float2 b)\n"
+"float perlinNoise(float x, float y, int tileSize)\n"
 "{\n"
-"    return (float2)(a.s0+b.s0, a.s1+b.s1);\n"
+"    int x_grid = x/tileSize;\n"
+"    int y_grid = y/tileSize;\n"
+"    unsigned rand_id0 = perm[(x_grid+2*y_grid) % 256 ] % 4;\n"
+"    unsigned rand_id1 = perm[(x_grid+1+2*y_grid) % 256 ] % 4;\n"
+"    unsigned rand_id2 = perm[(x_grid+2*(y_grid+1)) % 256 ] % 4;\n"
+"    unsigned rand_id3 = perm[(x_grid+1+2*(y_grid+1)) % 256 ] % 4;\n"
+"\n"
+"    x=fmod(x,tileSize)/tileSize;\n"
+"    y=fmod(y,tileSize)/tileSize;\n"
+"    float u = interp(x);\n"
+"    float v = interp(y);\n"
+"\n"
+"    float influence_vecs[4];\n"
+"    influence_vecs[0] = dot((float2)(x,y) - (float2)(0,0), default_gradients[rand_id0]);\n"
+"    influence_vecs[1] = dot((float2)(x,y) - (float2)(1,0), default_gradients[rand_id1]);\n"
+"    influence_vecs[2] = dot((float2)(x,y) - (float2)(0,1), default_gradients[rand_id2]);\n"
+"    influence_vecs[3] = dot((float2)(x,y) - (float2)(1,1),             default_gradients[rand_id3]);\n"
+"\n"
+"    return lerp(lerp(influence_vecs[0], influence_vecs[1], u), lerp(influence_vecs[2], influence_vecs[3], u), v);\n"
 "}\n"
-"\n"
-"int pixel(int x, int y, int width, int height)\n"
+"float octavesPerlin(float x, float y, int octaves, float persistence, int tileSize)\n"
 "{\n"
-"\n"
-"    const float scale = 1.5;\n"
-"    float jx = scale * (float)(width/2.0f - x)/(width/2.0f);\n"
-"    float jy = scale * (float)(height/2.0f - y)/(height/2.0f);\n"
-"\n"
-"    float2 c = (float2)(-0.8f, 0.156f);\n"
-"    float2 a = (float2)(jx, jy);\n"
-"\n"
-"    for (int i=0; i<200; i++) {\n"
-"        a = add(mul(a, a), c);\n"
-"        if (magnitude(a) > 1000.0f)\n"
-"            return 0;\n"
+"    float total = 0, max_value = 0;\n"
+"    float amplitude = 1, frequency = 1;\n"
+"    for(int i=0; i<octaves; ++i){\n"
+"        total += perlinNoise( x*frequency, y*frequency, tileSize) * amplitude;\n"
+"        max_value += amplitude;\n"
+" \n"
+"        amplitude *= persistence;\n"
+"        frequency *= 2;\n"
 "    }\n"
-"\n"
-"    return 1;\n"
+"    return total/max_value;\n"
 "}\n"
 "\n"
 "kernel\n"
-"void julia(global unsigned char* out, const unsigned w, const unsigned h)\n"
+"void image_gen(global unsigned char* out, const unsigned w, const unsigned h, float persistance, int tileSize)\n"
 "{\n"
-"    int x = get_group_id(0) * get_num_groups(0) + get_local_id(0);\n"
-"    int y = get_group_id(1) * get_num_groups(1) + get_local_id(1);\n"
+"    int x = get_group_id(0) * get_global_size(0)/get_num_groups(0) + get_local_id(0);\n"
+"    int y = get_group_id(1) * get_global_size(1)/get_num_groups(1) + get_local_id(1);\n"
 "\n"
 "    if (x<w && y<h) {\n"
-"        int offset        = x + y * w;\n"
-"        int juliaValue    = pixel(x, y, w, h);\n"
-"        out[offset*4 + 0] = 255 * juliaValue;\n"
-"        out[offset*4 + 1] = 0;\n"
-"        out[offset*4 + 2] = 0;\n"
+"        int offset  = y * w + x;\n"
+"        int octaves = 4;\n"
+"        int noiseValue    = 255 * octavesPerlin(x, y, octaves, persistance, tileSize);\n"
+"        out[offset*4 + 0] = noiseValue;\n"
+"        out[offset*4 + 1] = noiseValue;\n"
+"        out[offset*4 + 2] = noiseValue;\n"
 "        out[offset*4 + 3] = 255;\n"
+"    }\n"
+"}\n"
+"\n"
+"kernel\n"
+"void hist_freq(const global unsigned char* out, global int* hist_array, const unsigned w, const unsigned h, const unsigned nbins)\n"
+"{\n"
+"    int x = get_group_id(0) * get_global_size(0)/get_num_groups(0) + get_local_id(0);\n"
+"    int y = get_group_id(1) * get_global_size(1)/get_num_groups(1) + get_local_id(1);\n"
+"\n"
+"    if (x<w && y<h) {\n"
+"        int offset  = y * w + x;\n"
+"        unsigned char noiseVal = out[offset*4 + 0];\n"
+"        atomic_add(hist_array + convert_int(nbins * convert_float(noiseVal)/255.f) , 1);\n"
 "    }\n"
 "}\n";
 
@@ -97,28 +130,41 @@ inline int divup(int a, int b)
 {
     return (a+b-1)/b;
 }
-
-void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
+void kernel(cl::Buffer& devOut, cl::Buffer& histOut, cl::CommandQueue& queue)
 {
     static std::once_flag   compileFlag;
     static cl::Program      prog;
-    static cl::Kernel       kern;
+    static cl::Kernel       kern_img, kern_hist;
 
     std::call_once(compileFlag,
         [queue]() {
         prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), fractal_ocl_kernel, true);
-            kern = cl::Kernel(prog, "julia");
+            kern_img  = cl::Kernel(prog, "image_gen");
+            kern_hist = cl::Kernel(prog, "hist_freq");
         });
 
-    static const NDRange local(8, 8);
+    static const NDRange local(16, 16);
     NDRange global(local[0] * divup(DIMX, local[0]),
                    local[1] * divup(DIMY, local[1]));
 
-    kern.setArg(0, devOut);
-    kern.setArg(1, DIMX);
-    kern.setArg(2, DIMY);
-    queue.enqueueNDRangeKernel(kern, cl::NullRange, global, local);
+    static int tileSize = 32; tileSize++;
+    static float persistance = 0.1; persistance+=0.01;
+    kern_img.setArg(0, devOut);
+    kern_img.setArg(1, DIMX);
+    kern_img.setArg(2, DIMY);
+    kern_img.setArg(3, persistance);
+    kern_img.setArg(4, tileSize);
+    queue.enqueueNDRangeKernel(kern_img, cl::NullRange, global, local);
 
+    kern_hist.setArg(0, devOut);
+    kern_hist.setArg(1, histOut);
+    kern_hist.setArg(2, DIMX);
+    kern_hist.setArg(3, DIMY);
+    kern_hist.setArg(4, NBINS);
+
+    int zero[]={0};
+    queue.enqueueFillBuffer<int*>(histOut, zero, 0, NBINS);
+    queue.enqueueNDRangeKernel(kern_hist, cl::NullRange, global, local);
 }
 
 int main(void)
@@ -129,7 +175,7 @@ int main(void)
         * so that necessary OpenGL context is created for any
         * other fg::* object to be created successfully
         */
-        fg::Window wnd(DIMX, DIMY, "Fractal Demo");
+        fg::Window wnd(DIMX, DIMY, "Histogram Demo");
         wnd.makeCurrent();
         /* create an font object and load necessary font
         * and later pass it on to window object so that
@@ -160,6 +206,10 @@ int main(void)
          * Set histogram colors and generate image
          */
         hist.setBarColor(fg::FG_YELLOW);
+        
+        /* set x axis limits to maximum and minimum values of data
+         * and y axis limits to range [0, nBins]*/
+        hist.setAxesLimits(1, 0, 1000, 0);
 
 
         Platform plat = getPlatform();
@@ -201,25 +251,28 @@ int main(void)
         Context context(device, cps);
         CommandQueue queue(context, device);
 
-        /* copy your data into the pixel buffer object exposed by
-         * fg::Image class and then proceed to rendering.
-         * To help the users with copying the data from compute
-         * memory to display memory, Forge provides copy headers
-         * along with the library to help with this task
-         */
         cl::Buffer devOut(context, CL_MEM_READ_WRITE, IMG_SIZE);
+        cl::Buffer histOut(context, CL_MEM_READ_WRITE, NBINS * sizeof(int));
 
         /*
          * generate image, and prepare data to pass into
          * Histogram's underlying vertex buffer object
          */
-        kernel(devOut, queue);
+        kernel(devOut, histOut, queue);
+         /* To help the users with copying the data from compute
+         * memory to display memory, Forge provides copy headers
+         * along with the library to help with this task
+         */
         fg::copy(img, devOut, queue);
+        fg::copy(hist, histOut, queue);
 
         do {
+            kernel(devOut, histOut, queue);
+            fg::copy(img, devOut, queue);
+            fg::copy(hist, histOut, queue);
+            // draw window and poll for events last
             wnd.draw(0, 0, img,  NULL );
             wnd.draw(1, 0, hist, NULL );
-            // draw window and poll for events last
             wnd.draw();
         } while(!wnd.close());
     }catch (fg::Error err) {
