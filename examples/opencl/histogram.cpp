@@ -206,11 +206,11 @@ int main(void)
         /* Create an image object which creates the necessary
         * textures and pixel buffer objects to hold the image
         * */
-        fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::FG_UNSIGNED_BYTE);
+        fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
         /*
          * Create histogram object while specifying desired number of bins
          */
-        fg::Histogram hist(NBINS, fg::FG_UNSIGNED_BYTE);
+        fg::Histogram hist(NBINS, fg::u8);
 
         /*
          * Set histogram colors

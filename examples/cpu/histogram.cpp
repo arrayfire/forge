@@ -64,11 +64,11 @@ int main(void) {
      */
     wnd.grid(WIN_ROWS, WIN_COLS);
 
-    fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::FG_UNSIGNED_BYTE);
+    fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
     /*
      * Create histogram object while specifying desired number of bins
      */
-    fg::Histogram hist(NBINS, fg::FG_UNSIGNED_BYTE);
+    fg::Histogram hist(NBINS, fg::u8);
 
     /*
      * Set histogram colors

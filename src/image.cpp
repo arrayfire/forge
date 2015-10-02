@@ -137,7 +137,17 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight,
         case GL_UNSIGNED_BYTE:  typeSize = sizeof(unsigned char);   break;
         default: typeSize = sizeof(float); break;
     }
-    mPBOsize = mWidth * mHeight * mFormat * typeSize;
+    size_t formatSize = 0;
+    switch(mFormat) {
+        case fg::FG_GRAYSCALE:     formatSize = 1;   break;
+        case fg::FG_RG:            formatSize = 2;   break;
+        case fg::FG_RGB:           formatSize = 3;   break;
+        case fg::FG_BGR:           formatSize = 3;   break;
+        case fg::FG_RGBA:          formatSize = 4;   break;
+        case fg::FG_BGRA:          formatSize = 4;   break;
+        default: formatSize = 1; break;
+    }
+    mPBOsize = mWidth * mHeight * formatSize * typeSize;
     glBufferData(GL_PIXEL_UNPACK_BUFFER, mPBOsize, NULL, GL_STREAM_COPY);
 
     glBindTexture(GL_TEXTURE_2D, 0);
