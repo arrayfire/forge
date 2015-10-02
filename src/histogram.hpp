@@ -20,7 +20,8 @@ namespace internal
 class hist_impl : public AbstractChart2D {
     private:
         /* plot points characteristics */
-        GLenum    mDataType;
+        fg::dtype mDataType;
+        GLenum    mGLType;
         GLuint    mNBins;
         float     mBarColor[4];
         /* OpenGL Objects */
@@ -45,7 +46,7 @@ class hist_impl : public AbstractChart2D {
         void unbindResources() const;
 
     public:
-        hist_impl(unsigned pNBins, fg::FGType pDataType);
+        hist_impl(unsigned pNBins, fg::dtype pDataType);
         ~hist_impl();
 
         void setBarColor(float r, float g, float b);
@@ -60,7 +61,7 @@ class _Histogram {
         std::shared_ptr<hist_impl> hst;
 
     public:
-        _Histogram(unsigned pNBins, fg::FGType pDataType)
+        _Histogram(unsigned pNBins, fg::dtype pDataType)
             : hst(std::make_shared<hist_impl>(pNBins, pDataType)) {}
 
         inline const std::shared_ptr<hist_impl>& impl() const {

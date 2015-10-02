@@ -18,7 +18,7 @@ using std::string;
 using std::stringstream;
 using std::cerr;
 
-std::string getName(fg::FGType pType)
+std::string getName(fg::dtype pType)
 {
     // FIXME
     return std::string("test");
@@ -56,7 +56,7 @@ Error::~Error() throw() {}
 
 
 TypeError::TypeError(const char * const pFuncName, const int pLine,
-                     const int pIndex, const fg::FGType pType)
+                     const int pIndex, const fg::dtype pType)
     : Error(pFuncName, pLine, "Invalid data type", FG_ERR_INVALID_TYPE), mArgIndex(pIndex)
 {
     std::string str = getName(pType); /* TODO getName has to be defined */
