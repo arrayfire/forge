@@ -64,7 +64,7 @@ int main(void)
     surf.setXAxisTitle("x-axis");
 
     static float t=0;
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, sizeof(float) * XSIZE * YSIZE * 3));
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
     kernel(t, DX, dev_out);
     /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
@@ -77,7 +77,7 @@ int main(void)
     do {
         t+=0.07;
         kernel(t, DX, dev_out);
-        //fg::copy(surf, dev_out);
+        fg::copy(surf, dev_out);
         // draw window and poll for events last
         wnd.draw(surf);
     } while(!wnd.close());
@@ -95,10 +95,11 @@ void sincos_surf(float t, float dx, float* out)
     
     float x=XMIN+i*dx;
     float y=YMIN+j*dx;
-    if (i<DIMX && j<DIMY) {
-        out[ 3 * (j*DIMX+i)     ] = x;
-        out[ 3 * (j*DIMX+i) + 1 ] = y;
-        out[ 3 * (j*DIMX+i) + 2 ] = 10*x*-abs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5;
+    if (i<XSIZE && j<YSIZE) {
+        int offset = j + i * YSIZE;
+        out[ 3 * offset     ] = x;
+        out[ 3 * offset + 1 ] = y;
+        out[ 3 * offset + 2 ] = 10*x*-abs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5;
     }
 }
 
@@ -110,7 +111,8 @@ inline int divup(int a, int b)
 void kernel(float t, float dx, float* dev_out)
 {
     static const dim3 threads(8, 8);
-    dim3 blocks(XSIZE, YSIZE);
+    dim3 blocks(divup(XSIZE, threads.x),
+                divup(YSIZE, threads.y));
 
     sincos_surf<<< blocks, threads >>>(t, dx, dev_out);
 }

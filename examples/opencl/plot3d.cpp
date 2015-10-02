@@ -39,8 +39,8 @@ static const std::string sincos_surf_kernel =
 "kernel void sincos_surf(global float* out, const float dx, const float t, const float xmin, const float ymin, const unsigned w, const unsigned h)\n"
 "{\n"
 "    int offset = get_global_id(0);\n"
-"    unsigned i = offset%w;\n"
-"    unsigned j = offset/w;\n"
+"    unsigned i = offset%h;\n"
+"    unsigned j = offset/h;\n"
 "\n"
 "      float x = xmin + i*dx;\n"
 "      float y = ymin + j*dx;\n"
@@ -170,23 +170,12 @@ int main(void)
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        /*
-        float buffcopy[XSIZE*YSIZE*3];
-        queue.enqueueReadBuffer(
-        devOut,
-        true,
-        0,
-        XSIZE * YSIZE * 3 * sizeof(float),
-        buffcopy);
-        for(int i=0;i<XSIZE*YSIZE*3; i+=3)
-            cout<<"("<<buffcopy[i]<<","<<buffcopy[i+1]<<","<<buffcopy[i+2]<<')'<<endl;
-        */
         fg::copy(surf, devOut, queue);
 
         do {
             t+=0.07;
             kernel(devOut, queue, t);
-            //fg::copy(surf, devOut, queue);
+            fg::copy(surf, devOut, queue);
             // draw window and poll for events last
             wnd.draw(surf);
         } while(!wnd.close());
