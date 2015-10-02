@@ -216,15 +216,6 @@ Histogram::~Histogram()
     delete value;
 }
 
-void Histogram::setBarColor(fg::Color col)
-{
-    float r = (((int) col >> 24 ) & 0xFF ) / 255.f;
-    float g = (((int) col >> 16 ) & 0xFF ) / 255.f;
-    float b = (((int) col >> 8  ) & 0xFF ) / 255.f;
-    float a = (((int) col       ) & 0xFF ) / 255.f;
-    value->setBarColor(r, g, b);
-}
-
 void Histogram::setBarColor(float r, float g, float b)
 {
     value->setBarColor(r, g, b);
