@@ -443,6 +443,12 @@ void Window::draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle)
     value->draw(pColId, pRowId, pPlot.get(), pTitle);
 }
 
+void Window::draw(int pColId, int pRowId, const Surface& pSurface, const char* pTitle)
+{
+    value->draw(pColId, pRowId, pSurface.get(), pTitle);
+}
+
+
 void Window::draw(int pColId, int pRowId, const Histogram& pHist, const char* pTitle)
 {
     value->draw(pColId, pRowId, pHist.get(), pTitle);

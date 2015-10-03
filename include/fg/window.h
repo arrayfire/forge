@@ -176,13 +176,13 @@ class Window {
         /**
            Render a Surface to Window
 
-           \param[in] pPlot is an object of class Plot
+           \param[in] pSurface is an object of class Surface
 
            \note this draw call does a OpenGL swap buffer, so we do not need
            to call Window::draw() after this function is called upon for rendering
            a plot
          */
-        FGAPI void draw(const Surface& pPlot);
+        FGAPI void draw(const Surface& pSurface);
         /**
            Render Histogram to Window
 
@@ -242,6 +242,25 @@ class Window {
            when in multiview mode.
          */
         FGAPI void draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle = 0);
+
+        /**
+           Render Surface to given sub-region of the window in multiview mode
+
+           Window::grid should have been already called before any of the draw calls
+           that accept coloum index and row index is used to render an object.
+
+           \param[in] pColId is coloumn index
+           \param[in] pRowId is row index
+           \param[in] pSurface is an object of class Surface
+           \param[in] pTitle is the title that will be displayed for the cell represented
+                      by \p pColId and \p pRowId
+
+           \note This draw call doesn't do OpenGL swap buffer since it doesn't have the
+           knowledge of which sub-regions already got rendered. We should call
+           Window::draw() once all draw calls corresponding to all sub-regions are called
+           when in multiview mode.
+         */
+        FGAPI void draw(int pColId, int pRowId, const Surface& pSurface, const char* pTitle = 0);
 
         /**
            Render Histogram to given sub-region of the window in multiview mode
