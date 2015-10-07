@@ -89,7 +89,7 @@ int main(void)
      * and y axis limits to range [0, nBins]*/
     hist.setAxesLimits(1, 0, 1000, 0);
     CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, IMG_SIZE ));
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&hist_out, NBINS));
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&hist_out, NBINS * sizeof(int)));
     kernel(dev_out);
     kernel_hist(dev_out, hist_out);
     fg::copy(img, dev_out);
@@ -99,7 +99,8 @@ int main(void)
         kernel(dev_out);
         kernel_hist(dev_out, hist_out);
         fg::copy(img, dev_out);
-        if(fmod(persistance, 0.5f) < 0.01)//limit histogram update frequency
+        // limit histogram update frequency
+        if(fmod(persistance, 0.5f) < 0.01)
             fg::copy(hist, hist_out);
         wnd.draw(0, 0, img,  NULL );
         wnd.draw(1, 0, hist, NULL );
@@ -206,13 +207,16 @@ void hist_freq(const unsigned char* src, int* hist_array, const unsigned nbins) 
     if (x<DIMX && y<DIMY) {
         int offset  = y * DIMX + x;
         unsigned char noiseVal = src[offset*4 + 0];
-        atomicAdd(hist_array + __float2int_rd(nbins * __int2float_rd(noiseVal)/255.f), 1);
+        offset = __float2int_rd(nbins * (__int2float_rd(noiseVal)/255.f));
+        atomicAdd(hist_array + offset , 1);
     }
 }
 
 void kernel_hist(unsigned char * src, int* hist_out){
-    static const dim3 threads(NBINS);
-    dim3 blocks(1);
+    static const dim3 threads(8, 8);
+    dim3 blocks(divup(DIMX, threads.x),
+                divup(DIMY, threads.y));
+
     cudaMemset(hist_out, 0, NBINS * sizeof(int));
     hist_freq<<< blocks, threads >>>(src, hist_out, NBINS);
 }
