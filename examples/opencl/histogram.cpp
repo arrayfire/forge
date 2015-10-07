@@ -283,8 +283,8 @@ int main(void)
             if(fmod(persistance, 0.5f) < 0.01)
                 fg::copy(hist, histOut, queue);
             // draw window and poll for events last
-            wnd.draw(0, 0, img,  NULL );
-            wnd.draw(1, 0, hist, NULL );
+            wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
+            wnd.draw(1, 0, hist, "Histogram of Noisy Image");
             wnd.draw();
         } while(!wnd.close());
     }catch (fg::Error err) {

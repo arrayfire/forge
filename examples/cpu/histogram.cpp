@@ -104,11 +104,12 @@ int main(void) {
 
         int histogram_array[NBINS] = {0};
         hist_freq(bmp, &histogram_array[0], NBINS);
-        if(fmod(t,0.4f) < 0.02f)// limit histogram update frequency
+        // limit histogram update frequency
+        if(fmod(t,0.4f) < 0.02f)
             fg::copy(hist, histogram_array);
 
-        wnd.draw(0, 0, img,  NULL );
-        wnd.draw(1, 0, hist, NULL );
+        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
+        wnd.draw(1, 0, hist, "Histogram of Noisy Image");
         // draw window and poll for events last
         wnd.draw();
     } while(!wnd.close());

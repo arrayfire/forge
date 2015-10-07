@@ -102,8 +102,8 @@ int main(void)
         // limit histogram update frequency
         if(fmod(persistance, 0.5f) < 0.01)
             fg::copy(hist, hist_out);
-        wnd.draw(0, 0, img,  NULL );
-        wnd.draw(1, 0, hist, NULL );
+        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
+        wnd.draw(1, 0, hist, "Histogram of Noisy Image");
         wnd.draw();
     } while(!wnd.close());
 
