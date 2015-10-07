@@ -19,6 +19,7 @@ const unsigned IMG_SIZE = DIMX * DIMY * 4;
 const unsigned WIN_ROWS = 1;
 const unsigned WIN_COLS = 2;
 
+static float persistance;
 const unsigned NBINS = 5;
 
 
@@ -98,7 +99,8 @@ int main(void)
         kernel(dev_out);
         kernel_hist(dev_out, hist_out);
         fg::copy(img, dev_out);
-        fg::copy(hist, hist_out);
+        if(fmod(persistance, 0.5f) < 0.01)//limit histogram update frequency
+            fg::copy(hist, hist_out);
         wnd.draw(0, 0, img,  NULL );
         wnd.draw(1, 0, hist, NULL );
         wnd.draw();
@@ -192,7 +194,7 @@ void kernel(unsigned char* dev_out) {
                 divup(DIMY, threads.y));
 
     static int tileSize = 32; tileSize++;
-    static float persistance = 0.1; persistance+=0.01;
+    persistance += 0.01;
     image_gen<<< blocks, threads >>>(dev_out, persistance, tileSize);
 }
 

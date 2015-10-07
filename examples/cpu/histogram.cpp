@@ -22,6 +22,8 @@ const unsigned WIN_COLS = 2;
 
 const unsigned NBINS = 5;
 
+static float t=0.1;
+
 using namespace std;
 
 struct Bitmap {
@@ -102,7 +104,8 @@ int main(void) {
 
         int histogram_array[NBINS] = {0};
         hist_freq(bmp, &histogram_array[0], NBINS);
-        fg::copy(hist, histogram_array);
+        if(fmod(t,0.4f) < 0.02f)// limit histogram update frequency
+            fg::copy(hist, histogram_array);
 
         wnd.draw(0, 0, img,  NULL );
         wnd.draw(1, 0, hist, NULL );
@@ -129,7 +132,6 @@ void destroyBitmap(Bitmap& bmp)
 }
 
 void kernel(Bitmap& bmp) {
-    static float t=0.1;
     static unsigned tileSize=100;
     for (unsigned y=0; y<bmp.height; ++y) {
         for (unsigned x=0; x<bmp.width; ++x) {

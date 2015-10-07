@@ -29,6 +29,7 @@ const unsigned IMG_SIZE = DIMX * DIMY * 4;
 const unsigned WIN_ROWS = 1;
 const unsigned WIN_COLS = 2;
 
+static float persistance = 0.1;
 const unsigned NBINS = 5;
 
 static const std::string fractal_ocl_kernel =
@@ -156,7 +157,7 @@ void kernel(cl::Buffer& devOut, cl::Buffer& histOut, cl::CommandQueue& queue)
                    local[1] * divup(DIMY, local[1]));
 
     static int tileSize = 32; tileSize++;
-    static float persistance = 0.1; persistance+=0.01;
+    persistance += 0.01;
     kern_img.setArg(0, devOut);
     kern_img.setArg(1, DIMX);
     kern_img.setArg(2, DIMY);
@@ -278,7 +279,9 @@ int main(void)
         do {
             kernel(devOut, histOut, queue);
             fg::copy(img, devOut, queue);
-            fg::copy(hist, histOut, queue);
+            // limit histogram update frequency
+            if(fmod(persistance, 0.5f) < 0.01)
+                fg::copy(hist, histOut, queue);
             // draw window and poll for events last
             wnd.draw(0, 0, img,  NULL );
             wnd.draw(1, 0, hist, NULL );
