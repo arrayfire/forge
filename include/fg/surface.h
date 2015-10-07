@@ -13,59 +13,59 @@
 
 namespace internal
 {
-class _Histogram;
+class _Surface;
 }
 
 namespace fg
 {
 
 /**
-   \class Histogram
+   \class Surface
 
-   \brief Bar graph to display data frequencey.
+   \brief 3d graph to display plots.
  */
-class Histogram {
+class Surface {
     private:
-        internal::_Histogram* value;
+        internal::_Surface* value;
 
     public:
         /**
-           Creates a Histogram object
+           Creates a Surface object
 
-           \param[in] pNBins is number of bins the data is sorted out
-           \param[in] pDataType takes one of the values of \ref dtype that indicates
-                      the integral data type of histogram data
+           \param[in] pNumXPoints is number of data points along X dimension
+           \param[in] pNumYPoints is number of data points along Y dimension
+           \param[in] pDataType takes one of the values of \ref FGType that indicates
+                      the integral data type of plot data
          */
-        FGAPI Histogram(unsigned pNBins, dtype pDataType);
+        FGAPI Surface(unsigned pNumXPoints, unsigned pNumYPoints, dtype pDataType, PlotType pPlotType=fg::FG_SURFACE, MarkerType pMarkerType=fg::FG_NONE);
 
         /**
-           Copy constructor for Histogram
+           Copy constructor for Plot
 
-           \param[in] other is the Histogram of which we make a copy of.
+           \param[in] other is the Plot of which we make a copy of.
          */
-        FGAPI Histogram(const Histogram& other);
+        FGAPI Surface(const Surface& other);
 
         /**
-           Histogram Destructor
+           Plot Destructor
          */
-        FGAPI ~Histogram();
+        FGAPI ~Surface();
 
         /**
-           Set the color of bar in the bar graph(histogram)
+           Set the color of line graph(plot)
 
-           \param[in] col takes values of type fg::Color to define bar color
-        **/
-        FGAPI void setBarColor(fg::Color col);
-
+           \param[in] col takes values of fg::Color to define plot color
+        */
+        FGAPI void setColor(fg::Color col);
 
         /**
-           Set the color of bar in the bar graph(histogram)
+           Set the color of line graph(plot)
 
            \param[in] pRed is Red component in range [0, 1]
            \param[in] pGreen is Green component in range [0, 1]
            \param[in] pBlue is Blue component in range [0, 1]
          */
-        FGAPI void setBarColor(float pRed, float pGreen, float pBlue);
+        FGAPI void setColor(float pRed, float pGreen, float pBlue);
 
         /**
            Set the chart axes limits
@@ -75,7 +75,7 @@ class Histogram {
            \param[in] pYmax is Y-Axis maximum value
            \param[in] pYmin is Y-Axis minimum value
          */
-        FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);
+        FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin);
 
         /**
            Set X-Axis title in chart
@@ -90,6 +90,13 @@ class Histogram {
            \param[in] pTitle is axis title
          */
         FGAPI void setYAxisTitle(const char* pTitle);
+
+        /**
+           Set Z-Axis title in chart
+
+           \param[in] pTitle is axis title
+         */
+        FGAPI void setZAxisTitle(const char* pTitle);
 
         /**
            Get X-Axis maximum value
@@ -120,6 +127,20 @@ class Histogram {
         FGAPI float ymin() const;
 
         /**
+           Get Z-Axis maximum value
+
+           \return Maximum value along Z-Axis
+         */
+        FGAPI float zmax() const;
+
+        /**
+           Get Z-Axis minimum value
+
+           \return Minimum value along Z-Axis
+         */
+        FGAPI float zmin() const;
+
+        /**
            Get the OpenGL Vertex Buffer Object identifier
 
            \return OpenGL VBO resource id.
@@ -134,9 +155,9 @@ class Histogram {
         FGAPI unsigned size() const;
 
         /**
-           Get the handle to internal implementation of Histogram
+           Get the handle to internal implementation of _Surface
          */
-        FGAPI internal::_Histogram* get() const;
+        FGAPI internal::_Surface* get() const;
 };
 
 }

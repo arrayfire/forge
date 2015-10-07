@@ -19,7 +19,7 @@
 
 using namespace std;
 
-const char *gMarkerVertexShaderSrc =
+static const char *gMarkerVertexShaderSrc =
 "#version 330\n"
 "in vec2 point;\n"
 "uniform mat4 transform;\n"
@@ -29,7 +29,7 @@ const char *gMarkerVertexShaderSrc =
 "}";
 
 
-const char *gMarkerSpriteFragmentShaderSrc =
+static const char *gMarkerSpriteFragmentShaderSrc =
 "#version 330\n"
 "uniform int marker_type;\n"
 "uniform vec4 line_color;\n"
