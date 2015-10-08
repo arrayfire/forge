@@ -749,8 +749,6 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 {
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
-    float scale_x = pVPW;
-    float scale_y = pVPH;
 
     CheckGL("Begin Chart::render");
 
@@ -803,8 +801,8 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
     render_tickmarker_text(pWindowId, w, h, mYText, trans, mTickCount);
     render_tickmarker_text(pWindowId, w, h, mXText, trans, 2*mTickCount);
 
-     /* 
-      * render chart axes titles 
+     /*
+      * render chart axes titles
       */
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));

@@ -75,6 +75,7 @@ ENDIF()
 
 FIND_PACKAGE(OpenCL QUIET)
 IF(OpenCL_FOUND)
+    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -Wno-unused-function")
     FILE(GLOB OpenCL_EXAMPLE_SRC_FILES "opencl/*.cpp")
     INCLUDE_DIRECTORIES(
         "${CMAKE_CURRENT_SOURCE_DIR}/opencl"

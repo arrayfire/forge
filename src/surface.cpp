@@ -243,8 +243,6 @@ void surface_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 0.0f : 2/(zmax() - zmin());
 
     CheckGL("Begin Plot::render");
-    float viewWidth    = pVPW;// - (leftMargin() + rightMargin() + tickSize()/2 );
-    float viewHeight   = pVPH;//- (bottomMargin() + topMargin() + tickSize() );
 
     float coor_offset_x = ( -xmin() * graph_scale_x);
     float coor_offset_y = ( -ymin() * graph_scale_y);
