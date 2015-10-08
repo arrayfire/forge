@@ -111,7 +111,7 @@ int main(void) {
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
         wnd.draw(1, 0, hist, "Histogram of Noisy Image");
         // draw window and poll for events last
-        wnd.draw();
+        wnd.swapBuffers();
     } while(!wnd.close());
 
     return 0;
@@ -209,7 +209,6 @@ float perlinNoise(float x, float y, float z, int tileSize){
     z=fmod(z,tileSize)/tileSize;
     float u = interp(x);
     float v = interp(y);
-    float w = interp(z);
 
     float influence_vecs[4];
     influence_vecs[0] = (vec3(x,y,z) - vec3(0,0,0)) * default_gradients[rand_id0];

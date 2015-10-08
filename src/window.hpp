@@ -81,7 +81,7 @@ class window_impl {
                   const std::shared_ptr<AbstractRenderable>& pRenderable,
                   const char* pTitle);
 
-        void draw();
+        void swapBuffers();
 };
 
 void MakeContextCurrent(const window_impl* pWindow);
@@ -179,8 +179,8 @@ class _Window {
             wnd->draw(pHist->impl()) ;
         }
 
-        inline void draw() {
-            wnd->draw();
+        inline void swapBuffers() {
+            wnd->swapBuffers();
         }
 
         inline void grid(int pRows, int pCols) {

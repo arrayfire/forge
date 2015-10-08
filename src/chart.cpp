@@ -26,19 +26,14 @@ static const int CHART2D_FONT_SIZE = 15;
 const char *gChartVertexShaderSrc =
 "#version 330\n"
 "in vec3 point;\n"
-"out vec4 hpoint;\n"
 "uniform mat4 transform;\n"
 "void main(void) {\n"
 "   gl_Position = transform * vec4(point.xyz, 1);\n"
-"   hpoint=vec4(point.xyz,1);\n"
-"   gl_PointSize = 10;\n"
 "}";
 
 const char *gChartFragmentShaderSrc =
 "#version 330\n"
 "uniform vec4 color;\n"
-"uniform vec4 hrange;\n"
-"in vec4 hpoint;\n"
 "out vec4 outputColor;\n"
 "void main(void) {\n"
 "   outputColor = color;\n"
@@ -77,9 +72,6 @@ const std::shared_ptr<internal::font_impl>& getChartFont()
 namespace internal
 {
 
-/*
- *AbstractChart2D
- */
 void AbstractChart2D::bindResources(int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
@@ -427,9 +419,6 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 }
 
 
-/*
- *AbstractChart3D
- */
 void AbstractChart3D::bindResources(int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
@@ -619,6 +608,7 @@ AbstractChart3D::AbstractChart3D()
       mXMax(1), mXMin(0), mYMax(1), mYMin(0), mZMax(1), mZMin(0),
       mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
 {
+    CheckGL("Begin Chart3D::Chart3D");
     /* load font Vera font for chart text
      * renderings, below function actually returns a constant
      * reference to font object used by Chart objects, we are
@@ -641,15 +631,16 @@ AbstractChart3D::AbstractChart3D()
      * mTickCount and creates VBO to hold tick marks and the corresponding
      * text markers for those ticks on the axes */
     setTickCount(mTickCount);
+    CheckGL("End Chart3D::Chart3D");
 }
 
 AbstractChart3D::~AbstractChart3D()
 {
-    CheckGL("Begin Chart::~Chart");
+    CheckGL("Begin Chart3D::~Chart3D");
     glDeleteBuffers(1, &mDecorVBO);
     glDeleteProgram(mBorderProgram);
     glDeleteProgram(mSpriteProgram);
-    CheckGL("End Chart::~Chart");
+    CheckGL("End Chart3D::~Chart3D");
 }
 
 void AbstractChart3D::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin)
@@ -717,7 +708,12 @@ float AbstractChart3D::ymin() const { return mYMin; }
 float AbstractChart3D::zmax() const { return mZMax; }
 float AbstractChart3D::zmin() const { return mZMin; }
 
-void AbstractChart3D::render_tickmarker_text(int pWindowId, unsigned w, unsigned h, std::vector<std::string> &texts, glm::mat4 &transformation, int coor_offset){
+void AbstractChart3D::render_tickmarker_text(int pWindowId,
+        unsigned w, unsigned h,
+        std::vector<std::string> &texts,
+        glm::mat4 &transformation,
+        int coor_offset)
+{
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
 
@@ -749,10 +745,8 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 {
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
-    float scale_x = pVPW;
-    float scale_y = pVPH;
 
-    CheckGL("Begin Chart::render");
+    CheckGL("Begin Chart3D::renderChart");
 
     bindResources(pWindowId);
 
@@ -761,7 +755,7 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 
     /* set uniform attributes of shader
      * for drawing the plot borders */
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f)) ;
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f));
     glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(1,-1,-1),glm::vec3(0,1,0));
     glm::mat4 projection = glm::ortho(-2.f, 2.f, -2.f, 2.f, -1.1f, 10.f);
     glm::mat4 mvp = projection * view * model;
@@ -803,8 +797,8 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
     render_tickmarker_text(pWindowId, w, h, mYText, trans, mTickCount);
     render_tickmarker_text(pWindowId, w, h, mXText, trans, 2*mTickCount);
 
-     /* 
-      * render chart axes titles 
+     /*
+      * render chart axes titles
       */
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
@@ -835,7 +829,7 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
-    CheckGL("End Chart::render");
+    CheckGL("End Chart3D::renderChart");
 }
 
 

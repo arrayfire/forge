@@ -40,6 +40,7 @@ namespace internal
 
 void MakeContextCurrent(const window_impl* pWindow)
 {
+    CheckGL("Begin MakeContextCurrent");
     if (pWindow != NULL) {
         pWindow->get()->makeContextCurrent();
         current = pWindow->glewContext();
@@ -223,7 +224,7 @@ bool window_impl::close()
 
 void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 {
-    CheckGL("Begin drawImage");
+    CheckGL("Begin draw");
     MakeContextCurrent(this);
     mWindow->resetCloseFlag();
 
@@ -240,7 +241,7 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 
     mWindow->swapBuffers();
     mWindow->pollEvents();
-    CheckGL("End drawImage");
+    CheckGL("End draw");
 }
 
 void window_impl::grid(int pRows, int pCols)
@@ -262,7 +263,7 @@ void window_impl::draw(int pColId, int pRowId,
                        const std::shared_ptr<AbstractRenderable>& pRenderable,
                        const char* pTitle)
 {
-    CheckGL("Begin show(column, row)");
+    CheckGL("Begin draw(column, row)");
     MakeContextCurrent(this);
     mWindow->resetCloseFlag();
 
@@ -304,10 +305,10 @@ void window_impl::draw(int pColId, int pRowId,
     }
 
 
-    CheckGL("End show(column, row)");
+    CheckGL("End draw(column, row)");
 }
 
-void window_impl::draw()
+void window_impl::swapBuffers()
 {
     mWindow->swapBuffers();
     mWindow->pollEvents();
@@ -454,9 +455,9 @@ void Window::draw(int pColId, int pRowId, const Histogram& pHist, const char* pT
     value->draw(pColId, pRowId, pHist.get(), pTitle);
 }
 
-void Window::draw()
+void Window::swapBuffers()
 {
-    value->draw();
+    value->swapBuffers();
 }
 
 }

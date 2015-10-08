@@ -74,7 +74,9 @@ class scatter3_impl : public surface_impl {
         void renderGraph(int pWindowId, glm::mat4 transform);
 
    public:
-       scatter3_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::MarkerType pMarkerType=fg::FG_NONE) : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType)   {}
+       scatter3_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::MarkerType pMarkerType=fg::FG_NONE)
+           : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType) {}
+
        ~scatter3_impl() {}
 };
 
@@ -83,7 +85,7 @@ class _Surface {
         std::shared_ptr<surface_impl> plt;
 
     public:
-        _Surface(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::PlotType pPlotType=fg::FG_SURFACE, fg::MarkerType pMarkerType=fg::FG_NONE){
+        _Surface(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::PlotType pPlotType=fg::FG_SURFACE, fg::MarkerType pMarkerType=fg::FG_NONE) {
             switch(pPlotType){
                 case(fg::FG_SURFACE):
                     plt = std::make_shared<surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);

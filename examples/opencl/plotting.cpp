@@ -171,7 +171,7 @@ int main(void)
             wnd.draw(1, 1, plt2, "sinf_line_triangle" );
             wnd.draw(1, 0, plt3, "sinf_scatter_point" );
             // draw window and poll for events last
-            wnd.draw();
+            wnd.swapBuffers();
         } while(!wnd.close());
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;

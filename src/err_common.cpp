@@ -11,6 +11,7 @@
 #include <err_common.hpp>
 #include <fg/exception.h>
 #include <sstream>
+#include <iostream>
 
 void commonErrorCheck(const char *pMsg, const char* pFile, int pLine)
 {

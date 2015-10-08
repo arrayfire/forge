@@ -287,7 +287,7 @@ class Window {
            This draw call should only be used when the window is displaying
            something in multiview mode
          */
-        FGAPI void draw();
+        FGAPI void swapBuffers();
 };
 
 }
