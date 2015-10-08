@@ -111,7 +111,7 @@ int main(void) {
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
         wnd.draw(1, 0, hist, "Histogram of Noisy Image");
         // draw window and poll for events last
-        wnd.draw();
+        wnd.swapBuffers();
     } while(!wnd.close());
 
     return 0;

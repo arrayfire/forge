@@ -308,7 +308,7 @@ void window_impl::draw(int pColId, int pRowId,
     CheckGL("End draw(column, row)");
 }
 
-void window_impl::draw()
+void window_impl::swapBuffers()
 {
     mWindow->swapBuffers();
     mWindow->pollEvents();
@@ -455,9 +455,9 @@ void Window::draw(int pColId, int pRowId, const Histogram& pHist, const char* pT
     value->draw(pColId, pRowId, pHist.get(), pTitle);
 }
 
-void Window::draw()
+void Window::swapBuffers()
 {
-    value->draw();
+    value->swapBuffers();
 }
 
 }

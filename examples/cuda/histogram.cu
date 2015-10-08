@@ -104,7 +104,7 @@ int main(void)
             fg::copy(hist, hist_out);
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
         wnd.draw(1, 0, hist, "Histogram of Noisy Image");
-        wnd.draw();
+        wnd.swapBuffers();
     } while(!wnd.close());
 
     CUDA_ERROR_CHECK(cudaFree(dev_out));
