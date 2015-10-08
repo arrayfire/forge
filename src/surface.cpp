@@ -124,10 +124,7 @@ void surface_impl::bindResources(int pWindowId)
     glBindVertexArray(mVAOMap[pWindowId]);
 }
 
-void surface_impl::unbindResources() const
-{
-    glBindVertexArray(0);
-}
+void surface_impl::unbindResources() const { glBindVertexArray(0); }
 
 void generate_grid_indices(unsigned short rows, unsigned short cols, unsigned short *indices){
     unsigned short idx = 0;
@@ -150,9 +147,11 @@ void generate_grid_indices(unsigned short rows, unsigned short cols, unsigned sh
 }
 
 surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::MarkerType pMarkerType)
-    : AbstractChart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints), mDataType(gl_dtype(pDataType)),
-      mMainVBO(0), mMainVBOsize(0), mIndexVBO(0), mIndexVBOsize(0), mPointIndex(0)
+    : AbstractChart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints),
+      mDataType(gl_dtype(pDataType)), mMainVBO(0), mMainVBOsize(0),
+      mIndexVBO(0), mIndexVBOsize(0), mPointIndex(0)
 {
+    CheckGL("Begin surface_impl::surface_impl");
     unsigned total_points = 3*(mNumXPoints * mNumYPoints);
 
     mIndexVBOsize = (2 * mNumYPoints) * (mNumXPoints - 1);
@@ -184,8 +183,8 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype
             break;
         default: fg::TypeError("Plot::Plot", __LINE__, 1, pDataType);
     }
-    mPointIndex = borderProgramPointIndex();
-    mMarkerType = pMarkerType;
+    mPointIndex    = borderProgramPointIndex();
+    mMarkerType    = pMarkerType;
     mSurfProgram   = initShaders(gMarkerVertexShaderSrc, gSurfFragmentShaderSrc);
     mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
 
@@ -196,6 +195,7 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype
     mMarkerTypeIndex  = glGetUniformLocation(mMarkerProgram, "marker_type");
     mMarkerColIndex   = glGetUniformLocation(mMarkerProgram, "line_color");
     mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
+    CheckGL("End surface_impl::surface_impl");
 }
 
 surface_impl::~surface_impl()
@@ -221,15 +221,9 @@ void surface_impl::setColor(float r, float g, float b)
     mLineColor[3] = 1.0f;
 }
 
-GLuint surface_impl::vbo() const
-{
-    return mMainVBO;
-}
+GLuint surface_impl::vbo() const { return mMainVBO; }
 
-size_t surface_impl::size() const
-{
-    return mMainVBOsize;
-}
+size_t surface_impl::size() const { return mMainVBOsize; }
 
 void surface_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
@@ -242,7 +236,7 @@ void surface_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(ymax() - ymin());
     float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 0.0f : 2/(zmax() - zmin());
 
-    CheckGL("Begin Plot::render");
+    CheckGL("Begin surface_impl::render");
 
     float coor_offset_x = ( -xmin() * graph_scale_x);
     float coor_offset_y = ( -ymin() * graph_scale_y);
@@ -258,22 +252,25 @@ void surface_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     /* render graph border and axes */
     renderChart(pWindowId, pX, pY, pVPW, pVPH);
 
-    CheckGL("End Plot::render");
+    CheckGL("End surface_impl::render");
 }
 
-void surface_impl::renderGraph(int pWindowId, glm::mat4 transform){
+void surface_impl::renderGraph(int pWindowId, glm::mat4 transform)
+{
+    CheckGL("Begin surface_impl::renderGraph");
     bindSurfProgram();
     GLfloat range[] = {xmax(), xmin(), ymax(), ymin(), zmax(), zmin()};
+
     glUniform2fv(surfRangeIndex(), 3, range);
     glUniformMatrix4fv(surfMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
     glUniform4fv(borderColorIndex(), 1, mLineColor);
+
     bindResources(pWindowId);
     glDrawElements(GL_TRIANGLE_STRIP, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0 );
     unbindResources();
     unbindSurfProgram();
 
-
-    if(mMarkerType != fg::FG_NONE){
+    if(mMarkerType != fg::FG_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 
@@ -287,46 +284,27 @@ void surface_impl::renderGraph(int pWindowId, glm::mat4 transform){
         glUseProgram(0);
         glDisable(GL_PROGRAM_POINT_SIZE);
     }
+    CheckGL("End surface_impl::renderGraph");
 }
 
-GLuint surface_impl::markerTypeIndex() const
+GLuint surface_impl::markerTypeIndex() const { return mMarkerTypeIndex; }
+
+GLuint surface_impl::spriteMatIndex() const { return mSpriteTMatIndex; }
+
+GLuint surface_impl::markerColIndex() const { return mMarkerColIndex; }
+
+GLuint surface_impl::surfMatIndex() const { return mSurfTMatIndex; }
+
+GLuint surface_impl::surfRangeIndex() const { return mSurfRangeIndex; }
+
+void surface_impl::bindSurfProgram() const { glUseProgram(mSurfProgram); }
+
+void surface_impl::unbindSurfProgram() const { glUseProgram(0); }
+
+
+void scatter3_impl::renderGraph(int pWindowId, glm::mat4 transform)
 {
-    return mMarkerTypeIndex;
-}
-
-GLuint surface_impl::spriteMatIndex() const
-{
-    return mSpriteTMatIndex;
-}
-
-GLuint surface_impl::markerColIndex() const
-{
-    return mMarkerColIndex;
-}
-
-GLuint surface_impl::surfMatIndex() const
-{
-    return mSurfTMatIndex;
-}
-
-GLuint surface_impl::surfRangeIndex() const
-{
-    return mSurfRangeIndex;
-}
-
-void surface_impl::bindSurfProgram() const
-{
-    glUseProgram(mSurfProgram);
-}
-
-void surface_impl::unbindSurfProgram() const
-{
-    glUseProgram(0);
-}
-
-
-void scatter3_impl::renderGraph(int pWindowId, glm::mat4 transform){
-    if(mMarkerType != fg::FG_NONE){
+    if(mMarkerType != fg::FG_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 
@@ -335,7 +313,7 @@ void scatter3_impl::renderGraph(int pWindowId, glm::mat4 transform){
         glUniform1i(markerTypeIndex(), mMarkerType);
 
         bindResources(pWindowId);
-        glDrawElements(GL_POINTS, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0 );
+        glDrawElements(GL_POINTS, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0);
         unbindResources();
         glUseProgram(0);
         glDisable(GL_PROGRAM_POINT_SIZE);
