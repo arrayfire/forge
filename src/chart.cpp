@@ -26,19 +26,14 @@ static const int CHART2D_FONT_SIZE = 15;
 const char *gChartVertexShaderSrc =
 "#version 330\n"
 "in vec3 point;\n"
-"out vec4 hpoint;\n"
 "uniform mat4 transform;\n"
 "void main(void) {\n"
 "   gl_Position = transform * vec4(point.xyz, 1);\n"
-"   hpoint=vec4(point.xyz,1);\n"
-"   gl_PointSize = 10;\n"
 "}";
 
 const char *gChartFragmentShaderSrc =
 "#version 330\n"
 "uniform vec4 color;\n"
-"uniform vec4 hrange;\n"
-"in vec4 hpoint;\n"
 "out vec4 outputColor;\n"
 "void main(void) {\n"
 "   outputColor = color;\n"
@@ -77,9 +72,6 @@ const std::shared_ptr<internal::font_impl>& getChartFont()
 namespace internal
 {
 
-/*
- *AbstractChart2D
- */
 void AbstractChart2D::bindResources(int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
@@ -427,9 +419,6 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 }
 
 
-/*
- *AbstractChart3D
- */
 void AbstractChart3D::bindResources(int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
@@ -719,7 +708,12 @@ float AbstractChart3D::ymin() const { return mYMin; }
 float AbstractChart3D::zmax() const { return mZMax; }
 float AbstractChart3D::zmin() const { return mZMin; }
 
-void AbstractChart3D::render_tickmarker_text(int pWindowId, unsigned w, unsigned h, std::vector<std::string> &texts, glm::mat4 &transformation, int coor_offset){
+void AbstractChart3D::render_tickmarker_text(int pWindowId,
+        unsigned w, unsigned h,
+        std::vector<std::string> &texts,
+        glm::mat4 &transformation,
+        int coor_offset)
+{
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
 

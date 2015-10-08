@@ -149,9 +149,24 @@ void generate_grid_indices(unsigned short rows, unsigned short cols, unsigned sh
 surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::MarkerType pMarkerType)
     : AbstractChart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints),
       mDataType(gl_dtype(pDataType)), mMainVBO(0), mMainVBOsize(0),
-      mIndexVBO(0), mIndexVBOsize(0), mPointIndex(0)
+      mIndexVBO(0), mIndexVBOsize(0), mPointIndex(0), mMarkerTypeIndex(0),
+      mMarkerColIndex(0), mSpriteTMatIndex(0), mSurfPointIndex(0),
+      mSurfTMatIndex(0), mSurfRangeIndex(0)
 {
     CheckGL("Begin surface_impl::surface_impl");
+    mPointIndex    = borderProgramPointIndex();
+    mMarkerType    = pMarkerType;
+    mSurfProgram   = initShaders(gMarkerVertexShaderSrc, gSurfFragmentShaderSrc);
+    mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
+
+    mSurfPointIndex   = glGetAttribLocation (mSurfProgram, "point");
+    mSurfTMatIndex    = glGetUniformLocation(mSurfProgram, "transform");
+    mSurfRangeIndex   = glGetUniformLocation(mSurfProgram, "minmaxs");
+
+    mMarkerTypeIndex  = glGetUniformLocation(mMarkerProgram, "marker_type");
+    mMarkerColIndex   = glGetUniformLocation(mMarkerProgram, "line_color");
+    mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
+
     unsigned total_points = 3*(mNumXPoints * mNumYPoints);
 
     mIndexVBOsize = (2 * mNumYPoints) * (mNumXPoints - 1);
@@ -183,18 +198,6 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype
             break;
         default: fg::TypeError("Plot::Plot", __LINE__, 1, pDataType);
     }
-    mPointIndex    = borderProgramPointIndex();
-    mMarkerType    = pMarkerType;
-    mSurfProgram   = initShaders(gMarkerVertexShaderSrc, gSurfFragmentShaderSrc);
-    mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
-
-    mSurfPointIndex   = glGetAttribLocation (mSurfProgram, "point");
-    mSurfTMatIndex    = glGetUniformLocation(mSurfProgram, "transform");
-    mSurfRangeIndex   = glGetUniformLocation(mSurfProgram, "minmaxs");
-
-    mMarkerTypeIndex  = glGetUniformLocation(mMarkerProgram, "marker_type");
-    mMarkerColIndex   = glGetUniformLocation(mMarkerProgram, "line_color");
-    mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
     CheckGL("End surface_impl::surface_impl");
 }
 
@@ -263,7 +266,6 @@ void surface_impl::renderGraph(int pWindowId, glm::mat4 transform)
 
     glUniform2fv(surfRangeIndex(), 3, range);
     glUniformMatrix4fv(surfMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-    glUniform4fv(borderColorIndex(), 1, mLineColor);
 
     bindResources(pWindowId);
     glDrawElements(GL_TRIANGLE_STRIP, mIndexVBOsize, GL_UNSIGNED_SHORT, (void*)0 );
