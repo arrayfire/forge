@@ -103,11 +103,18 @@ void plot_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-plot_impl::plot_impl(unsigned pNumPoints, fg::dtype pDataType, fg::MarkerType pMarkerType)
-    : AbstractChart2D(), mNumPoints(pNumPoints),
+plot_impl::plot_impl(unsigned pNumPoints, fg::dtype pDataType,
+        fg::PlotType pPlotType, fg::MarkerType pMarkerType)
+    : Chart2D(), mNumPoints(pNumPoints),
       mDataType(pDataType), mGLType(gl_dtype(mDataType)),
+      mMarkerType(pMarkerType), mPlotType(pPlotType),
       mMainVBO(0), mMainVBOsize(0), mPointIndex(0)
 {
+    mMarkerProgram   = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
+    mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
+    mSpriteTMatIndex = glGetUniformLocation(mMarkerProgram, "transform");
+    mPointIndex      = mBorderAttribPointIndex;
+
     unsigned total_points = 2*mNumPoints;
     // buffersubdata calls on mMainVBO
     // will only update the points data
@@ -138,12 +145,6 @@ plot_impl::plot_impl(unsigned pNumPoints, fg::dtype pDataType, fg::MarkerType pM
             break;
         default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
     }
-    mPointIndex = borderProgramPointIndex();
-    mMarkerType = pMarkerType;
-    mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
-
-    mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
-    mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
 }
 
 plot_impl::~plot_impl()
@@ -189,17 +190,17 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(ymax() - ymin());
 
     CheckGL("Begin Plot::render");
-    float viewWidth    = pVPW - (leftMargin() + rightMargin() + tickSize()/2 );
-    float viewHeight   = pVPH - (bottomMargin() + topMargin() + tickSize() );
+    float viewWidth    = pVPW - (mLeftMargin + mRightMargin + mTickSize/2 );
+    float viewHeight   = pVPH - (mBottomMargin + mTopMargin + mTickSize );
     float view_scale_x = viewWidth/pVPW;
     float view_scale_y = viewHeight/pVPH;
-    float view_offset_x = (2.0f * (leftMargin() + tickSize()/2 )/ pVPW ) ;
-    float view_offset_y = (2.0f * (bottomMargin() + tickSize() )/ pVPH ) ;
+    float view_offset_x = (2.0f * (mLeftMargin + mTickSize/2 )/ pVPW ) ;
+    float view_offset_y = (2.0f * (mBottomMargin + mTickSize )/ pVPH ) ;
     /* Enable scissor test to discard anything drawn beyond viewport.
      * Set scissor rectangle to clip fragments outside of viewport */
-    glScissor(pX + leftMargin() + tickSize()/2, pY+bottomMargin() + tickSize()/2,
-              pVPW - leftMargin()   - rightMargin() - tickSize()/2,
-              pVPH - bottomMargin() - topMargin()   - tickSize()/2);
+    glScissor(pX + mLeftMargin + mTickSize/2, pY+mBottomMargin + mTickSize/2,
+              pVPW - mLeftMargin   - mRightMargin - mTickSize/2,
+              pVPH - mBottomMargin - mTopMargin   - mTickSize/2);
     glEnable(GL_SCISSOR_TEST);
 
     float coor_offset_x = ( -xmin() * graph_scale_x * view_scale_x);
@@ -209,7 +210,30 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     transform = glm::scale(transform,
             glm::vec3(graph_scale_x * view_scale_x , graph_scale_y * view_scale_y ,1));
 
-    renderGraph(pWindowId, transform);
+    if(mPlotType == fg::FG_LINE) {
+        glUseProgram(mBorderProgram);
+        glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
+        glUniform4fv(mBorderUniformColorIndex, 1, mLineColor);
+        plot_impl::bindResources(pWindowId);
+        glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
+        plot_impl::unbindResources();
+        glUseProgram(0);
+    }
+
+    if(mMarkerType != fg::FG_NONE){
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        glUseProgram(mMarkerProgram);
+
+        glUniformMatrix4fv(mSpriteTMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
+        glUniform4fv(mBorderUniformColorIndex, 1, mLineColor);
+        glUniform1i(mMarkerTypeIndex, mMarkerType);
+
+        plot_impl::bindResources(pWindowId);
+        glDrawArrays(GL_POINTS, 0, mNumPoints);
+        plot_impl::unbindResources();
+        glUseProgram(0);
+        glDisable(GL_PROGRAM_POINT_SIZE);
+    }
 
     /* Stop clipping and reset viewport to window dimensions */
     glDisable(GL_SCISSOR_TEST);
@@ -219,65 +243,13 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     CheckGL("End Plot::render");
 }
 
-void plot_impl::renderGraph(int pWindowId, glm::mat4 transform){
-    bindBorderProgram();
-    glUniformMatrix4fv(borderMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-    glUniform4fv(borderColorIndex(), 1, mLineColor);
-    bindResources(pWindowId);
-    glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
-    unbindResources();
-    unbindBorderProgram();
-
-    if(mMarkerType != fg::FG_NONE){
-        glEnable(GL_PROGRAM_POINT_SIZE);
-        glUseProgram(mMarkerProgram);
-
-        glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform4fv(borderColorIndex(), 1, mLineColor);
-        glUniform1i(markerTypeIndex(), mMarkerType);
-
-        bindResources(pWindowId);
-        glDrawArrays(GL_POINTS, 0, mNumPoints);
-        unbindResources();
-        glUseProgram(0);
-        glDisable(GL_PROGRAM_POINT_SIZE);
-    }
-}
-
-GLuint plot_impl::markerTypeIndex() const
-{
-    return mMarkerTypeIndex;
-}
-
-GLuint plot_impl::spriteMatIndex() const
-{
-    return mSpriteTMatIndex;
-}
-
-
-void scatter_impl::renderGraph(int pWindowId, glm::mat4 transform){
-    if(mMarkerType != fg::FG_NONE){
-        glEnable(GL_PROGRAM_POINT_SIZE);
-        glUseProgram(mMarkerProgram);
-
-        glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform4fv(borderColorIndex(), 1, mLineColor);
-        glUniform1i(markerTypeIndex(), mMarkerType);
-
-        bindResources(pWindowId);
-        glDrawArrays(GL_POINTS, 0, mNumPoints);
-        unbindResources();
-        glUseProgram(0);
-        glDisable(GL_PROGRAM_POINT_SIZE);
-    }
-}
-
 }
 
 namespace fg
 {
 
-Plot::Plot(unsigned pNumPoints, fg::dtype pDataType, fg::PlotType pPlotType, fg::MarkerType pMarkerType)
+Plot::Plot(unsigned pNumPoints, fg::dtype pDataType,
+        fg::PlotType pPlotType, fg::MarkerType pMarkerType)
 {
     value = new internal::_Plot(pNumPoints, pDataType, pPlotType, pMarkerType);
 }
@@ -307,14 +279,9 @@ void Plot::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
     value->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
 }
 
-void Plot::setXAxisTitle(const char* pTitle)
+void Plot::setAxesTitles(const char* pXTitle, const char* pYTitle)
 {
-    value->setXAxisTitle(pTitle);
-}
-
-void Plot::setYAxisTitle(const char* pTitle)
-{
-    value->setYAxisTitle(pTitle);
+    value->setAxesTitles(pXTitle, pYTitle);
 }
 
 float Plot::xmax() const

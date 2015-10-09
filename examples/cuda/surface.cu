@@ -59,9 +59,7 @@ int main(void)
     /*
     * Set axis titles
     */
-    surf.setZAxisTitle("z-axis");
-    surf.setYAxisTitle("y-axis");
-    surf.setXAxisTitle("x-axis");
+    surf.setAxesTitles("x-axis", "y-axis", "z-axis");
 
     static float t=0;
     CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
@@ -92,7 +90,7 @@ void sincos_surf(float t, float dx, float* out)
 {
     int i = blockIdx.x * blockDim.x  + threadIdx.x;
     int j = blockIdx.y * blockDim.y  + threadIdx.y;
-    
+
     float x=XMIN+i*dx;
     float y=YMIN+j*dx;
     if (i<XSIZE && j<YSIZE) {

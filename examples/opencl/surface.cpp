@@ -117,9 +117,7 @@ int main(void)
         /*
         * Set axis titles
         */
-        surf.setZAxisTitle("z-axis");
-        surf.setYAxisTitle("y-axis");
-        surf.setXAxisTitle("x-axis");
+        surf.setAxesTitles("x-axis", "y-axis", "z-axis");
 
 
         Platform plat = getPlatform();

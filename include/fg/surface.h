@@ -78,25 +78,13 @@ class Surface {
         FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin);
 
         /**
-           Set X-Axis title in chart
+           Set axes titles
 
-           \param[in] pTitle is axis title
+           \param[in] pXTitle is X-Axis title
+           \param[in] pYTitle is Y-Axis title
+           \param[in] pZTitle is Z-Axis title
          */
-        FGAPI void setXAxisTitle(const char* pTitle);
-
-        /**
-           Set Y-Axis title in chart
-
-           \param[in] pTitle is axis title
-         */
-        FGAPI void setYAxisTitle(const char* pTitle);
-
-        /**
-           Set Z-Axis title in chart
-
-           \param[in] pTitle is axis title
-         */
-        FGAPI void setZAxisTitle(const char* pTitle);
+        FGAPI void setAxesTitles(const char* pXTitle, const char* pYTitle, const char* pZTitle);
 
         /**
            Get X-Axis maximum value

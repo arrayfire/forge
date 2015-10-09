@@ -18,7 +18,7 @@
 namespace internal
 {
 
-class surface_impl : public AbstractChart3D {
+class surface_impl : public Chart3D {
     protected:
         /* plot points characteristics */
         GLuint    mNumXPoints;
@@ -114,16 +114,9 @@ class _Surface {
             plt->setAxesLimits(pXmax, pXmin, pYmax, pYmin, pZmax, pZmin);
         }
 
-        inline void setXAxisTitle(const char* pTitle) {
-            plt->setXAxisTitle(pTitle);
-        }
-
-        inline void setYAxisTitle(const char* pTitle) {
-            plt->setYAxisTitle(pTitle);
-        }
-
-        inline void setZAxisTitle(const char* pTitle) {
-            plt->setZAxisTitle(pTitle);
+        inline void setAxesTitles(const char* pXTitle, const char* pYTitle, const char* pZTitle)
+        {
+            plt->setAxesTitles(pXTitle, pYTitle, pZTitle);
         }
 
         inline float xmax() const {

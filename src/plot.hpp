@@ -18,7 +18,7 @@
 namespace internal
 {
 
-class plot_impl : public AbstractChart2D {
+class plot_impl : public Chart2D {
     protected:
         /* plot points characteristics */
         GLuint    mNumPoints;
@@ -26,6 +26,7 @@ class plot_impl : public AbstractChart2D {
         GLenum    mGLType;
         float     mLineColor[4];
         fg::MarkerType mMarkerType;
+        fg::PlotType   mPlotType;
         /* OpenGL Objects */
         GLuint    mMainVBO;
         size_t    mMainVBOsize;
@@ -41,12 +42,9 @@ class plot_impl : public AbstractChart2D {
          * for rendering resources */
         void bindResources(int pWindowId);
         void unbindResources() const;
-        GLuint markerTypeIndex() const;
-        GLuint spriteMatIndex() const;
-        virtual void renderGraph(int pWindowId, glm::mat4 transform);
 
     public:
-        plot_impl(unsigned pNumPoints, fg::dtype pDataType, fg::MarkerType=fg::FG_NONE);
+        plot_impl(unsigned pNumPoints, fg::dtype pDataType, fg::PlotType, fg::MarkerType);
         ~plot_impl();
 
         void setColor(fg::Color col);
@@ -57,32 +55,13 @@ class plot_impl : public AbstractChart2D {
         void render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
 };
 
-class scatter_impl : public plot_impl {
-   private:
-        void renderGraph(int pWindowId, glm::mat4 transform);
-
-   public:
-       scatter_impl(unsigned pNumPoints, fg::dtype pDataType, fg::MarkerType pMarkerType=fg::FG_NONE) : plot_impl(pNumPoints, pDataType, pMarkerType)   {}
-       ~scatter_impl() {}
-};
-
 class _Plot {
     private:
         std::shared_ptr<plot_impl> plt;
 
     public:
-        _Plot(unsigned pNumPoints, fg::dtype pDataType, fg::PlotType pPlotType=fg::FG_LINE, fg::MarkerType pMarkerType=fg::FG_NONE){
-            switch(pPlotType){
-                case(fg::FG_LINE):
-                    plt = std::make_shared<plot_impl>(pNumPoints, pDataType, pMarkerType);
-                    break;
-                case(fg::FG_SCATTER):
-                    plt = std::make_shared<scatter_impl>(pNumPoints, pDataType, pMarkerType);
-                    break;
-                default:
-                    plt = std::make_shared<plot_impl>(pNumPoints, pDataType, pMarkerType);
-            };
-        }
+        _Plot(unsigned pNumPoints, fg::dtype pDataType, fg::PlotType pType, fg::MarkerType mType)
+            : plt(std::make_shared<plot_impl>(pNumPoints, pDataType, pType, mType)) {}
 
         inline const std::shared_ptr<plot_impl>& impl() const {
             return plt;
@@ -100,12 +79,8 @@ class _Plot {
             plt->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
         }
 
-        inline void setXAxisTitle(const char* pTitle) {
-            plt->setXAxisTitle(pTitle);
-        }
-
-        inline void setYAxisTitle(const char* pTitle) {
-            plt->setYAxisTitle(pTitle);
+        inline void setAxesTitles(const char* pXTitle, const char* pYTitle) {
+            plt->setAxesTitles(pXTitle, pYTitle);
         }
 
         inline float xmax() const {

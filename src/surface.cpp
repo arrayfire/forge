@@ -146,15 +146,16 @@ void generate_grid_indices(unsigned short rows, unsigned short cols, unsigned sh
     }
 }
 
-surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::MarkerType pMarkerType)
-    : AbstractChart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints),
+surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
+                           fg::dtype pDataType, fg::MarkerType pMarkerType)
+    : Chart3D(), mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints),
       mDataType(gl_dtype(pDataType)), mMainVBO(0), mMainVBOsize(0),
       mIndexVBO(0), mIndexVBOsize(0), mPointIndex(0), mMarkerTypeIndex(0),
       mMarkerColIndex(0), mSpriteTMatIndex(0), mSurfPointIndex(0),
       mSurfTMatIndex(0), mSurfRangeIndex(0)
 {
     CheckGL("Begin surface_impl::surface_impl");
-    mPointIndex    = borderProgramPointIndex();
+    mPointIndex    = mBorderAttribPointIndex;
     mMarkerType    = pMarkerType;
     mSurfProgram   = initShaders(gMarkerVertexShaderSrc, gSurfFragmentShaderSrc);
     mMarkerProgram = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
@@ -357,21 +358,10 @@ void Surface::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, 
     value->setAxesLimits(pXmax, pXmin, pYmax, pYmin, pZmax, pZmin);
 }
 
-void Surface::setXAxisTitle(const char* pTitle)
+void Surface::setAxesTitles(const char* pXTitle, const char* pYTitle, const char* pZTitle)
 {
-    value->setXAxisTitle(pTitle);
+    value->setAxesTitles(pXTitle, pYTitle, pZTitle);
 }
-
-void Surface::setYAxisTitle(const char* pTitle)
-{
-    value->setYAxisTitle(pTitle);
-}
-
-void Surface::setZAxisTitle(const char* pTitle)
-{
-    value->setZAxisTitle(pTitle);
-}
-
 
 float Surface::xmax() const
 {

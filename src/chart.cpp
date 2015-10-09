@@ -69,173 +69,74 @@ const std::shared_ptr<internal::font_impl>& getChartFont()
     return mChartFont.impl();
 }
 
-namespace internal
-{
-
-void AbstractChart2D::bindResources(int pWindowId)
-{
-    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
-        GLuint vao = 0;
-        /* create a vertex array object
-         * with appropriate bindings */
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-        glEnableVertexAttribArray(mBorderPointIndex);
-        glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
-        glVertexAttribPointer(mBorderPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        glBindVertexArray(0);
-        /* store the vertex array object corresponding to
-         * the window instance in the map */
-        mVAOMap[pWindowId] = vao;
-    }
-
-    glBindVertexArray(mVAOMap[pWindowId]);
-}
-
-void AbstractChart2D::unbindResources() const
-{
-    glBindVertexArray(0);
-}
-
-void AbstractChart2D::bindBorderProgram() const
-{
-    glUseProgram(mBorderProgram);
-}
-
-void AbstractChart2D::unbindBorderProgram() const
-{
-    glUseProgram(0);
-}
-
-GLuint AbstractChart2D::rectangleVBO() const
-{
-    return mDecorVBO;
-}
-
-GLuint AbstractChart2D::borderProgramPointIndex() const
-{
-    return mBorderPointIndex;
-}
-
-GLuint AbstractChart2D::borderColorIndex() const
-{
-    return mBorderColorIndex;
-}
-
-GLuint AbstractChart2D::borderMatIndex() const
-{
-    return mBorderMatIndex;
-}
-
-int AbstractChart2D::tickSize() const
-{
-    return mTickSize;
-}
-
-int AbstractChart2D::leftMargin() const
-{
-    return mLeftMargin;
-}
-
-int AbstractChart2D::rightMargin() const
-{
-    return mRightMargin;
-}
-
-int AbstractChart2D::bottomMargin() const
-{
-    return mBottomMargin;
-}
-
-int AbstractChart2D::topMargin() const
-{
-    return mTopMargin;
-}
-
 template<typename T>
-void push_point(vector<T> &points, T x, T y){
+void pushPoint(vector<T> &points, T x, T y)
+{
     points.push_back(x);
     points.push_back(y);
 }
-void AbstractChart2D::push_ticktext_points(float x, float y){
-    AbstractChart2D::mTickTextX.push_back(x);
-    AbstractChart2D::mTickTextY.push_back(y);
-}
-void AbstractChart2D::setTickCount(int pTickCount)
+
+template<typename T>
+void pushPoint(vector<T> &points, T x, T y, T z)
 {
-    static const float border[8] = { -1, -1, 1, -1, 1, 1, -1, 1 };
-    static const int nValues = sizeof(border)/sizeof(float);
-
-    mTickCount = pTickCount;
-
-    std::vector<float> decorData;
-    std::copy(border, border+nValues, std::back_inserter(decorData));
-
-    float step = 2.0f/(mTickCount);
-    /* push tick points for y axis:
-     * push (0) first followed by
-     * [-1, 0) ticks and then
-     * (0, 1] ticks  */
-    int ticksLeft = mTickCount/2;
-    push_point(decorData, -1.0f, 0.0f);
-    push_ticktext_points(-1.0f, 0.0f);
-    mYText.push_back(toString(0));
-
-    for(int i=1; i<=ticksLeft; ++i) {
-        /* [-1, 0) to [-1, -1] */
-        float neg = i*-step;
-        push_point(decorData, -1.0f, neg);
-        /* puch tick marks */
-        push_ticktext_points(-1.0f, neg);
-        /* push tick text label */
-        mYText.push_back(toString(neg));
-
-        /* [-1, 0) to [-1, 1] */
-        float pos = i*step;
-        push_point(decorData, -1.0f, pos);
-        /* puch tick marks */
-        push_ticktext_points(-1.0f, pos);
-        /* push tick text label */
-        mYText.push_back(toString(pos));
-    }
-
-    /* push tick points for x axis:
-     * push (0,0) first followed by
-     * [-1, 0) ticks and then
-     * (0, 1] ticks  */
-    push_point(decorData, 0.0f, -1.0f);
-    push_ticktext_points(0.0f, -1.0f);
-    mXText.push_back(toString(0));
-
-    for(int i=1; i<=ticksLeft; ++i) {
-        /* (0, -1] to [-1, -1] */
-        float neg = i*-step;
-        push_point(decorData, neg, -1.0f);
-        push_ticktext_points(neg, -1.0f);
-        mXText.push_back(toString(neg));
-
-        /* (0, -1] to [1, -1] */
-        float pos = i*step;
-        push_point(decorData, pos, -1.0f);
-        push_ticktext_points(pos, -1.0f);
-        mXText.push_back(toString(pos));
-    }
-
-    /* check if decoration VBO has been already used(case where
-     * tick marks are being changed from default(21) */
-    if (mDecorVBO != 0)
-        glDeleteBuffers(1, &mDecorVBO);
-
-    /* create vbo that has the border and axis data */
-    mDecorVBO = createBuffer<float>(GL_ARRAY_BUFFER, decorData.size(), &(decorData.front()), GL_STATIC_DRAW);
+    points.push_back(x);
+    points.push_back(y);
+    points.push_back(z);
 }
 
-AbstractChart2D::AbstractChart2D()
+namespace internal
+{
+
+/********************* BEGIN-AbstractChart *********************/
+
+void AbstractChart::renderTickLabels(int pWindowId, unsigned w, unsigned h,
+        std::vector<std::string> &texts,
+        glm::mat4 &transformation, int coor_offset,
+        bool useZoffset)
+{
+    auto &fonter = getChartFont();
+    fonter->setOthro2D(int(w), int(h));
+
+    float pos[2];
+    for (StringIter it = texts.begin(); it!=texts.end(); ++it) {
+        int idx = int(it - texts.begin());
+        glm::vec4 p = glm::vec4(mTickTextX[idx+coor_offset],
+                                mTickTextY[idx+coor_offset],
+                                (useZoffset ? mTickTextZ[idx+coor_offset] : 0), 1);
+        glm::vec4 res = transformation * p;
+
+        /* convert text position from [-1,1] range to
+         * [0, 1) range and then offset horizontally
+         * to compensate for margins and ticksize */
+        pos[0] = w*(res.x/res.w+1.0f)/2.0f;
+        pos[1] = h*(res.y/res.w+1.0f)/2.0f;
+
+        /* offset based on text size to align
+         * text center with tick mark position */
+        if(coor_offset < mTickCount) {
+            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
+        }else if(coor_offset >= mTickCount && coor_offset < 2*mTickCount) {
+            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
+            pos[1] -= ((CHART2D_FONT_SIZE));
+        }else {
+            pos[1] -= ((CHART2D_FONT_SIZE));
+        }
+        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+    }
+}
+
+AbstractChart::AbstractChart(int pLeftMargin, int pRightMargin, int pTopMargin, int pBottomMargin)
     : mTickCount(9), mTickSize(10),
-      mLeftMargin(68), mRightMargin(8), mTopMargin(8), mBottomMargin(32),
-      mXMax(1), mXMin(0), mYMax(1), mYMin(0),
-      mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
+      mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
+      mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
+      mXMax(1), mXMin(0), mYMax(1), mYMin(0), mZMax(1), mZMin(0),
+      mXTitle("X-Axis"), mYTitle("Y-Axis"), mZTitle("Z-Axis"),
+      mDecorVBO(-1), mBorderProgram(-1), mSpriteProgram(-1),
+      mBorderAttribPointIndex(-1), mBorderUniformColorIndex(-1),
+      mBorderUniformMatIndex(-1), mSpriteUniformMatIndex(-1),
+      mSpriteUniformTickcolorIndex(-1), mSpriteUniformTickaxisIndex(-1)
 {
+    CheckGL("Begin AbstractChart::AbstractChart");
     /* load font Vera font for chart text
      * renderings, below function actually returns a constant
      * reference to font object used by Chart objects, we are
@@ -246,41 +147,178 @@ AbstractChart2D::AbstractChart2D()
     mBorderProgram = initShaders(gChartVertexShaderSrc, gChartFragmentShaderSrc);
     mSpriteProgram = initShaders(gChartVertexShaderSrc, gChartSpriteFragmentShaderSrc);
 
-    mBorderPointIndex     = glGetAttribLocation (mBorderProgram, "point");
-    mBorderColorIndex     = glGetUniformLocation(mBorderProgram, "color");
-    mBorderMatIndex       = glGetUniformLocation(mBorderProgram, "transform");
+    mBorderAttribPointIndex      = glGetAttribLocation (mBorderProgram, "point");
+    mBorderUniformColorIndex     = glGetUniformLocation(mBorderProgram, "color");
+    mBorderUniformMatIndex       = glGetUniformLocation(mBorderProgram, "transform");
 
-    mSpriteTickcolorIndex = glGetUniformLocation(mSpriteProgram, "tick_color");
-    mSpriteMatIndex       = glGetUniformLocation(mSpriteProgram, "transform");
-    mSpriteTickaxisIndex  = glGetUniformLocation(mSpriteProgram, "isYAxis");
+    mSpriteUniformTickcolorIndex = glGetUniformLocation(mSpriteProgram, "tick_color");
+    mSpriteUniformMatIndex       = glGetUniformLocation(mSpriteProgram, "transform");
+    mSpriteUniformTickaxisIndex  = glGetUniformLocation(mSpriteProgram, "isYAxis");
 
-    /* the following function sets the member variable
-     * mTickCount and creates VBO to hold tick marks and the corresponding
-     * text markers for those ticks on the axes */
-    setTickCount(mTickCount);
+    CheckGL("End AbstractChart::AbstractChart");
 }
 
-AbstractChart2D::~AbstractChart2D()
+AbstractChart::~AbstractChart()
 {
-    CheckGL("Begin Chart::~Chart");
+    CheckGL("Begin AbstractChart::~AbstractChart");
+    for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
+        GLuint vao = it->second;
+        glDeleteVertexArrays(1, &vao);
+    }
     glDeleteBuffers(1, &mDecorVBO);
     glDeleteProgram(mBorderProgram);
     glDeleteProgram(mSpriteProgram);
-    CheckGL("End Chart::~Chart");
+    CheckGL("End AbstractChart::~AbstractChart");
 }
 
-void AbstractChart2D::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
+void AbstractChart::setAxesLimits(float pXmax, float pXmin,
+                                  float pYmax, float pYmin,
+                                  float pZmax, float pZmin)
 {
-    mXMax = pXmax;
-    mXMin = pXmin;
-    mYMax = pYmax;
-    mYMin = pYmin;
+    mXMax = pXmax; mXMin = pXmin;
+    mYMax = pYmax; mYMin = pYmin;
+    mZMax = pZmax; mZMin = pZmin;
 
+    /*
+     * Once the axes ranges are known, we can generate
+     * tick labels. The following functions is a pure
+     * virtual function and has to be implemented by the
+     * derived class
+     */
+    generateTickLabels();
+}
+
+void AbstractChart::setAxesTitles(const char* pXTitle, const char* pYTitle, const char* pZTitle)
+{
+    mXTitle = std::string(pXTitle);
+    mYTitle = std::string(pYTitle);
+    mZTitle = std::string(pZTitle);
+}
+
+float AbstractChart::xmax() const { return mXMax; }
+float AbstractChart::xmin() const { return mXMin; }
+float AbstractChart::ymax() const { return mYMax; }
+float AbstractChart::ymin() const { return mYMin; }
+float AbstractChart::zmax() const { return mZMax; }
+float AbstractChart::zmin() const { return mZMin; }
+
+/********************* END-AbstractChart *********************/
+
+
+
+/********************* BEGIN-Chart2D *********************/
+
+void Chart2D::bindResources(int pWindowId)
+{
+    CheckGL("Begin Chart2D::bindResources");
+    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
+        GLuint vao = 0;
+        /* create a vertex array object
+         * with appropriate bindings */
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glEnableVertexAttribArray(mBorderAttribPointIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
+        glVertexAttribPointer(mBorderAttribPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glBindVertexArray(0);
+        /* store the vertex array object corresponding to
+         * the window instance in the map */
+        mVAOMap[pWindowId] = vao;
+    }
+    glBindVertexArray(mVAOMap[pWindowId]);
+    CheckGL("End Chart2D::bindResources");
+}
+
+void Chart2D::unbindResources() const
+{
+    glBindVertexArray(0);
+}
+
+void Chart2D::pushTicktextCoords(float x, float y, float z)
+{
+    mTickTextX.push_back(x);
+    mTickTextY.push_back(y);
+}
+
+void Chart2D::generateChartData()
+{
+    CheckGL("Begin Chart2D::generateChartData");
+    static const float border[8] = { -1, -1, 1, -1, 1, 1, -1, 1 };
+    static const int nValues = sizeof(border)/sizeof(float);
+
+    std::vector<float> decorData;
+    std::copy(border, border+nValues, std::back_inserter(decorData));
+
+    float step = 2.0f/(mTickCount);
+    /* push tick points for y axis:
+     * push (0) first followed by
+     * [-1, 0) ticks and then
+     * (0, 1] ticks  */
+    int ticksLeft = mTickCount/2;
+    pushPoint(decorData, -1.0f, 0.0f);
+    pushTicktextCoords(-1.0f, 0.0f);
+    mYText.push_back(toString(0));
+
+    for(int i=1; i<=ticksLeft; ++i) {
+        /* [-1, 0) to [-1, -1] */
+        float neg = i*-step;
+        pushPoint(decorData, -1.0f, neg);
+        /* puch tick marks */
+        pushTicktextCoords(-1.0f, neg);
+        /* push tick text label */
+        mYText.push_back(toString(neg));
+
+        /* [-1, 0) to [-1, 1] */
+        float pos = i*step;
+        pushPoint(decorData, -1.0f, pos);
+        /* puch tick marks */
+        pushTicktextCoords(-1.0f, pos);
+        /* push tick text label */
+        mYText.push_back(toString(pos));
+    }
+
+    /* push tick points for x axis:
+     * push (0,0) first followed by
+     * [-1, 0) ticks and then
+     * (0, 1] ticks  */
+    pushPoint(decorData, 0.0f, -1.0f);
+    pushTicktextCoords(0.0f, -1.0f);
+    mXText.push_back(toString(0));
+
+    for(int i=1; i<=ticksLeft; ++i) {
+        /* (0, -1] to [-1, -1] */
+        float neg = i*-step;
+        pushPoint(decorData, neg, -1.0f);
+        pushTicktextCoords(neg, -1.0f);
+        mXText.push_back(toString(neg));
+
+        /* (0, -1] to [1, -1] */
+        float pos = i*step;
+        pushPoint(decorData, pos, -1.0f);
+        pushTicktextCoords(pos, -1.0f);
+        mXText.push_back(toString(pos));
+    }
+
+    /* check if decoration VBO has been already used(case where
+     * tick marks are being changed from default(21) */
+    if (mDecorVBO != 0)
+        glDeleteBuffers(1, &mDecorVBO);
+
+    /* create vbo that has the border and axis data */
+    mDecorVBO = createBuffer<float>(GL_ARRAY_BUFFER, decorData.size(),
+                                    &(decorData.front()), GL_STATIC_DRAW);
+    CheckGL("End Chart2D::generateChartData");
+}
+
+void Chart2D::generateTickLabels()
+{
     /* remove all the tick text markers that were generated
      * by default during the base class(chart) creation and
-     * update the text markers based on the new axes limits*/
+     * update the text markers based on the new axes limits
+     * */
     mXText.clear();
     mYText.clear();
+    mZText.clear();
 
     float xstep = (mXMax-mXMin)/(mTickCount);
     float ystep = (mYMax-mYMin)/(mTickCount);
@@ -301,33 +339,18 @@ void AbstractChart2D::setAxesLimits(float pXmax, float pXmin, float pYmax, float
     }
 }
 
-void AbstractChart2D::setXAxisTitle(const char* pTitle)
+void Chart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
-    mXTitle = std::string(pTitle);
-}
+    CheckGL("Begin Chart2D::renderChart");
 
-void AbstractChart2D::setYAxisTitle(const char* pTitle)
-{
-    mYTitle = std::string(pTitle);
-}
-
-float AbstractChart2D::xmax() const { return mXMax; }
-float AbstractChart2D::xmin() const { return mXMin; }
-float AbstractChart2D::ymax() const { return mYMax; }
-float AbstractChart2D::ymin() const { return mYMin; }
-
-void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
-{
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
-    float offset_x = (2.0f * (leftMargin()+tickSize()) + (w - pVPW)) / pVPW;
-    float offset_y = (2.0f * (bottomMargin()+tickSize()) + (h - pVPH)) / pVPH;
+    float offset_x = (2.0f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
+    float offset_y = (2.0f * (mBottomMargin+mTickSize) + (h - pVPH)) / pVPH;
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 
-    CheckGL("Begin Chart::render");
-
-    bindResources(pWindowId);
+    Chart2D::bindResources(pWindowId);
 
     /* bind the plotting shader program  */
     glUseProgram(mBorderProgram);
@@ -337,8 +360,8 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
     glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
                                                 glm::vec3(scale_x, scale_y, 1)),
                                      glm::vec3(offset_x, offset_y, 0));
-    glUniformMatrix4fv(mBorderMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-    glUniform4fv(mBorderColorIndex, 1, WHITE);
+    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniform4fv(mBorderUniformColorIndex, 1, WHITE);
 
     /* Draw borders */
     glDrawArrays(GL_LINE_LOOP, 0, 4);
@@ -351,54 +374,25 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
     glPointSize((GLfloat)mTickSize);
 
     glUseProgram(mSpriteProgram);
-    glUniform4fv(mSpriteTickcolorIndex, 1, WHITE);
-    glUniformMatrix4fv(mSpriteMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniform4fv(mSpriteUniformTickcolorIndex, 1, WHITE);
+    glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     /* Draw tick marks on y axis */
-    glUniform1i(mSpriteTickaxisIndex, 1);
+    glUniform1i(mSpriteUniformTickaxisIndex, 1);
     glDrawArrays(GL_POINTS, 4, mTickCount);
     /* Draw tick marks on x axis */
-    glUniform1i(mSpriteTickaxisIndex, 0);
+    glUniform1i(mSpriteUniformTickaxisIndex, 0);
     glDrawArrays(GL_POINTS, 4+mTickCount, mTickCount);
 
     glUseProgram(0);
     glPointSize(1);
-    unbindResources();
+    Chart2D::unbindResources();
+
+    renderTickLabels(pWindowId, int(w), int(h), mYText, trans, 0, false);
+    renderTickLabels(pWindowId, int(w), int(h), mXText, trans, mTickCount, false);
 
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
-
     float pos[2];
-    /* render tick marker texts for y axis */
-    for (StringIter it = mYText.begin(); it!=mYText.end(); ++it) {
-        int idx = int(it - mYText.begin());
-        glm::vec4 res = trans * glm::vec4(mTickTextX[idx], mTickTextY[idx], 0, 1);
-        /* convert text position from [-1,1] range to
-         * [0, 1) range and then offset horizontally
-         * to compensate for margins and ticksize */
-        pos[0] = w*(res.x+1.0f)/2.0f;
-        pos[1] = h*(res.y+1.0f)/2.0f;
-        /* offset horizontally based on text size to align
-         * text center with tick mark position */
-        pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f)+(mTickSize * (w/pVPW)));
-        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
-    }
-    /* render tick marker texts for x axis */
-    for (StringIter it = mXText.begin(); it!=mXText.end(); ++it) {
-        int idx = int(it - mXText.begin());
-        /* mTickCount offset is needed while reading point coordinates for
-         * x axis tick marks */
-        glm::vec4 res = trans * glm::vec4(mTickTextX[idx+mTickCount], mTickTextY[idx+mTickCount], 0, 1);
-        /* convert text position from [-1,1] range to
-         * [0, 1) range and then offset vertically
-         * to compensate for margins and ticksize */
-        pos[0] = w*(res.x+1.0f)/2.0f;
-        pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[1] -= ((CHART2D_FONT_SIZE*h/pVPH)+(mTickSize * (w/pVPW)));
-        /* offset horizontally based on text size to align
-         * text center with tick mark position */
-        pos[0] -= (CHART2D_FONT_SIZE*(it->length()-2)/2.0f);
-        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
-    }
     /* render chart axes titles */
     if (!mYTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
@@ -415,108 +409,53 @@ void AbstractChart2D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
-    CheckGL("End Chart::render");
+    CheckGL("End Chart2D::renderChart");
 }
 
+/********************* END-Chart2D *********************/
 
-void AbstractChart3D::bindResources(int pWindowId)
+
+
+/********************* BEGIN-Chart3D *********************/
+
+void Chart3D::bindResources(int pWindowId)
 {
+    CheckGL("Begin Chart3D::bindResources");
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
         GLuint vao = 0;
         /* create a vertex array object
          * with appropriate bindings */
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
-        glEnableVertexAttribArray(mBorderPointIndex);
+        glEnableVertexAttribArray(mBorderAttribPointIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
-        glVertexAttribPointer(mBorderPointIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(mBorderAttribPointIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
         mVAOMap[pWindowId] = vao;
     }
-
     glBindVertexArray(mVAOMap[pWindowId]);
+    CheckGL("End Chart3D::bindResources");
 }
 
-void AbstractChart3D::unbindResources() const
+void Chart3D::unbindResources() const
 {
     glBindVertexArray(0);
 }
 
-void AbstractChart3D::bindBorderProgram() const
+void Chart3D::pushTicktextCoords(float x, float y, float z)
 {
-    glUseProgram(mBorderProgram);
+    mTickTextX.push_back(x);
+    mTickTextY.push_back(y);
+    mTickTextZ.push_back(z);
 }
 
-void AbstractChart3D::unbindBorderProgram() const
+void Chart3D::generateChartData()
 {
-    glUseProgram(0);
-}
-
-GLuint AbstractChart3D::rectangleVBO() const
-{
-    return mDecorVBO;
-}
-
-GLuint AbstractChart3D::borderProgramPointIndex() const
-{
-    return mBorderPointIndex;
-}
-
-GLuint AbstractChart3D::borderColorIndex() const
-{
-    return mBorderColorIndex;
-}
-
-GLuint AbstractChart3D::borderMatIndex() const
-{
-    return mBorderMatIndex;
-}
-
-int AbstractChart3D::tickSize() const
-{
-    return mTickSize;
-}
-
-int AbstractChart3D::leftMargin() const
-{
-    return mLeftMargin;
-}
-
-int AbstractChart3D::rightMargin() const
-{
-    return mRightMargin;
-}
-
-int AbstractChart3D::bottomMargin() const
-{
-    return mBottomMargin;
-}
-
-int AbstractChart3D::topMargin() const
-{
-    return mTopMargin;
-}
-
-template<typename T>
-void push_point(vector<T> &points, T x, T y, T z){
-    points.push_back(x);
-    points.push_back(y);
-    points.push_back(z);
-}
-void AbstractChart3D::push_ticktext_points(float x, float y, float z){
-    AbstractChart3D::mTickTextX.push_back(x);
-    AbstractChart3D::mTickTextY.push_back(y);
-    AbstractChart3D::mTickTextZ.push_back(z);
-}
-
-void AbstractChart3D::setTickCount(int pTickCount)
-{
+    CheckGL("Begin Chart3D::generateChartData");
     static const float border[] = { -1, -1, -1,  1, -1, -1,  -1, -1, -1,  -1, 1, -1,  -1, 1, -1,  -1, 1, 1 };
     static const int nValues = sizeof(border)/sizeof(float);
-
-    mTickCount = pTickCount;
 
     std::vector<float> decorData;
     std::copy(border, border+nValues, std::back_inserter(decorData));
@@ -527,25 +466,25 @@ void AbstractChart3D::setTickCount(int pTickCount)
      * push (0,0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    push_point(decorData, -1.0f, 1.0f, 0.0f);
-    push_ticktext_points(-1.0f, 1.0f, 0.0f);
+    pushPoint(decorData, -1.0f, 1.0f, 0.0f);
+    pushTicktextCoords(-1.0f, 1.0f, 0.0f);
     mZText.push_back(toString(0));
 
     int ticksLeft = mTickCount/2;
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
         float neg = i*-step;
-        push_point(decorData, -1.0f, 1.0f, neg);
+        pushPoint(decorData, -1.0f, 1.0f, neg);
         /* push tick marks */
-        push_ticktext_points(-1.0f, 1.0f, neg);
+        pushTicktextCoords(-1.0f, 1.0f, neg);
         /* push tick text label */
         mZText.push_back(toString(neg));
 
         /* (0, -1] to [1, -1] */
         float pos = i*step;
-        push_point(decorData, -1.0f, 1.0f, pos);
+        pushPoint(decorData, -1.0f, 1.0f, pos);
         /* push tick marks */
-        push_ticktext_points(-1.0f, 1.0f, pos);
+        pushTicktextCoords(-1.0f, 1.0f, pos);
         /* push tick text label */
         mZText.push_back(toString(pos));
     }
@@ -553,21 +492,21 @@ void AbstractChart3D::setTickCount(int pTickCount)
      * push (0,0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    push_point(decorData, -1.0f, 0.0f, -1.0f);
-    push_ticktext_points(-1.0f, 0.0f, -1.0f);
+    pushPoint(decorData, -1.0f, 0.0f, -1.0f);
+    pushTicktextCoords(-1.0f, 0.0f, -1.0f);
     mYText.push_back(toString(0));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* [-1, 0) to [-1, -1] */
         float neg = i*-step;
         float pos = i*step;
-        push_point(decorData, -1.0f, neg, -1.0f);
-        push_ticktext_points(-1.0f, pos, -1.0f);
+        pushPoint(decorData, -1.0f, neg, -1.0f);
+        pushTicktextCoords(-1.0f, pos, -1.0f);
         mYText.push_back(toString(neg));
 
         /* [-1, 0) to [-1, 1] */
-        push_point(decorData, -1.0f, pos, -1.0f);
-        push_ticktext_points(-1.0f, neg, -1.0f);
+        pushPoint(decorData, -1.0f, pos, -1.0f);
+        pushTicktextCoords(-1.0f, neg, -1.0f);
         mYText.push_back(toString(pos));
     }
 
@@ -575,21 +514,21 @@ void AbstractChart3D::setTickCount(int pTickCount)
      * push (0,0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    push_point(decorData, 0.0f, -1.0f, -1.0f);
-    push_ticktext_points( 0.0f, -1.0f, -1.0f);
+    pushPoint(decorData, 0.0f, -1.0f, -1.0f);
+    pushTicktextCoords( 0.0f, -1.0f, -1.0f);
     mXText.push_back(toString(0));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
         float neg = i*-step;
-        push_point(decorData, neg, -1.0f, -1.0f);
-        push_ticktext_points( neg, -1.0f, -1.0f);
+        pushPoint(decorData, neg, -1.0f, -1.0f);
+        pushTicktextCoords( neg, -1.0f, -1.0f);
         mXText.push_back(toString(neg));
 
         /* [-1, 0) to [-1, 1] */
         float pos = i*step;
-        push_point(decorData, pos, -1.0f, -1.0f);
-        push_ticktext_points( pos, -1.0f, -1.0f);
+        pushPoint(decorData, pos, -1.0f, -1.0f);
+        pushTicktextCoords( pos, -1.0f, -1.0f);
         mXText.push_back(toString(pos));
     }
 
@@ -599,59 +538,13 @@ void AbstractChart3D::setTickCount(int pTickCount)
         glDeleteBuffers(1, &mDecorVBO);
 
     /* create vbo that has the border and axis data */
-    mDecorVBO = createBuffer<float>(GL_ARRAY_BUFFER, decorData.size(), &(decorData.front()), GL_STATIC_DRAW);
+    mDecorVBO = createBuffer<float>(GL_ARRAY_BUFFER, decorData.size(),
+                                    &(decorData.front()), GL_STATIC_DRAW);
+    CheckGL("End Chart3D::generateChartData");
 }
 
-AbstractChart3D::AbstractChart3D()
-    : mTickCount(9), mTickSize(10),
-      mLeftMargin(32), mRightMargin(32), mTopMargin(32), mBottomMargin(32),
-      mXMax(1), mXMin(0), mYMax(1), mYMin(0), mZMax(1), mZMin(0),
-      mDecorVBO(0), mBorderProgram(0), mSpriteProgram(0)
+void Chart3D::generateTickLabels()
 {
-    CheckGL("Begin Chart3D::Chart3D");
-    /* load font Vera font for chart text
-     * renderings, below function actually returns a constant
-     * reference to font object used by Chart objects, we are
-     * calling it here just to make sure required font glyphs
-     * are loaded into the shared Font object */
-    getChartFont();
-
-    mBorderProgram = initShaders(gChartVertexShaderSrc, gChartFragmentShaderSrc);
-    mSpriteProgram = initShaders(gChartVertexShaderSrc, gChartSpriteFragmentShaderSrc);
-
-    mBorderPointIndex     = glGetAttribLocation (mBorderProgram, "point");
-    mBorderColorIndex     = glGetUniformLocation(mBorderProgram, "color");
-    mBorderMatIndex       = glGetUniformLocation(mBorderProgram, "transform");
-
-    mSpriteTickcolorIndex = glGetUniformLocation(mSpriteProgram, "tick_color");
-    mSpriteMatIndex       = glGetUniformLocation(mSpriteProgram, "transform");
-    mSpriteTickaxisIndex  = glGetUniformLocation(mSpriteProgram, "isYAxis");
-
-    /* the following function sets the member variable
-     * mTickCount and creates VBO to hold tick marks and the corresponding
-     * text markers for those ticks on the axes */
-    setTickCount(mTickCount);
-    CheckGL("End Chart3D::Chart3D");
-}
-
-AbstractChart3D::~AbstractChart3D()
-{
-    CheckGL("Begin Chart3D::~Chart3D");
-    glDeleteBuffers(1, &mDecorVBO);
-    glDeleteProgram(mBorderProgram);
-    glDeleteProgram(mSpriteProgram);
-    CheckGL("End Chart3D::~Chart3D");
-}
-
-void AbstractChart3D::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin)
-{
-    mXMax = pXmax;
-    mXMin = pXmin;
-    mYMax = pYmax;
-    mYMin = pYmin;
-    mZMax = pZmax;
-    mZMin = pZmin;
-
     /* remove all the tick text markers that were generated
      * by default during the base class(chart) creation and
      * update the text markers based on the new axes limits*/
@@ -686,69 +579,13 @@ void AbstractChart3D::setAxesLimits(float pXmax, float pXmin, float pYmax, float
     }
 }
 
-void AbstractChart3D::setXAxisTitle(const char* pTitle)
+void Chart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
-    mXTitle = std::string(pTitle);
-}
-
-void AbstractChart3D::setYAxisTitle(const char* pTitle)
-{
-    mYTitle = std::string(pTitle);
-}
-
-void AbstractChart3D::setZAxisTitle(const char* pTitle)
-{
-    mZTitle = std::string(pTitle);
-}
-
-float AbstractChart3D::xmax() const { return mXMax; }
-float AbstractChart3D::xmin() const { return mXMin; }
-float AbstractChart3D::ymax() const { return mYMax; }
-float AbstractChart3D::ymin() const { return mYMin; }
-float AbstractChart3D::zmax() const { return mZMax; }
-float AbstractChart3D::zmin() const { return mZMin; }
-
-void AbstractChart3D::render_tickmarker_text(int pWindowId,
-        unsigned w, unsigned h,
-        std::vector<std::string> &texts,
-        glm::mat4 &transformation,
-        int coor_offset)
-{
-    auto &fonter = getChartFont();
-    fonter->setOthro2D(int(w), int(h));
-
-    float pos[2];
-    for (StringIter it = texts.begin(); it!=texts.end(); ++it) {
-        int idx = int(it - texts.begin());
-        glm::vec4 res = transformation * glm::vec4(mTickTextX[idx+coor_offset], mTickTextY[idx+coor_offset], mTickTextZ[idx+coor_offset], 1);
-
-        /* convert text position from [-1,1] range to
-         * [0, 1) range and then offset horizontally
-         * to compensate for margins and ticksize */
-        pos[0] = w*(res.x/res.w+1.0f)/2.0f;
-        pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-
-        /* offset based on text size to align
-         * text center with tick mark position */
-        if(coor_offset < mTickCount){
-            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
-        }else if(coor_offset >= mTickCount && coor_offset < 2*mTickCount){
-            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
-            pos[1] -= ((CHART2D_FONT_SIZE));
-        }else{
-            pos[1] -= ((CHART2D_FONT_SIZE));
-        }
-        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
-    }
-}
-void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
-{
+    CheckGL("Being Chart3D::renderChart");
     float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
     float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
 
-    CheckGL("Begin Chart3D::renderChart");
-
-    bindResources(pWindowId);
+    Chart3D::bindResources(pWindowId);
 
     /* bind the plotting shader program  */
     glUseProgram(mBorderProgram);
@@ -761,8 +598,8 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
     glm::mat4 mvp = projection * view * model;
 
     glm::mat4 trans = mvp;
-    glUniformMatrix4fv(mBorderMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-    glUniform4fv(mBorderColorIndex, 1, WHITE);
+    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniform4fv(mBorderUniformColorIndex, 1, WHITE);
 
     /* Draw borders */
     glDrawArrays(GL_LINES, 0, 6);
@@ -776,34 +613,31 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
     glPointSize((GLfloat)mTickSize);
 
     glUseProgram(mSpriteProgram);
-    glUniform4fv(mSpriteTickcolorIndex, 1, WHITE);
-    glUniformMatrix4fv(mSpriteMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniform4fv(mSpriteUniformTickcolorIndex, 1, WHITE);
+    glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     /* Draw tick marks on z axis */
-    glUniform1i(mSpriteTickaxisIndex, 1);
+    glUniform1i(mSpriteUniformTickaxisIndex, 1);
     glDrawArrays(GL_POINTS, 6, mTickCount);
     /* Draw tick marks on y axis */
-    glUniform1i(mSpriteTickaxisIndex, 0);
+    glUniform1i(mSpriteUniformTickaxisIndex, 0);
     glDrawArrays(GL_POINTS, 6 + mTickCount, mTickCount);
     /* Draw tick marks on x axis */
-    glUniform1i(mSpriteTickaxisIndex, 0);
+    glUniform1i(mSpriteUniformTickaxisIndex, 0);
     glDrawArrays(GL_POINTS, 6 + (2*mTickCount), mTickCount);
 
     glUseProgram(0);
     glPointSize(1);
     glDisable(GL_PROGRAM_POINT_SIZE);
-    unbindResources();
+    Chart3D::unbindResources();
 
-    render_tickmarker_text(pWindowId, w, h, mZText, trans, 0);
-    render_tickmarker_text(pWindowId, w, h, mYText, trans, mTickCount);
-    render_tickmarker_text(pWindowId, w, h, mXText, trans, 2*mTickCount);
+    renderTickLabels(pWindowId, w, h, mZText, trans, 0);
+    renderTickLabels(pWindowId, w, h, mYText, trans, mTickCount);
+    renderTickLabels(pWindowId, w, h, mXText, trans, 2*mTickCount);
 
-     /*
-      * render chart axes titles
-      */
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
-
     float pos[2];
+    /* render chart axes titles */
     if (!mZTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, 1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
@@ -831,6 +665,5 @@ void AbstractChart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int p
 
     CheckGL("End Chart3D::renderChart");
 }
-
 
 }

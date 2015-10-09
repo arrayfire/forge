@@ -17,7 +17,7 @@
 namespace internal
 {
 
-class hist_impl : public AbstractChart2D {
+class hist_impl : public Chart2D {
     private:
         /* plot points characteristics */
         fg::dtype mDataType;
@@ -76,12 +76,8 @@ class _Histogram {
             hst->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
         }
 
-        inline void setXAxisTitle(const char* pTitle) {
-            hst->setXAxisTitle(pTitle);
-        }
-
-        inline void setYAxisTitle(const char* pTitle) {
-            hst->setYAxisTitle(pTitle);
+        inline void setAxesTitles(const char* pXTitle, const char* pYTitle) {
+            hst->setAxesTitles(pXTitle, pYTitle);
         }
 
         inline float xmax() const {

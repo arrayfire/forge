@@ -63,7 +63,7 @@ void hist_impl::bindResources(int pWindowId)
         glEnableVertexAttribArray(mPointIndex);
         glEnableVertexAttribArray(mFreqIndex);
         // attach histogram bar vertices
-        glBindBuffer(GL_ARRAY_BUFFER, rectangleVBO());
+        glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
         glVertexAttribPointer(mPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
         // attach histogram frequencies
         glBindBuffer(GL_ARRAY_BUFFER, mHistogramVBO);
@@ -85,13 +85,13 @@ void hist_impl::unbindResources() const
 }
 
 hist_impl::hist_impl(unsigned pNBins, fg::dtype pDataType)
- : AbstractChart2D(), mDataType(pDataType), mGLType(gl_dtype(mDataType)),
+ : Chart2D(), mDataType(pDataType), mGLType(gl_dtype(mDataType)),
    mNBins(pNBins), mHistogramVBO(0), mHistogramVBOSize(0), mHistBarProgram(0),
    mHistBarMatIndex(0), mHistBarColorIndex(0), mHistBarYMaxIndex(0),
    mPointIndex(0), mFreqIndex(0)
 {
+    CheckGL("Begin hist_impl::hist_impl");
     mHistBarProgram = initShaders(gHistBarVertexShaderSrc, gHistBarFragmentShaderSrc);
-    CheckGL("Histogram::Shaders");
 
     mPointIndex        = glGetAttribLocation (mHistBarProgram, "point");
     mFreqIndex         = glGetAttribLocation (mHistBarProgram, "freq");
@@ -127,12 +127,19 @@ hist_impl::hist_impl(unsigned pNBins, fg::dtype pDataType)
             break;
         default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
     }
+    CheckGL("End hist_impl::hist_impl");
 }
 
 hist_impl::~hist_impl()
 {
+    CheckGL("Begin hist_impl::~hist_impl");
+    for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
+        GLuint vao = it->second;
+        glDeleteVertexArrays(1, &vao);
+    }
     glDeleteBuffers(1, &mHistogramVBO);
     glDeleteProgram(mHistBarProgram);
+    CheckGL("End hist_impl::~hist_impl");
 }
 
 void hist_impl::setBarColor(float r, float g, float b)
@@ -155,19 +162,19 @@ size_t hist_impl::size() const
 
 void hist_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 {
-    float w = float(pVPW - (leftMargin()+rightMargin()+tickSize()));
-    float h = float(pVPH - (bottomMargin()+topMargin()+tickSize()));
-    float offset_x = (2.0f * (leftMargin()+tickSize()) + (w - pVPW)) / pVPW;
-    float offset_y = (2.0f * (bottomMargin()+tickSize()) + (h - pVPH)) / pVPH;
+    float w = float(pVPW - (mLeftMargin+mRightMargin+mTickSize));
+    float h = float(pVPH - (mBottomMargin+mTopMargin+mTickSize));
+    float offset_x = (2.0f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
+    float offset_y = (2.0f * (mBottomMargin+mTickSize) + (h - pVPH)) / pVPH;
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 
     CheckGL("Begin Histogram::render");
     /* Enavle scissor test to discard anything drawn beyond viewport.
      * Set scissor rectangle to clip fragments outside of viewport */
-    glScissor(pX+leftMargin()+tickSize(), pY+bottomMargin()+tickSize(),
-            pVPW - (leftMargin()+rightMargin()+tickSize()),
-            pVPH - (bottomMargin()+topMargin()+tickSize()));
+    glScissor(pX+mLeftMargin+mTickSize, pY+mBottomMargin+mTickSize,
+            pVPW - (mLeftMargin+mRightMargin+mTickSize),
+            pVPH - (mBottomMargin+mTopMargin+mTickSize));
     glEnable(GL_SCISSOR_TEST);
 
     glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
@@ -184,9 +191,9 @@ void hist_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
      * rectangle is scaled and translated accordingly
      * for each bin. This is done by OpenGL feature of
      * instanced rendering */
-    bindResources(pWindowId);
+    hist_impl::bindResources(pWindowId);
     glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, mNBins);
-    unbindResources();
+    hist_impl::unbindResources();
 
     glUseProgram(0);
     /* Stop clipping */
@@ -235,14 +242,9 @@ void Histogram::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin
     value->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
 }
 
-void Histogram::setXAxisTitle(const char* pTitle)
+void Histogram::setAxesTitles(const char* pXTitle, const char* pYTitle)
 {
-    value->setXAxisTitle(pTitle);
-}
-
-void Histogram::setYAxisTitle(const char* pTitle)
-{
-    value->setYAxisTitle(pTitle);
+    value->setAxesTitles(pXTitle, pYTitle);
 }
 
 float Histogram::xmax() const
