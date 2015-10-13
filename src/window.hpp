@@ -21,6 +21,7 @@
 #include <font.hpp>
 #include <image.hpp>
 #include <plot.hpp>
+#include <plot3.hpp>
 #include <surface.hpp>
 #include <histogram.hpp>
 
@@ -171,8 +172,12 @@ class _Window {
             wnd->draw(pPlot->impl()) ;
         }
 
-        inline void draw(const _Surface* pPlot) {
-            wnd->draw(pPlot->impl()) ;
+        inline void draw(const _Plot3* pPlot3) {
+            wnd->draw(pPlot3->impl()) ;
+        }
+
+        inline void draw(const _Surface* pSurface) {
+            wnd->draw(pSurface->impl()) ;
         }
 
         inline void draw(const _Histogram* pHist) {
