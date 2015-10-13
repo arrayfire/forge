@@ -171,12 +171,13 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
     unsigned total_points = 3*(mNumXPoints * mNumYPoints);
 
     mIndexVBOsize = (2 * mNumYPoints) * (mNumXPoints - 1);
-    unsigned short indices[mIndexVBOsize];
+    unsigned short* indices = new unsigned short[mIndexVBOsize];
     generate_grid_indices(mNumXPoints, mNumYPoints, indices);
     mIndexVBO = createBuffer<unsigned short>(GL_ELEMENT_ARRAY_BUFFER, mIndexVBOsize, NULL, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexVBO);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, mIndexVBOsize * sizeof(unsigned short), indices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    delete[] indices;
 
     // buffersubdata calls on mMainVBO
     // will only update the points data
