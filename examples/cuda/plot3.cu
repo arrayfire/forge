@@ -93,7 +93,7 @@ void gen_curve(float t, float dx, float* out)
     int offset = blockIdx.x * blockDim.x  + threadIdx.x;
 
     float z = ZMIN + offset*dx;
-    if (offset < ZSIZE) {
+    if(offset < ZSIZE){
         out[ 3 * offset     ] = cos(z*t+t)/z;
         out[ 3 * offset + 1 ] = sin(z*t+t)/z;
         out[ 3 * offset + 2 ] = z + 0.1*sin(t);
@@ -107,8 +107,8 @@ inline int divup(int a, int b)
 
 void kernel(float t, float dx, float* dev_out)
 {
-    static const dim3 threads(ZSIZE);
-    dim3 blocks(1);
+    static const dim3 threads(1024);
+    dim3 blocks(divup(ZSIZE, 1024));
 
     gen_curve<<< blocks, threads >>>(t, dx, dev_out);
 }
