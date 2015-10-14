@@ -34,7 +34,7 @@ int main(void)
      * so that necessary OpenGL context is created for any
      * other fg::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "3d Surface Demo");
+    fg::Window wnd(DIMX, DIMY, "Plot 3d Demo");
     wnd.makeCurrent();
     /* create an font object and load necessary font
      * and later pass it on to window object so that
@@ -73,6 +73,7 @@ int main(void)
      */
     fg::copy(plot3, dev_out);
 
+
     do {
         t+=0.01;
         kernel(t, DX, dev_out);
@@ -91,8 +92,7 @@ void gen_curve(float t, float dx, float* out)
 {
     int offset = blockIdx.x * blockDim.x  + threadIdx.x;
 
-    //float z = ZMIN + offset*dx;
-    float z = offset*dx;
+    float z = ZMIN + offset*dx;
     if (offset < ZSIZE) {
         out[ 3 * offset     ] = cos(z*t+t)/z;
         out[ 3 * offset + 1 ] = sin(z*t+t)/z;

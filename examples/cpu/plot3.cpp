@@ -23,14 +23,13 @@ static const float ZMAX = 10.f;
 const float DX = 0.005;
 const size_t ZSIZE = (ZMAX-ZMIN)/DX+1;
 
-bool set=false;
 using namespace std;
-void gen_curve(float t, float dx, std::vector<float> &vec ){
+void gen_curve(float t, float dx, std::vector<float> &vec ) {
     vec.clear();
     for(float z=ZMIN; z < ZMAX; z+=dx){
-            vec.push_back(cos(z*t+t)/z);
-            vec.push_back(sin(z*t+t)/z);
-            vec.push_back(z+0.1*sin(t));
+        vec.push_back(cos(z*t+t)/z);
+        vec.push_back(sin(z*t+t)/z);
+        vec.push_back(z+0.1*sin(t));
     }
 }
 
@@ -40,7 +39,7 @@ int main(void){
      * so that necessary OpenGL context is created for any
      * other fg::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "3d Surface Demo");
+    fg::Window wnd(DIMX, DIMY, "Plot3d Demo");
     wnd.makeCurrent();
     /* create an font object and load necessary font
      * and later pass it on to window object so that
