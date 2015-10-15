@@ -112,7 +112,7 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight,
       mFormat(pFormat), mGLformat(gl_ctype(mFormat)), mGLiformat(gl_ictype(mFormat)),
       mDataType(pDataType), mGLType(gl_dtype(mDataType))
 {
-    CheckGL("Begin Image::Image");
+    CheckGL("Begin image_impl::image_impl");
 
     // Initialize OpenGL Items
     glGenTextures(1, &(mTex));
@@ -156,14 +156,16 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight,
 
     mProgram = initShaders(vertex_shader_code, fragment_shader_code);
 
-    CheckGL("End Image::Image");
+    CheckGL("End image_impl::image_impl");
 }
 
 image_impl::~image_impl()
 {
+    CheckGL("Begin image_impl::~image_impl");
     glDeleteBuffers(1, &mPBO);
     glDeleteTextures(1, &mTex);
     glDeleteProgram(mProgram);
+    CheckGL("End image_impl::~image_impl");
 }
 
 void image_impl::setColorMapUBOParams(GLuint ubo, GLuint size)

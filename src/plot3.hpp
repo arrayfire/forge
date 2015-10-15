@@ -47,14 +47,6 @@ class plot3_impl : public Chart3D {
          * for rendering resources */
         void bindResources(int pWindowId);
         void unbindResources() const;
-        void bindPlot3Program() const;
-        void unbindPlot3Program() const;
-        GLuint markerTypeIndex() const;
-        GLuint spriteMatIndex() const;
-        GLuint markerColIndex() const;
-        GLuint plotRangeIndex() const;
-        GLuint plotMatIndex() const;
-        virtual void renderGraph(int pWindowId, glm::mat4 transform);
 
     public:
         plot3_impl(unsigned pNumPoints, fg::dtype pDataType, fg::PlotType pPlotType, fg::MarkerType pMarkerType);

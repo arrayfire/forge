@@ -126,25 +126,26 @@ void plot3_impl::bindResources(int pWindowId)
 void plot3_impl::unbindResources() const { glBindVertexArray(0); }
 
 plot3_impl::plot3_impl(unsigned pNumPoints, fg::dtype pDataType, fg::PlotType pPlotType, fg::MarkerType pMarkerType)
-    : Chart3D(), mNumPoints(pNumPoints), mPlotType(pPlotType),
-      mDataType(gl_dtype(pDataType)), mMainVBO(0), mMainVBOsize(0),
+    : Chart3D(), mNumPoints(pNumPoints),
+      mDataType(gl_dtype(pDataType)), mPlotType(pPlotType),
+      mMainVBO(0), mMainVBOsize(0),
       mIndexVBOsize(0), mPointIndex(0), mMarkerTypeIndex(0),
       mMarkerColIndex(0), mSpriteTMatIndex(0), mPlot3PointIndex(0),
       mPlot3TMatIndex(0), mPlot3RangeIndex(0)
 {
     CheckGL("Begin plot3_impl::plot3_impl");
-    mPointIndex    = mBorderAttribPointIndex;
-    mMarkerType    = pMarkerType;
-    mPlot3Program   = initShaders(gMarkerVertexShaderSrc, gPlot3FragmentShaderSrc);
-    mMarkerProgram  = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
+    mPointIndex      = mBorderAttribPointIndex;
+    mMarkerType      = pMarkerType;
+    mPlot3Program    = initShaders(gMarkerVertexShaderSrc, gPlot3FragmentShaderSrc);
+    mMarkerProgram   = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
 
-    mPlot3PointIndex   = glGetAttribLocation (mPlot3Program, "point");
-    mPlot3TMatIndex    = glGetUniformLocation(mPlot3Program, "transform");
-    mPlot3RangeIndex   = glGetUniformLocation(mPlot3Program, "minmaxs");
+    mPlot3PointIndex = glGetAttribLocation (mPlot3Program, "point");
+    mPlot3TMatIndex  = glGetUniformLocation(mPlot3Program, "transform");
+    mPlot3RangeIndex = glGetUniformLocation(mPlot3Program, "minmaxs");
 
-    mMarkerTypeIndex  = glGetUniformLocation(mMarkerProgram, "marker_type");
-    mMarkerColIndex   = glGetUniformLocation(mMarkerProgram, "line_color");
-    mSpriteTMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
+    mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
+    mMarkerColIndex  = glGetUniformLocation(mMarkerProgram, "line_color");
+    mSpriteTMatIndex = glGetUniformLocation(mMarkerProgram, "transform");
 
     unsigned total_points = 3 * mNumPoints;
 
@@ -175,7 +176,13 @@ plot3_impl::plot3_impl(unsigned pNumPoints, fg::dtype pDataType, fg::PlotType pP
 plot3_impl::~plot3_impl()
 {
     CheckGL("Begin Plot::~Plot");
+    for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
+        GLuint vao = it->second;
+        glDeleteVertexArrays(1, &vao);
+    }
     glDeleteBuffers(1, &mMainVBO);
+    glDeleteProgram(mMarkerProgram);
+    glDeleteProgram(mPlot3Program);
     CheckGL("End Plot::~Plot");
 }
 
@@ -221,37 +228,27 @@ void plot3_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     glm::mat4 projection = glm::ortho(-2.f, 2.f, -2.f, 2.f, -1.1f, 100.f);
     glm::mat4 mvp = projection * view * model;
     glm::mat4 transform = mvp;
-    renderGraph(pWindowId, transform);
 
-    /* render graph border and axes */
-    renderChart(pWindowId, pX, pY, pVPW, pVPH);
-
-    CheckGL("End plot3_impl::render");
-}
-
-void plot3_impl::renderGraph(int pWindowId, glm::mat4 transform)
-{
-    CheckGL("Begin plot3_impl::renderGraph");
-    if(mPlotType != fg::FG_SCATTER){
-        bindPlot3Program();
+    if(mPlotType != fg::FG_SCATTER) {
+        glUseProgram(mPlot3Program);
         GLfloat range[] = {xmax(), xmin(), ymax(), ymin(), zmax(), zmin()};
 
-        glUniform2fv(plotRangeIndex(), 3, range);
-        glUniformMatrix4fv(plotMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
+        glUniform2fv(mPlot3RangeIndex, 3, range);
+        glUniformMatrix4fv(mPlot3TMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
 
         bindResources(pWindowId);
         glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
         unbindResources();
-        unbindPlot3Program();
+        glUseProgram(0);
     }
 
     if(mMarkerType != fg::FG_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 
-        glUniformMatrix4fv(spriteMatIndex(), 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform4fv(markerColIndex(), 1, WHITE);
-        glUniform1i(markerTypeIndex(), mMarkerType);
+        glUniformMatrix4fv(mSpriteTMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
+        glUniform4fv(mMarkerColIndex, 1, WHITE);
+        glUniform1i(mMarkerTypeIndex, mMarkerType);
 
         bindResources(pWindowId);
         glDrawArrays(GL_POINTS, 0, mNumPoints);
@@ -260,22 +257,12 @@ void plot3_impl::renderGraph(int pWindowId, glm::mat4 transform)
         glDisable(GL_PROGRAM_POINT_SIZE);
     }
 
-    CheckGL("End plot3_impl::renderGraph");
+    /* render graph border and axes */
+    renderChart(pWindowId, pX, pY, pVPW, pVPH);
+
+    CheckGL("End plot3_impl::render");
 }
 
-GLuint plot3_impl::markerTypeIndex() const { return mMarkerTypeIndex; }
-
-GLuint plot3_impl::spriteMatIndex() const { return mSpriteTMatIndex; }
-
-GLuint plot3_impl::markerColIndex() const { return mMarkerColIndex; }
-
-GLuint plot3_impl::plotMatIndex() const { return mPlot3TMatIndex; }
-
-GLuint plot3_impl::plotRangeIndex() const { return mPlot3RangeIndex; }
-
-void plot3_impl::bindPlot3Program() const { glUseProgram(mPlot3Program); }
-
-void plot3_impl::unbindPlot3Program() const { glUseProgram(0); } 
 }
 
 

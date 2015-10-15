@@ -150,7 +150,12 @@ plot_impl::plot_impl(unsigned pNumPoints, fg::dtype pDataType,
 plot_impl::~plot_impl()
 {
     CheckGL("Begin Plot::~Plot");
+    for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
+        GLuint vao = it->second;
+        glDeleteVertexArrays(1, &vao);
+    }
     glDeleteBuffers(1, &mMainVBO);
+    glDeleteProgram(mMarkerProgram);
     CheckGL("End Plot::~Plot");
 }
 
