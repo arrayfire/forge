@@ -419,9 +419,14 @@ void Window::draw(const Plot& pPlot)
     value->draw(pPlot.get());
 }
 
-void Window::draw(const Surface& pPlot)
+void Window::draw(const Plot3& pPlot3)
 {
-    value->draw(pPlot.get());
+    value->draw(pPlot3.get());
+}
+
+void Window::draw(const Surface& pSurface)
+{
+    value->draw(pSurface.get());
 }
 
 void Window::draw(const Histogram& pHist)
@@ -442,6 +447,11 @@ void Window::draw(int pColId, int pRowId, const Image& pImage, const char* pTitl
 void Window::draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle)
 {
     value->draw(pColId, pRowId, pPlot.get(), pTitle);
+}
+
+void Window::draw(int pColId, int pRowId, const Plot3& pPlot3, const char* pTitle)
+{
+    value->draw(pColId, pRowId, pPlot3.get(), pTitle);
 }
 
 void Window::draw(int pColId, int pRowId, const Surface& pSurface, const char* pTitle)

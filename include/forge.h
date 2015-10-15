@@ -16,5 +16,6 @@
 #include "fg/image.h"
 #include "fg/version.h"
 #include "fg/plot.h"
+#include "fg/plot3.h"
 #include "fg/surface.h"
 #include "fg/histogram.h"
