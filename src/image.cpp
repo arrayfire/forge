@@ -218,7 +218,7 @@ void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int p
     int cml_loc = glGetUniformLocation(mProgram, "cmaplen");
     int ubo_idx = glGetUniformBlockIndex(mProgram, "ColorMap");
 
-    glUniform1i(chn_loc, mFormat==1);
+    glUniform1i(chn_loc, mFormat==fg::FG_GRAYSCALE);
     // load texture from PBO
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(tex_loc, 0);
