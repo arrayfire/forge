@@ -12,6 +12,7 @@
 #include <cl.hpp>
 #include <OpenCLCopy.hpp>
 #include <mutex>
+#include <cmath>
 #include <vector>
 #include <sstream>
 #include <iostream>
