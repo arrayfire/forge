@@ -164,15 +164,20 @@ int main(void)
         plat.getDevices(CL_DEVICE_TYPE_GPU, &devs);
 
         Device device;
+        CommandQueue queue;
+        Context context;
         for (auto& d : devs) {
             if (checkExtnAvailability(d, CL_GL_SHARING_EXT)) {
                 device = d;
-                break;
+                context = Context(device, cps);
+                try {
+                    queue = CommandQueue(context, device);
+                    break;
+                } catch (cl::Error err) {
+                    continue;
+                }
             }
         }
-
-        Context context(device, cps);
-        CommandQueue queue(context, device);
 
         /* copy your data into the pixel buffer object exposed by
          * fg::Image class and then proceed to rendering.

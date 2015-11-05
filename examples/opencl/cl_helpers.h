@@ -16,6 +16,7 @@ using namespace cl;
 static const std::string NVIDIA_PLATFORM = "NVIDIA CUDA";
 static const std::string AMD_PLATFORM = "AMD Accelerated Parallel Processing";
 static const std::string INTEL_PLATFORM = "Intel(R) OpenCL";
+static const std::string APPLE_PLATFORM = "Apple";
 
 #if defined (OS_MAC)
 static const std::string CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
@@ -65,7 +66,12 @@ Platform getPlatform()
         if (errCode != CL_SUCCESS) {
             Platform plat = getPlatform(INTEL_PLATFORM, errCode);
             if (errCode != CL_SUCCESS) {
-                exit(255);
+                Platform plat = getPlatform(APPLE_PLATFORM, errCode);
+                if (errCode != CL_SUCCESS) {
+                    exit(255);
+                } else {
+                    return plat;
+                }
             } else
                 return plat;
         } else
