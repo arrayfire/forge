@@ -88,7 +88,7 @@ int main(void)
 
 
 __global__
-void gen_curve(float t, float dx, float* out)
+void gen_curve(float t, float dx, float* out, const float ZMIN, const size_t ZSIZE)
 {
     int offset = blockIdx.x * blockDim.x  + threadIdx.x;
 
@@ -110,5 +110,5 @@ void kernel(float t, float dx, float* dev_out)
     static const dim3 threads(1024);
     dim3 blocks(divup(ZSIZE, 1024));
 
-    gen_curve<<< blocks, threads >>>(t, dx, dev_out);
+    gen_curve<<< blocks, threads >>>(t, dx, dev_out, ZMIN, ZSIZE);
 }

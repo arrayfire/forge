@@ -10,10 +10,10 @@ const unsigned DIMY = 800;
 const unsigned WIN_ROWS = 2;
 const unsigned WIN_COLS = 2;
 
-const float    dx = 0.1;
-const float    FRANGE_START = 0.f;
-const float    FRANGE_END = 2 * 3.141592f;
-const size_t   DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
+static const float    dx = 0.1;
+static const float    FRANGE_START = 0.f;
+static const float    FRANGE_END = 2 * 3.141592f;
+static const size_t   DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
 
 void kernel(float* dev_out);
 
@@ -97,7 +97,7 @@ int main(void)
 
 
 __global__
-void simple_sinf(float* out)
+void simple_sinf(float* out, const size_t DATA_SIZE, const float dx)
 {
     int x = blockIdx.x * blockDim.x  + threadIdx.x;
 
@@ -112,5 +112,5 @@ void kernel(float* dev_out)
     static const dim3 threads(DATA_SIZE);
     dim3 blocks(1);
 
-    simple_sinf<<< blocks, threads >>>(dev_out);
+	simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, dx);
 }

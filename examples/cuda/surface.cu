@@ -8,10 +8,10 @@
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
-static const float XMIN = -1.0f;
-static const float XMAX = 2.f;
-static const float YMIN = -1.0f;
-static const float YMAX = 1.f;
+const float XMIN = -1.0f;
+const float XMAX = 2.f;
+const float YMIN = -1.0f;
+const float YMAX = 1.f;
 
 const float DX = 0.01;
 const size_t XSIZE = (XMAX-XMIN)/DX+1;
@@ -86,13 +86,15 @@ int main(void)
 
 
 __global__
-void sincos_surf(float t, float dx, float* out)
+void sincos_surf(float t, float dx, float* out,
+				 const float XMIN, const float YMIN,
+				 const size_t XSIZE, const size_t YSIZE)
 {
     int i = blockIdx.x * blockDim.x  + threadIdx.x;
     int j = blockIdx.y * blockDim.y  + threadIdx.y;
 
-    float x=XMIN+i*dx;
-    float y=YMIN+j*dx;
+    float x= ::XMIN + i*dx;
+    float y= ::YMIN + j*dx;
     if (i<XSIZE && j<YSIZE) {
         int offset = j + i * YSIZE;
         out[ 3 * offset     ] = x;
@@ -112,5 +114,5 @@ void kernel(float t, float dx, float* dev_out)
     dim3 blocks(divup(XSIZE, threads.x),
                 divup(YSIZE, threads.y));
 
-    sincos_surf<<< blocks, threads >>>(t, dx, dev_out);
+    sincos_surf<<< blocks, threads >>>(t, dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
 }
