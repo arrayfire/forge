@@ -13,7 +13,7 @@ const unsigned WIN_COLS = 2;
 const float    dx = 0.1;
 const float    FRANGE_START = 0.f;
 const float    FRANGE_END = 2 * 3.141592f;
-const size_t   SIZE = ( FRANGE_END - FRANGE_START ) / dx;
+const size_t   DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
 
 void kernel(float* dev_out);
 
@@ -48,10 +48,10 @@ int main(void)
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt0( SIZE, fg::f32);                              //create a default plot
-    fg::Plot plt1( SIZE, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
-    fg::Plot plt2( SIZE, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
-    fg::Plot plt3( SIZE, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
+    fg::Plot plt0( DATA_SIZE, fg::f32);                              //create a default plot
+    fg::Plot plt1( DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
+    fg::Plot plt2( DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
+    fg::Plot plt3( DATA_SIZE, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
 
     /*
      * Set plot colors
@@ -69,7 +69,7 @@ int main(void)
     plt2.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
     plt3.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
 
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, sizeof(float) * SIZE * 2));
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, sizeof(float) * DATA_SIZE * 2));
     kernel(dev_out);
     /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
@@ -101,7 +101,7 @@ void simple_sinf(float* out)
 {
     int x = blockIdx.x * blockDim.x  + threadIdx.x;
 
-    if (x<SIZE) {
+    if (x<DATA_SIZE) {
         out[ 2 * x ] = x * dx;
         out[ 2 * x + 1 ] = sin(x*dx);
     }
@@ -109,7 +109,7 @@ void simple_sinf(float* out)
 
 void kernel(float* dev_out)
 {
-    static const dim3 threads(SIZE);
+    static const dim3 threads(DATA_SIZE);
     dim3 blocks(1);
 
     simple_sinf<<< blocks, threads >>>(dev_out);
