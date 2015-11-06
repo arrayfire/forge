@@ -101,8 +101,8 @@ static const std::string fractal_ocl_kernel =
 "kernel\n"
 "void image_gen(global unsigned char* out, const unsigned w, const unsigned h, float persistance, int tileSize)\n"
 "{\n"
-"    int x = get_group_id(0) * get_global_size(0)/get_num_groups(0) + get_local_id(0);\n"
-"    int y = get_group_id(1) * get_global_size(1)/get_num_groups(1) + get_local_id(1);\n"
+"    int x = get_global_id(0);\n"
+"    int y = get_global_id(1);\n"
 "\n"
 "    if (x<w && y<h) {\n"
 "        int offset  = y * w + x;\n"
@@ -118,8 +118,8 @@ static const std::string fractal_ocl_kernel =
 "kernel\n"
 "void hist_freq(const global unsigned char* out, global int* hist_array, const unsigned w, const unsigned h, const unsigned nbins)\n"
 "{\n"
-"    int x = get_group_id(0) * get_global_size(0)/get_num_groups(0) + get_local_id(0);\n"
-"    int y = get_group_id(1) * get_global_size(1)/get_num_groups(1) + get_local_id(1);\n"
+"    int x = get_global_id(0);\n"
+"    int y = get_global_id(1);\n"
 "\n"
 "    if (x<w && y<h) {\n"
 "        int offset  = y * w + x;\n"
@@ -286,7 +286,7 @@ int main(void)
             kernel(devOut, histOut, queue);
             fg::copy(img, devOut, queue);
             // limit histogram update frequency
-            if(fmod(persistance, 0.5f) < 0.01)
+            if(fmod(persistance, 0.4f) < 0.02f)
                 fg::copy(hist, histOut, queue);
             // draw window and poll for events last
             wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
