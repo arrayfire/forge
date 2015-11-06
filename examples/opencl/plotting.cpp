@@ -30,13 +30,13 @@ const unsigned WIN_COLS = 2;
 const float    dx = 0.1;
 const float    FRANGE_START = 0.f;
 const float    FRANGE_END = 2 * 3.141592f;
-const unsigned SIZE = ( FRANGE_END - FRANGE_START ) / dx;
+const unsigned DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
 
 static const std::string sinf_ocl_kernel =
-"kernel void sinf(global float* out, const float dx, const unsigned SIZE)\n"
+"kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE)\n"
 "{\n"
 "    unsigned x = get_global_id(0);\n"
-"    if(x < SIZE){\n"
+"    if(x < DATA_SIZE){\n"
 "        out[2 * x] = x * dx ;\n"
 "        out[2 * x + 1] = sin(x*dx);\n"
 "    }\n"
@@ -54,11 +54,11 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
             kern = cl::Kernel(prog, "sinf");
         });
 
-    static const NDRange global(SIZE * 2);
+    static const NDRange global(DATA_SIZE * 2);
 
     kern.setArg(0, devOut);
     kern.setArg(1, dx);
-    kern.setArg(2, SIZE);
+    kern.setArg(2, DATA_SIZE);
     queue.enqueueNDRangeKernel(kern, cl::NullRange, global);
 }
 
@@ -91,10 +91,10 @@ int main(void)
         /* Create several plot objects which creates the necessary
          * vertex buffer objects to hold the different plot types
          */
-        fg::Plot plt0(SIZE, fg::f32);                                 //create a default plot
-        fg::Plot plt1(SIZE, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
-        fg::Plot plt2(SIZE, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
-        fg::Plot plt3(SIZE, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
+        fg::Plot plt0(DATA_SIZE, fg::f32);                                 //create a default plot
+        fg::Plot plt1(DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
+        fg::Plot plt2(DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
+        fg::Plot plt3(DATA_SIZE, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
 
         /*
          * Set plot colors
@@ -156,7 +156,7 @@ int main(void)
             }
         }
 
-        cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * SIZE * 2);
+        cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
         kernel(devOut, queue);
 
         /* copy your data into the vertex buffer object exposed by
