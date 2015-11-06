@@ -64,14 +64,14 @@ static const std::string fractal_ocl_kernel =
 "kernel\n"
 "void julia(global unsigned char* out, const unsigned w, const unsigned h)\n"
 "{\n"
-"    int x = get_group_id(0) * get_num_groups(0) + get_local_id(0);\n"
-"    int y = get_group_id(1) * get_num_groups(1) + get_local_id(1);\n"
+"    int x = get_group_id(0) * get_local_size(0) + get_local_id(0);\n"
+"    int y = get_group_id(1) * get_local_size(1) + get_local_id(1);\n"
 "\n"
 "    if (x<w && y<h) {\n"
 "        int offset        = x + y * w;\n"
 "        int juliaValue    = pixel(x, y, w, h);\n"
-"        out[offset*4 + 0] = 255 * juliaValue;\n"
-"        out[offset*4 + 1] = 0;\n"
+"        out[offset*4 + 1] = 255 * juliaValue;\n"
+"        out[offset*4 + 0] = 0;\n"
 "        out[offset*4 + 2] = 0;\n"
 "        out[offset*4 + 3] = 255;\n"
 "    }\n"
@@ -94,18 +94,13 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
             kern = cl::Kernel(prog, "julia");
         });
 
-    //auto juliaOp = cl::make_kernel<Buffer, unsigned, unsigned>(kern);
+    auto juliaOp = cl::make_kernel<Buffer, unsigned, unsigned>(kern);
 
     static const NDRange local(8, 8);
     NDRange global(local[0] * divup(DIMX, local[0]),
                    local[1] * divup(DIMY, local[1]));
 
-    kern.setArg(0, devOut);
-    kern.setArg(1, DIMX);
-    kern.setArg(2, DIMY);
-    queue.enqueueNDRangeKernel(kern, cl::NullRange, global, local);
-
-    //juliaOp(EnqueueArgs(queue, global, local), devOut, DIMX, DIMY);
+    juliaOp(EnqueueArgs(queue, global, local), devOut, DIMX, DIMY);
 }
 
 int main(void)
