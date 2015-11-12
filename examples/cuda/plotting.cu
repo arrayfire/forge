@@ -107,10 +107,15 @@ void simple_sinf(float* out, const size_t DATA_SIZE, const float dx)
     }
 }
 
+inline int divup(int a, int b)
+{
+    return (a+b-1)/b;
+}
+
 void kernel(float* dev_out)
 {
-    static const dim3 threads(DATA_SIZE);
-    dim3 blocks(1);
+    static const dim3 threads(1024);
+    dim3 blocks(divup(DATA_SIZE, 1024));
 
-	simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, dx);
+    simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, dx);
 }
