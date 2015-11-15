@@ -19,8 +19,6 @@
 #include <glm/gtx/transform.hpp>
 
 #include <ft2build.h>
-#include <freetype.h>
-#include <ftglyph.h>
 #include FT_FREETYPE_H
 
 #ifndef OS_WIN
