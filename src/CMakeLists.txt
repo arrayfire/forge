@@ -1,26 +1,22 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+# Prior to GLM 0.9.7.0, the package is found by the FindGLM.cmake module.
+# This was removed with GLM 0.9.7.0, instead a glm-config.cmake configuration
+# file is provided. Therefore, both FIND_PACKAGE calls are necessary.
+FIND_PACKAGE(GLM QUIET)
+FIND_PACKAGE(glm QUIET)
 
-IF(USE_SYSTEM_GLM)
-    # Prior to GLM 0.9.7.0, the package is found by the FindGLM.cmake module.
-    # This was removed with GLM 0.9.7.0, instead a glm-config.cmake configuration
-    # file is provided. Therefore, both FIND_PACKAGE calls are necessary.
-    FIND_PACKAGE(GLM QUIET)
-    FIND_PACKAGE(glm QUIET)
-    IF(NOT glm_FOUND AND NOT GLM_FOUND)
-        MESSAGE(FATAL_ERROR "GLM Not Found")
-    ENDIF()
-ELSE(USE_SYSTEM_GLM)
-    INCLUDE("${CMAKE_MODULE_PATH}/build_glm.cmake")
-ENDIF(USE_SYSTEM_GLM)
+IF(NOT glm_FOUND AND NOT GLM_FOUND)
+  MESSAGE(STATUS "System GLM Not Found.")
+  MESSAGE(STATUS "Downloading GLM headers.")
+  INCLUDE("${CMAKE_MODULE_PATH}/build_glm.cmake")
+ENDIF()
 
-IF(USE_SYSTEM_FREETYPE)
-    FIND_PACKAGE(Freetype REQUIRED)
-ELSE(USE_SYSTEM_FREETYPE)
-    INCLUDE("${CMAKE_MODULE_PATH}/build_freetype.cmake")
-ENDIF(USE_SYSTEM_FREETYPE)
+FIND_PACKAGE(Freetype QUIET)
 
 IF(NOT FREETYPE_FOUND)
-    MESSAGE(FATAL_ERROR "FreeType Not Found")
+  MESSAGE(STATUS "System FREETYPE Not Found.")
+  MESSAGE(STATUS "Downloading and building Freetype libraries.")
+  INCLUDE("${CMAKE_MODULE_PATH}/build_freetype.cmake")
 ENDIF()
 
 IF(UNIX)
