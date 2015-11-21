@@ -116,9 +116,9 @@ void AbstractChart::renderTickLabels(int pWindowId, unsigned w, unsigned h,
         if(coor_offset < mTickCount) {
             pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
         }else if(coor_offset >= mTickCount && coor_offset < 2*mTickCount) {
-            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
             pos[1] -= ((CHART2D_FONT_SIZE));
         }else {
+            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
             pos[1] -= ((CHART2D_FONT_SIZE));
         }
         fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
@@ -454,7 +454,7 @@ void Chart3D::pushTicktextCoords(float x, float y, float z)
 void Chart3D::generateChartData()
 {
     CheckGL("Begin Chart3D::generateChartData");
-    static const float border[] = { -1, -1, -1,  1, -1, -1,  -1, -1, -1,  -1, 1, -1,  -1, 1, -1,  -1, 1, 1 };
+    static const float border[] = { -1, -1, 1,  -1, -1, -1,  -1, -1, -1,  1, -1, -1,  1, -1, -1,  1, 1, -1 };
     static const int nValues = sizeof(border)/sizeof(float);
 
     std::vector<float> decorData;
@@ -466,25 +466,25 @@ void Chart3D::generateChartData()
      * push (0,0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    pushPoint(decorData, -1.0f, 1.0f, 0.0f);
-    pushTicktextCoords(-1.0f, 1.0f, 0.0f);
+    pushPoint(decorData, -1.0f, -1.0f, 0.0f);
+    pushTicktextCoords(-1.0f, -1.0f, 0.0f);
     mZText.push_back(toString(0));
 
     int ticksLeft = mTickCount/2;
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
         float neg = i*-step;
-        pushPoint(decorData, -1.0f, 1.0f, neg);
+        pushPoint(decorData, -1.0f, -1.0f, neg);
         /* push tick marks */
-        pushTicktextCoords(-1.0f, 1.0f, neg);
+        pushTicktextCoords(-1.0f, -1.0f, neg);
         /* push tick text label */
         mZText.push_back(toString(neg));
 
         /* (0, -1] to [1, -1] */
         float pos = i*step;
-        pushPoint(decorData, -1.0f, 1.0f, pos);
+        pushPoint(decorData, -1.0f, -1.0f, pos);
         /* push tick marks */
-        pushTicktextCoords(-1.0f, 1.0f, pos);
+        pushTicktextCoords(-1.0f, -1.0f, pos);
         /* push tick text label */
         mZText.push_back(toString(pos));
     }
@@ -492,21 +492,21 @@ void Chart3D::generateChartData()
      * push (0,0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    pushPoint(decorData, -1.0f, 0.0f, -1.0f);
-    pushTicktextCoords(-1.0f, 0.0f, -1.0f);
+    pushPoint(decorData, 1.0f, 0.0f, -1.0f);
+    pushTicktextCoords(1.0f, 0.0f, -1.0f);
     mYText.push_back(toString(0));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* [-1, 0) to [-1, -1] */
         float neg = i*-step;
-        float pos = i*step;
-        pushPoint(decorData, -1.0f, neg, -1.0f);
-        pushTicktextCoords(-1.0f, pos, -1.0f);
+        pushPoint(decorData, 1.0f, neg, -1.0f);
+        pushTicktextCoords(1.0f, neg, -1.0f);
         mYText.push_back(toString(neg));
 
         /* [-1, 0) to [-1, 1] */
-        pushPoint(decorData, -1.0f, pos, -1.0f);
-        pushTicktextCoords(-1.0f, neg, -1.0f);
+        float pos = i*step;
+        pushPoint(decorData, 1.0f, pos, -1.0f);
+        pushTicktextCoords(1.0f, pos, -1.0f);
         mYText.push_back(toString(pos));
     }
 
@@ -592,7 +592,7 @@ void Chart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 
     /* set uniform attributes of shader
      * for drawing the plot borders */
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f));
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) * glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f));
     glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(1,-1,-1),glm::vec3(0,1,0));
     glm::mat4 projection = glm::ortho(-2.f, 2.f, -2.f, 2.f, -1.1f, 10.f);
     glm::mat4 mvp = projection * view * model;
@@ -639,7 +639,7 @@ void Chart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     float pos[2];
     /* render chart axes titles */
     if (!mZTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(-1.0f, 1.0f, 0.0f, 1.0f);
+        glm::vec4 res = trans * glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
         pos[0] -= 6*(mTickSize * (w/pVPW));
@@ -647,19 +647,19 @@ void Chart3D::renderChart(int pWindowId, int pX, int pY, int pVPW, int pVPH)
         fonter->render(pWindowId, pos, WHITE, mZTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
     if (!mYTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, -1.0f, 1.0f);
+        glm::vec4 res = trans * glm::vec4(1.0f, 0.0f, -1.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-        pos[0] -= 2*(mTickSize * (w/pVPW)) + mYTitle.length()/2 * CHART2D_FONT_SIZE;
-        pos[1] -= 3*(mTickSize * (h/pVPH));
+        pos[0] += 0.5 * ((mTickSize * (w/pVPW)) + mYTitle.length()/2 * CHART2D_FONT_SIZE);
+        pos[1] -= 4*(mTickSize * (h/pVPH));
         fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, -1.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-        pos[0] += 3*(mTickSize * (w/pVPW));
-        pos[1] -= 3*(mTickSize * (h/pVPH));
+        pos[0] -= (mTickSize * (w/pVPW)) + mXTitle.length()/2 * CHART2D_FONT_SIZE;
+        pos[1] -= 4*(mTickSize * (h/pVPH));
         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
