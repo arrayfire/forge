@@ -33,6 +33,7 @@ class plot_impl : public Chart2D {
         GLuint    mMarkerProgram;
         /* shared variable index locations */
         GLuint    mPointIndex;
+        GLuint    mMarkerColIndex;
         GLuint    mMarkerTypeIndex;
         GLuint    mSpriteTMatIndex;
 

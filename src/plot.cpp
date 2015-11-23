@@ -32,7 +32,7 @@ static const char *gMarkerVertexShaderSrc =
 static const char *gMarkerSpriteFragmentShaderSrc =
 "#version 330\n"
 "uniform int marker_type;\n"
-"uniform vec4 line_color;\n"
+"uniform vec4 marker_color;\n"
 "out vec4 outputColor;\n"
 "void main(void) {\n"
 "   float dist = sqrt( (gl_PointCoord.x - 0.5) * (gl_PointCoord.x-0.5) + (gl_PointCoord.y-0.5) * (gl_PointCoord.y-0.5) );\n"
@@ -71,7 +71,7 @@ static const char *gMarkerSpriteFragmentShaderSrc =
 "   if(!in_bounds)\n"
 "       discard;\n"
 "   else\n"
-"       outputColor = line_color;\n"
+"       outputColor = marker_color;\n"
 "}";
 
 namespace internal
@@ -111,6 +111,7 @@ plot_impl::plot_impl(unsigned pNumPoints, fg::dtype pDataType,
       mMainVBO(0), mMainVBOsize(0), mPointIndex(0)
 {
     mMarkerProgram   = initShaders(gMarkerVertexShaderSrc, gMarkerSpriteFragmentShaderSrc);
+    mMarkerColIndex  = glGetUniformLocation(mMarkerProgram, "marker_color");
     mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
     mSpriteTMatIndex = glGetUniformLocation(mMarkerProgram, "transform");
     mPointIndex      = mBorderAttribPointIndex;
@@ -230,7 +231,7 @@ void plot_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
         glUseProgram(mMarkerProgram);
 
         glUniformMatrix4fv(mSpriteTMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform4fv(mBorderUniformColorIndex, 1, mLineColor);
+        glUniform4fv(mMarkerColIndex, 1, mLineColor);
         glUniform1i(mMarkerTypeIndex, mMarkerType);
 
         plot_impl::bindResources(pWindowId);
