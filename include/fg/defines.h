@@ -35,6 +35,11 @@
     #define FG_STATIC_
 #endif
 
+#include <fg/version.h>
+#ifndef FG_API_VERSION
+#define FG_API_VERSION FG_API_VERSION_CURRENT
+#endif
+
 #include <GL/glew.h>
 
 /**

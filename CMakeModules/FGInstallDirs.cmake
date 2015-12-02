@@ -30,7 +30,7 @@ if(NOT DEFINED FG_INSTALL_DOC_DIR)
 endif()
 
 if(NOT DEFINED FG_INSTALL_EXAMPLE_DIR)
-    set(FG_INSTALL_EXAMPLE_DIR "${FG_INSTALL_DATA_DIR}" CACHE PATH "Installation path for examples")
+    set(FG_INSTALL_EXAMPLE_DIR "${FG_INSTALL_DATA_DIR}/examples" CACHE PATH "Installation path for examples")
 endif()
 
 # Man pages
@@ -42,3 +42,10 @@ endif()
 if(NOT DEFINED FG_INSTALL_CMAKE_DIR)
     set(FG_INSTALL_CMAKE_DIR "${FG_INSTALL_DATA_DIR}/cmake" CACHE PATH "Installation path for CMake files")
 endif()
+
+foreach(p BIN LIB INC DATA DOC EXAMPLE MAN CMAKE)
+    set(var FG_INSTALL_${p}_DIR)
+    if(NOT IS_ABSOLUTE "${${var}}")
+      set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
+    endif()
+endforeach()

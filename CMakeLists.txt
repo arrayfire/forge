@@ -74,14 +74,6 @@ ENDIF(APPLE)
 
 ADD_SUBDIRECTORY(src)
 
-## Install step
-INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTALL_INC_DIR}"
-    FILES_MATCHING
-    PATTERN "*.h"
-    PATTERN "*.hpp"
-    PATTERN ".gitignore" EXCLUDE
-)
-
 IF(BUILD_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
 ENDIF()
@@ -90,3 +82,35 @@ ENDIF()
 IF(BUILD_DOCUMENTATION)
     ADD_SUBDIRECTORY(docs)
 ENDIF(BUILD_DOCUMENTATION)
+
+#--------------------------------------------------------------------
+# Create generated files
+#--------------------------------------------------------------------
+INCLUDE(CMakePackageConfigHelpers)
+
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/ForgeConfig.cmake.in"
+                              "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfig.cmake"
+                              INSTALL_DESTINATION ${FG_INSTALL_CMAKE_DIR}
+                              PATH_VARS CMAKE_INSTALL_PREFIX
+                              NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/ForgeConfigVersion.cmake"
+                                 VERSION ${FG_VERSION}
+                                 COMPATIBILITY SameMajorVersion)
+
+#--------------------------------------------------------------------
+# Install files other than the library, examples and docs
+# The library is installed by src/CMakeLists.txt
+#--------------------------------------------------------------------
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTALL_INC_DIR}"
+    FILES_MATCHING
+    PATTERN "*.h"
+    PATTERN "*.hpp"
+    PATTERN ".gitignore" EXCLUDE
+)
+
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfig.cmake"
+              "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfigVersion.cmake"
+              DESTINATION ${FG_INSTALL_CMAKE_DIR})
+
+INSTALL(EXPORT forgeTargets DESTINATION ${FG_INSTALL_CMAKE_DIR})
