@@ -124,6 +124,13 @@ TARGET_LINK_LIBRARIES(forge
     )
 
 INSTALL(TARGETS forge
-        EXPORT forgeTargets
-        DESTINATION "${FG_INSTALL_LIB_DIR}" COMPONENT shlib
+        EXPORT FORGE
+        DESTINATION "${FG_INSTALL_LIB_DIR}"
+        COMPONENT libraries)
+
+EXPORT(TARGETS forge FILE ForgeTargets.cmake)
+
+INSTALL(EXPORT FORGE DESTINATION "${FG_INSTALL_CMAKE_DIR}"
+        COMPONENT cmake
+        FILE ForgeTargets.cmake
        )
