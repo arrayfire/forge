@@ -156,6 +156,8 @@ class Window {
            Render an Image to Window
 
            \param[in] pImage is an object of class Image
+           \param[in] pKeepAspectRatio when set to true keeps the aspect ratio
+                      of the input image constant.
 
            \note this draw call does a OpenGL swap buffer, so we do not need
            to call Window::draw() after this function is called upon for rendering
@@ -228,6 +230,8 @@ class Window {
            \param[in] pImage is an object of class Image
            \param[in] pTitle is the title that will be displayed for the cell represented
                       by \p pColId and \p pRowId
+           \param[in] pKeepAspectRatio when set to true keeps the aspect ratio
+                      of the input image constant.
 
            \note This draw call doesn't do OpenGL swap buffer since it doesn't have the
            knowledge of which sub-regions already got rendered. We should call

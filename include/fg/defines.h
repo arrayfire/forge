@@ -155,5 +155,4 @@ enum MarkerType {
     FG_STAR         = 7
 };
 
-
 }

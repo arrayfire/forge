@@ -33,8 +33,11 @@ class Plot3 {
            Creates a Plot3 object
 
            \param[in] pNumPoints is number of data points
-           \param[in] pDataType takes one of the values of \ref FGType that indicates
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of plot data
+           \param[in] pPlotType is the render type which can be one of \ref PlotType (valid choices
+                      are FG_LINE and FG_SCATTER)
+           \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_SCATTER plot type
          */
         FGAPI Plot3(unsigned pNumPoints, dtype pDataType, PlotType pPlotType=fg::FG_LINE, MarkerType pMarkerType=fg::FG_NONE);
 
