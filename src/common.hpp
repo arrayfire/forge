@@ -9,6 +9,7 @@
 
 #pragma once
 
+#define GLM_FORCE_RADIANS
 #include <fg/defines.h>
 #include <fg/exception.h>
 #include <err_common.hpp>
