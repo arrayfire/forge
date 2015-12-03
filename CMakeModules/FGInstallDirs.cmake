@@ -43,6 +43,19 @@ if(NOT DEFINED FG_INSTALL_CMAKE_DIR)
     set(FG_INSTALL_CMAKE_DIR "${FG_INSTALL_DATA_DIR}/cmake" CACHE PATH "Installation path for CMake files")
 endif()
 
+# Use absolute paths (these changes are internal and will not show up in cache)
+# The cache will continue to show relative/absolute paths as used without modifications
+# This is required for configure_package_config_file in CMakeLists.txt
+
+# CMAKE_INSTALL_PREFIX
+# If this is relative, it is relative to CMAKE_BINARY_DIR
+if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
+    get_filename_component(CMAKE_INSTALL_PREFIX
+                           "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_PREFIX}"
+                           ABSOLUTE)
+endif()
+
+# FG_INSTALL_*_DIR
 foreach(p BIN LIB INC DATA DOC EXAMPLE MAN CMAKE)
     set(var FG_INSTALL_${p}_DIR)
     if(NOT IS_ABSOLUTE "${${var}}")
