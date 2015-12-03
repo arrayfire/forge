@@ -34,8 +34,11 @@ class Surface {
 
            \param[in] pNumXPoints is number of data points along X dimension
            \param[in] pNumYPoints is number of data points along Y dimension
-           \param[in] pDataType takes one of the values of \ref FGType that indicates
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of plot data
+           \param[in] pPlotType is the render type which can be one of \ref PlotType (valid choices
+                      are FG_SURFACE and FG_SCATTER)
+           \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_SCATTER plot type
          */
         FGAPI Surface(unsigned pNumXPoints, unsigned pNumYPoints, dtype pDataType, PlotType pPlotType=fg::FG_SURFACE, MarkerType pMarkerType=fg::FG_NONE);
 
@@ -74,6 +77,8 @@ class Surface {
            \param[in] pXmin is X-Axis minimum value
            \param[in] pYmax is Y-Axis maximum value
            \param[in] pYmin is Y-Axis minimum value
+           \param[in] pZmax is Z-Axis maximum value
+           \param[in] pZmin is Z-Axis minimum value
          */
         FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin);
 

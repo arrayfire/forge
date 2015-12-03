@@ -23,7 +23,6 @@ IF(UNIX)
     FIND_PACKAGE(FontConfig REQUIRED)
 ENDIF(UNIX)
 
-
 IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
     FIND_PACKAGE(GLFW REQUIRED)
     IF(GLFW_FOUND)
@@ -47,16 +46,16 @@ IF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
 ENDIF()
 
 
-IF(NOT UNIX)
+IF(WIN32)
     ADD_DEFINITIONS(-DFGDLL)
-ENDIF(NOT UNIX)
+ENDIF(WIN32)
+
 # OS Definitions
 IF(UNIX)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 ELSE(UNIX) #Windows
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 ENDIF(UNIX)
-
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_INCLUDE_PATH}
@@ -88,6 +87,7 @@ FILE(GLOB sources
 SOURCE_GROUP(API FILES ${api_headers})
 SOURCE_GROUP(Headers FILES ${headers})
 SOURCE_GROUP(Sources FILES ${sources})
+
 IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
     FILE(GLOB wtk_headers
         "glfw/*.hpp")
@@ -95,14 +95,15 @@ IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
         "glfw/*.cpp")
     SOURCE_GROUP(Headers\\glfw FILES ${wtk_headers})
     SOURCE_GROUP(Sources\\glfw FILES ${wtk_sources})
-ENDIF()
-IF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
+
+ELSEIF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
     FILE(GLOB wtk_headers
         "sdl/*.hpp")
     FILE(GLOB wtk_sources
         "sdl/*.cpp")
     SOURCE_GROUP(Headers\\sdl FILES ${wtk_headers})
     SOURCE_GROUP(Sources\\sdl FILES ${wtk_sources})
+
 ENDIF()
 
 ADD_LIBRARY(forge SHARED
@@ -114,11 +115,22 @@ ADD_LIBRARY(forge SHARED
     )
 
 TARGET_LINK_LIBRARIES(forge
-    ${FONTCONFIG_LIBRARY}
-    ${FREETYPE_LIBRARIES}
-    ${WTK_LIBRARIES}
-    ${GL_LIBS}
-    ${X11_LIBS}
+    PRIVATE ${FONTCONFIG_LIBRARY}
+    PRIVATE ${FREETYPE_LIBRARIES}
+    PRIVATE ${WTK_LIBRARIES}
+    PRIVATE ${OPENGL_gl_LIBRARY}
+    PRIVATE ${GLEWmx_LIBRARY}
+    PRIVATE ${X11_LIBS}
     )
 
-INSTALL(TARGETS forge DESTINATION ${FG_INSTALL_LIB_DIR})
+INSTALL(TARGETS forge
+        EXPORT FORGE
+        DESTINATION "${FG_INSTALL_LIB_DIR}"
+        COMPONENT libraries)
+
+EXPORT(TARGETS forge FILE ForgeTargets.cmake)
+
+INSTALL(EXPORT FORGE DESTINATION "${FG_INSTALL_CMAKE_DIR}"
+        COMPONENT cmake
+        FILE ForgeTargets.cmake
+       )

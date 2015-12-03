@@ -44,28 +44,12 @@ ELSE(UNIX)
     ADD_DEFINITIONS(-DOS_WIN -DNOMINMAX)
 ENDIF(UNIX)
 
-# Architechture Definitions
-#INCLUDE(${CMAKE_MODULE_PATH}/TargetArch.cmake)
-#target_architecture(ARCH)
-#IF(${ARCH} STREQUAL "x86_64")
-#  ADD_DEFINITIONS(-DARCH_64)
-#ELSE(${ARCH})
-#  ADD_DEFINITIONS(-DARCH_32)
-#ENDIF()
-
 INCLUDE(${CMAKE_MODULE_PATH}/Version.cmake)
 
 FIND_PACKAGE(OpenGL REQUIRED)
 FIND_PACKAGE(GLEWmx REQUIRED)
 IF(GLEWmx_FOUND AND OPENGL_FOUND)
     ADD_DEFINITIONS(-DGLEW_MX)
-    SET(GL_INC_DIR
-        ${OPENGL_INCLUDE_DIR}
-        ${GLEW_INCLUDE_DIR}
-        )
-    SET(GL_LIBS
-        ${OPENGL_gl_LIBRARY}
-        ${GLEWmx_LIBRARY})
 ELSE()
     IF(NOT GLEWmx_FOUND)
         MESSAGE(FATAL_ERROR "GLEW-MX not found")
@@ -77,7 +61,8 @@ ENDIF()
 
 INCLUDE_DIRECTORIES(
     "${PROJECT_SOURCE_DIR}/include"
-    ${GL_INC_DIR}
+    ${OPENGL_INCLUDE_DIR}
+    ${GLEW_INCLUDE_DIR}
     )
 
 SET(X11_LIBS "")
@@ -89,14 +74,6 @@ ENDIF(APPLE)
 
 ADD_SUBDIRECTORY(src)
 
-## Install step
-INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTALL_INC_DIR}"
-    FILES_MATCHING
-    PATTERN "*.h"
-    PATTERN "*.hpp"
-    PATTERN ".gitignore" EXCLUDE
-)
-
 IF(BUILD_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
 ENDIF()
@@ -105,3 +82,46 @@ ENDIF()
 IF(BUILD_DOCUMENTATION)
     ADD_SUBDIRECTORY(docs)
 ENDIF(BUILD_DOCUMENTATION)
+
+#--------------------------------------------------------------------
+# Create generated files
+#--------------------------------------------------------------------
+INCLUDE(CMakePackageConfigHelpers)
+
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/ForgeConfig.cmake.in"
+                              "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfig.cmake"
+                              INSTALL_DESTINATION ${FG_INSTALL_CMAKE_DIR}
+                              PATH_VARS CMAKE_INSTALL_PREFIX
+                              NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/ForgeConfigVersion.cmake"
+                                 VERSION ${FG_VERSION}
+                                 COMPATIBILITY SameMajorVersion)
+
+#--------------------------------------------------------------------
+# Install files other than the library, examples and docs
+# The library is installed by src/CMakeLists.txt
+#--------------------------------------------------------------------
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTALL_INC_DIR}"
+    FILES_MATCHING
+    PATTERN "*.h"
+    PATTERN "*.hpp"
+    PATTERN ".gitignore" EXCLUDE
+)
+
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfig.cmake"
+              "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfigVersion.cmake"
+              DESTINATION ${FG_INSTALL_CMAKE_DIR})
+
+# We are only installing the source files for examples.
+# So this should not depend on the value of BUILD_EXAMPLES
+# These examples will be installed without building the executables for the examples
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/examples/"
+        DESTINATION "${FG_INSTALL_EXAMPLE_DIR}"
+        COMPONENT examples)
+
+INSTALL(FILES
+        "${CMAKE_MODULE_PATH}/FindOpenCL.cmake"
+        "${CMAKE_MODULE_PATH}/FindGLEWmx.cmake"
+        DESTINATION "${FG_INSTALL_EXAMPLE_DIR}/CMakeModules/"
+        COMPONENT examples)

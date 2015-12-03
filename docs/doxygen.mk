@@ -59,7 +59,7 @@ PROJECT_LOGO           =
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = .
+OUTPUT_DIRECTORY       = ${CMAKE_CURRENT_BINARY_DIR}
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -758,9 +758,9 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = ${DOCS_DIR}/pages \
-						 ${INCLUDE_DIR}/ \
+                         ${INCLUDE_DIR}/ \
                          ${INCLUDE_DIR}/fg/ \
-						 ${DOCS_DIR}/details
+                         ${DOCS_DIR}/details
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -828,7 +828,7 @@ EXCLUDE_SYMBOLS        = internal
 # that contain example code fragments that are included (see the \include
 # command).
 
-EXAMPLE_PATH  		=
+EXAMPLE_PATH		=
 #EXAMPLE_PATH           = ${EXAMPLES_DIR}/ \
 #						 ${SNIPPETS_DIR}
 
@@ -1028,7 +1028,7 @@ GENERATE_HTML          = YES
 # The default directory is: html.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_OUTPUT            = .
+HTML_OUTPUT            = html
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for each
 # generated HTML page (for example: .htm, .php, .asp).
