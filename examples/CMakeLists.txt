@@ -126,13 +126,3 @@ IF(OpenCL_FOUND)
 ELSE()
     MESSAGE(STATUS "OpenCL Libraries not found, not building OpenCL examples.")
 ENDIF()
-
-INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/"
-        DESTINATION "${FG_INSTALL_EXAMPLE_DIR}"
-        COMPONENT examples)
-
-INSTALL(FILES
-        "${CMAKE_MODULE_PATH}/FindOpenCL.cmake"
-        "${CMAKE_MODULE_PATH}/FindGLEWmx.cmake"
-        DESTINATION "${FG_INSTALL_EXAMPLE_DIR}/CMakeModules/"
-        COMPONENT examples)

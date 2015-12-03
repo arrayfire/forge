@@ -112,3 +112,16 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTA
 INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfig.cmake"
               "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfigVersion.cmake"
               DESTINATION ${FG_INSTALL_CMAKE_DIR})
+
+# We are only installing the source files for examples.
+# So this should not depend on the value of BUILD_EXAMPLES
+# These examples will be installed without building the executables for the examples
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/examples/"
+        DESTINATION "${FG_INSTALL_EXAMPLE_DIR}"
+        COMPONENT examples)
+
+INSTALL(FILES
+        "${CMAKE_MODULE_PATH}/FindOpenCL.cmake"
+        "${CMAKE_MODULE_PATH}/FindGLEWmx.cmake"
+        DESTINATION "${FG_INSTALL_EXAMPLE_DIR}/CMakeModules/"
+        COMPONENT examples)
