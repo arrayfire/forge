@@ -54,11 +54,3 @@ if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
                            "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_PREFIX}"
                            ABSOLUTE)
 endif()
-
-# FG_INSTALL_*_DIR
-foreach(p BIN LIB INC DATA DOC EXAMPLE MAN CMAKE)
-    set(var FG_INSTALL_${p}_DIR)
-    if(NOT IS_ABSOLUTE "${${var}}")
-      set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
-    endif()
-endforeach()
