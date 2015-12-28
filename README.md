@@ -8,7 +8,7 @@ A prototype of the OpenGL interop library that can be used with ArrayFire. The g
 ### Build Status
 | Platform | Linux x86 | Linux armv7l | Linux aarch64 | Windows | OSX |
 |:--------:|:---------:|:------------:|:-------------:|:-------:|:---:|
-| Status   | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge-linux)](http://ci.arrayfire.org/job/forge-linux) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge-tegrak1)](http://ci.arrayfire.org/job/forge-tegrak1) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge-tegrax1)](http://ci.arrayfire.org/job/forge-tegrax1) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge-windows)](http://ci.arrayfire.org/job/forge-windows) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge-osx)](http://ci.arrayfire.org/job/forge-osx) |
+| Status   | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-linux)](http://ci.arrayfire.org/view/All/job/forge/job/forge-linux/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrak1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrak1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrax1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrax1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-windows)](http://ci.arrayfire.org/view/All/job/forge/job/forge-windows/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-osx)](http://ci.arrayfire.org/view/All/job/forge/job/forge-osx/) |
 
 ### Dependencies
 * [GLEW](http://glew.sourceforge.net/)
