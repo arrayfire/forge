@@ -47,20 +47,11 @@ int main(void)
 #endif
     wnd.setFont(&fnt);
 
-    /* Create several plot objects which creates the necessary
-     * vertex buffer objects to hold the different plot types
-     */
-    fg::Plot3 plot3(ZSIZE, fg::f32);
+    fg::Chart chart(fg::FG_3D);
+    chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
+    chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    /*
-     * Set draw limits for plots
-     */
-    plot3.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, 0.f);
-
-    /*
-    * Set axis titles
-    */
-    plot3.setAxesTitles("x-axis", "y-axis", "z-axis");
+    fg::Plot plot3 = chart.plot(ZSIZE, fg::f32);
 
     static float t=0;
     CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, ZSIZE * 3 * sizeof(float) ));
@@ -79,7 +70,7 @@ int main(void)
         kernel(t, DX, dev_out);
         fg::copy(plot3, dev_out);
         // draw window and poll for events last
-        wnd.draw(plot3);
+        wnd.draw(chart);
     } while(!wnd.close());
 
     CUDA_ERROR_CHECK(cudaFree(dev_out));

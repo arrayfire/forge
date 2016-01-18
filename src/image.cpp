@@ -8,97 +8,26 @@
  ********************************************************/
 
 #include <fg/image.h>
+#include <fg/window.h>
 #include <image.hpp>
+#include <window.hpp>
 #include <common.hpp>
-#include <mutex>
-#include <map>
+#include <shader_headers/image_vs.hpp>
+#include <shader_headers/image_fs.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-static const char* vertex_shader_code =
-"#version 330\n"
-"layout(location = 0) in vec3 pos;\n"
-"layout(location = 1) in vec2 tex;\n"
-"uniform mat4 matrix;\n"
-"out vec2 texcoord;\n"
-"void main() {\n"
-"    texcoord = tex;\n"
-"    gl_Position = matrix * vec4(pos,1.0);\n"
-"}\n";
-
-static const char* fragment_shader_code =
-"#version 330\n"
-"const int size = 259;\n"
-"uniform float cmaplen;\n"
-"layout(std140) uniform ColorMap\n"
-"{\n"
-"    vec4 ch[size];\n"
-"};\n"
-"uniform sampler2D tex;\n"
-"uniform bool isGrayScale;\n"
-"in vec2 texcoord;\n"
-"out vec4 fragColor;\n"
-"void main()\n"
-"{\n"
-"    vec4 tcolor = texture(tex, texcoord);\n"
-"    vec4 clrs = vec4(1, 0, 0, 1);\n"
-"    if(isGrayScale)\n"
-"        clrs = vec4(tcolor.r, tcolor.r, tcolor.r, 1);\n"
-"    else\n"
-"        clrs = tcolor;\n"
-"    vec4 fidx  = (cmaplen-1) * clrs;\n"
-"    ivec4 idx  = ivec4(fidx.x, fidx.y, fidx.z, fidx.w);\n"
-"    float r_ch = ch[idx.x].r;\n"
-"    float g_ch = ch[idx.y].g;\n"
-"    float b_ch = ch[idx.z].b;\n"
-"    fragColor = vec4(r_ch, g_ch , b_ch, 1);\n"
-"}\n";
-
-GLuint imageQuadVAO(int pWindowId)
-{
-    static std::map<int, GLuint> mVAOMap;
-
-    if (mVAOMap.find(pWindowId)==mVAOMap.end()) {
-        static const float vertices[12] = {-1.0f,-1.0f,0.0,
-                                    1.0f,-1.0f,0.0,
-                                    1.0f, 1.0f,0.0,
-                                    -1.0f, 1.0f,0.0};
-        static const float texcords[8]  = {0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0};
-        static const unsigned indices[6]= {0,1,2,0,2,3};
-        GLuint vbo  = createBuffer(GL_ARRAY_BUFFER, 12, vertices, GL_STATIC_DRAW);
-        GLuint tbo  = createBuffer(GL_ARRAY_BUFFER, 8, texcords, GL_STATIC_DRAW);
-        GLuint ibo  = createBuffer(GL_ELEMENT_ARRAY_BUFFER, 6, indices, GL_STATIC_DRAW);
-
-        GLuint vao = 0;
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        // attach vbo
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-        // attach tbo
-        glBindBuffer(GL_ARRAY_BUFFER, tbo);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-        // attach ibo
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBindVertexArray(0);
-        /* store the vertex array object corresponding to
-         * the window instance in the map */
-        mVAOMap[pWindowId] = vao;
-    }
-
-    return mVAOMap[pWindowId];
-}
+#include <map>
+#include <mutex>
 
 namespace internal
 {
 
-void image_impl::bindResources(int pWindowId)
+void image_impl::bindResources(int pWindowId) const
 {
-    glBindVertexArray(imageQuadVAO(pWindowId));
+    glBindVertexArray(screenQuadVAO(pWindowId));
 }
 
 void image_impl::unbindResources() const
@@ -106,13 +35,21 @@ void image_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-image_impl::image_impl(unsigned pWidth, unsigned pHeight,
-                       fg::ChannelFormat pFormat, fg::dtype pDataType)
-    : mWidth(pWidth), mHeight(pHeight),
-      mFormat(pFormat), mGLformat(gl_ctype(mFormat)), mGLiformat(gl_ictype(mFormat)),
-      mDataType(pDataType), mGLType(gl_dtype(mDataType))
+image_impl::image_impl(const uint pWidth, const uint pHeight,
+                       const fg::ChannelFormat pFormat, const fg::dtype pDataType)
+    : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat),
+      mGLformat(ctype2gl(mFormat)), mGLiformat(ictype2gl(mFormat)),
+      mDataType(pDataType), mGLType(dtype2gl(mDataType)), mAlpha(1.0f), mKeepARatio(true),
+      mMatIndex(-1), mTexIndex(-1), mIsGrayIndex(-1), mCMapLenIndex(-1), mCMapIndex(-1)
 {
     CheckGL("Begin image_impl::image_impl");
+
+    mProgram      = initShaders(glsl::image_vs.c_str(), glsl::image_fs.c_str());
+    mMatIndex     = glGetUniformLocation(mProgram, "matrix");
+    mCMapIndex    = glGetUniformBlockIndex(mProgram, "ColorMap");
+    mCMapLenIndex = glGetUniformLocation(mProgram, "cmaplen");
+    mTexIndex     = glGetUniformLocation(mProgram, "tex");
+    mIsGrayIndex  = glGetUniformLocation(mProgram, "isGrayScale");
 
     // Initialize OpenGL Items
     glGenTextures(1, &(mTex));
@@ -129,22 +66,22 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight,
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     size_t typeSize = 0;
     switch(mGLType) {
-        case GL_INT:            typeSize = sizeof(int  );           break;
-        case GL_UNSIGNED_INT:   typeSize = sizeof(unsigned int);    break;
-        case GL_SHORT:          typeSize = sizeof(short  );         break;
-        case GL_UNSIGNED_SHORT: typeSize = sizeof(unsigned short);  break;
-        case GL_BYTE:           typeSize = sizeof(char );           break;
-        case GL_UNSIGNED_BYTE:  typeSize = sizeof(unsigned char);   break;
+        case GL_INT:            typeSize = sizeof(int   ); break;
+        case GL_UNSIGNED_INT:   typeSize = sizeof(uint  ); break;
+        case GL_SHORT:          typeSize = sizeof(short ); break;
+        case GL_UNSIGNED_SHORT: typeSize = sizeof(ushort); break;
+        case GL_BYTE:           typeSize = sizeof(char  ); break;
+        case GL_UNSIGNED_BYTE:  typeSize = sizeof(uchar ); break;
         default: typeSize = sizeof(float); break;
     }
     size_t formatSize = 0;
     switch(mFormat) {
-        case fg::FG_GRAYSCALE:     formatSize = 1;   break;
-        case fg::FG_RG:            formatSize = 2;   break;
-        case fg::FG_RGB:           formatSize = 3;   break;
-        case fg::FG_BGR:           formatSize = 3;   break;
-        case fg::FG_RGBA:          formatSize = 4;   break;
-        case fg::FG_BGRA:          formatSize = 4;   break;
+        case fg::FG_GRAYSCALE: formatSize = 1;   break;
+        case fg::FG_RG:        formatSize = 2;   break;
+        case fg::FG_RGB:       formatSize = 3;   break;
+        case fg::FG_BGR:       formatSize = 3;   break;
+        case fg::FG_RGBA:      formatSize = 4;   break;
+        case fg::FG_BGRA:      formatSize = 4;   break;
         default: formatSize = 1; break;
     }
     mPBOsize = mWidth * mHeight * formatSize * typeSize;
@@ -152,9 +89,6 @@ image_impl::image_impl(unsigned pWidth, unsigned pHeight,
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-    CheckGL("After PBO Initialization");
-
-    mProgram = initShaders(vertex_shader_code, fragment_shader_code);
 
     CheckGL("End image_impl::image_impl");
 }
@@ -168,60 +102,63 @@ image_impl::~image_impl()
     CheckGL("End image_impl::~image_impl");
 }
 
-void image_impl::setColorMapUBOParams(GLuint ubo, GLuint size)
+void image_impl::setColorMapUBOParams(const GLuint pUBO, const GLuint pSize)
 {
-    mColorMapUBO = ubo;
-    mUBOSize = size;
+    mColorMapUBO = pUBO;
+    mUBOSize = pSize;
 }
 
-void image_impl::keepAspectRatio(const bool keep)
+void image_impl::setAlpha(const float pAlpha)
 {
-    mKeepARatio = keep;
+    mAlpha = pAlpha;
 }
 
-unsigned image_impl::width() const { return mWidth; }
+void image_impl::keepAspectRatio(const bool pKeep)
+{
+    mKeepARatio = pKeep;
+}
 
-unsigned image_impl::height() const { return mHeight; }
+uint image_impl::width() const { return mWidth; }
+
+uint image_impl::height() const { return mHeight; }
 
 fg::ChannelFormat image_impl::pixelFormat() const { return mFormat; }
 
 fg::dtype image_impl::channelType() const { return mDataType; }
 
-unsigned image_impl::pbo() const { return mPBO; }
+uint image_impl::pbo() const { return mPBO; }
 
-unsigned image_impl::size() const { return (unsigned)mPBOsize; }
+uint image_impl::size() const { return (uint)mPBOsize; }
 
-void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight)
+void image_impl::render(const int pWindowId,
+                        const int pX, const int pY, const int pVPW, const int pVPH,
+                        const glm::mat4& pTransform)
 {
     float xscale = 1.f;
     float yscale = 1.f;
     if (mKeepARatio) {
         if (mWidth > mHeight) {
-            float trgtH = pViewPortWidth * float(mHeight)/float(mWidth);
+            float trgtH = pVPW * float(mHeight)/float(mWidth);
             float trgtW = trgtH * float(mWidth)/float(mHeight);
-            xscale = trgtW/pViewPortWidth;
-            yscale = trgtH/pViewPortHeight;
+            xscale = trgtW/pVPW;
+            yscale = trgtH/pVPH;
         } else {
-            float trgtW = pViewPortHeight * float(mWidth)/float(mHeight);
+            float trgtW = pVPH * float(mWidth)/float(mHeight);
             float trgtH = trgtW * float(mHeight)/float(mWidth);
-            xscale = trgtW/pViewPortWidth;
-            yscale = trgtH/pViewPortHeight;
+            xscale = trgtW/pVPW;
+            yscale = trgtH/pVPH;
         }
     }
-    glm::mat4 strans = glm::scale(glm::mat4(1.0f), glm::vec3(xscale, yscale, 1));
+
+    glm::mat4 strans = glm::scale(pTransform, glm::vec3(xscale, yscale, 1));
 
     glUseProgram(mProgram);
-    // get uniform locations
-    int mat_loc = glGetUniformLocation(mProgram, "matrix");
-    int tex_loc = glGetUniformLocation(mProgram, "tex");
-    int chn_loc = glGetUniformLocation(mProgram, "isGrayScale");
-    int cml_loc = glGetUniformLocation(mProgram, "cmaplen");
-    int ubo_idx = glGetUniformBlockIndex(mProgram, "ColorMap");
 
-    glUniform1i(chn_loc, mFormat==fg::FG_GRAYSCALE);
+    glUniform1i(mIsGrayIndex, mFormat==fg::FG_GRAYSCALE);
+
     // load texture from PBO
     glActiveTexture(GL_TEXTURE0);
-    glUniform1i(tex_loc, 0);
+    glUniform1i(mTexIndex, 0);
     glBindTexture(GL_TEXTURE_2D, mTex);
     // bind PBO to load data into texture
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
@@ -229,11 +166,11 @@ void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int p
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, mGLformat, mGLType, 0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
-    glUniformMatrix4fv(mat_loc, 1, GL_FALSE, glm::value_ptr(strans));
+    glUniformMatrix4fv(mMatIndex, 1, GL_FALSE, glm::value_ptr(strans));
 
-    glUniform1f(cml_loc, (GLfloat)mUBOSize);
+    glUniform1f(mCMapLenIndex, (GLfloat)mUBOSize);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, mColorMapUBO);
-    glUniformBlockBinding(mProgram, ubo_idx, 0);
+    glUniformBlockBinding(mProgram, mCMapIndex, 0);
 
     CheckGL("Before render");
 
@@ -255,44 +192,79 @@ void image_impl::render(int pWindowId, int pX, int pY, int pViewPortWidth, int p
 namespace fg
 {
 
-Image::Image(unsigned pWidth, unsigned pHeight, fg::ChannelFormat pFormat, fg::dtype pDataType) {
-    value = new internal::_Image(pWidth, pHeight, pFormat, pDataType);
+Image::Image(const uint pWidth, const uint pHeight,
+             const ChannelFormat pFormat, const dtype pDataType)
+{
+    mValue = new internal::_Image(pWidth, pHeight, pFormat, pDataType);
 }
 
-Image::Image(const Image& other) {
-    value = new internal::_Image(*other.get());
+Image::Image(const Image& pOther)
+{
+    mValue = new internal::_Image(*pOther.get());
 }
 
-Image::~Image() {
-    delete value;
+Image::~Image()
+{
+    delete mValue;
 }
 
-unsigned Image::width() const {
-    return value->width();
+void Image::setAlpha(const float pAlpha)
+{
+    mValue->setAlpha(pAlpha);
 }
 
-unsigned Image::height() const {
-    return value->height();
+void Image::keepAspectRatio(const bool pKeep)
+{
+    mValue->keepAspectRatio(pKeep);
 }
 
-ChannelFormat Image::pixelFormat() const {
-    return value->pixelFormat();
+uint Image::width() const
+{
+    return mValue->width();
 }
 
-fg::dtype Image::channelType() const {
-    return value->channelType();
+uint Image::height() const
+{
+    return mValue->height();
 }
 
-GLuint Image::pbo() const {
-    return value->pbo();
+ChannelFormat Image::pixelFormat() const
+{
+    return mValue->pixelFormat();
 }
 
-unsigned Image::size() const {
-    return (unsigned)value->size();
+fg::dtype Image::channelType() const
+{
+    return mValue->channelType();
 }
 
-internal::_Image* Image::get() const {
-    return value;
+GLuint Image::pbo() const
+{
+    return mValue->pbo();
+}
+
+uint Image::size() const
+{
+    return (uint)mValue->size();
+}
+
+void Image::render(const Window& pWindow,
+                   const int pX, const int pY, const int pVPW, const int pVPH,
+                   const std::vector<float>& pTransform) const
+{
+    if (pTransform.size() < 16) {
+        throw ArgumentError("Image::render", __LINE__, 5,
+                "Insufficient transform matrix data");
+    }
+    mValue->render(pWindow.get()->getID(),
+                   pX, pY, pVPW, pVPH,
+                   glm::make_mat4(pTransform.data()));
+}
+
+
+internal::_Image* Image::get() const
+{
+    return mValue;
 }
 
 }

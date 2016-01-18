@@ -39,7 +39,8 @@ void gen_surface(float t, float dx, std::vector<float> &vec ){
     }
 }
 
-int main(void){
+int main(void)
+{
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
@@ -58,25 +59,12 @@ int main(void){
 #endif
     wnd.setFont(&fnt);
 
-    /* Create several plot objects which creates the necessary
-     * vertex buffer objects to hold the different plot types
-     */
-    fg::Surface surf(XSIZE, YSIZE, fg::f32, fg::FG_SURFACE);
+    fg::Chart chart(fg::FG_3D);
+    chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, -5.f, 10.f);
+    chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    /*
-     * Set plot colors
-     */
+    fg::Surface surf = chart.surface(XSIZE, YSIZE, fg::f32);
     surf.setColor(fg::FG_YELLOW);
-
-    /*
-     * Set draw limits for plots
-     */
-    surf.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, -5.f);
-
-    /*
-    * Set axis titles
-    */
-    surf.setAxesTitles("x-axis", "y-axis", "z-axis");
 
     //generate a surface
     std::vector<float> function;
@@ -94,8 +82,7 @@ int main(void){
         t+=0.07;
         gen_surface(t, DX, function);
         copy(surf, &function[0]);
-        // draw window and poll for events last
-        wnd.draw(surf);
+        wnd.draw(chart);
     } while(!wnd.close());
 
     return 0;

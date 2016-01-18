@@ -11,6 +11,8 @@
 
 #include <fg/defines.h>
 
+#include <vector>
+
 namespace internal
 {
 class _Image;
@@ -19,12 +21,14 @@ class _Image;
 namespace fg
 {
 
+class Window;
+
 /**
    \class Image
  */
 class Image {
     private:
-        internal::_Image* value;
+        internal::_Image* mValue;
 
     public:
         /**
@@ -37,14 +41,15 @@ class Image {
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Image(unsigned pWidth, unsigned pHeight, ChannelFormat pFormat, dtype pDataType);
+        FGAPI Image(const uint pWidth, const uint pHeight,
+                    const ChannelFormat pFormat=FG_RGBA, const dtype pDataType=f32);
 
         /**
            Copy constructor of Image
 
            \param[in] other is the Image of which we make a copy of.
          */
-        FGAPI Image(const Image& other);
+        FGAPI Image(const Image& pOther);
 
         /**
            Image Destructor
@@ -52,16 +57,30 @@ class Image {
         FGAPI ~Image();
 
         /**
+           Set a global alpha value for rendering the image
+
+           \param[in] pAlpha
+         */
+        FGAPI void setAlpha(const float pAlpha);
+
+        /**
+           Set option to inform whether to maintain aspect ratio of original image
+
+           \param[in] pKeep
+         */
+        FGAPI void keepAspectRatio(const bool pKeep);
+
+        /**
            Get Image width
            \return image width
          */
-        FGAPI unsigned width() const;
+        FGAPI uint width() const;
 
         /**
            Get Image height
            \return image width
          */
-        FGAPI unsigned height() const;
+        FGAPI uint height() const;
 
         /**
            Get Image's channel format
@@ -80,14 +99,29 @@ class Image {
 
            \return OpenGL PBO resource id.
          */
-        FGAPI unsigned pbo() const;
+        FGAPI uint pbo() const;
 
         /**
            Get the OpenGL Pixel Buffer Object resource size
 
            \return OpenGL PBO resource size.
          */
-        FGAPI unsigned size() const;
+        FGAPI uint size() const;
+
+        /**
+           Render the image to given window
+
+           \param[in] pWindow is target window to where image will be rendered
+           \param[in] pX is x coordinate of origin of viewport in window coordinates
+           \param[in] pY is y coordinate of origin of viewport in window coordinates
+           \param[in] pVPW is the width of the viewport
+           \param[in] pVPH is the height of the viewport
+           \param[in] pTransform is an array of floats. This vector is expected to contain
+                      at least 16 elements
+         */
+        FGAPI void render(const Window& pWindow,
+                          const int pX, const int pY, const int pVPW, const int pVPH,
+                          const std::vector<float>& pTransform) const;
 
         /**
            Get the handle to internal implementation of Image

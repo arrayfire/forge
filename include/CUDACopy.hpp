@@ -46,8 +46,8 @@ void copy(fg::Image& out, const T * devicePtr)
  * Below functions takes any renderable forge object that has following member functions
  * defined
  *
- * `unsigned Renderable::vbo() const;`
- * `unsigned Renderable::size() const;`
+ * `unsigned Renderable::vertices() const;`
+ * `unsigned Renderable::verticesSize() const;`
  *
  * Currently fg::Plot, fg::Histogram objects in Forge library fit the bill
  */
@@ -55,7 +55,7 @@ template<class Renderable, typename T>
 void copy(Renderable& out, const T * devicePtr)
 {
     cudaGraphicsResource *cudaVBOResource;
-    CUDA_ERROR_CHECK(cudaGraphicsGLRegisterBuffer(&cudaVBOResource, out.vbo(), cudaGraphicsMapFlagsWriteDiscard));
+    CUDA_ERROR_CHECK(cudaGraphicsGLRegisterBuffer(&cudaVBOResource, out.vertices(), cudaGraphicsMapFlagsWriteDiscard));
 
     size_t num_bytes;
     T* vboDevicePtr = NULL;

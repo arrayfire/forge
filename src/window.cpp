@@ -172,6 +172,11 @@ void window_impl::setColorMap(fg::ColorMap cmap)
     }
 }
 
+int window_impl::getID() const
+{
+    return mID;
+}
+
 long long  window_impl::context() const
 {
     return mCxt;
@@ -237,7 +242,7 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, 0, 0, wind_width, wind_height);
+    pRenderable->render(mID, 0, 0, wind_width, wind_height, glm::mat4(1.0f));
 
     mWindow->swapBuffers();
     mWindow->pollEvents();
@@ -292,7 +297,7 @@ void window_impl::draw(int pColId, int pRowId,
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, x_off, y_off, mCellWidth, mCellHeight);
+    pRenderable->render(mID, x_off, y_off, mCellWidth, mCellHeight, glm::mat4(1.0f));
 
     glDisable(GL_SCISSOR_TEST);
     glViewport(x_off, y_off, mCellWidth, mCellHeight);
@@ -323,151 +328,120 @@ namespace fg
 Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow, const bool invisible)
 {
     if (pWindow == nullptr) {
-        value = new internal::_Window(pWidth, pHeight, pTitle, nullptr, invisible);
+        mValue = new internal::_Window(pWidth, pHeight, pTitle, nullptr, invisible);
     } else {
-        value = new internal::_Window(pWidth, pHeight, pTitle, pWindow->get(), invisible);
+        mValue = new internal::_Window(pWidth, pHeight, pTitle, pWindow->get(), invisible);
     }
 }
 
 Window::~Window()
 {
-    delete value;
+    delete mValue;
 }
 
 Window::Window(const Window& other)
 {
-    value = new internal::_Window(*other.get());
+    mValue = new internal::_Window(*other.get());
 }
 
 void Window::setFont(Font* pFont)
 {
-    value->setFont(pFont->get());
+    mValue->setFont(pFont->get());
 }
 
 void Window::setTitle(const char* pTitle)
 {
-    value->setTitle(pTitle);
+    mValue->setTitle(pTitle);
 }
 
 void Window::setPos(int pX, int pY)
 {
-    value->setPos(pX, pY);
+    mValue->setPos(pX, pY);
 }
 
 void Window::setSize(unsigned pW, unsigned pH)
 {
-    value->setSize(pW, pH);
+    mValue->setSize(pW, pH);
 }
 
 void Window::setColorMap(ColorMap cmap)
 {
-    value->setColorMap(cmap);
+    mValue->setColorMap(cmap);
 }
 
 long long Window::context() const
 {
-    return value->context();
+    return mValue->context();
 }
 
 long long Window::display() const
 {
-    return value->display();
+    return mValue->display();
 }
 
 int Window::width() const
 {
-    return value->width();
+    return mValue->width();
 }
 
 int Window::height() const
 {
-    return value->height();
+    return mValue->height();
 }
 
 internal::_Window* Window::get() const
 {
-    return value;
+    return mValue;
 }
 
 void Window::hide()
 {
-    value->hide();
+    mValue->hide();
 }
 
 void Window::show()
 {
-    value->show();
+    mValue->show();
 }
 
 bool Window::close()
 {
-    return value->close();
+    return mValue->close();
 }
 
 void Window::makeCurrent()
 {
-    value->makeCurrent();
+    mValue->makeCurrent();
 }
 
 void Window::draw(const Image& pImage, const bool pKeepAspectRatio)
 {
-    value->draw(pImage.get(), pKeepAspectRatio);
+    mValue->draw(pImage.get(), pKeepAspectRatio);
 }
 
-void Window::draw(const Plot& pPlot)
+void Window::draw(const Chart& pChart)
 {
-    value->draw(pPlot.get());
-}
-
-void Window::draw(const Plot3& pPlot3)
-{
-    value->draw(pPlot3.get());
-}
-
-void Window::draw(const Surface& pSurface)
-{
-    value->draw(pSurface.get());
-}
-
-void Window::draw(const Histogram& pHist)
-{
-    value->draw(pHist.get());
+    mValue->draw(pChart.get());
 }
 
 void Window::grid(int pRows, int pCols)
 {
-    value->grid(pRows, pCols);
+    mValue->grid(pRows, pCols);
 }
 
 void Window::draw(int pColId, int pRowId, const Image& pImage, const char* pTitle, const bool pKeepAspectRatio)
 {
-    value->draw(pColId, pRowId, pImage.get(), pTitle, pKeepAspectRatio);
+    mValue->draw(pColId, pRowId, pImage.get(), pTitle, pKeepAspectRatio);
 }
 
-void Window::draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle)
+void Window::draw(int pColId, int pRowId, const Chart& pChart, const char* pTitle)
 {
-    value->draw(pColId, pRowId, pPlot.get(), pTitle);
-}
-
-void Window::draw(int pColId, int pRowId, const Plot3& pPlot3, const char* pTitle)
-{
-    value->draw(pColId, pRowId, pPlot3.get(), pTitle);
-}
-
-void Window::draw(int pColId, int pRowId, const Surface& pSurface, const char* pTitle)
-{
-    value->draw(pColId, pRowId, pSurface.get(), pTitle);
-}
-
-
-void Window::draw(int pColId, int pRowId, const Histogram& pHist, const char* pTitle)
-{
-    value->draw(pColId, pRowId, pHist.get(), pTitle);
+    mValue->draw(pColId, pRowId, pChart.get(), pTitle);
 }
 
 void Window::swapBuffers()
 {
-    value->swapBuffers();
+    mValue->swapBuffers();
 }
 
 }

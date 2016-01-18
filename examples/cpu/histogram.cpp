@@ -67,15 +67,20 @@ int main(void) {
     wnd.grid(WIN_ROWS, WIN_COLS);
 
     fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
-    /*
-     * Create histogram object while specifying desired number of bins
-     */
-    fg::Histogram hist(NBINS, fg::u8);
 
+    fg::Chart chart(fg::FG_2D);
+    /* set x axis limits to maximum and minimum values of data
+     * and y axis limits to range [0, nBins]*/
+    chart.setAxesLimits(0, 1, 0, 1000);
+
+    /*
+     * Create histogram object specifying number of bins
+     */
+    fg::Histogram hist = chart.histogram(NBINS, fg::u8);
     /*
      * Set histogram colors
      */
-    hist.setBarColor(fg::FG_YELLOW);
+    hist.setColor(fg::FG_YELLOW);
 
     /*
      * generate image, and prepare data to pass into
@@ -83,10 +88,6 @@ int main(void) {
      */
     kernel(bmp);
     fg::copy(img, bmp.ptr);
-
-    /* set x axis limits to maximum and minimum values of data
-     * and y axis limits to range [0, nBins]*/
-    hist.setAxesLimits(1, 0, 1000, 0);
 
     /* copy your data into the vertex buffer object exposed by
      * fg::Histogram class and then proceed to rendering.
@@ -109,7 +110,7 @@ int main(void) {
             fg::copy(hist, histogram_array);
 
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
-        wnd.draw(1, 0, hist, "Histogram of Noisy Image");
+        wnd.draw(1, 0, chart, "Histogram of Noisy Image");
         // draw window and poll for events last
         wnd.swapBuffers();
     } while(!wnd.close());

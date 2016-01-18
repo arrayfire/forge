@@ -5,6 +5,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 FIND_PACKAGE(GLM QUIET)
 FIND_PACKAGE(glm QUIET)
 
+INCLUDE("${CMAKE_MODULE_PATH}/GLSLtoH.cmake")
+
 IF((NOT glm_FOUND AND NOT GLM_FOUND) OR (${USE_LOCAL_GLM}))
   SET(USE_LOCAL_GLM ON)
   MESSAGE(STATUS "Downloading GLM headers.")
@@ -67,6 +69,7 @@ INCLUDE_DIRECTORIES(
     ${GLM_INCLUDE_DIRS}
     ${WTK_INCLUDE_DIRS}
     "${PROJECT_SOURCE_DIR}/src"
+    "${CMAKE_CURRENT_BINARY_DIR}"
     )
 
 IF(UNIX)
@@ -110,6 +113,22 @@ ELSEIF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
 
 ENDIF()
 
+SET(glsl_shader_headers
+    "shader_headers")
+FILE(GLOB glsl_shaders
+    "shaders/*.glsl")
+SOURCE_GROUP(Shaders FILES ${glsl_shaders})
+
+GLSL_TO_H(
+    SOURCES ${glsl_shaders}
+    VARNAME  shader_files
+    EXTENSION "hpp"
+    OUTPUT_DIR ${glsl_shader_headers}
+    TARGETS glsl_shader_targets
+    NAMESPACE "glsl"
+    EOD "0"
+    )
+
 ADD_LIBRARY(forge SHARED
     ${api_headers}
     ${headers}
@@ -126,6 +145,8 @@ TARGET_LINK_LIBRARIES(forge
     PRIVATE ${GLEWmx_LIBRARY}
     PRIVATE ${X11_LIBS}
     )
+
+ADD_DEPENDENCIES(forge ${glsl_shader_targets})
 
 INSTALL(TARGETS forge
         EXPORT FORGE

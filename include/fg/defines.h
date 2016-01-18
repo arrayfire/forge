@@ -47,6 +47,10 @@
  */
 FGAPI GLEWContext* glewGetContext();
 
+typedef unsigned int    uint;
+typedef unsigned short  ushort;
+typedef unsigned char   uchar;
+
 namespace fg
 {
 
@@ -107,6 +111,11 @@ enum ChannelFormat {
     FG_BGRA      = 401                      ///< Four(Red, Green, Blue & Alpha) channels
 };
 
+enum ChartType {
+    FG_2D = 2,                              ///< Two dimensional charts
+    FG_3D = 3                               ///< Three dimensional charts
+};
+
 /**
    Color maps
 
@@ -144,20 +153,20 @@ enum dtype {
 };
 
 enum PlotType {
-    FG_LINE         = 0,
-    FG_SCATTER      = 1,
-    FG_SURFACE      = 2
+    FG_LINE         = 0,                    ///< Line plot
+    FG_SCATTER      = 1,                    ///< Scatter plot
+    FG_SURFACE      = 2                     ///< Surface plot
 };
 
 enum MarkerType {
-    FG_NONE         = 0,
-    FG_POINT        = 1,
-    FG_CIRCLE       = 2,
-    FG_SQUARE       = 3,
-    FG_TRIANGLE     = 4,
-    FG_CROSS        = 5,
-    FG_PLUS         = 6,
-    FG_STAR         = 7
+    FG_NONE         = 0,                    ///< No marker
+    FG_POINT        = 1,                    ///< Point marker
+    FG_CIRCLE       = 2,                    ///< Circle marker
+    FG_SQUARE       = 3,                    ///< Square marker
+    FG_TRIANGLE     = 4,                    ///< Triangle marker
+    FG_CROSS        = 5,                    ///< Cross-hair marker
+    FG_PLUS         = 6,                    ///< Plus symbol marker
+    FG_STAR         = 7                     ///< Star symbol marker
 };
 
 }

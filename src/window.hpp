@@ -20,10 +20,7 @@
 #include <colormap.hpp>
 #include <font.hpp>
 #include <image.hpp>
-#include <plot.hpp>
-#include <plot3.hpp>
-#include <surface.hpp>
-#include <histogram.hpp>
+#include <chart.hpp>
 
 #include <memory>
 
@@ -62,6 +59,7 @@ class window_impl {
         void setSize(unsigned pWidth, unsigned pHeight);
         void setColorMap(fg::ColorMap cmap);
 
+        int getID() const;
         long long context() const;
         long long display() const;
         int width() const;
@@ -89,7 +87,7 @@ void MakeContextCurrent(const window_impl* pWindow);
 
 class _Window {
     private:
-        std::shared_ptr<window_impl> wnd;
+        std::shared_ptr<window_impl> mWindow;
 
         _Window() {}
 
@@ -98,108 +96,100 @@ class _Window {
         _Window(int pWidth, int pHeight, const char* pTitle,
                 const _Window* pWindow, const bool invisible = false) {
             if (pWindow) {
-                wnd = std::make_shared<window_impl>(pWidth, pHeight, pTitle,
+                mWindow = std::make_shared<window_impl>(pWidth, pHeight, pTitle,
                                                     pWindow->impl(), invisible);
             } else {
                 std::shared_ptr<window_impl> other;
-                wnd = std::make_shared<window_impl>(pWidth, pHeight, pTitle,
+                mWindow = std::make_shared<window_impl>(pWidth, pHeight, pTitle,
                                                     other, invisible);
             }
         }
 
         inline const std::shared_ptr<window_impl>& impl () const {
-            return wnd;
+            return mWindow;
         }
 
         inline void setFont (_Font* pFont) {
-            wnd->setFont (pFont->impl());
+            mWindow->setFont (pFont->impl());
         }
 
         inline void setTitle(const char* pTitle) {
-            wnd->setTitle(pTitle);
+            mWindow->setTitle(pTitle);
         }
 
         inline void setPos(int pX, int pY) {
-            wnd->setPos(pX, pY);
+            mWindow->setPos(pX, pY);
         }
 
         inline void setSize(unsigned pWidth, int pHeight) {
-            wnd->setSize(pWidth, pHeight);
+            mWindow->setSize(pWidth, pHeight);
         }
 
         inline void setColorMap(fg::ColorMap cmap) {
-            wnd->setColorMap(cmap);
+            mWindow->setColorMap(cmap);
+        }
+
+        inline int getID() const {
+            return mWindow->getID();
         }
 
         inline long long context() const {
-            return wnd->context() ;
+            return mWindow->context() ;
         }
 
         inline long long display() const {
-            return wnd->display();
+            return mWindow->display();
         }
 
         inline int width() const {
-            return wnd->width();
+            return mWindow->width();
         }
 
         inline int height() const {
-            return wnd->height();
+            return mWindow->height();
         }
 
         inline void makeCurrent() {
-            MakeContextCurrent(wnd.get());
+            MakeContextCurrent(mWindow.get());
         }
 
         inline void hide() {
-            wnd->hide();
+            mWindow->hide();
         }
 
         inline void show() {
-            wnd->show();
+            mWindow->show();
         }
 
         inline bool close() {
-            return wnd->close();
+            return mWindow->close();
         }
 
         inline void draw(_Image* pImage, const bool pKeepAspectRatio) {
             pImage->keepAspectRatio(pKeepAspectRatio);
-            wnd->draw(pImage->impl()) ;
+            mWindow->draw(pImage->impl()) ;
         }
 
-        inline void draw(const _Plot* pPlot) {
-            wnd->draw(pPlot->impl()) ;
-        }
-
-        inline void draw(const _Plot3* pPlot3) {
-            wnd->draw(pPlot3->impl()) ;
-        }
-
-        inline void draw(const _Surface* pSurface) {
-            wnd->draw(pSurface->impl()) ;
-        }
-
-        inline void draw(const _Histogram* pHist) {
-            wnd->draw(pHist->impl()) ;
+        inline void draw(const _Chart* pChart) {
+            mWindow->draw(pChart->impl()) ;
         }
 
         inline void swapBuffers() {
-            wnd->swapBuffers();
+            mWindow->swapBuffers();
         }
 
         inline void grid(int pRows, int pCols) {
-            wnd->grid(pRows, pCols);
+            mWindow->grid(pRows, pCols);
         }
 
         template<typename T>
         void draw(int pColId, int pRowId, T* pRenderable, const char* pTitle) {
-            wnd->draw(pColId, pRowId, pRenderable->impl(), pTitle);
+            mWindow->draw(pColId, pRowId, pRenderable->impl(), pTitle);
         }
 
         void draw(int pColId, int pRowId, _Image* pRenderable, const char* pTitle, const bool pKeepAspectRatio) {
             pRenderable->keepAspectRatio(pKeepAspectRatio);
-            wnd->draw(pColId, pRowId, pRenderable->impl(), pTitle);
+            mWindow->draw(pColId, pRowId, pRenderable->impl(), pTitle);
         }
 };
 

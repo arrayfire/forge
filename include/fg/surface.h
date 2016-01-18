@@ -11,6 +11,8 @@
 
 #include <fg/defines.h>
 
+#include <string>
+
 namespace internal
 {
 class _Surface;
@@ -19,6 +21,8 @@ class _Surface;
 namespace fg
 {
 
+class Window;
+
 /**
    \class Surface
 
@@ -26,7 +30,7 @@ namespace fg
  */
 class Surface {
     private:
-        internal::_Surface* value;
+        internal::_Surface* mValue;
 
     public:
         /**
@@ -40,14 +44,15 @@ class Surface {
                       are FG_SURFACE and FG_SCATTER)
            \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_SCATTER plot type
          */
-        FGAPI Surface(unsigned pNumXPoints, unsigned pNumYPoints, dtype pDataType, PlotType pPlotType=fg::FG_SURFACE, MarkerType pMarkerType=fg::FG_NONE);
+        FGAPI Surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
+                      const PlotType pPlotType=FG_SURFACE, const MarkerType pMarkerType=FG_NONE);
 
         /**
            Copy constructor for Plot
 
            \param[in] other is the Plot of which we make a copy of.
          */
-        FGAPI Surface(const Surface& other);
+        FGAPI Surface(const Surface& pOther);
 
         /**
            Plot Destructor
@@ -59,7 +64,7 @@ class Surface {
 
            \param[in] col takes values of fg::Color to define plot color
         */
-        FGAPI void setColor(fg::Color col);
+        FGAPI void setColor(const fg::Color pColor);
 
         /**
            Set the color of line graph(plot)
@@ -67,88 +72,62 @@ class Surface {
            \param[in] pRed is Red component in range [0, 1]
            \param[in] pGreen is Green component in range [0, 1]
            \param[in] pBlue is Blue component in range [0, 1]
+           \param[in] pAlpha is Blue component in range [0, 1]
          */
-        FGAPI void setColor(float pRed, float pGreen, float pBlue);
+        FGAPI void setColor(const float pRed, const float pGreen,
+                            const float pBlue, const float pAlpha);
 
         /**
-           Set the chart axes limits
+           Set plot legend
 
-           \param[in] pXmax is X-Axis maximum value
-           \param[in] pXmin is X-Axis minimum value
-           \param[in] pYmax is Y-Axis maximum value
-           \param[in] pYmin is Y-Axis minimum value
-           \param[in] pZmax is Z-Axis maximum value
-           \param[in] pZmin is Z-Axis minimum value
+           \param[in] pLegend
          */
-        FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin);
+        FGAPI void setLegend(const std::string& pLegend);
 
         /**
-           Set axes titles
-
-           \param[in] pXTitle is X-Axis title
-           \param[in] pYTitle is Y-Axis title
-           \param[in] pZTitle is Z-Axis title
-         */
-        FGAPI void setAxesTitles(const char* pXTitle, const char* pYTitle, const char* pZTitle);
-
-        /**
-           Get X-Axis maximum value
-
-           \return Maximum value along X-Axis
-         */
-        FGAPI float xmax() const;
-
-        /**
-           Get X-Axis minimum value
-
-           \return Minimum value along X-Axis
-         */
-        FGAPI float xmin() const;
-
-        /**
-           Get Y-Axis maximum value
-
-           \return Maximum value along Y-Axis
-         */
-        FGAPI float ymax() const;
-
-        /**
-           Get Y-Axis minimum value
-
-           \return Minimum value along Y-Axis
-         */
-        FGAPI float ymin() const;
-
-        /**
-           Get Z-Axis maximum value
-
-           \return Maximum value along Z-Axis
-         */
-        FGAPI float zmax() const;
-
-        /**
-           Get Z-Axis minimum value
-
-           \return Minimum value along Z-Axis
-         */
-        FGAPI float zmin() const;
-
-        /**
-           Get the OpenGL Vertex Buffer Object identifier
+           Get the OpenGL buffer object identifier for vertices
 
            \return OpenGL VBO resource id.
          */
-        FGAPI unsigned vbo() const;
+        FGAPI uint vertices() const;
+
+        /**
+           Get the OpenGL buffer object identifier for color values per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint colors() const;
+
+        /**
+           Get the OpenGL buffer object identifier for alpha values per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint alphas() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
-           \return OpenGL VBO resource size.
+           \return vertex buffer object size in bytes
          */
-        FGAPI unsigned size() const;
+        FGAPI uint verticesSize() const;
 
         /**
-           Get the handle to internal implementation of _Surface
+           Get the OpenGL Vertex Buffer Object resource size
+
+           \return colors buffer object size in bytes
+         */
+        FGAPI uint colorsSize() const;
+
+        /**
+           Get the OpenGL Vertex Buffer Object resource size
+
+           \return alpha buffer object size in bytes
+         */
+        FGAPI uint alphasSize() const;
+
+        /**
+           Get the handle to internal implementation of surface
          */
         FGAPI internal::_Surface* get() const;
 };

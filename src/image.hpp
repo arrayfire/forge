@@ -10,6 +10,7 @@
 #pragma once
 
 #include <common.hpp>
+
 #include <memory>
 
 namespace internal
@@ -17,68 +18,87 @@ namespace internal
 
 class image_impl : public AbstractRenderable {
     private:
-        unsigned  mWidth;
-        unsigned  mHeight;
+        uint   mWidth;
+        uint   mHeight;
         fg::ChannelFormat mFormat;
-        GLenum    mGLformat;
-        GLenum    mGLiformat;
+        GLenum mGLformat;
+        GLenum mGLiformat;
         fg::dtype mDataType;
-        GLenum    mGLType;
+        GLenum mGLType;
+        float  mAlpha;
+        bool   mKeepARatio;
         /* internal resources for interop */
-        size_t   mPBOsize;
-        GLuint   mPBO;
-        GLuint   mTex;
-        GLuint   mProgram;
-
-        GLuint   mColorMapUBO;
-        GLuint   mUBOSize;
-        bool     mKeepARatio;
+        size_t mPBOsize;
+        GLuint mPBO;
+        GLuint mTex;
+        GLuint mProgram;
+        GLuint mMatIndex;
+        GLuint mTexIndex;
+        GLuint mIsGrayIndex;
+        GLuint mCMapLenIndex;
+        GLuint mCMapIndex;
+        /* color map details */
+        GLuint mColorMapUBO;
+        GLuint mUBOSize;
 
         /* helper functions to bind and unbind
          * resources for render quad primitive */
-        void bindResources(int pWindowId);
+        void bindResources(int pWindowId) const;
         void unbindResources() const;
 
     public:
-        image_impl(unsigned pWidth, unsigned pHeight, fg::ChannelFormat pFormat, fg::dtype pDataType);
+        image_impl(const uint pWidth, const uint pHeight,
+                   const fg::ChannelFormat pFormat, const fg::dtype pDataType);
         ~image_impl();
 
-        void setColorMapUBOParams(GLuint ubo, GLuint size);
-        void keepAspectRatio(const bool keep=true);
+        void setColorMapUBOParams(const GLuint pUBO, const GLuint pSize);
+        void setAlpha(const float pAlpha);
+        void keepAspectRatio(const bool pKeep=true);
 
-        unsigned width() const;
-        unsigned height() const;
+        uint width() const;
+        uint height() const;
         fg::ChannelFormat pixelFormat() const;
         fg::dtype channelType() const;
-        unsigned pbo() const;
-        unsigned size() const;
+        uint pbo() const;
+        uint size() const;
 
-        void render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
+        void render(const int pWindowId,
+                    const int pX, const int pY, const int pVPW, const int pVPH,
+                    const glm::mat4& pTransform);
 };
 
 class _Image {
     private:
-        std::shared_ptr<image_impl> img;
+        std::shared_ptr<image_impl> mImage;
 
     public:
-        _Image(unsigned pWidth, unsigned pHeight, fg::ChannelFormat pFormat, fg::dtype pDataType)
-            : img(std::make_shared<image_impl>(pWidth, pHeight, pFormat, pDataType)) {}
+        _Image(const uint pWidth, const uint pHeight,
+               const fg::ChannelFormat pFormat, const fg::dtype pDataType)
+            : mImage(std::make_shared<image_impl>(pWidth, pHeight, pFormat, pDataType)) {}
 
-        inline const std::shared_ptr<image_impl>& impl() const { return img; }
+        inline const std::shared_ptr<image_impl>& impl() const { return mImage; }
 
-        inline void keepAspectRatio(const bool keep) { img->keepAspectRatio(keep); }
+        inline void setAlpha(const float pAlpha) { mImage->setAlpha(pAlpha); }
 
-        inline unsigned width() const { return img->width(); }
+        inline void keepAspectRatio(const bool pKeep) { mImage->keepAspectRatio(pKeep); }
 
-        inline unsigned height() const { return img->height(); }
+        inline uint width() const { return mImage->width(); }
 
-        inline fg::ChannelFormat pixelFormat() const { return img->pixelFormat(); }
+        inline uint height() const { return mImage->height(); }
 
-        inline fg::dtype channelType() const { return img->channelType(); }
+        inline fg::ChannelFormat pixelFormat() const { return mImage->pixelFormat(); }
 
-        inline GLuint pbo() const { return img->pbo(); }
+        inline fg::dtype channelType() const { return mImage->channelType(); }
 
-        inline size_t size() const { return img->size(); }
+        inline GLuint pbo() const { return mImage->pbo(); }
+
+        inline size_t size() const { return mImage->size(); }
+
+        inline void render(const int pWindowId,
+                           const int pX, const int pY, const int pVPW, const int pVPH,
+                           const glm::mat4& pTransform) const {
+            mImage->render(pWindowId, pX, pY, pVPW, pVPH, pTransform);
+        }
 };
 
 }

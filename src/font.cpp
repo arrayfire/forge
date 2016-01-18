@@ -10,6 +10,8 @@
 #include <fg/font.h>
 #include <font.hpp>
 #include <common.hpp>
+#include <shader_headers/font_vs.hpp>
+#include <shader_headers/font_fs.hpp>
 
 #include <cmath>
 #include <algorithm>
@@ -34,32 +36,6 @@
 static FT_Library  gFTLib;
 static FT_Face     gFTFace;
 
-static const char* gFontVertShader =
-"#version 330\n"
-"uniform mat4 projectionMatrix;\n"
-"uniform mat4 modelViewMatrix;\n"
-"layout (location = 0) in vec2 inPosition;\n"
-"layout (location = 1) in vec2 inCoord;\n"
-"out vec2 texCoord;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = projectionMatrix*modelViewMatrix*vec4(inPosition, 0.0, 1.0);\n"
-"    texCoord = inCoord;\n"
-"}\n";
-
-static const char* gFontFragShader =
-"#version 330\n"
-"in vec2 texCoord;\n"
-"out vec4 outputColor;\n"
-"uniform sampler2D tex;\n"
-"uniform vec4 textColor;\n"
-"void main()\n"
-"{\n"
-"    vec4 texC = texture(tex, texCoord);\n"
-"    vec4 alpha = vec4(1.0, 1.0, 1.0, texC.r);\n"
-"    outputColor = alpha*textColor;\n"
-"}\n";
-
 static const int START_CHAR = 32;
 static const int END_CHAR = 127;
 
@@ -79,8 +55,8 @@ void font_impl::extractGlyph(int pCharacter)
 
     int bmp_w = bitmap.width;
     int bmp_h = bitmap.rows;
-    int w     = next_p2(bmp_w);
-    int h     = next_p2(bmp_h);
+    int w     = nextP2(bmp_w);
+    int h     = nextP2(bmp_h);
 
     std::vector<unsigned char> glyphData(w*h, 0);
     for (int j=0; j<h; ++j) {
@@ -175,7 +151,7 @@ font_impl::font_impl()
     :   mIsFontLoaded(false), mTTFfile(""),
         mVBO(0), mProgram(0), mSampler(0)
 {
-    mProgram = initShaders(gFontVertShader, gFontFragShader);
+    mProgram = initShaders(glsl::font_vs.c_str(), glsl::font_fs.c_str());
     memset(mCharTextures, 0, NUM_CHARS);
     glGenSamplers(1, &mSampler);
     glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

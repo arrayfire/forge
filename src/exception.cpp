@@ -20,7 +20,7 @@ using std::cerr;
 
 std::string getName(fg::dtype pType)
 {
-    // FIXME
+    // TODO
     return std::string("test");
 }
 

@@ -16,8 +16,6 @@
 
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
-const unsigned WIN_ROWS = 2;
-const unsigned WIN_COLS = 2;
 
 const float FRANGE_START = 0.f;
 const float FRANGE_END = 2.f * 3.1415926f;
@@ -31,7 +29,8 @@ void map_range_to_vec_vbo(float range_start, float range_end, float dx, std::vec
     }
 }
 
-int main(void){
+int main(void)
+{
     std::vector<float> function;
     map_range_to_vec_vbo(FRANGE_START, FRANGE_END, 0.1f, function, &sinf);
 
@@ -53,18 +52,16 @@ int main(void){
 #endif
     wnd.setFont(&fnt);
 
-    /*
-     * Split the window into grid regions
-     */
-    wnd.grid(WIN_ROWS, WIN_COLS);
+    fg::Chart chart(fg::FG_2D);
+    chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.1f, 1.1f);
 
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt0(function.size()/2, fg::f32);                              //create a default plot
-    fg::Plot plt1(function.size()/2, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
-    fg::Plot plt2(function.size()/2, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
-    fg::Plot plt3(function.size()/2, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
+    fg::Plot plt0 = chart.plot(function.size()/2, fg::f32);                                 //create a default plot
+    fg::Plot plt1 = chart.plot(function.size()/2, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
+    fg::Plot plt2 = chart.plot(function.size()/2, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
+    fg::Plot plt3 = chart.plot(function.size()/2, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
 
     /*
      * Set plot colors
@@ -74,13 +71,6 @@ int main(void){
     plt2.setColor(fg::FG_WHITE);                                                  //use a forge predefined color
     plt3.setColor((fg::Color) 0xABFF01FF);                                        //or any hex-valued color
 
-    /*
-     * Set draw limits for plots
-     */
-    plt0.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-    plt1.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-    plt2.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-    plt3.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
 
     /* copy your data into the pixel buffer object exposed by
      * fg::Plot class and then proceed to rendering.
@@ -94,11 +84,7 @@ int main(void){
     copy(plt3, &function[0]);
 
     do {
-        wnd.draw(0, 0, plt0,  NULL                );
-        wnd.draw(0, 1, plt1, "sinf_line_blue"     );
-        wnd.draw(1, 1, plt2, "sinf_line_triangle" );
-        wnd.draw(1, 0, plt3, "sinf_scatter_point" );
-        // draw window and poll for events last
+        wnd.draw(chart);
         wnd.swapBuffers();
     } while(!wnd.close());
 

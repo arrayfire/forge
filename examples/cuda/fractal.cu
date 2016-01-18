@@ -85,9 +85,9 @@ void julia(unsigned char* out)
         // now calculate the value at that position
         int juliaValue = julia(x, y);
 
-        out[offset*4 + 0] = 255 * juliaValue;
+        out[offset*4 + 2] = 255 * juliaValue;
+        out[offset*4 + 0] = 0;
         out[offset*4 + 1] = 0;
-        out[offset*4 + 2] = 0;
         out[offset*4 + 3] = 255;
     }
 }

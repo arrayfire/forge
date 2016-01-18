@@ -10,98 +10,103 @@
 #pragma once
 
 #include <common.hpp>
-#include <chart.hpp>
+
 #include <memory>
 #include <map>
 
 namespace internal
 {
 
-class hist_impl : public Chart2D {
+class hist_impl : public AbstractRenderable {
     private:
         /* plot points characteristics */
         fg::dtype mDataType;
         GLenum    mGLType;
         GLuint    mNBins;
-        float     mBarColor[4];
+        bool      mIsPVCOn;
         /* OpenGL Objects */
-        GLuint    mHistogramVBO;
-        size_t    mHistogramVBOSize;
-        GLuint    mHistBarProgram;
-        /* internal shader attributes for mHistBarProgram
+        GLuint    mProgram;
+        /* internal shader attributes for mProgram
         * shader program to render histogram bars for each
         * bin*/
-        GLuint    mHistBarMatIndex;
-        GLuint    mHistBarColorIndex;
-        GLuint    mHistBarNBinsIndex;
-        GLuint    mHistBarYMaxIndex;
+        GLuint    mYMaxIndex;
+        GLuint    mNBinsIndex;
+        GLuint    mMatIndex;
         GLuint    mPointIndex;
         GLuint    mFreqIndex;
+        GLuint    mColorIndex;
+        GLuint    mAlphaIndex;
+        GLuint    mPVCIndex;
+        GLuint    mBColorIndex;
+
+        float mRange[6];
 
         std::map<int, GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
-        void bindResources(int pWindowId);
+        void bindResources(const int pWindowId);
         void unbindResources() const;
+        void computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput);
 
     public:
-        hist_impl(unsigned pNBins, fg::dtype pDataType);
+        hist_impl(const uint pNBins, const fg::dtype pDataType);
         ~hist_impl();
 
-        void setBarColor(float r, float g, float b);
-        GLuint vbo() const;
-        size_t size() const;
-
-        void render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
+        void render(const int pWindowId,
+                    const int pX, const int pY, const int pVPW, const int pVPH,
+                    const glm::mat4& pTransform);
 };
 
 class _Histogram {
     private:
-        std::shared_ptr<hist_impl> hst;
+        std::shared_ptr<hist_impl> mHistogram;
 
     public:
-        _Histogram(unsigned pNBins, fg::dtype pDataType)
-            : hst(std::make_shared<hist_impl>(pNBins, pDataType)) {}
+        _Histogram(uint pNBins, fg::dtype pDataType)
+            : mHistogram(std::make_shared<hist_impl>(pNBins, pDataType)) {}
 
         inline const std::shared_ptr<hist_impl>& impl() const {
-            return hst;
+            return mHistogram;
         }
 
-        inline void setBarColor(float r, float g, float b) {
-            hst->setBarColor(r, g, b);
+        inline void setColor(const float pRed, const float pGreen,
+                             const float pBlue, const float pAlpha) {
+            mHistogram->setColor(pRed, pGreen, pBlue, pAlpha);
         }
 
-        inline void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin) {
-            hst->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
-        }
-
-        inline void setAxesTitles(const char* pXTitle, const char* pYTitle) {
-            hst->setAxesTitles(pXTitle, pYTitle);
-        }
-
-        inline float xmax() const {
-            return hst->xmax();
-        }
-
-        inline float xmin() const {
-            return hst->xmin();
-        }
-
-        inline float ymax() const {
-            return hst->ymax();
-        }
-
-        inline float ymin() const {
-            return hst->ymin();
+        inline void setLegend(const std::string pLegend) {
+            mHistogram->setLegend(pLegend);
         }
 
         inline GLuint vbo() const {
-            return hst->vbo();
+            return mHistogram->vbo();
         }
 
-        inline size_t size() const {
-            return hst->size();
+        inline GLuint cbo() const {
+            return mHistogram->cbo();
+        }
+
+        inline GLuint abo() const {
+            return mHistogram->abo();
+        }
+
+        inline size_t vboSize() const {
+            return mHistogram->vboSize();
+        }
+
+        inline size_t cboSize() const {
+            return mHistogram->cboSize();
+        }
+
+        inline size_t aboSize() const {
+            return mHistogram->aboSize();
+        }
+
+        inline void render(const int pWindowId,
+                           const int pX, const int pY, const int pVPW, const int pVPH,
+                           const glm::mat4& pTransform) const {
+            mHistogram->render(pWindowId, pX, pY, pVPW, pVPH, pTransform);
         }
 };
 

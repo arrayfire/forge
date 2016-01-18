@@ -22,11 +22,11 @@ using namespace std;
 typedef struct {
     GLuint vertex;
     GLuint fragment;
-} shaders_t;
+} Shaders;
 
-GLenum gl_dtype(fg::dtype val)
+GLenum dtype2gl(const fg::dtype pValue)
 {
-    switch(val) {
+    switch(pValue) {
         case s8:  return GL_BYTE;
         case u8:  return GL_UNSIGNED_BYTE;
         case s32: return GL_INT;
@@ -37,9 +37,9 @@ GLenum gl_dtype(fg::dtype val)
     }
 }
 
-GLenum gl_ctype(ChannelFormat mode)
+GLenum ctype2gl(const ChannelFormat pMode)
 {
-    switch(mode) {
+    switch(pMode) {
         case FG_GRAYSCALE: return GL_RED;
         case FG_RG  : return GL_RG;
         case FG_RGB : return GL_RGB;
@@ -49,93 +49,72 @@ GLenum gl_ctype(ChannelFormat mode)
     }
 }
 
-GLenum gl_ictype(ChannelFormat mode)
+GLenum ictype2gl(const ChannelFormat pMode)
 {
-    if (mode==FG_GRAYSCALE)
+    if (pMode==FG_GRAYSCALE)
         return GL_RED;
-    else if (mode==FG_RG)
+    else if (pMode==FG_RG)
         return GL_RG;
-    else if (mode==FG_RGB || mode==FG_BGR)
+    else if (pMode==FG_RGB || pMode==FG_BGR)
         return GL_RGB;
-    else
-        return GL_RGBA;
+
+    return GL_RGBA;
 }
 
-char* loadFile(const char * fname, GLint &fSize)
-{
-    std::ifstream file(fname,std::ios::in|std::ios::binary|std::ios::ate);
-    if (file.is_open())
-    {
-        unsigned int size = (unsigned int)file.tellg();
-        fSize = size;
-        char *memblock = new char [size];
-        file.seekg (0, std::ios::beg);
-        file.read (memblock, size);
-        file.close();
-        std::cerr << "file " << fname << " loaded" << std::endl;
-        return memblock;
-    }
-
-    char buffer[64];
-    sprintf(buffer, "Unable to open file %s", fname);
-
-    throw fg::Error("loadFile", __LINE__, buffer, FG_ERR_GL_ERROR);
-}
-
-void printShaderInfoLog(GLint shader)
+void printShaderInfoLog(GLint pShader)
 {
     int infoLogLen = 0;
     int charsWritten = 0;
     GLchar *infoLog;
 
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLen);
+    glGetShaderiv(pShader, GL_INFO_LOG_LENGTH, &infoLogLen);
 
-    if (infoLogLen > 1)
-    {
+    if (infoLogLen > 1) {
         infoLog = new GLchar[infoLogLen];
-        glGetShaderInfoLog(shader,infoLogLen, &charsWritten, infoLog);
+        glGetShaderInfoLog(pShader, infoLogLen, &charsWritten, infoLog);
         std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;
         delete [] infoLog;
-        throw fg::Error("printShaderInfoLog", __LINE__, "OpenGL Shader compilation failed", FG_ERR_GL_ERROR);
+        throw fg::Error("printShaderInfoLog", __LINE__,
+                "OpenGL Shader compilation failed", FG_ERR_GL_ERROR);
     }
 }
 
-void printLinkInfoLog(GLint prog)
+void printLinkInfoLog(GLint pProgram)
 {
     int infoLogLen = 0;
     int charsWritten = 0;
     GLchar *infoLog;
 
-    glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &infoLogLen);
+    glGetProgramiv(pProgram, GL_INFO_LOG_LENGTH, &infoLogLen);
 
-    if (infoLogLen > 1)
-    {
+    if (infoLogLen > 1) {
         infoLog = new GLchar[infoLogLen];
         // error check for fail to allocate memory omitted
-        glGetProgramInfoLog(prog,infoLogLen, &charsWritten, infoLog);
+        glGetProgramInfoLog(pProgram, infoLogLen, &charsWritten, infoLog);
         std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;
         delete [] infoLog;
-        throw fg::Error("printLinkInfoLog", __LINE__, "OpenGL Shader linking failed", FG_ERR_GL_ERROR);
+        throw fg::Error("printLinkInfoLog", __LINE__,
+                "OpenGL Shader linking failed", FG_ERR_GL_ERROR);
     }
 }
 
-void attachAndLinkProgram(GLuint program, shaders_t shaders)
+void attachAndLinkProgram(GLuint pProgram, Shaders pShaders)
 {
-    glAttachShader(program, shaders.vertex);
-    glAttachShader(program, shaders.fragment);
+    glAttachShader(pProgram, pShaders.vertex);
+    glAttachShader(pProgram, pShaders.fragment);
 
-    glLinkProgram(program);
+    glLinkProgram(pProgram);
     GLint linked;
-    glGetProgramiv(program,GL_LINK_STATUS, &linked);
-    if (!linked)
-    {
+    glGetProgramiv(pProgram,GL_LINK_STATUS, &linked);
+    if (!linked) {
         std::cerr << "Program did not link." << std::endl;
-        throw fg::Error("attachAndLinkProgram", __LINE__, "OpenGL program linking failed", FG_ERR_GL_ERROR);
+        throw fg::Error("attachAndLinkProgram", __LINE__,
+                "OpenGL program linking failed", FG_ERR_GL_ERROR);
     }
-    printLinkInfoLog(program);
+    printLinkInfoLog(pProgram);
 }
 
-shaders_t loadShaders(const char * vert_code, const char * frag_code)
+Shaders loadShaders(const char* pVertexShaderSrc, const char* pFragmentShaderSrc)
 {
     GLuint f, v;
 
@@ -143,55 +122,55 @@ shaders_t loadShaders(const char * vert_code, const char * frag_code)
     f = glCreateShader(GL_FRAGMENT_SHADER);
 
     // load shaders & get length of each
-    glShaderSource(v, 1, &vert_code, NULL);
-    glShaderSource(f, 1, &frag_code, NULL);
+    glShaderSource(v, 1, &pVertexShaderSrc, NULL);
+    glShaderSource(f, 1, &pFragmentShaderSrc, NULL);
 
     GLint compiled;
 
     glCompileShader(v);
     glGetShaderiv(v, GL_COMPILE_STATUS, &compiled);
-    if (!compiled)
-    {
+    if (!compiled) {
         std::cerr << "Vertex shader not compiled." << std::endl;
         printShaderInfoLog(v);
     }
 
     glCompileShader(f);
     glGetShaderiv(f, GL_COMPILE_STATUS, &compiled);
-    if (!compiled)
-    {
+    if (!compiled) {
         std::cerr << "Fragment shader not compiled." << std::endl;
         printShaderInfoLog(f);
     }
 
-    shaders_t out; out.vertex = v; out.fragment = f;
+    Shaders out; out.vertex = v; out.fragment = f;
 
     return out;
 }
 
-GLuint initShaders(const char* vshader_code, const char* fshader_code)
+GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc)
 {
-    shaders_t shaders = loadShaders(vshader_code, fshader_code);
-    GLuint shader_program = glCreateProgram();
-    attachAndLinkProgram(shader_program, shaders);
-    return shader_program;
+    Shaders shrds = loadShaders(pVertShaderSrc, pFragShaderSrc);
+    GLuint shaderProgram = glCreateProgram();
+    attachAndLinkProgram(shaderProgram, shrds);
+    return shaderProgram;
 }
 
-int next_p2(int value)
+int nextP2(const int pValue)
 {
-    return int(std::pow(2, (std::ceil(std::log2(value)))));
+    return int(std::pow(2, (std::ceil(std::log2(pValue)))));
 }
 
-float clampTo01(float a)
+float clampTo01(const float pValue)
 {
-    return (a < 0.0f ? 0.0f : (a>1.0f ? 1.0f : a));
+    return (pValue < 0.0f ? 0.0f : (pValue>1.0f ? 1.0f : pValue));
 }
 
 #ifdef OS_WIN
 #include <windows.h>
 #include <strsafe.h>
 
-void getFontFilePaths(std::vector<std::string>& pFiles, std::string pDir, std::string pExt)
+void getFontFilePaths(std::vector<std::string>& pFiles,
+                      const std::string& pDir,
+                      const std::string& pExt)
 {
    WIN32_FIND_DATA ffd;
    LARGE_INTEGER filesize;
@@ -249,9 +228,62 @@ void getFontFilePaths(std::vector<std::string>& pFiles, std::string pDir, std::s
 }
 #endif
 
-std::string toString(float pVal, const int n)
+std::string toString(const float pVal, const int pPrecision)
 {
     std::ostringstream out;
-    out << std::fixed << std::setprecision(n) << pVal;
+    out << std::fixed << std::setprecision(pPrecision) << pVal;
     return out.str();
+}
+
+GLuint screenQuadVBO(const int pWindowId)
+{
+    //FIXME: VBOs can be shared, but for simplicity
+    // right now just created one VBO each window,
+    // ignoring shared contexts
+    static std::map<int, GLuint> svboMap;
+
+    if (svboMap.find(pWindowId)==svboMap.end()) {
+        static const float vertices[8] = {
+            -1.0f,-1.0f,
+             1.0f,-1.0f,
+             1.0f, 1.0f,
+            -1.0f, 1.0f
+        };
+        svboMap[pWindowId] = createBuffer(GL_ARRAY_BUFFER, 8, vertices, GL_STATIC_DRAW);
+    }
+
+    return svboMap[pWindowId];
+}
+
+GLuint screenQuadVAO(const int pWindowId)
+{
+    static std::map<int, GLuint> svaoMap;
+
+    if (svaoMap.find(pWindowId)==svaoMap.end()) {
+        static const float texcords[8]  = {0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0};
+        static const uint indices[6]    = {0,1,2,0,2,3};
+
+        GLuint tbo  = createBuffer(GL_ARRAY_BUFFER, 8, texcords, GL_STATIC_DRAW);
+        GLuint ibo  = createBuffer(GL_ELEMENT_ARRAY_BUFFER, 6, indices, GL_STATIC_DRAW);
+
+        GLuint vao = 0;
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        // attach vbo
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, screenQuadVBO(pWindowId));
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+        // attach tbo
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, tbo);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+        // attach ibo
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBindVertexArray(0);
+        /* store the vertex array object corresponding to
+         * the window instance in the map */
+        svaoMap[pWindowId] = vao;
+    }
+
+    return svaoMap[pWindowId];
 }

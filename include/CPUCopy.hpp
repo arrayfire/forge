@@ -25,16 +25,16 @@ void copy(fg::Image& out, const T * dataPtr)
  * Below functions takes any renderable forge object that has following member functions
  * defined
  *
- * `unsigned Renderable::vbo() const;`
- * `unsigned Renderable::size() const;`
+ * `unsigned Renderable::vertices() const;`
+ * `unsigned Renderable::verticesSize() const;`
  *
  * Currently fg::Plot, fg::Histogram objects in Forge library fit the bill
  */
 template<class Renderable, typename T>
 void copy(Renderable& out, const T * dataPtr)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, out.vbo());
-    glBufferSubData(GL_ARRAY_BUFFER, 0, out.size(), dataPtr);
+    glBindBuffer(GL_ARRAY_BUFFER, out.vertices());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, out.verticesSize(), dataPtr);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 

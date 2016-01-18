@@ -99,26 +99,12 @@ int main(void)
 #endif
         wnd.setFont(&fnt);
 
-        /* Create several plot objects which creates the necessary
-         * vertex buffer objects to hold the different plot types
-         */
-        fg::Surface surf(XSIZE, YSIZE, fg::f32, fg::FG_SURFACE);
+        fg::Chart chart(fg::FG_3D);
+        chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, -5.f, 10.f);
+        chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-        /*
-         * Set plot colors
-         */
+        fg::Surface surf = chart.surface(XSIZE, YSIZE, fg::f32);
         surf.setColor(fg::FG_YELLOW);
-
-        /*
-         * Set draw limits for plots
-         */
-        surf.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, -5.f);
-
-        /*
-        * Set axis titles
-        */
-        surf.setAxesTitles("x-axis", "y-axis", "z-axis");
-
 
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU
@@ -179,8 +165,7 @@ int main(void)
             t+=0.07;
             kernel(devOut, queue, t);
             fg::copy(surf, devOut, queue);
-            // draw window and poll for events last
-            wnd.draw(surf);
+            wnd.draw(chart);
         } while(!wnd.close());
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;

@@ -10,11 +10,12 @@
 #pragma once
 
 #include <common.hpp>
+#include <glm/glm.hpp>
+
+#include <map>
+#include <memory>
 #include <vector>
 #include <string>
-#include <map>
-
-#include <glm/glm.hpp>
 
 namespace internal
 {
@@ -29,58 +30,65 @@ class AbstractChart : public AbstractRenderable {
         std::vector<std::string> mXText;
         std::vector<std::string> mYText;
         std::vector<std::string> mZText;
-        int       mTickCount;  /* should be an odd number always */
-        int       mTickSize;
-        int       mLeftMargin;
-        int       mRightMargin;
-        int       mTopMargin;
-        int       mBottomMargin;
+        int   mTickCount;  /* should be an odd number always */
+        int   mTickSize;
+        int   mLeftMargin;
+        int   mRightMargin;
+        int   mTopMargin;
+        int   mBottomMargin;
         /* chart axes ranges and titles */
-        float    mXMax;
-        float    mXMin;
-        float    mYMax;
-        float    mYMin;
-        float    mZMax;
-        float    mZMin;
+        float mXMax;
+        float mXMin;
+        float mYMax;
+        float mYMin;
+        float mZMax;
+        float mZMin;
         std::string mXTitle;
         std::string mYTitle;
         std::string mZTitle;
         /* OpenGL Objects */
-        GLuint     mDecorVBO;
-        GLuint     mBorderProgram;
-        GLuint     mSpriteProgram;
+        GLuint mDecorVBO;
+        GLuint mBorderProgram;
+        GLuint mSpriteProgram;
         /* shader uniform variable locations */
-        GLint     mBorderAttribPointIndex;
-        GLint     mBorderUniformColorIndex;
-        GLint     mBorderUniformMatIndex;
-        GLint     mSpriteUniformMatIndex;
-        GLint     mSpriteUniformTickcolorIndex;
-        GLint     mSpriteUniformTickaxisIndex;
+        GLuint mBorderAttribPointIndex;
+        GLuint mBorderUniformColorIndex;
+        GLuint mBorderUniformMatIndex;
+        GLuint mSpriteUniformMatIndex;
+        GLuint mSpriteUniformTickcolorIndex;
+        GLuint mSpriteUniformTickaxisIndex;
         /* VAO map to store a vertex array object
          * for each valid window context */
         std::map<int, GLuint> mVAOMap;
+        /* list of renderables to be displayed on the chart*/
+        std::vector< std::shared_ptr<AbstractRenderable> > mRenderables;
 
         /* rendering helper functions */
-        void renderTickLabels(int pWindowId, unsigned w, unsigned h,
-                std::vector<std::string> &texts,
-                glm::mat4 &transformation, int coor_offset,
-                bool useZoffset=true);
+        void renderTickLabels(const int pWindowId, const uint pW, const uint pH,
+                              const std::vector<std::string> &pTexts,
+                              const glm::mat4 &pTransformation, const int pCoordsOffset,
+                              const bool pUseZoffset=true) const;
 
         /* virtual functions that has to be implemented by
-         * dervied class: Chart2D, Chart3D */
-        virtual void bindResources(int pWindowId) = 0;
+         * dervied class: chart2d_impl, chart3d_impl */
+        virtual void bindResources(const int pWindowId) = 0;
         virtual void unbindResources() const = 0;
-        virtual void pushTicktextCoords(float x, float y, float z=0.0) = 0;
+        virtual void pushTicktextCoords(const float pX, const float pY, const float pZ=0.0) = 0;
         virtual void generateChartData() = 0;
         virtual void generateTickLabels() = 0;
 
     public:
-        AbstractChart(int pLeftMargin, int pRightMargin, int pTopMargin, int pBottomMargin);
+        AbstractChart(const int pLeftMargin, const int pRightMargin,
+                      const int pTopMargin, const int pBottomMargin);
         virtual ~AbstractChart();
 
-        void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin,
-                           float pZmax=1, float pZmin=-1);
-        void setAxesTitles(const char* pXTitle, const char* pYTitle, const char* pZTitle="Z-Axis");
+        void setAxesTitles(const std::string& pXTitle,
+                           const std::string& pYTitle,
+                           const std::string& pZTitle);
+
+        void setAxesLimits(const float pXmin, const float pXmax,
+                           const float pYmin, const float pYmax,
+                           const float pZmin, const float pZmax);
 
         float xmax() const;
         float xmin() const;
@@ -89,71 +97,93 @@ class AbstractChart : public AbstractRenderable {
         float zmax() const;
         float zmin() const;
 
-        virtual GLuint vbo() const = 0;
-        virtual size_t size() const = 0;
-        virtual void renderChart(int pWindowId, int pX, int pY,
-                                 int pViewPortWidth, int pViewPortHeight) = 0;
-        /* Below is pure virtual function of AbstractRenderable */
-        virtual void render(int pWindowId, int pX, int pY,
-                            int pViewPortWidth, int pViewPortHeight) = 0;
+        void addRenderable(const std::shared_ptr<AbstractRenderable> pRenderable);
 };
 
-class Chart2D : public AbstractChart {
+class chart2d_impl : public AbstractChart {
     private:
         /* rendering helper functions that are derived
          * from AbstractRenderable base class
          * */
-        void bindResources(int pWindowId);
+        void bindResources(const int pWindowId);
         void unbindResources() const;
-        void pushTicktextCoords(float x, float y, float z=0.0);
+        void pushTicktextCoords(const float x, const float y, const float z=0.0);
         void generateChartData();
         void generateTickLabels();
 
     public:
-        Chart2D()
-            :AbstractChart(68, 8, 8, 32) {
-            generateChartData();
-        }
-        virtual ~Chart2D() {}
+        chart2d_impl();
 
-        void renderChart(int pWindowId, int pX, int pY,
-                         int pViewPortWidth, int pViewPortHeight);
+        virtual ~chart2d_impl() {}
 
-        /* Below pure virtual functions have to
-         * be implemented by Concrete classes
-         * which have Chart2D as base class
-         * */
-        virtual GLuint vbo() const = 0;
-        virtual size_t size() const = 0;
-        virtual void render(int pWindowId, int pX, int pY,
-                            int pViewPortWidth, int pViewPortHeight) = 0;
+        void render(const int pWindowId,
+                    const int pX, const int pY, const int pVPW, const int pVPH,
+                    const glm::mat4& pTransform);
 };
 
-class Chart3D : public AbstractChart {
+class chart3d_impl : public AbstractChart {
     private:
         /* rendering helper functions that are derived
          * from AbstractRenderable base class
          * */
-        void bindResources(int pWindowId);
+        void bindResources(const int pWindowId);
         void unbindResources() const;
-        void pushTicktextCoords(float x, float y, float z=0.0);
+        void pushTicktextCoords(const float x, const float y, const float z=0.0);
         void generateChartData();
         void generateTickLabels();
 
     public:
-        Chart3D()
-            :AbstractChart(32, 32, 32, 32) {
-            generateChartData();
+        chart3d_impl();
+
+        virtual ~chart3d_impl() {}
+
+        void render(const int pWindowId,
+                    const int pX, const int pY, const int pVPW, const int pVPH,
+                    const glm::mat4& pTransform);
+};
+
+class _Chart {
+    private:
+        std::shared_ptr<AbstractChart> mChart;
+
+    public:
+        _Chart(const fg::ChartType cType) {
+            if (cType == fg::FG_2D) {
+                mChart = std::make_shared<chart2d_impl>();
+            } else if (cType == fg::FG_3D) {
+                mChart = std::make_shared<chart3d_impl>();
+            } else {
+                throw fg::ArgumentError("_Chart::_Chart",
+                                        __LINE__, 0,
+                                        "Invalid chart type");
+            }
         }
-        virtual ~Chart3D() {}
 
-        void renderChart(int pWindowId, int pX, int pY,
-                         int pViewPortWidth, int pViewPortHeight);
+        inline const std::shared_ptr<AbstractChart>& impl() const {
+            return mChart;
+        }
 
-        virtual GLuint vbo() const = 0;
-        virtual size_t size() const = 0;
-        virtual void render(int pWindowId, int pX, int pY,
-                            int pViewPortWidth, int pViewPortHeight) = 0;
+        inline void setAxesTitles(const std::string& pX,
+                                  const std::string& pY,
+                                  const std::string& pZ) {
+            mChart->setAxesTitles(pX, pY, pZ);
+        }
+
+        inline void setAxesLimits(const float pXmin, const float pXmax,
+                                  const float pYmin, const float pYmax,
+                                  const float pZmin, const float pZmax) {
+            mChart->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
+        }
+
+        inline void addRenderable(const std::shared_ptr<AbstractRenderable> pRenderable) {
+            mChart->addRenderable(pRenderable);
+        }
+
+        inline void render(const int pWindowId,
+                           const int pX, const int pY, const int pVPW, const int pVPH,
+                           const glm::mat4 &pTransform) const {
+            mChart->render(pWindowId, pX, pY, pVPW, pVPH, pTransform);
+        }
 };
 
 }

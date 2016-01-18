@@ -8,8 +8,11 @@
  ********************************************************/
 
 #include <common.hpp>
+#include <fg/window.h>
 #include <fg/histogram.h>
 #include <histogram.hpp>
+#include <shader_headers/histogram_vs.hpp>
+#include <shader_headers/histogram_fs.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,40 +22,10 @@
 
 using namespace std;
 
-const char *gHistBarVertexShaderSrc =
-"#version 330\n"
-"in vec2 point;\n"
-"in float freq;\n"
-"uniform float ymax;\n"
-"uniform float nbins;\n"
-"uniform mat4 transform;\n"
-"void main(void) {\n"
-"   float binId = gl_InstanceID;\n"
-"   float deltax = 2.0f/nbins;\n"
-"   float deltay = 2.0f/ymax;\n"
-"   float xcurr = -1.0f + binId * deltax;\n"
-"   if (point.x==1) {\n"
-"        xcurr  += deltax;\n"
-"   }\n"
-"   float ycurr = -1.0f;\n"
-"   if (point.y==1) {\n"
-"       ycurr += deltay * freq;\n"
-"   }\n"
-"   gl_Position = transform * vec4(xcurr, ycurr, 0, 1);\n"
-"}";
-
-const char *gHistBarFragmentShaderSrc =
-"#version 330\n"
-"uniform vec4 barColor;\n"
-"out vec4 outColor;\n"
-"void main(void) {\n"
-"   outColor = barColor;\n"
-"}";
-
 namespace internal
 {
 
-void hist_impl::bindResources(int pWindowId)
+void hist_impl::bindResources(const int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
         GLuint vao = 0;
@@ -63,12 +36,20 @@ void hist_impl::bindResources(int pWindowId)
         glEnableVertexAttribArray(mPointIndex);
         glEnableVertexAttribArray(mFreqIndex);
         // attach histogram bar vertices
-        glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, screenQuadVBO(pWindowId));
         glVertexAttribPointer(mPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
         // attach histogram frequencies
-        glBindBuffer(GL_ARRAY_BUFFER, mHistogramVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
         glVertexAttribPointer(mFreqIndex, 1, mGLType, GL_FALSE, 0, 0);
         glVertexAttribDivisor(mFreqIndex, 1);
+        // attach histogram bar colors
+        glBindBuffer(GL_ARRAY_BUFFER, mCBO);
+        glVertexAttribPointer(mColorIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribDivisor(mColorIndex, 1);
+        // attach histogram bar alphas
+        glBindBuffer(GL_ARRAY_BUFFER, mABO);
+        glVertexAttribPointer(mAlphaIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribDivisor(mAlphaIndex, 1);
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
@@ -80,53 +61,58 @@ void hist_impl::bindResources(int pWindowId)
 
 void hist_impl::unbindResources() const
 {
+    glVertexAttribDivisor(mFreqIndex, 0);
     glBindVertexArray(0);
-    //glVertexAttribDivisor(mFreqIndex, 0);
 }
 
-hist_impl::hist_impl(unsigned pNBins, fg::dtype pDataType)
- : Chart2D(), mDataType(pDataType), mGLType(gl_dtype(mDataType)),
-   mNBins(pNBins), mHistogramVBO(0), mHistogramVBOSize(0), mHistBarProgram(0),
-   mHistBarMatIndex(0), mHistBarColorIndex(0), mHistBarYMaxIndex(0),
-   mPointIndex(0), mFreqIndex(0)
+hist_impl::hist_impl(const uint pNBins, const fg::dtype pDataType)
+ :  mDataType(pDataType), mGLType(dtype2gl(mDataType)), mNBins(pNBins),
+    mIsPVCOn(0), mProgram(0), mYMaxIndex(-1), mNBinsIndex(-1),
+    mMatIndex(-1), mPointIndex(-1), mFreqIndex(-1), mColorIndex(-1),
+    mAlphaIndex(-1), mPVCIndex(-1), mBColorIndex(-1)
 {
-    CheckGL("Begin hist_impl::hist_impl");
-    mHistBarProgram = initShaders(gHistBarVertexShaderSrc, gHistBarFragmentShaderSrc);
+    mColor[0] = 0.8f;
+    mColor[1] = 0.6f;
+    mColor[2] = 0.0f;
+    mColor[3] = 1.0f;
+    mLegend   = std::string("");
 
-    mPointIndex        = glGetAttribLocation (mHistBarProgram, "point");
-    mFreqIndex         = glGetAttribLocation (mHistBarProgram, "freq");
-    mHistBarColorIndex = glGetUniformLocation(mHistBarProgram, "barColor");
-    mHistBarMatIndex   = glGetUniformLocation(mHistBarProgram, "transform");
-    mHistBarNBinsIndex = glGetUniformLocation(mHistBarProgram, "nbins");
-    mHistBarYMaxIndex  = glGetUniformLocation(mHistBarProgram, "ymax");
+    CheckGL("Begin hist_impl::hist_impl");
+    mProgram = initShaders(glsl::histogram_vs.c_str(), glsl::histogram_fs.c_str());
+
+    mYMaxIndex   = glGetUniformLocation(mProgram, "ymax"     );
+    mNBinsIndex  = glGetUniformLocation(mProgram, "nbins"    );
+    mMatIndex    = glGetUniformLocation(mProgram, "transform");
+    mPointIndex  = glGetAttribLocation (mProgram, "point"    );
+    mFreqIndex   = glGetAttribLocation (mProgram, "freq"     );
+    mColorIndex  = glGetUniformLocation(mProgram, "color"    );
+    mAlphaIndex  = glGetAttribLocation (mProgram, "alpha"    );
+    mPVCIndex    = glGetUniformLocation(mProgram, "isPVCOn"  );
+    mBColorIndex = glGetAttribLocation (mProgram, "barColor" );
+
+    mVBOSize = mNBins;
+    mCBOSize = 3*mVBOSize;
+    mABOSize = mNBins;
+
+#define HIST_CREATE_BUFFERS(type)   \
+    mVBO = createBuffer<type>(GL_ARRAY_BUFFER, mVBOSize, NULL, GL_DYNAMIC_DRAW);  \
+    mCBO = createBuffer<float>(GL_ARRAY_BUFFER, mCBOSize, NULL, GL_DYNAMIC_DRAW); \
+    mABO = createBuffer<float>(GL_ARRAY_BUFFER, mABOSize, NULL, GL_DYNAMIC_DRAW); \
+    mVBOSize *= sizeof(type);   \
+    mCBOSize *= sizeof(float);  \
+    mABOSize *= sizeof(float);
 
     switch(mGLType) {
-        case GL_FLOAT:
-            mHistogramVBO = createBuffer<float>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
-            mHistogramVBOSize = mNBins*sizeof(float);
-            break;
-        case GL_INT:
-            mHistogramVBO = createBuffer<int>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
-            mHistogramVBOSize = mNBins*sizeof(int);
-            break;
-        case GL_UNSIGNED_INT:
-            mHistogramVBO = createBuffer<unsigned>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
-            mHistogramVBOSize = mNBins*sizeof(unsigned);
-            break;
-        case GL_SHORT:
-            mHistogramVBO = createBuffer<short>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
-            mHistogramVBOSize = mNBins*sizeof(short);
-            break;
-        case GL_UNSIGNED_SHORT:
-            mHistogramVBO = createBuffer<unsigned short>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
-            mHistogramVBOSize = mNBins*sizeof(unsigned short);
-            break;
-        case GL_UNSIGNED_BYTE:
-            mHistogramVBO = createBuffer<unsigned char>(GL_ARRAY_BUFFER, mNBins, NULL, GL_DYNAMIC_DRAW);
-            mHistogramVBOSize = mNBins*sizeof(unsigned char);
-            break;
-        default: fg::TypeError("Plot::Plot", __LINE__, 1, mDataType);
+        case GL_FLOAT          : HIST_CREATE_BUFFERS(float) ; break;
+        case GL_INT            : HIST_CREATE_BUFFERS(int)   ; break;
+        case GL_UNSIGNED_INT   : HIST_CREATE_BUFFERS(uint)  ; break;
+        case GL_SHORT          : HIST_CREATE_BUFFERS(short) ; break;
+        case GL_UNSIGNED_SHORT : HIST_CREATE_BUFFERS(ushort); break;
+        case GL_UNSIGNED_BYTE  : HIST_CREATE_BUFFERS(float) ; break;
+        default: fg::TypeError("hist_impl::hist_impl", __LINE__, 1, mDataType);
     }
+#undef HIST_CREATE_BUFFERS
+
     CheckGL("End hist_impl::hist_impl");
 }
 
@@ -137,55 +123,27 @@ hist_impl::~hist_impl()
         GLuint vao = it->second;
         glDeleteVertexArrays(1, &vao);
     }
-    glDeleteBuffers(1, &mHistogramVBO);
-    glDeleteProgram(mHistBarProgram);
+    glDeleteBuffers(1, &mVBO);
+    glDeleteBuffers(1, &mCBO);
+    glDeleteBuffers(1, &mABO);
+    glDeleteProgram(mProgram);
     CheckGL("End hist_impl::~hist_impl");
 }
 
-void hist_impl::setBarColor(float r, float g, float b)
+void hist_impl::render(const int pWindowId,
+                       const int pX, const int pY, const int pVPW, const int pVPH,
+                       const glm::mat4& pTransform)
 {
-    mBarColor[0] = r;
-    mBarColor[1] = g;
-    mBarColor[2] = b;
-    mBarColor[3] = 1.0f;
-}
-
-GLuint hist_impl::vbo() const
-{
-    return mHistogramVBO;
-}
-
-size_t hist_impl::size() const
-{
-    return mHistogramVBOSize;
-}
-
-void hist_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
-{
-    float w = float(pVPW - (mLeftMargin+mRightMargin+mTickSize));
-    float h = float(pVPH - (mBottomMargin+mTopMargin+mTickSize));
-    float offset_x = (2.0f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
-    float offset_y = (2.0f * (mBottomMargin+mTickSize) + (h - pVPH)) / pVPH;
-    float scale_x = w / pVPW;
-    float scale_y = h / pVPH;
-
-    CheckGL("Begin Histogram::render");
-    /* Enavle scissor test to discard anything drawn beyond viewport.
-     * Set scissor rectangle to clip fragments outside of viewport */
-    glScissor(pX+mLeftMargin+mTickSize, pY+mBottomMargin+mTickSize,
-            pVPW - (mLeftMargin+mRightMargin+mTickSize),
-            pVPH - (mBottomMargin+mTopMargin+mTickSize));
+    CheckGL("Begin hist_impl::render");
+    glScissor(pX, pY, pVPW, pVPH);
     glEnable(GL_SCISSOR_TEST);
+    glUseProgram(mProgram);
 
-    glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
-                                                glm::vec3(scale_x, scale_y, 1)),
-                                     glm::vec3(offset_x, offset_y, 0));
-
-    glUseProgram(mHistBarProgram);
-    glUniformMatrix4fv(mHistBarMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-    glUniform4fv(mHistBarColorIndex, 1, mBarColor);
-    glUniform1f(mHistBarNBinsIndex, (GLfloat)mNBins);
-    glUniform1f(mHistBarYMaxIndex, ymax());
+    glUniform1f(mYMaxIndex, mRange[3]);
+    glUniform1f(mNBinsIndex, (GLfloat)mNBins);
+    glUniformMatrix4fv(mMatIndex, 1, GL_FALSE, glm::value_ptr(pTransform));
+    glUniform1i(mPVCIndex, mIsPVCOn);
+    glUniform4fv(mColorIndex, 1, mColor);
 
     /* render a rectangle for each bin. Same
      * rectangle is scaled and translated accordingly
@@ -196,11 +154,8 @@ void hist_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
     hist_impl::unbindResources();
 
     glUseProgram(0);
-    /* Stop clipping */
     glDisable(GL_SCISSOR_TEST);
-
-    renderChart(pWindowId, pX, pY, pVPW, pVPH);
-    CheckGL("End Histogram::render");
+    CheckGL("End hist_impl::render");
 }
 
 }
@@ -208,78 +163,74 @@ void hist_impl::render(int pWindowId, int pX, int pY, int pVPW, int pVPH)
 namespace fg
 {
 
-Histogram::Histogram(unsigned pNBins, fg::dtype pDataType)
+Histogram::Histogram(const uint pNBins, const dtype pDataType)
 {
-    value = new internal::_Histogram(pNBins, pDataType);
+    mValue = new internal::_Histogram(pNBins, pDataType);
 }
 
-Histogram::Histogram(const Histogram& other)
+Histogram::Histogram(const Histogram& pOther)
 {
-    value = new internal::_Histogram(*other.get());
+    mValue = new internal::_Histogram(*pOther.get());
 }
 
 Histogram::~Histogram()
 {
-    delete value;
+    delete mValue;
 }
 
-void Histogram::setBarColor(fg::Color col)
+void Histogram::setColor(const Color pColor)
 {
-    float r = (((int) col >> 24 ) & 0xFF ) / 255.f;
-    float g = (((int) col >> 16 ) & 0xFF ) / 255.f;
-    float b = (((int) col >> 8  ) & 0xFF ) / 255.f;
-    // float a = (((int) col       ) & 0xFF ) / 255.f;
-    value->setBarColor(r, g, b);
+    float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
+    float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
+    float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
+    float a = (((int) pColor       ) & 0xFF ) / 255.f;
+    mValue->setColor(r, g, b, a);
 }
 
-void Histogram::setBarColor(float r, float g, float b)
+void Histogram::setColor(const float pRed, const float pGreen,
+                         const float pBlue, const float pAlpha)
 {
-    value->setBarColor(r, g, b);
+    mValue->setColor(pRed, pGreen, pBlue, pAlpha);
 }
 
-void Histogram::setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin)
+void Histogram::setLegend(const std::string pLegend)
 {
-    value->setAxesLimits(pXmax, pXmin, pYmax, pYmin);
+    mValue->setLegend(pLegend);
 }
 
-void Histogram::setAxesTitles(const char* pXTitle, const char* pYTitle)
+uint Histogram::vertices() const
 {
-    value->setAxesTitles(pXTitle, pYTitle);
+    return mValue->vbo();
 }
 
-float Histogram::xmax() const
+uint Histogram::colors() const
 {
-    return value->xmax();
+    return mValue->cbo();
 }
 
-float Histogram::xmin() const
+uint Histogram::alphas() const
 {
-    return value->xmin();
+    return mValue->abo();
 }
 
-float Histogram::ymax() const
+uint Histogram::verticesSize() const
 {
-    return value->ymax();
+    return (uint)mValue->vboSize();
 }
 
-float Histogram::ymin() const
+uint Histogram::colorsSize() const
 {
-    return value->ymin();
+    return (uint)mValue->cboSize();
 }
 
-unsigned Histogram::vbo() const
+uint Histogram::alphasSize() const
 {
-    return value->vbo();
-}
-
-unsigned Histogram::size() const
-{
-    return (unsigned)value->size();
+    return (uint)mValue->aboSize();
 }
 
 internal::_Histogram* Histogram::get() const
 {
-    return value;
+    return mValue;
 }
 
 }

@@ -10,145 +10,137 @@
 #pragma once
 
 #include <common.hpp>
-#include <chart.hpp>
+
+#include <glm/glm.hpp>
+
 #include <memory>
 #include <map>
-#include <glm/glm.hpp>
 
 namespace internal
 {
 
-class surface_impl : public Chart3D {
+class surface_impl : public AbstractRenderable {
     protected:
         /* plot points characteristics */
         GLuint    mNumXPoints;
         GLuint    mNumYPoints;
         GLenum    mDataType;
-        float     mLineColor[4];
+        bool      mIsPVCOn;
         fg::MarkerType mMarkerType;
         /* OpenGL Objects */
-        GLuint    mMainVBO;
-        size_t    mMainVBOsize;
-        GLuint    mIndexVBO;
-        size_t    mIndexVBOsize;
+        GLuint    mIBO;
+        size_t    mIBOSize;
         GLuint    mMarkerProgram;
         GLuint    mSurfProgram;
         /* shared variable index locations */
-        GLuint    mPointIndex;
+        GLuint    mMarkerMatIndex;
+        GLuint    mMarkerRangeIndex;
+        GLuint    mMarkerPointIndex;
+        GLuint    mMarkerColorIndex;
+        GLuint    mMarkerAlphaIndex;
+        GLuint    mMarkerPVCIndex;
         GLuint    mMarkerTypeIndex;
         GLuint    mMarkerColIndex;
-        GLuint    mSpriteTMatIndex;
-        GLuint    mSurfPointIndex;
-        GLuint    mSurfTMatIndex;
+
+        GLuint    mSurfMatIndex;
         GLuint    mSurfRangeIndex;
+        GLuint    mSurfPointIndex;
+        GLuint    mSurfColorIndex;
+        GLuint    mSurfAlphaIndex;
+        GLuint    mSurfPVCIndex;
+
+        float mRange[6];
 
         std::map<int, GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
-        void bindResources(int pWindowId);
+        void bindResources(const int pWindowId);
         void unbindResources() const;
-        void bindSurfProgram() const;
-        void unbindSurfProgram() const;
-        GLuint markerTypeIndex() const;
-        GLuint spriteMatIndex() const;
-        GLuint markerColIndex() const;
-        GLuint surfRangeIndex() const;
-        GLuint surfMatIndex() const;
-        virtual void renderGraph(int pWindowId, glm::mat4 transform);
+        void computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput);
+        virtual void renderGraph(const int pWindowId, const glm::mat4& transform);
 
     public:
-        surface_impl(unsigned pNumXpoints, unsigned pNumYpoints, fg::dtype pDataType, fg::MarkerType pMarkerType);
+        surface_impl(const uint pNumXpoints, const uint pNumYpoints,
+                     const fg::dtype pDataType, const fg::MarkerType pMarkerType);
         ~surface_impl();
 
-        void setColor(fg::Color col);
-        void setColor(float r, float g, float b);
-        GLuint vbo() const;
-        size_t size() const;
-
-        void render(int pWindowId, int pX, int pY, int pViewPortWidth, int pViewPortHeight);
+        void render(const int pWindowId,
+                    const int pX, const int pY, const int pVPW, const int pVPH,
+                    const glm::mat4 &pTransform);
 };
 
 class scatter3_impl : public surface_impl {
    private:
-        void renderGraph(int pWindowId, glm::mat4 transform);
+        void renderGraph(const int pWindowId, const glm::mat4& transform);
 
    public:
-       scatter3_impl(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::MarkerType pMarkerType=fg::FG_NONE)
+       scatter3_impl(const uint pNumXPoints, const uint pNumYPoints,
+                     const fg::dtype pDataType, const fg::MarkerType pMarkerType=fg::FG_NONE)
            : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType) {}
-
-       ~scatter3_impl() {}
 };
 
 class _Surface {
     private:
-        std::shared_ptr<surface_impl> plt;
+        std::shared_ptr<surface_impl> mSurface;
 
     public:
-        _Surface(unsigned pNumXPoints, unsigned pNumYPoints, fg::dtype pDataType, fg::PlotType pPlotType=fg::FG_SURFACE, fg::MarkerType pMarkerType=fg::FG_NONE) {
+        _Surface(const uint pNumXPoints, const uint pNumYPoints,
+                 const fg::dtype pDataType, const fg::PlotType pPlotType=fg::FG_SURFACE,
+                 const fg::MarkerType pMarkerType=fg::FG_NONE) {
             switch(pPlotType){
                 case(fg::FG_SURFACE):
-                    plt = std::make_shared<surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
+                    mSurface = std::make_shared<surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
                     break;
                 case(fg::FG_SCATTER):
-                    plt = std::make_shared<scatter3_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
+                    mSurface = std::make_shared<scatter3_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
                     break;
                 default:
-                    plt = std::make_shared<surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
+                    mSurface = std::make_shared<surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
             };
         }
 
         inline const std::shared_ptr<surface_impl>& impl() const {
-            return plt;
+            return mSurface;
         }
 
-        inline void setColor(fg::Color col) {
-            plt->setColor(col);
+        inline void setColor(const float pRed, const float pGreen,
+                             const float pBlue, const float pAlpha) {
+            mSurface->setColor(pRed, pGreen, pBlue, pAlpha);
         }
 
-        inline void setColor(float r, float g, float b) {
-            plt->setColor(r, g, b);
-        }
-
-        inline void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin) {
-            plt->setAxesLimits(pXmax, pXmin, pYmax, pYmin, pZmax, pZmin);
-        }
-
-        inline void setAxesTitles(const char* pXTitle, const char* pYTitle, const char* pZTitle)
-        {
-            plt->setAxesTitles(pXTitle, pYTitle, pZTitle);
-        }
-
-        inline float xmax() const {
-            return plt->xmax();
-        }
-
-        inline float xmin() const {
-            return plt->xmin();
-        }
-
-        inline float ymax() const {
-            return plt->ymax();
-        }
-
-        inline float ymin() const {
-            return plt->ymin();
-        }
-
-        inline float zmax() const {
-            return plt->zmax();
-        }
-
-        inline float zmin() const {
-            return plt->zmin();
+        inline void setLegend(const std::string& pLegend) {
+            mSurface->setLegend(pLegend);
         }
 
         inline GLuint vbo() const {
-            return plt->vbo();
+            return mSurface->vbo();
         }
 
-        inline size_t size() const {
-            return plt->size();
+        inline GLuint cbo() const {
+            return mSurface->cbo();
+        }
+
+        inline GLuint abo() const {
+            return mSurface->abo();
+        }
+
+        inline size_t vboSize() const {
+            return mSurface->vboSize();
+        }
+
+        inline size_t cboSize() const {
+            return mSurface->cboSize();
+        }
+
+        inline size_t aboSize() const {
+            return mSurface->aboSize();
+        }
+
+        inline void render(const int pWindowId,
+                           const int pX, const int pY, const int pVPW, const int pVPH,
+                           const glm::mat4& pTransform) const {
+            mSurface->render(pWindowId, pX, pY, pVPW, pVPH, pTransform);
         }
 };
 
