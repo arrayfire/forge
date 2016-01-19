@@ -158,7 +158,6 @@ int main(void)
             t+=0.01;
             kernel(devOut, queue, t);
             fg::copy(plot3, devOut, queue);
-            // draw window and poll for events last
             wnd.draw(chart);
         } while(!wnd.close());
     }catch (fg::Error err) {

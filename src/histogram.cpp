@@ -28,25 +28,28 @@ namespace internal
 void hist_impl::bindResources(const int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
+        CheckGL("Begin hist_impl::bindResources");
         GLuint vao = 0;
         /* create a vertex array object
          * with appropriate bindings */
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
-        glEnableVertexAttribArray(mPointIndex);
-        glEnableVertexAttribArray(mFreqIndex);
         // attach histogram bar vertices
+        glEnableVertexAttribArray(mPointIndex);
         glBindBuffer(GL_ARRAY_BUFFER, screenQuadVBO(pWindowId));
         glVertexAttribPointer(mPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
         // attach histogram frequencies
+        glEnableVertexAttribArray(mFreqIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
         glVertexAttribPointer(mFreqIndex, 1, mGLType, GL_FALSE, 0, 0);
         glVertexAttribDivisor(mFreqIndex, 1);
         // attach histogram bar colors
+        glEnableVertexAttribArray(mColorIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mCBO);
         glVertexAttribPointer(mColorIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
         glVertexAttribDivisor(mColorIndex, 1);
         // attach histogram bar alphas
+        glEnableVertexAttribArray(mAlphaIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mABO);
         glVertexAttribPointer(mAlphaIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
         glVertexAttribDivisor(mAlphaIndex, 1);
@@ -54,6 +57,7 @@ void hist_impl::bindResources(const int pWindowId)
         /* store the vertex array object corresponding to
          * the window instance in the map */
         mVAOMap[pWindowId] = vao;
+        CheckGL("End hist_impl::bindResources");
     }
 
     glBindVertexArray(mVAOMap[pWindowId]);
@@ -62,22 +66,22 @@ void hist_impl::bindResources(const int pWindowId)
 void hist_impl::unbindResources() const
 {
     glVertexAttribDivisor(mFreqIndex, 0);
+    glVertexAttribDivisor(mColorIndex, 0);
+    glVertexAttribDivisor(mAlphaIndex, 0);
     glBindVertexArray(0);
 }
 
 hist_impl::hist_impl(const uint pNBins, const fg::dtype pDataType)
  :  mDataType(pDataType), mGLType(dtype2gl(mDataType)), mNBins(pNBins),
-    mIsPVCOn(0), mProgram(0), mYMaxIndex(-1), mNBinsIndex(-1),
+    mIsPVCOn(false), mProgram(0), mYMaxIndex(-1), mNBinsIndex(-1),
     mMatIndex(-1), mPointIndex(-1), mFreqIndex(-1), mColorIndex(-1),
     mAlphaIndex(-1), mPVCIndex(-1), mBColorIndex(-1)
 {
-    mColor[0] = 0.8f;
-    mColor[1] = 0.6f;
-    mColor[2] = 0.0f;
-    mColor[3] = 1.0f;
-    mLegend   = std::string("");
-
     CheckGL("Begin hist_impl::hist_impl");
+
+    setColor(0.8f, 0.6f, 0.0f, 1.0f);
+    setLegend(std::string(""));
+
     mProgram = initShaders(glsl::histogram_vs.c_str(), glsl::histogram_fs.c_str());
 
     mYMaxIndex   = glGetUniformLocation(mProgram, "ymax"     );
@@ -85,10 +89,10 @@ hist_impl::hist_impl(const uint pNBins, const fg::dtype pDataType)
     mMatIndex    = glGetUniformLocation(mProgram, "transform");
     mPointIndex  = glGetAttribLocation (mProgram, "point"    );
     mFreqIndex   = glGetAttribLocation (mProgram, "freq"     );
-    mColorIndex  = glGetUniformLocation(mProgram, "color"    );
+    mColorIndex  = glGetAttribLocation (mProgram, "color"    );
     mAlphaIndex  = glGetAttribLocation (mProgram, "alpha"    );
     mPVCIndex    = glGetUniformLocation(mProgram, "isPVCOn"  );
-    mBColorIndex = glGetAttribLocation (mProgram, "barColor" );
+    mBColorIndex = glGetUniformLocation(mProgram, "barColor" );
 
     mVBOSize = mNBins;
     mCBOSize = 3*mVBOSize;
@@ -143,12 +147,11 @@ void hist_impl::render(const int pWindowId,
     glUniform1f(mNBinsIndex, (GLfloat)mNBins);
     glUniformMatrix4fv(mMatIndex, 1, GL_FALSE, glm::value_ptr(pTransform));
     glUniform1i(mPVCIndex, mIsPVCOn);
-    glUniform4fv(mColorIndex, 1, mColor);
+    glUniform4fv(mBColorIndex, 1, mColor);
 
     /* render a rectangle for each bin. Same
      * rectangle is scaled and translated accordingly
-     * for each bin. This is done by OpenGL feature of
-     * instanced rendering */
+     * for each bin. OpenGL instanced rendering is used to do it.*/
     hist_impl::bindResources(pWindowId);
     glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, mNBins);
     hist_impl::unbindResources();

@@ -53,11 +53,10 @@ class plot_impl : public AbstractRenderable {
         GLuint    mMarkerTypeIndex;
         GLuint    mMarkerColIndex;
         GLuint    mMarkerMatIndex;
+        GLuint    mMarkerRangeIndex;
         GLuint    mMarkerPointIndex;
         GLuint    mMarkerColorIndex;
         GLuint    mMarkerAlphaIndex;
-
-        float mRange[6];
 
         std::map<int, GLuint> mVAOMap;
 
@@ -74,7 +73,8 @@ class plot_impl : public AbstractRenderable {
                 // attach vertices
                 glEnableVertexAttribArray(mPlotPointIndex);
                 glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-                glVertexAttribPointer(mPlotPointIndex, 2, mGLType, GL_FALSE, 0, 0);
+                glVertexAttribPointer(mPlotPointIndex, (PLOT_TYPE==fg::FG_2D ? 2 : 3),
+                                      mGLType, GL_FALSE, 0, 0);
                 // attach colors
                 glEnableVertexAttribArray(mPlotColorIndex);
                 glBindBuffer(GL_ARRAY_BUFFER, mCBO);
@@ -111,29 +111,23 @@ class plot_impl : public AbstractRenderable {
             float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(range_x);
             float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(range_y);
 
-            float coor_offset_x = ( -mRange[0] * graph_scale_x);
-            float coor_offset_y = ( -mRange[2] * graph_scale_y);
+            float coor_offset_x = (-mRange[0] * graph_scale_x);
+            float coor_offset_y = (-mRange[2] * graph_scale_y);
 
             if (PLOT_TYPE == fg::FG_3D) {
-                static const glm::mat4 VIEW = glm::lookAt(glm::vec3(-1.f,0.5f, 1.f),
-                        glm::vec3( 1.f,-1.f,-1.f),
-                        glm::vec3( 0.f, 1.f, 0.f));
-                static const glm::mat4 PROJECTION = glm::ortho(-2.f, 2.f, -2.f, 2.f, -1.1f, 100.f);
-
                 float range_z       = mRange[5] - mRange[4];
                 float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 0.0f : 2/(range_z);
                 float coor_offset_z = (-mRange[4] * graph_scale_z);
 
-                glm::mat4 rMat = glm::rotate(I,
-                        -glm::radians(90.f), glm::vec3(1,0,0));
+                glm::mat4 rMat = glm::rotate(I, -glm::radians(90.f), glm::vec3(1,0,0));
                 glm::mat4 tMat = glm::translate(I,
                         glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z));
                 glm::mat4 sMat = glm::scale(I,
                         glm::vec3(1.0f * graph_scale_x, -1.0f * graph_scale_y, 1.0f * graph_scale_z));
 
-                glm::mat4 model = rMat * tMat * sMat;
+                glm::mat4 model= rMat * tMat * sMat;
 
-                pOut = PROJECTION * VIEW * model;
+                pOut = pInput * model;
             } else if (PLOT_TYPE == fg::FG_2D) {
                 //FIXME: Using hard constants for now, find a way to get chart values
                 const float lMargin = 68;
@@ -168,44 +162,42 @@ class plot_impl : public AbstractRenderable {
         plot_impl(const uint pNumPoints, const fg::dtype pDataType,
                   const fg::PlotType pPlotType, const fg::MarkerType pMarkerType)
             : mNumPoints(pNumPoints), mDataType(pDataType), mGLType(dtype2gl(mDataType)),
-            mIsPVCOn(0), mMarkerType(pMarkerType), mPlotType(pPlotType),
+            mIsPVCOn(false), mMarkerType(pMarkerType), mPlotType(pPlotType),
             mPlotProgram(-1), mMarkerProgram(-1), mPlotMatIndex(-1), mPlotPVCOnIndex(-1),
             mPlotUColorIndex(-1), mPlotRangeIndex(-1), mPlotPointIndex(-1), mPlotColorIndex(-1),
             mPlotAlphaIndex(-1), mMarkerPVCOnIndex(-1), mMarkerTypeIndex(-1),
-            mMarkerColIndex(-1), mMarkerMatIndex(-1), mMarkerPointIndex(-1),
+            mMarkerColIndex(-1), mMarkerMatIndex(-1), mMarkerRangeIndex(-1), mMarkerPointIndex(-1),
             mMarkerColorIndex(-1), mMarkerAlphaIndex(-1)
         {
-            mColor[0] = 0.0f;
-            mColor[1] = 1.0f;
-            mColor[2] = 0.0f;
-            mColor[3] = 1.0f;
-            mLegend   = std::string("");
-
             CheckGL("Begin plot_impl::plot_impl");
 
+            setColor(0, 1, 0, 1);
+            setLegend(std::string(""));
+
             if (PLOT_TYPE==fg::FG_2D) {
-                mPlotProgram   = initShaders(glsl::marker2d_vs.c_str(), glsl::histogram_fs.c_str());
-                mMarkerProgram = initShaders(glsl::marker2d_vs.c_str(), glsl::marker_fs.c_str());
+                mPlotProgram     = initShaders(glsl::marker2d_vs.c_str(), glsl::histogram_fs.c_str());
+                mMarkerProgram   = initShaders(glsl::marker2d_vs.c_str(), glsl::marker_fs.c_str());
+                mPlotUColorIndex = glGetUniformLocation(mPlotProgram, "barColor");
             } else  if (PLOT_TYPE==fg::FG_3D) {
-                mPlotProgram   = initShaders(glsl::plot3_vs.c_str(), glsl::plot3_fs.c_str());
-                mMarkerProgram = initShaders(glsl::plot3_vs.c_str(), glsl::marker_fs.c_str());
+                mPlotProgram     = initShaders(glsl::plot3_vs.c_str(), glsl::plot3_fs.c_str());
+                mMarkerProgram   = initShaders(glsl::plot3_vs.c_str(), glsl::marker_fs.c_str());
+                mPlotRangeIndex  = glGetUniformLocation(mPlotProgram, "minmaxs");
+                mMarkerRangeIndex= glGetUniformLocation(mMarkerProgram, "minmaxs");
             }
 
             mPlotMatIndex    = glGetUniformLocation(mPlotProgram, "transform");
             mPlotPVCOnIndex  = glGetUniformLocation(mPlotProgram, "isPVCOn");
-            mPlotUColorIndex = glGetUniformLocation(mPlotProgram, "barColor");
-            mPlotRangeIndex  = glGetUniformLocation(mPlotProgram, "minmaxs");
-            mPlotPointIndex  = glGetUniformLocation(mPlotProgram, "point");
-            mPlotColorIndex  = glGetUniformLocation(mPlotProgram, "color");
-            mPlotAlphaIndex  = glGetUniformLocation(mPlotProgram, "alpha");
+            mPlotPointIndex  = glGetAttribLocation (mPlotProgram, "point");
+            mPlotColorIndex  = glGetAttribLocation (mPlotProgram, "color");
+            mPlotAlphaIndex  = glGetAttribLocation (mPlotProgram, "alpha");
 
+            mMarkerMatIndex   = glGetUniformLocation(mMarkerProgram, "transform");
             mMarkerPVCOnIndex = glGetUniformLocation(mMarkerProgram, "isPVCOn");
             mMarkerTypeIndex  = glGetUniformLocation(mMarkerProgram, "marker_type");
             mMarkerColIndex   = glGetUniformLocation(mMarkerProgram, "marker_color");
-            mMarkerMatIndex   = glGetUniformLocation(mMarkerProgram, "transform");
-            mMarkerPointIndex = glGetUniformLocation(mMarkerProgram, "point");
-            mMarkerColorIndex = glGetUniformLocation(mMarkerProgram, "color");
-            mMarkerAlphaIndex = glGetUniformLocation(mMarkerProgram, "alpha");
+            mMarkerPointIndex = glGetAttribLocation (mMarkerProgram, "point");
+            mMarkerColorIndex = glGetAttribLocation (mMarkerProgram, "color");
+            mMarkerAlphaIndex = glGetAttribLocation (mMarkerProgram, "alpha");
 
             if (PLOT_TYPE==fg::FG_2D) {
                 mVBOSize = 2*mNumPoints;
@@ -256,7 +248,6 @@ class plot_impl : public AbstractRenderable {
                     const glm::mat4& pTransform)
         {
             CheckGL("Begin plot_impl::render");
-            glScissor(pX, pY, pVPW, pVPH);
             glEnable(GL_SCISSOR_TEST);
 
             glm::mat4 mvp(1.0);
@@ -265,12 +256,14 @@ class plot_impl : public AbstractRenderable {
             if (mPlotType == fg::FG_LINE) {
                 glUseProgram(mPlotProgram);
 
-                if (PLOT_TYPE== fg::FG_3D) {
+                if (PLOT_TYPE==fg::FG_3D) {
                     glUniform2fv(mPlotRangeIndex, 3, mRange);
+                }
+                if (PLOT_TYPE==fg::FG_2D) {
+                    glUniform4fv(mPlotUColorIndex, 1, mColor);
                 }
                 glUniformMatrix4fv(mPlotMatIndex, 1, GL_FALSE, glm::value_ptr(mvp));
                 glUniform1i(mPlotPVCOnIndex, mIsPVCOn);
-                glUniform4fv(mPlotUColorIndex, 1, mColor);
 
                 plot_impl::bindResources(pWindowId);
                 glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
@@ -282,6 +275,9 @@ class plot_impl : public AbstractRenderable {
                 glEnable(GL_PROGRAM_POINT_SIZE);
                 glUseProgram(mMarkerProgram);
 
+                if (PLOT_TYPE== fg::FG_3D) {
+                    glUniform2fv(mMarkerRangeIndex, 3, mRange);
+                }
                 glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(mvp));
                 glUniform1i(mMarkerPVCOnIndex, mIsPVCOn);
                 glUniform1i(mMarkerTypeIndex, mMarkerType);

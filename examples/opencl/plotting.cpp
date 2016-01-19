@@ -30,17 +30,31 @@ const float    FRANGE_START = 0.f;
 const float    FRANGE_END = 2 * 3.141592f;
 const unsigned DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
 
-static const std::string sinf_ocl_kernel =
-"kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE)\n"
-"{\n"
-"    unsigned x = get_global_id(0);\n"
-"    if(x < DATA_SIZE){\n"
-"        out[2 * x] = x * dx ;\n"
-"        out[2 * x + 1] = sin(x*dx);\n"
-"    }\n"
-"}\n";
+static const std::string sinf_ocl_kernel = R"(
+kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE, int fnCode)
+{
+    unsigned x = get_global_id(0);
+    if(x < DATA_SIZE) {
+        out[2 * x] = x * dx ;
+        switch(fnCode) {
+            case 0:
+                out[ 2 * x + 1 ] = sin(x*dx);
+                break;
+            case 1:
+                out[ 2 * x + 1 ] = cos(x*dx);
+                break;
+            case 2:
+                out[ 2 * x + 1 ] = tan(x*dx);
+                break;
+            case 3:
+                out[ 2 * x + 1 ] = log10(x*dx);
+                break;
+        }
+    }
+}
+)";
 
-void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
+void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, int fnCode)
 {
     static std::once_flag   compileFlag;
     static cl::Program      prog;
@@ -57,6 +71,7 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
     kern.setArg(0, devOut);
     kern.setArg(1, dx);
     kern.setArg(2, DATA_SIZE);
+    kern.setArg(3, fnCode);
     queue.enqueueNDRangeKernel(kern, cl::NullRange, global);
 }
 
@@ -95,10 +110,10 @@ int main(void)
         /*
          * Set plot colors
          */
-        plt0.setColor(fg::FG_YELLOW);
-        plt1.setColor(fg::FG_BLUE);
-        plt2.setColor(fg::FG_WHITE);                                        //use a forge predefined color
-        plt3.setColor((fg::Color) 0xABFF01FF);                              //or any hex-valued color
+        plt0.setColor(fg::FG_BLUE);
+        plt1.setColor(fg::FG_YELLOW);
+        plt2.setColor((fg::Color) 0xABFF01FF);                              //or any hex-valued color
+        plt3.setColor(fg::FG_WHITE);                                        //use a forge predefined color
 
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU
@@ -144,8 +159,14 @@ int main(void)
             }
         }
 
-        cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
-        kernel(devOut, queue);
+        cl::Buffer sinOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer cosOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer tanOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer logOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        kernel(sinOut, queue, 0);
+        kernel(cosOut, queue, 1);
+        kernel(tanOut, queue, 2);
+        kernel(logOut, queue, 3);
 
         /* copy your data into the vertex buffer object exposed by
          * fg::Plot class and then proceed to rendering.
@@ -153,14 +174,13 @@ int main(void)
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        fg::copy(plt0, devOut, queue);
-        fg::copy(plt1, devOut, queue);
-        fg::copy(plt2, devOut, queue);
-        fg::copy(plt3, devOut, queue);
+        fg::copy(plt0, sinOut, queue);
+        fg::copy(plt1, cosOut, queue);
+        fg::copy(plt2, tanOut, queue);
+        fg::copy(plt3, logOut, queue);
 
         do {
             wnd.draw(chart);
-            wnd.swapBuffers();
         } while(!wnd.close());
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;

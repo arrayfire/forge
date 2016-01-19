@@ -39,8 +39,6 @@ class hist_impl : public AbstractRenderable {
         GLuint    mPVCIndex;
         GLuint    mBColorIndex;
 
-        float mRange[6];
-
         std::map<int, GLuint> mVAOMap;
 
         /* bind and unbind helper functions

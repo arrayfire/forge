@@ -24,7 +24,9 @@ const float DX = 0.005;
 const size_t ZSIZE = (ZMAX-ZMIN)/DX+1;
 
 using namespace std;
-void gen_curve(float t, float dx, std::vector<float> &vec ) {
+
+void gen_curve(float t, float dx, std::vector<float> &vec )
+{
     vec.clear();
     for(float z=ZMIN; z < ZMAX; z+=dx){
         vec.push_back(cos(z*t+t)/z);
@@ -33,7 +35,8 @@ void gen_curve(float t, float dx, std::vector<float> &vec ) {
     }
 }
 
-int main(void){
+int main(void)
+{
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
@@ -74,7 +77,6 @@ int main(void){
         t+=0.01;
         gen_curve(t, DX, function);
         copy(plot3, &function[0]);
-        // draw window and poll for events last
         wnd.draw(chart);
     } while(!wnd.close());
 

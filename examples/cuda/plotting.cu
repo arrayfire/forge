@@ -13,11 +13,14 @@ static const float    FRANGE_START = 0.f;
 static const float    FRANGE_END = 2 * 3.141592f;
 static const size_t   DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
 
-void kernel(float* dev_out);
+void kernel(float* dev_out, int functionCode);
 
 int main(void)
 {
-    float *dev_out;
+    float *sin_out;
+    float *cos_out;
+    float *tan_out;
+    float *log_out;
 
     /*
      * First Forge call should be a window creation call
@@ -57,37 +60,58 @@ int main(void)
     plt2.setColor(fg::FG_WHITE);                                                  //use a forge predefined color
     plt3.setColor((fg::Color) 0xABFF01FF);                                        //or any hex-valued color
 
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, sizeof(float) * DATA_SIZE * 2));
-    kernel(dev_out);
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&sin_out, sizeof(float) * DATA_SIZE * 2));
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&cos_out, sizeof(float) * DATA_SIZE * 2));
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&tan_out, sizeof(float) * DATA_SIZE * 2));
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&log_out, sizeof(float) * DATA_SIZE * 2));
+
+    kernel(sin_out, 0);
+    kernel(cos_out, 1);
+    kernel(tan_out, 2);
+    kernel(log_out, 3);
     /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plt0, dev_out);
-    fg::copy(plt1, dev_out);
-    fg::copy(plt2, dev_out);
-    fg::copy(plt3, dev_out);
+    fg::copy(plt0, sin_out);
+    fg::copy(plt1, cos_out);
+    fg::copy(plt2, tan_out);
+    fg::copy(plt3, log_out);
 
     do {
         wnd.draw(chart);
-        wnd.swapBuffers();
     } while(!wnd.close());
 
-    CUDA_ERROR_CHECK(cudaFree(dev_out));
+    CUDA_ERROR_CHECK(cudaFree(sin_out));
+    CUDA_ERROR_CHECK(cudaFree(cos_out));
+    CUDA_ERROR_CHECK(cudaFree(tan_out));
+    CUDA_ERROR_CHECK(cudaFree(log_out));
     return 0;
 }
 
-
 __global__
-void simple_sinf(float* out, const size_t DATA_SIZE, const float dx)
+void simple_sinf(float* out, const size_t DATA_SIZE, int fnCode)
 {
     int x = blockIdx.x * blockDim.x  + threadIdx.x;
 
     if (x<DATA_SIZE) {
         out[ 2 * x ] = x * dx;
-        out[ 2 * x + 1 ] = sin(x*dx);
+        switch(fnCode) {
+            case 0:
+                out[ 2 * x + 1 ] = sinf(x*dx);
+                break;
+            case 1:
+                out[ 2 * x + 1 ] = cosf(x*dx);
+                break;
+            case 2:
+                out[ 2 * x + 1 ] = tanf(x*dx);
+                break;
+            case 3:
+                out[ 2 * x + 1 ] = log10f(x*dx);
+                break;
+        }
     }
 }
 
@@ -96,10 +120,10 @@ inline int divup(int a, int b)
     return (a+b-1)/b;
 }
 
-void kernel(float* dev_out)
+void kernel(float* dev_out, int functionCode)
 {
     static const dim3 threads(1024);
     dim3 blocks(divup(DATA_SIZE, 1024));
 
-    simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, dx);
+    simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, functionCode);
 }

@@ -406,12 +406,10 @@ void chart2d_impl::render(const int pWindowId,
         pos[1] += (mTickSize * (h/pVPH));
         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
-    /* render all the renderables */
-    // FIXME create the correct transformation matrix
-    glm::mat4 transMat = glm::mat4(1);
+
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, transMat);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, trans);
     }
 
     CheckGL("End chart2d_impl::renderChart");
@@ -604,12 +602,17 @@ void chart3d_impl::render(const int pWindowId,
 
     /* set uniform attributes of shader
      * for drawing the plot borders */
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) * glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) * glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f));
-    glm::mat4 view = glm::lookAt(glm::vec3(-1,0.5f,1.0f), glm::vec3(1,-1,-1),glm::vec3(0,1,0));
-    glm::mat4 projection = glm::ortho(-2.f, 2.f, -2.f, 2.f, -1.1f, 10.f);
-    glm::mat4 mvp = projection * view * model;
+    static const glm::mat4 VIEW = glm::lookAt(glm::vec3(-1.f,0.5f, 1.f),
+                                              glm::vec3( 1.f,-1.f,-1.f),
+                                              glm::vec3( 0.f, 1.f, 0.f));
+    static const glm::mat4 PROJECTION = glm::ortho(-2.f, 2.f, -2.f, 2.f, -1.f, 100.f);
+    static const glm::mat4 PV = PROJECTION * VIEW;
 
-    glm::mat4 trans = mvp;
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
+                      glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) *
+                      glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f));
+    glm::mat4 trans = PV * model;
+
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderUniformColorIndex, 1, WHITE);
 
@@ -676,11 +679,9 @@ void chart3d_impl::render(const int pWindowId,
     }
 
     /* render all the renderables */
-    // FIXME create the correct transformation matrix
-    glm::mat4 transMat = glm::mat4(1);
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, transMat);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, PV);
     }
 
     CheckGL("End chart3d_impl::renderChart");

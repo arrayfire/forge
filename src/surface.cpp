@@ -84,26 +84,21 @@ void surface_impl::computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput)
 {
     // identity matrix
     static const glm::mat4 I(1.0f);
-    static const glm::mat4 VIEW = glm::lookAt(glm::vec3(-1.f,0.5f, 1.f),
-            glm::vec3( 1.f,-1.f,-1.f),
-            glm::vec3( 0.f, 1.f, 0.f));
-    static const glm::mat4 PROJECTION = glm::ortho(-2.f, 2.f, -2.f, 2.f, -1.1f, 100.f);
 
     float range_x = mRange[1] - mRange[0];
     float range_y = mRange[3] - mRange[2];
-    float range_z       = mRange[5] - mRange[4];
+    float range_z = mRange[5] - mRange[4];
     // set scale to zero if input is constant array
     // otherwise compute scale factor by standard equation
     float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(range_x);
     float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(range_y);
     float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 0.0f : 2/(range_z);
 
-    float coor_offset_x = ( -mRange[0] * graph_scale_x);
-    float coor_offset_y = ( -mRange[2] * graph_scale_y);
+    float coor_offset_x = (-mRange[0] * graph_scale_x);
+    float coor_offset_y = (-mRange[2] * graph_scale_y);
     float coor_offset_z = (-mRange[4] * graph_scale_z);
 
-    glm::mat4 rMat = glm::rotate(I,
-            -glm::radians(90.f), glm::vec3(1,0,0));
+    glm::mat4 rMat = glm::rotate(I, -glm::radians(90.f), glm::vec3(1,0,0));
     glm::mat4 tMat = glm::translate(I,
             glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z));
     glm::mat4 sMat = glm::scale(I,
@@ -111,7 +106,7 @@ void surface_impl::computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput)
 
     glm::mat4 model = rMat * tMat * sMat;
 
-    pOut = PROJECTION * VIEW * model;
+    pOut = pInput * model;
 }
 
 void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
@@ -160,17 +155,15 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
       mSurfAlphaIndex(-1), mSurfPVCIndex(-1)
 {
     CheckGL("Begin surface_impl::surface_impl");
-    mColor[0] = 0.9f;
-    mColor[1] = 0.5f;
-    mColor[2] = 0.6f;
-    mColor[3] = 1.0f;
+    setColor(0.9, 0.5, 0.6, 1.0);
+    setLegend(std::string(""));
 
     mMarkerProgram   = initShaders(glsl::plot3_vs.c_str(), glsl::marker_fs.c_str());
     mMarkerMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
     mMarkerRangeIndex= glGetUniformLocation(mMarkerProgram, "minmaxs");
-    mMarkerPointIndex= glGetUniformLocation(mMarkerProgram, "point");
-    mMarkerColorIndex= glGetUniformLocation(mMarkerProgram, "color");
-    mMarkerAlphaIndex= glGetUniformLocation(mMarkerProgram, "alpha");
+    mMarkerPointIndex= glGetAttribLocation (mMarkerProgram, "point");
+    mMarkerColorIndex= glGetAttribLocation (mMarkerProgram, "color");
+    mMarkerAlphaIndex= glGetAttribLocation (mMarkerProgram, "alpha");
     mMarkerPVCIndex  = glGetUniformLocation(mMarkerProgram, "isPVCOn");
     mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
     mMarkerColIndex  = glGetUniformLocation(mMarkerProgram, "marker_color");
@@ -178,10 +171,10 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
     mSurfProgram    = initShaders(glsl::plot3_vs.c_str(), glsl::plot3_fs.c_str());
     mSurfMatIndex   = glGetUniformLocation(mSurfProgram, "transform");
     mSurfRangeIndex = glGetUniformLocation(mSurfProgram, "minmaxs");
-    mSurfPointIndex = glGetUniformLocation(mSurfProgram, "point");
-    mSurfColorIndex = glGetUniformLocation(mSurfProgram, "color");
-    mSurfAlphaIndex = glGetUniformLocation(mSurfProgram, "alpha");
     mSurfPVCIndex   = glGetUniformLocation(mSurfProgram, "isPVCOn");
+    mSurfPointIndex = glGetAttribLocation (mSurfProgram, "point");
+    mSurfColorIndex = glGetAttribLocation (mSurfProgram, "color");
+    mSurfAlphaIndex = glGetAttribLocation (mSurfProgram, "alpha");
 
     unsigned totalPoints = mNumXPoints * mNumYPoints;
 

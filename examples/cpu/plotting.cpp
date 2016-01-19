@@ -21,7 +21,10 @@ const float FRANGE_START = 0.f;
 const float FRANGE_END = 2.f * 3.1415926f;
 
 using namespace std;
-void map_range_to_vec_vbo(float range_start, float range_end, float dx, std::vector<float> &vec, float (*map) (float)){
+void map_range_to_vec_vbo(float range_start, float range_end, float dx,
+                          std::vector<float> &vec,
+                          float (*map) (float))
+{
     if(range_start > range_end && dx > 0) return;
     for(float i=range_start; i < range_end; i+=dx){
         vec.push_back(i);
@@ -31,8 +34,14 @@ void map_range_to_vec_vbo(float range_start, float range_end, float dx, std::vec
 
 int main(void)
 {
-    std::vector<float> function;
-    map_range_to_vec_vbo(FRANGE_START, FRANGE_END, 0.1f, function, &sinf);
+    std::vector<float> sinData;
+    std::vector<float> cosData;
+    std::vector<float> tanData;
+    std::vector<float> logData;
+    map_range_to_vec_vbo(FRANGE_START, FRANGE_END, 0.1f, sinData, &sinf);
+    map_range_to_vec_vbo(FRANGE_START, FRANGE_END, 0.1f, cosData, &cosf);
+    map_range_to_vec_vbo(FRANGE_START, FRANGE_END, 0.1f, tanData, &tanf);
+    map_range_to_vec_vbo(FRANGE_START, FRANGE_END, 0.1f, logData, &log10f);
 
     /*
      * First Forge call should be a window creation call
@@ -58,10 +67,11 @@ int main(void)
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt0 = chart.plot(function.size()/2, fg::f32);                                 //create a default plot
-    fg::Plot plt1 = chart.plot(function.size()/2, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
-    fg::Plot plt2 = chart.plot(function.size()/2, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
-    fg::Plot plt3 = chart.plot(function.size()/2, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
+    fg::Plot plt0 = chart.plot(sinData.size()/2, fg::f32);                                 //create a default plot
+    fg::Plot plt1 = chart.plot(cosData.size()/2, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
+    fg::Plot plt2 = chart.plot(tanData.size()/2, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
+    fg::Plot plt3 = chart.plot(logData.size()/2, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
+
 
     /*
      * Set plot colors
@@ -78,14 +88,13 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copy(plt0, &function[0]);
-    copy(plt1, &function[0]);
-    copy(plt2, &function[0]);
-    copy(plt3, &function[0]);
+    copy(plt0, &sinData[0]);
+    copy(plt1, &cosData[0]);
+    copy(plt2, &tanData[0]);
+    copy(plt3, &logData[0]);
 
     do {
         wnd.draw(chart);
-        wnd.swapBuffers();
     } while(!wnd.close());
 
     return 0;

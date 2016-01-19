@@ -49,8 +49,6 @@ class surface_impl : public AbstractRenderable {
         GLuint    mSurfAlphaIndex;
         GLuint    mSurfPVCIndex;
 
-        float mRange[6];
-
         std::map<int, GLuint> mVAOMap;
 
         /* bind and unbind helper functions
