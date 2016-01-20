@@ -34,7 +34,6 @@ class surface_impl : public AbstractRenderable {
         GLuint    mSurfProgram;
         /* shared variable index locations */
         GLuint    mMarkerMatIndex;
-        GLuint    mMarkerRangeIndex;
         GLuint    mMarkerPointIndex;
         GLuint    mMarkerColorIndex;
         GLuint    mMarkerAlphaIndex;

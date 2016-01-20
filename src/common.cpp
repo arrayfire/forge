@@ -10,6 +10,8 @@
 #include <common.hpp>
 #include <window.hpp>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -286,4 +288,16 @@ GLuint screenQuadVAO(const int pWindowId)
     }
 
     return svaoMap[pWindowId];
+}
+
+std::ostream& operator<<(std::ostream& pOut, const glm::mat4& pMat)
+{
+    const float* ptr = (const float*)glm::value_ptr(pMat);
+    pOut << "\n" << std::fixed;
+    pOut << ptr[0]  << "\t" << ptr[1]  << "\t" << ptr[2]  << "\t" << ptr[3] << "\n";
+    pOut << ptr[4]  << "\t" << ptr[5]  << "\t" << ptr[6]  << "\t" << ptr[7] << "\n";
+    pOut << ptr[8]  << "\t" << ptr[9]  << "\t" << ptr[10] << "\t" << ptr[11] << "\n";
+    pOut << ptr[12] << "\t" << ptr[13] << "\t" << ptr[14] << "\t" << ptr[15] << "\n";
+    pOut << "\n";
+    return pOut;
 }

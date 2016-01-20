@@ -348,19 +348,25 @@ void chart2d_impl::render(const int pWindowId,
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 
-    chart2d_impl::bindResources(pWindowId);
-
-    /* bind the plotting shader program  */
-    glUseProgram(mBorderProgram);
-
     /* set uniform attributes of shader
      * for drawing the plot borders */
     glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
                                                 glm::vec3(scale_x, scale_y, 1)),
                                      glm::vec3(offset_x, offset_y, 0));
+
+    /* render all renderables */
+    for (auto renderable : mRenderables) {
+        renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, trans);
+    }
+
+    chart2d_impl::bindResources(pWindowId);
+
+    /* bind the plotting shader program  */
+    glUseProgram(mBorderProgram);
+
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderUniformColorIndex, 1, WHITE);
-
     /* Draw borders */
     glDrawArrays(GL_LINE_LOOP, 0, 4);
 
@@ -370,8 +376,8 @@ void chart2d_impl::render(const int pWindowId,
     /* bind the sprite shader program to
      * draw ticks on x and y axes */
     glPointSize((GLfloat)mTickSize);
-
     glUseProgram(mSpriteProgram);
+
     glUniform4fv(mSpriteUniformTickcolorIndex, 1, WHITE);
     glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     /* Draw tick marks on y axis */
@@ -405,11 +411,6 @@ void chart2d_impl::render(const int pWindowId,
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] += (mTickSize * (h/pVPH));
         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
-    }
-
-    for (auto renderable : mRenderables) {
-        renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, trans);
     }
 
     CheckGL("End chart2d_impl::renderChart");
@@ -591,45 +592,45 @@ void chart3d_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
                           const glm::mat4& pTransform)
 {
-    CheckGL("Being chart3d_impl::renderChart");
-    float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
-    float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
-
-    chart3d_impl::bindResources(pWindowId);
-
-    /* bind the plotting shader program  */
-    glUseProgram(mBorderProgram);
-
     /* set uniform attributes of shader
      * for drawing the plot borders */
     static const glm::mat4 VIEW = glm::lookAt(glm::vec3(-1.f,0.5f, 1.f),
                                               glm::vec3( 1.f,-1.f,-1.f),
                                               glm::vec3( 0.f, 1.f, 0.f));
     static const glm::mat4 PROJECTION = glm::ortho(-2.f, 2.f, -2.f, 2.f, -1.f, 100.f);
+    static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
+                                   glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) *
+                                   glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f));
     static const glm::mat4 PV = PROJECTION * VIEW;
+    static const glm::mat4 PVM = PV * MODEL;
 
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
-                      glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) *
-                      glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f));
-    glm::mat4 trans = PV * model;
+    CheckGL("Being chart3d_impl::renderChart");
 
-    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    /* render all the renderables */
+    for (auto renderable : mRenderables) {
+        renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, PV);
+    }
+
+    chart3d_impl::bindResources(pWindowId);
+
+    glUseProgram(mBorderProgram);
+
+    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(PVM));
     glUniform4fv(mBorderUniformColorIndex, 1, WHITE);
-
     /* Draw borders */
     glDrawArrays(GL_LINES, 0, 6);
 
-    /* reset shader program binding */
     glUseProgram(0);
 
     /* bind the sprite shader program to
      * draw ticks on x and y axes */
     glEnable(GL_PROGRAM_POINT_SIZE);
     glPointSize((GLfloat)mTickSize);
-
     glUseProgram(mSpriteProgram);
+
     glUniform4fv(mSpriteUniformTickcolorIndex, 1, WHITE);
-    glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(PVM));
     /* Draw tick marks on z axis */
     glUniform1i(mSpriteUniformTickaxisIndex, 1);
     glDrawArrays(GL_POINTS, 6, mTickCount);
@@ -643,18 +644,22 @@ void chart3d_impl::render(const int pWindowId,
     glUseProgram(0);
     glPointSize(1);
     glDisable(GL_PROGRAM_POINT_SIZE);
+
     chart3d_impl::unbindResources();
 
-    renderTickLabels(pWindowId, w, h, mZText, trans, 0);
-    renderTickLabels(pWindowId, w, h, mYText, trans, mTickCount);
-    renderTickLabels(pWindowId, w, h, mXText, trans, 2*mTickCount);
+    float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
+    float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
+
+    renderTickLabels(pWindowId, w, h, mZText, PVM, 0);
+    renderTickLabels(pWindowId, w, h, mYText, PVM, mTickCount);
+    renderTickLabels(pWindowId, w, h, mXText, PVM, 2*mTickCount);
 
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
     float pos[2];
     /* render chart axes titles */
     if (!mZTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
+        glm::vec4 res = PVM * glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
         pos[0] -= 6*(mTickSize * (w/pVPW));
@@ -662,7 +667,7 @@ void chart3d_impl::render(const int pWindowId,
         fonter->render(pWindowId, pos, WHITE, mZTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
     if (!mYTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(1.0f, 0.0f, -1.0f, 1.0f);
+        glm::vec4 res = PVM * glm::vec4(1.0f, 0.0f, -1.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
         pos[0] += 0.5 * ((mTickSize * (w/pVPW)) + mYTitle.length()/2 * CHART2D_FONT_SIZE);
@@ -670,18 +675,12 @@ void chart3d_impl::render(const int pWindowId,
         fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE);
     }
     if (!mXTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, -1.0f, 1.0f);
+        glm::vec4 res = PVM * glm::vec4(0.0f, -1.0f, -1.0f, 1.0f);
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
         pos[0] -= (mTickSize * (w/pVPW)) + mXTitle.length()/2 * CHART2D_FONT_SIZE;
         pos[1] -= 4*(mTickSize * (h/pVPH));
         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
-    }
-
-    /* render all the renderables */
-    for (auto renderable : mRenderables) {
-        renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, PV);
     }
 
     CheckGL("End chart3d_impl::renderChart");

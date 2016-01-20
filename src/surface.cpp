@@ -129,7 +129,6 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUseProgram(mMarkerProgram);
 
         glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform2fv(mMarkerRangeIndex, 3, mRange);
         glUniform1i(mMarkerPVCIndex, mIsPVCOn);
         glUniform1i(mMarkerTypeIndex, mMarkerType);
         glUniform4fv(mMarkerColIndex, 1, mColor);
@@ -160,13 +159,12 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
 
     mMarkerProgram   = initShaders(glsl::plot3_vs.c_str(), glsl::marker_fs.c_str());
     mMarkerMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
-    mMarkerRangeIndex= glGetUniformLocation(mMarkerProgram, "minmaxs");
-    mMarkerPointIndex= glGetAttribLocation (mMarkerProgram, "point");
-    mMarkerColorIndex= glGetAttribLocation (mMarkerProgram, "color");
-    mMarkerAlphaIndex= glGetAttribLocation (mMarkerProgram, "alpha");
     mMarkerPVCIndex  = glGetUniformLocation(mMarkerProgram, "isPVCOn");
     mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
     mMarkerColIndex  = glGetUniformLocation(mMarkerProgram, "marker_color");
+    mMarkerPointIndex= glGetAttribLocation (mMarkerProgram, "point");
+    mMarkerColorIndex= glGetAttribLocation (mMarkerProgram, "color");
+    mMarkerAlphaIndex= glGetAttribLocation (mMarkerProgram, "alpha");
 
     mSurfProgram    = initShaders(glsl::plot3_vs.c_str(), glsl::plot3_fs.c_str());
     mSurfMatIndex   = glGetUniformLocation(mSurfProgram, "transform");
@@ -212,6 +210,10 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
 surface_impl::~surface_impl()
 {
     CheckGL("Begin Plot::~Plot");
+    for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
+        GLuint vao = it->second;
+        glDeleteVertexArrays(1, &vao);
+    }
     glDeleteBuffers(1, &mVBO);
     glDeleteBuffers(1, &mCBO);
     glDeleteBuffers(1, &mABO);
@@ -239,7 +241,6 @@ void scatter3_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUseProgram(mMarkerProgram);
 
         glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
-        glUniform2fv(mMarkerRangeIndex, 3, mRange);
         glUniform1i(mMarkerPVCIndex, mIsPVCOn);
         glUniform1i(mMarkerTypeIndex, mMarkerType);
         glUniform4fv(mMarkerColIndex, 1, mColor);

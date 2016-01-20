@@ -1,7 +1,7 @@
 #version 330
 
-uniform bool isPVCOn;
 uniform vec2 minmaxs[3];
+uniform bool isPVCOn;
 
 in vec4 pervcol;
 in vec4 hpoint;

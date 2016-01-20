@@ -98,6 +98,10 @@ int main(void)
     fg::copy(hist, hist_out);
 
     do {
+        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
+        wnd.draw(1, 0, chart, "Histogram of Noisy Image");
+        wnd.swapBuffers();
+
         kernel(dev_out);
         kernel_hist(dev_out, hist_out);
         fg::copy(img, dev_out);
@@ -105,9 +109,6 @@ int main(void)
         if(fmod(persistance, 0.5f) < 0.01)
             fg::copy(hist, hist_out);
 
-        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
-        wnd.draw(1, 0, chart, "Histogram of Noisy Image");
-        wnd.swapBuffers();
     } while(!wnd.close());
 
     CUDA_ERROR_CHECK(cudaFree(dev_out));

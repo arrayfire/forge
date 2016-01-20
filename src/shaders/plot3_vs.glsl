@@ -1,7 +1,6 @@
 #version 330
 
 uniform mat4 transform;
-uniform vec2 minmaxs[3];
 
 in vec3 point;
 in vec3 color;
@@ -15,5 +14,4 @@ void main(void)
    hpoint      = vec4(point.xyz,1);
    pervcol     = vec4(color, alpha);
    gl_Position = transform * vec4(point.xyz, 1);
-   gl_PointSize= 10;
 }

@@ -65,9 +65,6 @@ void hist_impl::bindResources(const int pWindowId)
 
 void hist_impl::unbindResources() const
 {
-    glVertexAttribDivisor(mFreqIndex, 0);
-    glVertexAttribDivisor(mColorIndex, 0);
-    glVertexAttribDivisor(mAlphaIndex, 0);
     glBindVertexArray(0);
 }
 
@@ -87,12 +84,12 @@ hist_impl::hist_impl(const uint pNBins, const fg::dtype pDataType)
     mYMaxIndex   = glGetUniformLocation(mProgram, "ymax"     );
     mNBinsIndex  = glGetUniformLocation(mProgram, "nbins"    );
     mMatIndex    = glGetUniformLocation(mProgram, "transform");
+    mPVCIndex    = glGetUniformLocation(mProgram, "isPVCOn"  );
+    mBColorIndex = glGetUniformLocation(mProgram, "barColor" );
     mPointIndex  = glGetAttribLocation (mProgram, "point"    );
     mFreqIndex   = glGetAttribLocation (mProgram, "freq"     );
     mColorIndex  = glGetAttribLocation (mProgram, "color"    );
     mAlphaIndex  = glGetAttribLocation (mProgram, "alpha"    );
-    mPVCIndex    = glGetUniformLocation(mProgram, "isPVCOn"  );
-    mBColorIndex = glGetUniformLocation(mProgram, "barColor" );
 
     mVBOSize = mNBins;
     mCBOSize = 3*mVBOSize;
@@ -139,8 +136,8 @@ void hist_impl::render(const int pWindowId,
                        const glm::mat4& pTransform)
 {
     CheckGL("Begin hist_impl::render");
-    glScissor(pX, pY, pVPW, pVPH);
     glEnable(GL_SCISSOR_TEST);
+    glScissor(pX, pY, pVPW, pVPH);
     glUseProgram(mProgram);
 
     glUniform1f(mYMaxIndex, mRange[3]);

@@ -34,7 +34,7 @@ struct Bitmap {
 Bitmap createBitmap(unsigned w, unsigned h);
 void destroyBitmap(Bitmap& bmp);
 void kernel(Bitmap& bmp);
-void hist_freq(Bitmap& bmp, int *hist_array, const unsigned nbins);
+void populateBins(Bitmap& bmp, int *hist_array, const unsigned nbins);
 
 float perlinNoise(float x, float y, float z, int tileSize);
 float octavesPerlin(float x, float y, float z, int octaves, float persistence, int tileSize);
@@ -95,24 +95,26 @@ int main(void) {
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    int histogram_array[NBINS] = {0};
-    hist_freq(bmp, &histogram_array[0], NBINS);
-    fg::copy(hist, histogram_array);
+    std::vector<int> histArray(NBINS, 0);
+    populateBins(bmp, histArray.data(), NBINS);
+    fg::copy(hist, histArray.data());
 
     do {
+        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
+        wnd.draw(1, 0, chart, "Histogram of Noisy Image");
+
+        wnd.swapBuffers();
+
         kernel(bmp);
         fg::copy(img, bmp.ptr);
 
-        int histogram_array[NBINS] = {0};
-        hist_freq(bmp, &histogram_array[0], NBINS);
+        std::vector<int> histArray(NBINS, 0);
+        populateBins(bmp, histArray.data(), NBINS);
+
         // limit histogram update frequency
         if(fmod(t,0.4f) < 0.02f)
-            fg::copy(hist, histogram_array);
+            fg::copy(hist, histArray.data());
 
-        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
-        wnd.draw(1, 0, chart, "Histogram of Noisy Image");
-        // draw window and poll for events last
-        wnd.swapBuffers();
     } while(!wnd.close());
 
     return 0;
@@ -149,7 +151,7 @@ void kernel(Bitmap& bmp) {
     tileSize++;
 }
 
-void hist_freq(Bitmap& bmp, int *hist_array, const unsigned nbins){
+void populateBins(Bitmap& bmp, int *hist_array, const unsigned nbins){
     for (unsigned y=0; y<bmp.height; ++y) {
         for (unsigned x=0; x<bmp.width; ++x) {
             int offset  = x + y * bmp.width;

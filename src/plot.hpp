@@ -53,7 +53,6 @@ class plot_impl : public AbstractRenderable {
         GLuint    mMarkerTypeIndex;
         GLuint    mMarkerColIndex;
         GLuint    mMarkerMatIndex;
-        GLuint    mMarkerRangeIndex;
         GLuint    mMarkerPointIndex;
         GLuint    mMarkerColorIndex;
         GLuint    mMarkerAlphaIndex;
@@ -73,8 +72,10 @@ class plot_impl : public AbstractRenderable {
                 // attach vertices
                 glEnableVertexAttribArray(mPlotPointIndex);
                 glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-                glVertexAttribPointer(mPlotPointIndex, (PLOT_TYPE==fg::FG_2D ? 2 : 3),
-                                      mGLType, GL_FALSE, 0, 0);
+                if (PLOT_TYPE==fg::FG_2D)
+                    glVertexAttribPointer(mPlotPointIndex, 2, mGLType, GL_FALSE, 0, 0);
+                else if (PLOT_TYPE==fg::FG_3D)
+                    glVertexAttribPointer(mPlotPointIndex, 3, mGLType, GL_FALSE, 0, 0);
                 // attach colors
                 glEnableVertexAttribArray(mPlotColorIndex);
                 glBindBuffer(GL_ARRAY_BUFFER, mCBO);
@@ -128,6 +129,7 @@ class plot_impl : public AbstractRenderable {
                 glm::mat4 model= rMat * tMat * sMat;
 
                 pOut = pInput * model;
+                glScissor(pX, pY, pVPW, pVPH);
             } else if (PLOT_TYPE == fg::FG_2D) {
                 //FIXME: Using hard constants for now, find a way to get chart values
                 const float lMargin = 68;
@@ -166,7 +168,7 @@ class plot_impl : public AbstractRenderable {
             mPlotProgram(-1), mMarkerProgram(-1), mPlotMatIndex(-1), mPlotPVCOnIndex(-1),
             mPlotUColorIndex(-1), mPlotRangeIndex(-1), mPlotPointIndex(-1), mPlotColorIndex(-1),
             mPlotAlphaIndex(-1), mMarkerPVCOnIndex(-1), mMarkerTypeIndex(-1),
-            mMarkerColIndex(-1), mMarkerMatIndex(-1), mMarkerRangeIndex(-1), mMarkerPointIndex(-1),
+            mMarkerColIndex(-1), mMarkerMatIndex(-1), mMarkerPointIndex(-1),
             mMarkerColorIndex(-1), mMarkerAlphaIndex(-1)
         {
             CheckGL("Begin plot_impl::plot_impl");
@@ -178,12 +180,15 @@ class plot_impl : public AbstractRenderable {
                 mPlotProgram     = initShaders(glsl::marker2d_vs.c_str(), glsl::histogram_fs.c_str());
                 mMarkerProgram   = initShaders(glsl::marker2d_vs.c_str(), glsl::marker_fs.c_str());
                 mPlotUColorIndex = glGetUniformLocation(mPlotProgram, "barColor");
+                mVBOSize = 2*mNumPoints;
             } else  if (PLOT_TYPE==fg::FG_3D) {
                 mPlotProgram     = initShaders(glsl::plot3_vs.c_str(), glsl::plot3_fs.c_str());
                 mMarkerProgram   = initShaders(glsl::plot3_vs.c_str(), glsl::marker_fs.c_str());
                 mPlotRangeIndex  = glGetUniformLocation(mPlotProgram, "minmaxs");
-                mMarkerRangeIndex= glGetUniformLocation(mMarkerProgram, "minmaxs");
+                mVBOSize = 3*mNumPoints;
             }
+            mCBOSize = 3*mNumPoints;
+            mABOSize = mNumPoints;
 
             mPlotMatIndex    = glGetUniformLocation(mPlotProgram, "transform");
             mPlotPVCOnIndex  = glGetUniformLocation(mPlotProgram, "isPVCOn");
@@ -198,14 +203,6 @@ class plot_impl : public AbstractRenderable {
             mMarkerPointIndex = glGetAttribLocation (mMarkerProgram, "point");
             mMarkerColorIndex = glGetAttribLocation (mMarkerProgram, "color");
             mMarkerAlphaIndex = glGetAttribLocation (mMarkerProgram, "alpha");
-
-            if (PLOT_TYPE==fg::FG_2D) {
-                mVBOSize = 2*mNumPoints;
-            } else  if (PLOT_TYPE==fg::FG_3D) {
-                mVBOSize = 3*mNumPoints;
-            }
-            mCBOSize = 3*mNumPoints;
-            mABOSize = mNumPoints;
 
 #define PLOT_CREATE_BUFFERS(type)   \
             mVBO = createBuffer<type>(GL_ARRAY_BUFFER, mVBOSize, NULL, GL_DYNAMIC_DRAW);    \
@@ -268,16 +265,15 @@ class plot_impl : public AbstractRenderable {
                 plot_impl::bindResources(pWindowId);
                 glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
                 plot_impl::unbindResources();
+
                 glUseProgram(0);
             }
 
             if (mMarkerType != fg::FG_NONE) {
                 glEnable(GL_PROGRAM_POINT_SIZE);
+                glPointSize(10);
                 glUseProgram(mMarkerProgram);
 
-                if (PLOT_TYPE== fg::FG_3D) {
-                    glUniform2fv(mMarkerRangeIndex, 3, mRange);
-                }
                 glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(mvp));
                 glUniform1i(mMarkerPVCOnIndex, mIsPVCOn);
                 glUniform1i(mMarkerTypeIndex, mMarkerType);
@@ -286,8 +282,10 @@ class plot_impl : public AbstractRenderable {
                 plot_impl::bindResources(pWindowId);
                 glDrawArrays(GL_POINTS, 0, mNumPoints);
                 plot_impl::unbindResources();
+
                 glUseProgram(0);
                 glDisable(GL_PROGRAM_POINT_SIZE);
+                glPointSize(1);
             }
 
             glDisable(GL_SCISSOR_TEST);

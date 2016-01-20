@@ -15,6 +15,7 @@
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include <vector>
 
@@ -125,6 +126,9 @@ GLuint screenQuadVBO(const int pWindowId);
  *     `glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);`
  */
 GLuint screenQuadVAO(const int pWindowId);
+
+/* Print glm::mat4 to std::cout stream */
+std::ostream& operator<<(std::ostream&, const glm::mat4&);
 
 namespace internal
 {
