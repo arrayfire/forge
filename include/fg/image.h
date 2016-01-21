@@ -25,6 +25,8 @@ class Window;
 
 /**
    \class Image
+
+   \brief Image is plain rendering of an image over the window or sub-region of it.
  */
 class Image {
     private:
@@ -47,7 +49,7 @@ class Image {
         /**
            Copy constructor of Image
 
-           \param[in] other is the Image of which we make a copy of.
+           \param[in] pOther is the Image of which we make a copy of.
          */
         FGAPI Image(const Image& pOther);
 

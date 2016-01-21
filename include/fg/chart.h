@@ -28,6 +28,12 @@ namespace fg
 
 /**
    \class Chart
+
+   \brief Chart is base canvas where other plottable objects are rendered.
+
+   Charts come in two types:
+        - \ref FG_2D - Two dimensional charts
+        - \ref FG_3D - Three dimensional charts
  */
 class Chart {
     private:
@@ -38,7 +44,7 @@ class Chart {
         /**
            Creates a Chart object with given dimensional property
 
-           \param[in] pType is chart dimension property
+           \param[in] cType is chart dimension property
          */
         FGAPI Chart(const ChartType cType);
 
@@ -50,9 +56,9 @@ class Chart {
         /**
            Set axes titles for the chart
 
-           \param[in] x is x-axis title label
-           \param[in] y is y-axis title label
-           \param[in] z is z-axis title label
+           \param[in] pX is x-axis title label
+           \param[in] pY is y-axis title label
+           \param[in] pZ is z-axis title label
          */
         FGAPI void setAxesTitles(const std::string pX,
                                  const std::string pY,
@@ -61,30 +67,92 @@ class Chart {
         /**
            Set axes data ranges
 
-           \param[in] xmin is x-axis minimum data value
-           \param[in] xmax is x-axis maximum data value
-           \param[in] ymin is y-axis minimum data value
-           \param[in] ymax is y-axis maximum data value
-           \param[in] zmin is z-axis minimum data value
-           \param[in] zmax is z-axis maximum data value
+           \param[in] pXmin is x-axis minimum data value
+           \param[in] pXmax is x-axis maximum data value
+           \param[in] pYmin is y-axis minimum data value
+           \param[in] pYmax is y-axis maximum data value
+           \param[in] pZmin is z-axis minimum data value
+           \param[in] pZmax is z-axis maximum data value
          */
         FGAPI void setAxesLimits(const float pXmin, const float pXmax,
                                  const float pYmin, const float pYmax,
                                  const float pZmin=-1, const float pZmax=1);
 
+        /**
+           Add an existing Image object to the current chart
+
+           \param[in] pImage is the Image to render on the chart
+         */
         FGAPI void add(const Image& pImage);
+
+        /**
+           Add an existing Histogram object to the current chart
+
+           \param[in] pHistogram is the Histogram to render on the chart
+         */
         FGAPI void add(const Histogram& pHistogram);
+
+        /**
+           Add an existing Plot object to the current chart
+
+           \param[in] pPlot is the Plot to render on the chart
+         */
         FGAPI void add(const Plot& pPlot);
+
+        /**
+           Add an existing Surface object to the current chart
+
+           \param[in] pSurface is the Surface to render on the chart
+         */
         FGAPI void add(const Surface& pSurface);
 
+        /**
+           Create and add an Image object to the current chart
+
+           \param[in] pWidth Width of the image
+           \param[in] pHeight Height of the image
+           \param[in] pFormat Color channel format of image, uses one of the values
+                      of \ref ChannelFormat
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
+                      the integral data type of histogram data
+         */
         FGAPI Image image(const uint pWidth, const uint pHeight,
                           const ChannelFormat pFormat=FG_RGBA, const dtype pDataType=f32);
 
+        /**
+           Create and add an Histogram object to the current chart
+
+           \param[in] pNBins is number of bins the data is sorted out
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
+                      the integral data type of histogram data
+         */
         FGAPI Histogram histogram(const uint pNBins, const dtype pDataType);
 
+        /**
+           Create and add an Plot object to the current chart
+
+           \param[in] pNumPoints is number of data points to display
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
+                      the integral data type of plot data
+           \param[in] pPlotType dictates the type of plot/graph,
+                      it can take one of the values of \ref PlotType
+           \param[in] pMarkerType indicates which symbol is rendered as marker. It can take one of
+                      the values of \ref MarkerType.
+         */
         FGAPI Plot plot(const uint pNumPoints, const dtype pDataType,
                         const PlotType pPlotType=FG_LINE, const MarkerType pMarkerType=FG_NONE);
 
+        /**
+           Create and add an Plot object to the current chart
+
+           \param[in] pNumXPoints is number of data points along X dimension
+           \param[in] pNumYPoints is number of data points along Y dimension
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
+                      the integral data type of plot data
+           \param[in] pPlotType is the render type which can be one of \ref PlotType (valid choices
+                      are FG_SURFACE and FG_SCATTER)
+           \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_SCATTER plot type
+         */
         FGAPI Surface surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
                               const PlotType pPlotType=FG_SURFACE, const MarkerType pMarkerType=FG_NONE);
 

@@ -24,7 +24,7 @@ class Window;
 /**
    \class Histogram
 
-   \brief Bar graph to display data frequencey.
+   \brief Histogram is a bar graph to display data frequencey.
  */
 class Histogram {
     private:
@@ -43,7 +43,7 @@ class Histogram {
         /**
            Copy constructor for Histogram
 
-           \param[in] other is the Histogram of which we make a copy of.
+           \param[in] pOther is the Histogram of which we make a copy of.
          */
         FGAPI Histogram(const Histogram& pOther);
 
@@ -55,7 +55,7 @@ class Histogram {
         /**
            Set the color of bar in the bar graph(histogram)
 
-           \param[in] col takes values of type fg::Color to define bar color
+           \param[in] pColor takes values of type fg::Color to define bar color
         **/
         FGAPI void setColor(const Color pColor);
 

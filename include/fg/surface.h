@@ -26,7 +26,7 @@ class Window;
 /**
    \class Surface
 
-   \brief 3d graph to display plots.
+   \brief Surface is a graph to display three dimensional data.
  */
 class Surface {
     private:
@@ -50,7 +50,7 @@ class Surface {
         /**
            Copy constructor for Plot
 
-           \param[in] other is the Plot of which we make a copy of.
+           \param[in] pOther is the Plot of which we make a copy of.
          */
         FGAPI Surface(const Surface& pOther);
 
@@ -62,7 +62,7 @@ class Surface {
         /**
            Set the color of line graph(plot)
 
-           \param[in] col takes values of fg::Color to define plot color
+           \param[in] pColor takes values of fg::Color to define plot color
         */
         FGAPI void setColor(const fg::Color pColor);
 

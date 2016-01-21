@@ -26,7 +26,7 @@ class Window;
 /**
    \class Plot
 
-   \brief Line graph to display plots.
+   \brief Plot is a line graph to display two dimensional data.
  */
 class Plot {
     private:
@@ -39,14 +39,19 @@ class Plot {
            \param[in] pNumPoints is number of data points to display
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of plot data
+           \param[in] pChartType dictates the dimensionality of the chart
+           \param[in] pPlotType dictates the type of plot/graph,
+                      it can take one of the values of \ref PlotType
+           \param[in] pMarkerType indicates which symbol is rendered as marker. It can take one of
+                      the values of \ref MarkerType.
          */
         FGAPI Plot(const uint pNumPoints, const dtype pDataType, const ChartType pChartType,
-                   const PlotType=FG_LINE, const MarkerType=FG_NONE);
+                   const PlotType pPlotType=FG_LINE, const MarkerType pMarkerType=FG_NONE);
 
         /**
            Copy constructor for Plot
 
-           \param[in] other is the Plot of which we make a copy of.
+           \param[in] pOther is the Plot of which we make a copy of.
          */
         FGAPI Plot(const Plot& pOther);
 
@@ -58,7 +63,7 @@ class Plot {
         /**
            Set the color of line graph(plot)
 
-           \param[in] col takes values of fg::Color to define plot color
+           \param[in] pColor takes values of fg::Color to define plot color
         */
         FGAPI void setColor(const fg::Color pColor);
 
