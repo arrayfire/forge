@@ -118,7 +118,8 @@ AbstractChart::AbstractChart(const int pLeftMargin, const int pRightMargin,
       mDecorVBO(-1), mBorderProgram(-1), mSpriteProgram(-1),
       mBorderAttribPointIndex(-1), mBorderUniformColorIndex(-1),
       mBorderUniformMatIndex(-1), mSpriteUniformMatIndex(-1),
-      mSpriteUniformTickcolorIndex(-1), mSpriteUniformTickaxisIndex(-1)
+      mSpriteUniformTickcolorIndex(-1), mSpriteUniformTickaxisIndex(-1),
+      mLegendX(0.4f), mLegendY(0.9f)
 {
     CheckGL("Begin AbstractChart::AbstractChart");
     /* load font Vera font for chart text
@@ -179,6 +180,12 @@ void AbstractChart::setAxesTitles(const std::string& pXTitle,
     mXTitle = std::string(pXTitle);
     mYTitle = std::string(pYTitle);
     mZTitle = std::string(pZTitle);
+}
+
+void AbstractChart::setLegendPosition(const float pX, const float pY)
+{
+    mLegendX = pX;
+    mLegendY = pY;
 }
 
 float AbstractChart::xmax() const { return mXMax; }
@@ -348,6 +355,12 @@ void chart2d_impl::render(const int pWindowId,
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 
+    auto &fonter = getChartFont();
+    fonter->setOthro2D(int(w), int(h));
+
+    float pos[2] = {mLegendX, mLegendY};
+    float lcol[4];
+
     /* set uniform attributes of shader
      * for drawing the plot borders */
     glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
@@ -358,6 +371,14 @@ void chart2d_impl::render(const int pWindowId,
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
         renderable->render(pWindowId, pX, pY, pVPW, pVPH, trans);
+        renderable->getColor(lcol[0], lcol[1], lcol[2], lcol[3]);
+
+        float cpos[2];
+        glm::vec4 res = trans * glm::vec4(pos[0], pos[1], 0.0f, 1.0f);
+        cpos[0] = res.x * w;
+        cpos[1] = res.y * h;
+        fonter->render(pWindowId, cpos, lcol, renderable->legend().c_str(), CHART2D_FONT_SIZE);
+        pos[1] -= (CHART2D_FONT_SIZE/(float)pVPH);
     }
 
     chart2d_impl::bindResources(pWindowId);
@@ -394,9 +415,6 @@ void chart2d_impl::render(const int pWindowId,
     renderTickLabels(pWindowId, int(w), int(h), mYText, trans, 0, false);
     renderTickLabels(pWindowId, int(w), int(h), mXText, trans, mTickCount, false);
 
-    auto &fonter = getChartFont();
-    fonter->setOthro2D(int(w), int(h));
-    float pos[2];
     /* render chart axes titles */
     if (!mYTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
@@ -714,6 +732,11 @@ void Chart::setAxesLimits(const float pXmin, const float pXmax,
                           const float pZmin, const float pZmax)
 {
     mValue->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
+}
+
+void Chart::setLegendPosition(const float pX, const float pY)
+{
+    mValue->setLegendPosition(pX, pY);
 }
 
 void Chart::add(const Image& pImage)

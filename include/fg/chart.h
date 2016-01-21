@@ -79,6 +79,17 @@ class Chart {
                                  const float pZmin=-1, const float pZmax=1);
 
         /**
+           Set legend position for Chart
+
+           \param[in] pX is horizontal position in normalized coordinates
+           \param[in] pY is vertical position in normalized coordinates
+
+           \note By normalized coordinates, the range of these coordinates is expected to be [0-1].
+           (0,0) is the bottom hand left corner.
+         */
+        FGAPI void setLegendPosition(const float pX, const float pY);
+
+        /**
            Add an existing Image object to the current chart
 
            \param[in] pImage is the Image to render on the chart

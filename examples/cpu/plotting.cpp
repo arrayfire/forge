@@ -67,19 +67,25 @@ int main(void)
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt0 = chart.plot(sinData.size()/2, fg::f32);                                 //create a default plot
-    fg::Plot plt1 = chart.plot(cosData.size()/2, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
-    fg::Plot plt2 = chart.plot(tanData.size()/2, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
+    fg::Plot plt0 = chart.plot(sinData.size()/2, fg::f32); //create a default plot
+    fg::Plot plt1 = chart.plot(cosData.size()/2, fg::f32, fg::FG_LINE, fg::FG_NONE); //or specify a specific plot type
+    fg::Plot plt2 = chart.plot(tanData.size()/2, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE); //last parameter specifies marker shape
     fg::Plot plt3 = chart.plot(logData.size()/2, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
-
 
     /*
      * Set plot colors
      */
     plt0.setColor(fg::FG_YELLOW);
     plt1.setColor(fg::FG_BLUE);
-    plt2.setColor(fg::FG_WHITE);                                                  //use a forge predefined color
-    plt3.setColor((fg::Color) 0xABFF01FF);                                        //or any hex-valued color
+    plt2.setColor(fg::FG_WHITE);            //use a forge predefined color
+    plt3.setColor((fg::Color) 0xABFF01FF);  //or any hex-valued color
+    /*
+     * Set plot legends
+     */
+    plt0.setLegend("Sine");
+    plt1.setLegend("Cosine");
+    plt2.setLegend("Tangent");
+    plt3.setLegend("Log base 10");
 
 
     /* copy your data into the pixel buffer object exposed by

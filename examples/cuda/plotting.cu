@@ -57,8 +57,15 @@ int main(void)
      */
     plt0.setColor(fg::FG_YELLOW);
     plt1.setColor(fg::FG_BLUE);
-    plt2.setColor(fg::FG_WHITE);                                                  //use a forge predefined color
-    plt3.setColor((fg::Color) 0xABFF01FF);                                        //or any hex-valued color
+    plt2.setColor(fg::FG_WHITE);            //use a forge predefined color
+    plt3.setColor((fg::Color) 0xABFF01FF);  //or any hex-valued color
+    /*
+     * Set plot legends
+     */
+    plt0.setLegend("Sine");
+    plt1.setLegend("Cosine");
+    plt2.setLegend("Tangent");
+    plt3.setLegend("Log base 10");
 
     CUDA_ERROR_CHECK(cudaMalloc((void**)&sin_out, sizeof(float) * DATA_SIZE * 2));
     CUDA_ERROR_CHECK(cudaMalloc((void**)&cos_out, sizeof(float) * DATA_SIZE * 2));

@@ -112,8 +112,15 @@ int main(void)
          */
         plt0.setColor(fg::FG_BLUE);
         plt1.setColor(fg::FG_YELLOW);
-        plt2.setColor((fg::Color) 0xABFF01FF);                              //or any hex-valued color
-        plt3.setColor(fg::FG_WHITE);                                        //use a forge predefined color
+        plt2.setColor((fg::Color) 0xABFF01FF);      //or any hex-valued color
+        plt3.setColor(fg::FG_WHITE);                //use a forge predefined color
+        /*
+         * Set plot legends
+         */
+        plt0.setLegend("Sine");
+        plt1.setLegend("Cosine");
+        plt2.setLegend("Tangent");
+        plt3.setLegend("Log base 10");
 
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU

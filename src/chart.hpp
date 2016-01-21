@@ -57,6 +57,9 @@ class AbstractChart : public AbstractRenderable {
         GLuint mSpriteUniformMatIndex;
         GLuint mSpriteUniformTickcolorIndex;
         GLuint mSpriteUniformTickaxisIndex;
+        /* Chart legend position*/
+        float mLegendX;
+        float mLegendY;
         /* VAO map to store a vertex array object
          * for each valid window context */
         std::map<int, GLuint> mVAOMap;
@@ -89,6 +92,8 @@ class AbstractChart : public AbstractRenderable {
         void setAxesLimits(const float pXmin, const float pXmax,
                            const float pYmin, const float pYmax,
                            const float pZmin, const float pZmax);
+
+        void setLegendPosition(const float pX, const float pY);
 
         float xmax() const;
         float xmin() const;
@@ -173,6 +178,10 @@ class _Chart {
                                   const float pYmin, const float pYmax,
                                   const float pZmin, const float pZmax) {
             mChart->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
+        }
+
+        inline void setLegendPosition(const uint pX, const uint pY) {
+            mChart->setLegendPosition(pX, pY);
         }
 
         inline void addRenderable(const std::shared_ptr<AbstractRenderable> pRenderable) {

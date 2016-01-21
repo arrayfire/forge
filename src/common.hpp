@@ -159,36 +159,51 @@ class AbstractRenderable {
          *  cbo is for colors of those vertices
          *  abo is for alpha values for those vertices
          */
-        virtual GLuint vbo() const { return mVBO; }
-        virtual GLuint cbo() const { return mCBO; }
-        virtual GLuint abo() const { return mABO; }
-        virtual size_t vboSize() const { return mVBOSize; }
-        virtual size_t cboSize() const { return mCBOSize; }
-        virtual size_t aboSize() const { return mABOSize; }
+        GLuint vbo() const { return mVBO; }
+        GLuint cbo() const { return mCBO; }
+        GLuint abo() const { return mABO; }
+        size_t vboSize() const { return mVBOSize; }
+        size_t cboSize() const { return mCBOSize; }
+        size_t aboSize() const { return mABOSize; }
 
         /* Set color for rendering
          */
-        virtual void setColor(const float pRed, const float pGreen,
-                             const float pBlue, const float pAlpha) {
+        void setColor(const float pRed, const float pGreen,
+                      const float pBlue, const float pAlpha) {
             mColor[0] = clampTo01(pRed);
             mColor[1] = clampTo01(pGreen);
             mColor[2] = clampTo01(pBlue);
             mColor[3] = clampTo01(pAlpha);
         }
 
+        /* Get renderable solid color
+         */
+        void getColor(float& pRed, float& pGreen, float& pBlue, float& pAlpha) {
+            pRed    = mColor[0];
+            pGreen  = mColor[1];
+            pBlue   = mColor[2];
+            pAlpha  = mColor[3];
+        }
+
         /* Set legend for rendering
          */
-        virtual void setLegend(const std::string& pLegend) {
+        void setLegend(const std::string& pLegend) {
             mLegend = pLegend;
+        }
+
+        /* Get legend string
+         */
+        const std::string& legend() const {
+            return mLegend;
         }
 
         /* Set 3d world coordinate ranges
          *
          * This method is mostly used for charts and related renderables
          */
-        virtual void setRanges(const float pMinX, const float pMaxX,
-                               const float pMinY, const float pMaxY,
-                               const float pMinZ, const float pMaxZ) {
+        void setRanges(const float pMinX, const float pMaxX,
+                       const float pMinY, const float pMaxY,
+                       const float pMinZ, const float pMaxZ) {
             mRange[0] = pMinX; mRange[1] = pMaxX;
             mRange[2] = pMinY; mRange[3] = pMaxY;
             mRange[4] = pMinZ; mRange[5] = pMaxZ;
