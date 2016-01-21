@@ -17,10 +17,10 @@ vec3 hsv2rgb(vec3 c)
 
 void main(void)
 {
-   bool nin_bounds = (hpoint.x > minmaxs[0].x || hpoint.x < minmaxs[0].y ||
-       hpoint.y > minmaxs[1].x || hpoint.y < minmaxs[1].y || hpoint.z < minmaxs[2].y);
+   bool nin_bounds = (hpoint.x > minmaxs[0].y || hpoint.x < minmaxs[0].x ||
+       hpoint.y > minmaxs[1].y || hpoint.y < minmaxs[1].x || hpoint.z < minmaxs[2].x);
 
-   float height = (minmaxs[2].x- hpoint.z)/(minmaxs[2].x-minmaxs[2].y);
+   float height = (minmaxs[2].y- hpoint.z)/(minmaxs[2].y-minmaxs[2].x);
 
    if(nin_bounds)
        discard;

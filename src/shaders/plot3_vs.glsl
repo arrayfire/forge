@@ -13,5 +13,5 @@ void main(void)
 {
    hpoint      = vec4(point.xyz,1);
    pervcol     = vec4(color, alpha);
-   gl_Position = transform * vec4(point.xyz, 1);
+   gl_Position = transform * hpoint;
 }
