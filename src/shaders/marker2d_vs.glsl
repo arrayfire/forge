@@ -12,5 +12,4 @@ void main(void)
 {
    pervcol     = vec4(color, alpha);
    gl_Position = transform * vec4(point.xy, 0, 1);
-   gl_PointSize= 10;
 }
