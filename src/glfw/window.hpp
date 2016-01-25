@@ -39,6 +39,7 @@ class Widget {
         float       mLastYPos;
         glm::mat4   mMVP;
         int         mButton;
+        glm::vec3   mLastPos;
 
         Widget();
 

@@ -20,15 +20,16 @@ namespace wtk
 
 class Widget {
     private:
-        SDL_Window*     mWindow;
-        SDL_GLContext   mContext;
-        bool            mClose;
-        uint32_t        mWindowId;
-        float           mLastXPos;
-        float           mLastYPos;
-        glm::mat4       mMVP;
-        int             mButton;
-        SDL_Keycode     mMod;
+        SDL_Window*   mWindow;
+        SDL_GLContext mContext;
+        bool          mClose;
+        uint32_t      mWindowId;
+        float         mLastXPos;
+        float         mLastYPos;
+        glm::mat4     mMVP;
+        int           mButton;
+        SDL_Keycode   mMod;
+        glm::vec3     mLastPos;
 
         Widget();
 

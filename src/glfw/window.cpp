@@ -190,20 +190,6 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
 
     float deltaX = mLastXPos - pXPos;
     float deltaY = mLastYPos - pYPos;
-    bool majorMoveDir = abs(deltaX) > abs(deltaY);  // True for Left-Right, False for Up-Down
-
-    /**
-     * RIGHT + MajorMoveDir = true  && deltaX > 0 => Rotate CW  about Y Axis
-     * RIGHT + MajorMoveDir = true  && deltaX < 0 => Rotate CCW about Y Axis
-     * RIGHT + MajorMoveDir = false && deltaY > 0 => Rotate CW  about X Axis
-     * RIGHT + MajorMoveDir = false && deltaY > 0 => Rotate CCW about X Axis
-     *
-     * LEFT + MajorMoveDir = true   => Translate by deltaX along X
-     * LEFT + MajorMoveDir = false  => Translate by deltaY along Y
-     *
-     * (CTRL/ALT) + LEFT + MajorMoveDir = true && deltaY > 0 => Zoom In
-     * (CTRL/ALT) + LEFT + MajorMoveDir = true && deltaY > 0 => Zoom Out
-     */
 
     if (mButton == GLFW_MOUSE_BUTTON_LEFT) {
         // Translate
@@ -219,14 +205,23 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
             mMVP = scale(mMVP, glm::vec3(pow(deltaY, SPEED)));
         }
     } else if (mButton == GLFW_MOUSE_BUTTON_RIGHT) {
-        // Rotations
-        if (majorMoveDir) {
-            // Rotate about Y axis (left <-> right)
-            mMVP = rotate(mMVP, (float)(SPEED * deltaX), glm::vec3(0.0, 1.0, 0.0));
-        } else {
-            // Rotate about X axis (up <-> down)glm::
-            mMVP = rotate(mMVP, (float)(SPEED * deltaY), glm::vec3(1.0, 0.0, 0.0));
+        int width, height;
+        glfwGetWindowSize(mWindow, &width, &height);
+
+        glm::vec3 curPos = trackballPoint(pXPos, pYPos, width, height);
+        glm::vec3 delta = mLastPos - curPos;
+        float angle = glm::radians(90.0f * sqrt(delta.x*delta.x + delta.y*delta.y + delta.z*delta.z));
+        glm::vec3 axis(
+                mLastPos.y*curPos.z-mLastPos.z*curPos.y,
+                mLastPos.z*curPos.x-mLastPos.x*curPos.z,
+                mLastPos.x*curPos.y-mLastPos.y*curPos.x
+                );
+        float dMag = sqrt(dot(delta, delta));
+        float aMag = sqrt(dot(axis, axis));
+        if (dMag>0 && aMag>0) {
+            mMVP = rotate(mMVP, angle, axis);
         }
+        mLastPos  = curPos;
     }
 
     mLastXPos = pXPos;

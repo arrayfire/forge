@@ -204,7 +204,6 @@ void Widget::pollEvents()
         if(evnt.type == SDL_MOUSEMOTION) {
             double deltaX = -evnt.motion.xrel;
             double deltaY = -evnt.motion.yrel;
-            bool majorMoveDir = abs(deltaX) > abs(deltaY);  // True for Left-Right, False for Up-Down
 
             if(evnt.motion.state == SDL_BUTTON_LMASK &&
                    (mMod == SDLK_LALT || mMod == SDLK_RALT)) {
@@ -220,13 +219,22 @@ void Widget::pollEvents()
                 mMVP = translate(mMVP, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
             } else if (evnt.motion.state == SDL_BUTTON_RMASK) {
                 // Rotations
-                if (majorMoveDir) {
-                    // Rotate about Y axis (left <-> right)
-                    mMVP = rotate(mMVP, (float)(SPEED * deltaX), glm::vec3(0.0, 1.0, 0.0));
-                } else {
-                    // Rotate about X axis (up <-> down)glm::
-                    mMVP = rotate(mMVP, (float)(SPEED * deltaY), glm::vec3(1.0, 0.0, 0.0));
+                int width, height;
+                SDL_GetWindowSize(mWindow, &width, &height);
+                glm::vec3 curPos = trackballPoint(evnt.motion.x, evnt.motion.y, width, height);
+                glm::vec3 delta = mLastPos - curPos;
+                float angle = glm::radians(90.0f * sqrt(delta.x*delta.x + delta.y*delta.y + delta.z*delta.z));
+                glm::vec3 axis(
+                        mLastPos.y*curPos.z-mLastPos.z*curPos.y,
+                        mLastPos.z*curPos.x-mLastPos.x*curPos.z,
+                        mLastPos.x*curPos.y-mLastPos.y*curPos.x
+                        );
+                float dMag = sqrt(dot(delta, delta));
+                float aMag = sqrt(dot(axis, axis));
+                if (dMag>0 && aMag>0) {
+                    mMVP = rotate(mMVP, angle, axis);
                 }
+                mLastPos  = curPos;
             }
 
             mLastXPos = evnt.motion.x;

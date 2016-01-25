@@ -130,6 +130,11 @@ GLuint screenQuadVAO(const int pWindowId);
 /* Print glm::mat4 to std::cout stream */
 std::ostream& operator<<(std::ostream&, const glm::mat4&);
 
+/* get the point of the surface of track ball */
+glm::vec3 trackballPoint(const float pX, const float pY,
+                         const float pWidth, const float pHeight);
+
+
 namespace internal
 {
 

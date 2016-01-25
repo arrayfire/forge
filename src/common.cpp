@@ -21,6 +21,8 @@
 using namespace fg;
 using namespace std;
 
+#define PI 3.14159
+
 typedef struct {
     GLuint vertex;
     GLuint fragment;
@@ -300,4 +302,17 @@ std::ostream& operator<<(std::ostream& pOut, const glm::mat4& pMat)
     pOut << ptr[12] << "\t" << ptr[13] << "\t" << ptr[14] << "\t" << ptr[15] << "\n";
     pOut << "\n";
     return pOut;
+}
+
+glm::vec3 trackballPoint(const float pX, const float pY,
+                         const float pWidth, const float pHeight)
+{
+    float d, a;
+    float x, y, z;
+    x = (2*pX - pWidth)/pWidth;
+    y = (pHeight - 2*pY)/pHeight;
+    d = sqrt(x*x+y*y);
+    z = cos((PI/2.0) * ((d < 1.0) ? d : 1.0));
+    a = 1.0f / sqrt(x*x + y*y + z*z);
+    return glm::vec3(x*a,y*a,z*a);
 }
