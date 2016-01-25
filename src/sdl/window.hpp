@@ -11,6 +11,8 @@
 
 #include <SDL.h>
 
+#include <glm/glm.hpp>
+
 /* the short form wtk stands for
  * Windowing Tool Kit */
 namespace wtk
@@ -22,6 +24,11 @@ class Widget {
         SDL_GLContext   mContext;
         bool            mClose;
         uint32_t        mWindowId;
+        float           mLastXPos;
+        float           mLastYPos;
+        glm::mat4       mMVP;
+        int             mButton;
+        SDL_Keycode     mMod;
 
         Widget();
 
@@ -39,6 +46,10 @@ class Widget {
         long long getDisplayHandle();
 
         void getFrameBufferSize(int* pW, int* pH);
+
+        inline const glm::mat4& getMVP() const {
+            return mMVP;
+        }
 
         bool getClose() const;
 

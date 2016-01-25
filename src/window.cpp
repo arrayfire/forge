@@ -242,7 +242,7 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, 0, 0, wind_width, wind_height, glm::mat4(1.0f));
+    pRenderable->render(mID, 0, 0, wind_width, wind_height, mWindow->getMVP());
 
     mWindow->swapBuffers();
     mWindow->pollEvents();
@@ -297,7 +297,7 @@ void window_impl::draw(int pColId, int pRowId,
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, x_off, y_off, mCellWidth, mCellHeight, glm::mat4(1.0f));
+    pRenderable->render(mID, x_off, y_off, mCellWidth, mCellHeight, mWindow->getMVP());
 
     glDisable(GL_SCISSOR_TEST);
     glViewport(x_off, y_off, mCellWidth, mCellHeight);

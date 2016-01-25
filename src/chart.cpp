@@ -370,7 +370,7 @@ void chart2d_impl::render(const int pWindowId,
     /* render all renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, trans);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, pTransform*trans);
         renderable->getColor(lcol[0], lcol[1], lcol[2], lcol[3]);
 
         float cpos[2];
@@ -627,7 +627,7 @@ void chart3d_impl::render(const int pWindowId,
     /* render all the renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, PV);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, PV*pTransform);
     }
 
     chart3d_impl::bindResources(pWindowId);

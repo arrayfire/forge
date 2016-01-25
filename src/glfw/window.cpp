@@ -10,7 +10,13 @@
 #include <common.hpp>
 #include <glfw/window.hpp>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <iostream>
+
+using glm::rotate;
+using glm::translate;
+using glm::scale;
 
 #define GLFW_THROW_ERROR(msg, err) \
     throw fg::Error("Window constructor", __LINE__, msg, err);
@@ -19,14 +25,13 @@ namespace wtk
 {
 
 Widget::Widget()
-    : mWindow(NULL), mClose(false)
+    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mMVP(glm::mat4(1.0f)), mButton(-1)
 {
 }
 
 Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
+    : mClose(false), mLastXPos(0), mLastYPos(0), mMVP(glm::mat4(1.0f)), mButton(-1)
 {
-    mClose = false;
-
     if (!glfwInit()) {
         std::cerr << "ERROR: GLFW wasn't able to initalize\n";
         GLFW_THROW_ERROR("glfw initilization failed", fg::FG_ERR_GL_ERROR)
@@ -63,13 +68,26 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
     {
         static_cast<Widget*>(glfwGetWindowUserPointer(w))->keyboardHandler(pKey, pScancode, pAction, pMods);
     };
-    glfwSetKeyCallback(mWindow, kbCallback);
 
     auto closeCallback = [](GLFWwindow* w)
     {
         static_cast<Widget*>(glfwGetWindowUserPointer(w))->hide();
     };
+
+    auto cursorCallback = [](GLFWwindow* w, double xpos, double ypos)
+    {
+        static_cast<Widget*>(glfwGetWindowUserPointer(w))->cursorHandler(xpos, ypos);
+    };
+
+    auto mouseButtonCallback = [](GLFWwindow* w, int button, int action, int mods)
+    {
+        static_cast<Widget*>(glfwGetWindowUserPointer(w))->mouseButtonHandler(button, action, mods);
+    };
+
     glfwSetWindowCloseCallback(mWindow, closeCallback);
+    glfwSetKeyCallback(mWindow, kbCallback);
+    glfwSetCursorPosCallback(mWindow, cursorCallback);
+    glfwSetMouseButtonCallback(mWindow, mouseButtonCallback);
 }
 
 Widget::~Widget()
@@ -163,6 +181,74 @@ void Widget::keyboardHandler(int pKey, int pScancode, int pAction, int pMods)
 {
     if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS) {
         hide();
+    }
+}
+
+void Widget::cursorHandler(const float pXPos, const float pYPos)
+{
+    static const float SPEED = 0.005f;
+
+    float deltaX = mLastXPos - pXPos;
+    float deltaY = mLastYPos - pYPos;
+    bool majorMoveDir = abs(deltaX) > abs(deltaY);  // True for Left-Right, False for Up-Down
+
+    /**
+     * RIGHT + MajorMoveDir = true  && deltaX > 0 => Rotate CW  about Y Axis
+     * RIGHT + MajorMoveDir = true  && deltaX < 0 => Rotate CCW about Y Axis
+     * RIGHT + MajorMoveDir = false && deltaY > 0 => Rotate CW  about X Axis
+     * RIGHT + MajorMoveDir = false && deltaY > 0 => Rotate CCW about X Axis
+     *
+     * LEFT + MajorMoveDir = true   => Translate by deltaX along X
+     * LEFT + MajorMoveDir = false  => Translate by deltaY along Y
+     *
+     * (CTRL/ALT) + LEFT + MajorMoveDir = true && deltaY > 0 => Zoom In
+     * (CTRL/ALT) + LEFT + MajorMoveDir = true && deltaY > 0 => Zoom Out
+     */
+
+    if (mButton == GLFW_MOUSE_BUTTON_LEFT) {
+        // Translate
+        mMVP = translate(mMVP, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
+
+    } else if (mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_ALT ||
+               mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_CONTROL) {
+        // Zoom
+        if(deltaY != 0) {
+            if(deltaY < 0) {
+                deltaY = 1.0 / (-deltaY);
+            }
+            mMVP = scale(mMVP, glm::vec3(pow(deltaY, SPEED)));
+        }
+    } else if (mButton == GLFW_MOUSE_BUTTON_RIGHT) {
+        // Rotations
+        if (majorMoveDir) {
+            // Rotate about Y axis (left <-> right)
+            mMVP = rotate(mMVP, (float)(SPEED * deltaX), glm::vec3(0.0, 1.0, 0.0));
+        } else {
+            // Rotate about X axis (up <-> down)glm::
+            mMVP = rotate(mMVP, (float)(SPEED * deltaY), glm::vec3(1.0, 0.0, 0.0));
+        }
+    }
+
+    mLastXPos = pXPos;
+    mLastYPos = pYPos;
+}
+
+void Widget::mouseButtonHandler(int pButton, int pAction, int pMods)
+{
+    mButton = -1;
+    if (pButton == GLFW_MOUSE_BUTTON_LEFT && pAction == GLFW_PRESS) {
+        mButton = GLFW_MOUSE_BUTTON_LEFT;
+    } else if (pButton == GLFW_MOUSE_BUTTON_RIGHT && pAction == GLFW_PRESS) {
+        mButton = GLFW_MOUSE_BUTTON_RIGHT;
+    } else if (pButton == GLFW_MOUSE_BUTTON_MIDDLE && pAction == GLFW_PRESS) {
+        mButton = GLFW_MOUSE_BUTTON_MIDDLE;
+    }
+    if(pMods == GLFW_MOD_ALT || pMods == GLFW_MOD_CONTROL) {
+        mButton += 10 * pMods;
+    }
+    // reset UI transforms upon mouse middle click
+    if(pButton == GLFW_MOUSE_BUTTON_MIDDLE && pMods == GLFW_MOD_CONTROL && pAction == GLFW_PRESS) {
+        mMVP = glm::mat4(1.0f);
     }
 }
 

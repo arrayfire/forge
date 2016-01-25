@@ -24,6 +24,8 @@
 #include <GLFW/glfw3native.h>
 #endif
 
+#include <glm/glm.hpp>
+
 /* the short form wtk stands for
  * Windowing Tool Kit */
 namespace wtk
@@ -33,6 +35,10 @@ class Widget {
     private:
         GLFWwindow* mWindow;
         bool        mClose;
+        float       mLastXPos;
+        float       mLastYPos;
+        glm::mat4   mMVP;
+        int         mButton;
 
         Widget();
 
@@ -51,6 +57,10 @@ class Widget {
 
         void getFrameBufferSize(int* pW, int* pH);
 
+        inline const glm::mat4& getMVP() const {
+            return mMVP;
+        }
+
         void setTitle(const char* pTitle);
 
         void setPos(int pX, int pY);
@@ -68,6 +78,10 @@ class Widget {
         void resetCloseFlag();
 
         void keyboardHandler(int pKey, int pScancode, int pAction, int pMods);
+
+        void cursorHandler(float pXPos, float pYPos);
+
+        void mouseButtonHandler(int pButton, int pAction, int pMods);
 
         void pollEvents();
 };

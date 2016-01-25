@@ -154,6 +154,8 @@ class plot_impl : public AbstractRenderable {
                 pOut = glm::scale(tMat,
                         glm::vec3(graph_scale_x * view_scale_x , graph_scale_y * view_scale_y ,1));
 
+                pOut = pInput * pOut;
+
                 glScissor(pX + lMargin + tickSize/2, pY+bMargin + tickSize/2,
                           pVPW - lMargin - rMargin - tickSize/2,
                           pVPH - bMargin - tMargin - tickSize/2);
