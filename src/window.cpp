@@ -13,6 +13,8 @@
 #include <common.hpp>
 #include <fg/window.h>
 #include <window.hpp>
+
+#include <algorithm>
 #include <memory>
 #include <mutex>
 
@@ -50,8 +52,7 @@ void MakeContextCurrent(const window_impl* pWindow)
 
 window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                         std::weak_ptr<window_impl> pWindow, const bool invisible)
-    : mID(getNextUniqueId()), mWidth(pWidth), mHeight(pHeight),
-      mRows(0), mCols(0)
+    : mID(getNextUniqueId())
 {
     if (auto observe = pWindow.lock()) {
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, observe->get(), invisible);
@@ -110,6 +111,11 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     mColorMapUBO = mCMap->defaultMap();
     mUBOSize = mCMap->defaultLen();
     glEnable(GL_MULTISAMPLE);
+
+    std::vector<glm::mat4>& mats = mWindow->mMVPs;
+    mats.resize(mWindow->mRows*mWindow->mCols);
+    std::fill(mats.begin(), mats.end(), glm::mat4(1));
+
     CheckGL("End Window::Window");
 }
 
@@ -189,12 +195,12 @@ long long  window_impl::display() const
 
 int window_impl::width() const
 {
-    return mWidth;
+    return mWindow->mWidth;
 }
 
 int window_impl::height() const
 {
-    return mHeight;
+    return mWindow->mHeight;
 }
 
 GLEWContext* window_impl::glewContext() const
@@ -229,40 +235,40 @@ bool window_impl::close()
 
 void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 {
-    CheckGL("Begin draw");
+    CheckGL("Begin window_impl::draw");
     MakeContextCurrent(this);
     mWindow->resetCloseFlag();
+    glViewport(0, 0, mWindow->mWidth, mWindow->mHeight);
 
-    int wind_width, wind_height;
-    mWindow->getFrameBufferSize(&wind_width, &wind_height);
-    glViewport(0, 0, wind_width, wind_height);
-
+    const glm::mat4& mvp = mWindow->mMVPs[0];
     // clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
+    // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, 0, 0, wind_width, wind_height, mWindow->getMVP());
+    pRenderable->render(mID, 0, 0, mWindow->mWidth, mWindow->mHeight, mvp);
 
     mWindow->swapBuffers();
     mWindow->pollEvents();
-    CheckGL("End draw");
+    CheckGL("End window_impl::draw");
 }
 
 void window_impl::grid(int pRows, int pCols)
 {
-    mRows= pRows;
-    mCols= pCols;
-
-    int wind_width, wind_height;
-    mWindow->getFrameBufferSize(&wind_width, &wind_height);
-    glViewport(0, 0, wind_width, wind_height);
+    glViewport(0, 0, mWindow->mWidth, mWindow->mHeight);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    mCellWidth = wind_width / mCols;
-    mCellHeight = wind_height / mRows;
-}
+    mWindow->mRows       = pRows;
+    mWindow->mCols       = pCols;
+    mWindow->mCellWidth  = mWindow->mWidth  / mWindow->mCols;
+    mWindow->mCellHeight = mWindow->mHeight / mWindow->mRows;
 
+    // resize mvp array for views to appropriate size
+    std::vector<glm::mat4>& mats = mWindow->mMVPs;
+    mats.resize(mWindow->mRows*mWindow->mCols);
+    std::fill(mats.begin(), mats.end(), glm::mat4(1));
+}
 
 void window_impl::draw(int pColId, int pRowId,
                        const std::shared_ptr<AbstractRenderable>& pRenderable,
@@ -272,43 +278,41 @@ void window_impl::draw(int pColId, int pRowId,
     MakeContextCurrent(this);
     mWindow->resetCloseFlag();
 
-    int wind_width, wind_height;
-    mWindow->getFrameBufferSize(&wind_width, &wind_height);
-    mCellWidth = wind_width / mCols;
-    mCellHeight = wind_height / mRows;
-
     float pos[2] = {0.0, 0.0};
     int c     = pColId;
     int r     = pRowId;
-    int x_off = c * mCellWidth;
-    int y_off = (mRows - 1 - r) * mCellHeight;
+    int x_off = c * mWindow->mCellWidth;
+    int y_off = (mWindow->mRows - 1 - r) * mWindow->mCellHeight;
 
+    const glm::mat4& mvp = mWindow->mMVPs[r+c*mWindow->mRows];
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
-    int top_margin = int(0.06f*mCellHeight);
-    int bot_margin = int(0.02f*mCellHeight);
-    int lef_margin = int(0.02f*mCellWidth);
-    int rig_margin = int(0.02f*mCellWidth);
+    int top_margin = int(0.06f*mWindow->mCellHeight);
+    int bot_margin = int(0.02f*mWindow->mCellHeight);
+    int lef_margin = int(0.02f*mWindow->mCellWidth);
+    int rig_margin = int(0.02f*mWindow->mCellWidth);
     // set viewport to render sub image
-    glViewport(x_off + lef_margin, y_off + bot_margin, mCellWidth - 2 * rig_margin, mCellHeight - 2 * top_margin);
-    glScissor(x_off + lef_margin, y_off + bot_margin, mCellWidth - 2 * rig_margin, mCellHeight - 2 * top_margin);
+    glViewport(x_off + lef_margin, y_off + bot_margin,
+            mWindow->mCellWidth - 2 * rig_margin, mWindow->mCellHeight - 2 * top_margin);
+    glScissor(x_off + lef_margin, y_off + bot_margin,
+            mWindow->mCellWidth - 2 * rig_margin, mWindow->mCellHeight - 2 * top_margin);
     glEnable(GL_SCISSOR_TEST);
     glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
 
+    // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, x_off, y_off, mCellWidth, mCellHeight, mWindow->getMVP());
+    pRenderable->render(mID, x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight, mvp);
 
     glDisable(GL_SCISSOR_TEST);
-    glViewport(x_off, y_off, mCellWidth, mCellHeight);
+    glViewport(x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight);
 
     if (pTitle!=NULL) {
-        mFont->setOthro2D(mCellWidth, mCellHeight);
-        pos[0] = mCellWidth / 3.0f;
-        pos[1] = mCellHeight*0.92f;
+        mFont->setOthro2D(mWindow->mCellWidth, mWindow->mCellHeight);
+        pos[0] = mWindow->mCellWidth / 3.0f;
+        pos[1] = mWindow->mCellHeight*0.92f;
         mFont->render(mID, pos, RED, pTitle, 16);
     }
-
 
     CheckGL("End draw(column, row)");
 }

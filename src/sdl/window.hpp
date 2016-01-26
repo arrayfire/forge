@@ -26,14 +26,28 @@ class Widget {
         uint32_t      mWindowId;
         float         mLastXPos;
         float         mLastYPos;
-        glm::mat4     mMVP;
         int           mButton;
         SDL_Keycode   mMod;
         glm::vec3     mLastPos;
 
         Widget();
 
+        inline void getViewIds(int* pRow, int* pCol) {
+            *pRow = mLastXPos/mCellWidth;
+            *pCol = mLastYPos/mCellHeight;
+        }
+
     public:
+        /* public variables */
+        int mWidth;     // Framebuffer width
+        int mHeight;    // Framebuffer height
+        int mRows;
+        int mCols;
+        int mCellWidth;
+        int mCellHeight;
+        std::vector<glm::mat4> mMVPs;
+
+        /* Constructors and methods */
         Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible);
 
         ~Widget();
@@ -45,12 +59,6 @@ class Widget {
         long long getGLContextHandle();
 
         long long getDisplayHandle();
-
-        void getFrameBufferSize(int* pW, int* pH);
-
-        inline const glm::mat4& getMVP() const {
-            return mMVP;
-        }
 
         bool getClose() const;
 

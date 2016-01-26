@@ -25,12 +25,15 @@ namespace wtk
 {
 
 Widget::Widget()
-    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mMVP(glm::mat4(1.0f)), mButton(-1)
+    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
+   mWidth(512), mHeight(512), mRows(1), mCols(1)
 {
+    mCellWidth  = mWidth;
+    mCellHeight = mHeight;
 }
 
 Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
-    : mClose(false), mLastXPos(0), mLastYPos(0), mMVP(glm::mat4(1.0f)), mButton(-1)
+    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mRows(1), mCols(1)
 {
     if (!glfwInit()) {
         std::cerr << "ERROR: GLFW wasn't able to initalize\n";
@@ -64,6 +67,11 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
 
     glfwSetWindowUserPointer(mWindow, this);
 
+    auto rsCallback = [](GLFWwindow* w, int pWidth, int pHeight)
+    {
+        static_cast<Widget*>(glfwGetWindowUserPointer(w))->resizeHandler(pWidth, pHeight);
+    };
+
     auto kbCallback = [](GLFWwindow* w, int pKey, int pScancode, int pAction, int pMods)
     {
         static_cast<Widget*>(glfwGetWindowUserPointer(w))->keyboardHandler(pKey, pScancode, pAction, pMods);
@@ -84,10 +92,15 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
         static_cast<Widget*>(glfwGetWindowUserPointer(w))->mouseButtonHandler(button, action, mods);
     };
 
+    glfwSetFramebufferSizeCallback(mWindow, rsCallback);
     glfwSetWindowCloseCallback(mWindow, closeCallback);
     glfwSetKeyCallback(mWindow, kbCallback);
     glfwSetCursorPosCallback(mWindow, cursorCallback);
     glfwSetMouseButtonCallback(mWindow, mouseButtonCallback);
+
+    glfwGetFramebufferSize(mWindow, &mWidth, &mHeight);
+    mCellWidth  = mWidth;
+    mCellHeight = mHeight;
 }
 
 Widget::~Widget()
@@ -126,11 +139,6 @@ long long Widget::getDisplayHandle()
 #else
     return 0;
 #endif
-}
-
-void Widget::getFrameBufferSize(int* pW, int* pH)
-{
-    glfwGetFramebufferSize(mWindow, pW, pH);
 }
 
 void Widget::setTitle(const char* pTitle)
@@ -177,6 +185,14 @@ void Widget::resetCloseFlag()
     }
 }
 
+void Widget::resizeHandler(int pWidth, int pHeight)
+{
+    mWidth      = pWidth;
+    mHeight     = pHeight;
+    mCellWidth  = mWidth  / mCols;
+    mCellHeight = mHeight / mRows;
+}
+
 void Widget::keyboardHandler(int pKey, int pScancode, int pAction, int pMods)
 {
     if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS) {
@@ -191,9 +207,13 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
     float deltaX = mLastXPos - pXPos;
     float deltaY = mLastYPos - pYPos;
 
+    int r, c;
+    getViewIds(&r, &c);
+    glm::mat4& mvp = mMVPs[r+c*mRows];
+
     if (mButton == GLFW_MOUSE_BUTTON_LEFT) {
         // Translate
-        mMVP = translate(mMVP, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
+        mvp = translate(mvp, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
 
     } else if (mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_ALT ||
                mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_CONTROL) {
@@ -202,7 +222,7 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
             if(deltaY < 0) {
                 deltaY = 1.0 / (-deltaY);
             }
-            mMVP = scale(mMVP, glm::vec3(pow(deltaY, SPEED)));
+            mvp = scale(mvp, glm::vec3(pow(deltaY, SPEED)));
         }
     } else if (mButton == GLFW_MOUSE_BUTTON_RIGHT) {
         int width, height;
@@ -219,7 +239,7 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
         float dMag = sqrt(dot(delta, delta));
         float aMag = sqrt(dot(axis, axis));
         if (dMag>0 && aMag>0) {
-            mMVP = rotate(mMVP, angle, axis);
+            mvp = rotate(mvp, angle, axis);
         }
         mLastPos  = curPos;
     }
@@ -231,19 +251,22 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
 void Widget::mouseButtonHandler(int pButton, int pAction, int pMods)
 {
     mButton = -1;
-    if (pButton == GLFW_MOUSE_BUTTON_LEFT && pAction == GLFW_PRESS) {
-        mButton = GLFW_MOUSE_BUTTON_LEFT;
-    } else if (pButton == GLFW_MOUSE_BUTTON_RIGHT && pAction == GLFW_PRESS) {
-        mButton = GLFW_MOUSE_BUTTON_RIGHT;
-    } else if (pButton == GLFW_MOUSE_BUTTON_MIDDLE && pAction == GLFW_PRESS) {
-        mButton = GLFW_MOUSE_BUTTON_MIDDLE;
+    if (pAction == GLFW_PRESS) {
+        switch(pButton) {
+            case GLFW_MOUSE_BUTTON_LEFT  : mButton = GLFW_MOUSE_BUTTON_LEFT  ; break;
+            case GLFW_MOUSE_BUTTON_RIGHT : mButton = GLFW_MOUSE_BUTTON_RIGHT ; break;
+            case GLFW_MOUSE_BUTTON_MIDDLE: mButton = GLFW_MOUSE_BUTTON_MIDDLE; break;
+        }
     }
-    if(pMods == GLFW_MOD_ALT || pMods == GLFW_MOD_CONTROL) {
+    if (pMods == GLFW_MOD_ALT || pMods == GLFW_MOD_CONTROL) {
         mButton += 10 * pMods;
     }
     // reset UI transforms upon mouse middle click
-    if(pButton == GLFW_MOUSE_BUTTON_MIDDLE && pMods == GLFW_MOD_CONTROL && pAction == GLFW_PRESS) {
-        mMVP = glm::mat4(1.0f);
+    if (pButton == GLFW_MOUSE_BUTTON_MIDDLE && pMods == GLFW_MOD_CONTROL && pAction == GLFW_PRESS) {
+        int r, c;
+        getViewIds(&r, &c);
+        glm::mat4& mvp = mMVPs[r+c*mRows];
+        mvp = glm::mat4(1.0f);
     }
 }
 

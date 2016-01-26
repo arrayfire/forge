@@ -30,13 +30,15 @@ namespace wtk
 {
 
 Widget::Widget()
-    : mWindow(nullptr), mClose(false)
+    : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
+    mWidth(512), mHeight(512), mRows(1), mCols(1)
 {
+    mCellWidth  = mWidth;
+    mCellHeight = mHeight;
 }
 
 Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
-    : mWindow(nullptr), mClose(false),
-      mLastXPos(0), mLastYPos(0), mMVP(glm::mat4(1.0f)), mButton(-1), mMod(-1)
+    : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mRows(1), mCols(1)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "ERROR: SDL wasn't able to initalize\n";
@@ -78,6 +80,9 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
 
     SDL_GL_SetSwapInterval(1);
     mWindowId = SDL_GetWindowID(mWindow);
+    SDL_GetWindowSize(mWindow, &mWidth, &mHeight);
+    mCellWidth  = mWidth;
+    mCellHeight = mHeight;
 }
 
 Widget::~Widget()
@@ -114,12 +119,6 @@ long long Widget::getDisplayHandle()
 #ifdef OS_LNX
     return reinterpret_cast<long long>(glXGetCurrentDisplay());
 #endif
-}
-
-void Widget::getFrameBufferSize(int* pW, int* pH)
-{
-    /* FIXME this needs to be framebuffer size */
-    SDL_GetWindowSize(mWindow, pW, pH);
 }
 
 void Widget::setTitle(const char* pTitle)
@@ -178,7 +177,15 @@ void Widget::pollEvents()
     if (evnt.key.windowID == mWindowId) {
         if (evnt.type == SDL_WINDOWEVENT) {
             switch(evnt.window.event) {
-                case SDL_WINDOWEVENT_CLOSE: mClose = true; break;
+                case SDL_WINDOWEVENT_CLOSE:
+                    mClose = true;
+                    break;
+                case SDL_WINDOWEVENT_RESIZED:
+                    mWidth      = evnt.window.data1;
+                    mHeight     = evnt.window.data2;
+                    mCellWidth  = mWidth  / mCols;
+                    mCellHeight = mHeight / mRows;
+                    break;
             }
         }
 
@@ -197,13 +204,20 @@ void Widget::pollEvents()
 
         if(evnt.type == SDL_MOUSEBUTTONUP) {
             if(evnt.button.button == SDL_BUTTON_MIDDLE && mMod == SDLK_LALT) {
-                mMVP = glm::mat4(1.0f);
+                int r, c;
+                getViewIds(&r, &c);
+                glm::mat4& mvp = mMVPs[r+c*mRows];
+                mvp = glm::mat4(1.0f);
             }
         }
 
         if(evnt.type == SDL_MOUSEMOTION) {
             double deltaX = -evnt.motion.xrel;
             double deltaY = -evnt.motion.yrel;
+
+            int r, c;
+            getViewIds(&r, &c);
+            glm::mat4& mvp = mMVPs[r+c*mRows];
 
             if(evnt.motion.state == SDL_BUTTON_LMASK &&
                    (mMod == SDLK_LALT || mMod == SDLK_RALT)) {
@@ -212,11 +226,11 @@ void Widget::pollEvents()
                     if(deltaY < 0) {
                         deltaY = 1.0 / (-deltaY);
                     }
-                    mMVP = scale(mMVP, glm::vec3(pow(deltaY, SPEED)));
+                    mvp = scale(mvp, glm::vec3(pow(deltaY, SPEED)));
                 }
             } else if (evnt.motion.state == SDL_BUTTON_LMASK) {
                 // Translate
-                mMVP = translate(mMVP, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
+                mvp = translate(mvp, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
             } else if (evnt.motion.state == SDL_BUTTON_RMASK) {
                 // Rotations
                 int width, height;
@@ -232,7 +246,7 @@ void Widget::pollEvents()
                 float dMag = sqrt(dot(delta, delta));
                 float aMag = sqrt(dot(axis, axis));
                 if (dMag>0 && aMag>0) {
-                    mMVP = rotate(mMVP, angle, axis);
+                    mvp = rotate(mvp, angle, axis);
                 }
                 mLastPos  = curPos;
             }

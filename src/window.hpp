@@ -32,13 +32,7 @@ class window_impl {
         long long     mCxt;
         long long     mDsp;
         int           mID;
-        int           mWidth;
-        int           mHeight;
         wtk::Widget*  mWindow;
-        int           mRows;
-        int           mCols;
-        int           mCellWidth;
-        int           mCellHeight;
         GLEWContext*  mGLEWContext;
 
         std::shared_ptr<font_impl>     mFont;
