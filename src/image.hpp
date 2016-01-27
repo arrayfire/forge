@@ -27,6 +27,7 @@ class image_impl : public AbstractRenderable {
         GLenum mGLType;
         float  mAlpha;
         bool   mKeepARatio;
+        size_t mFormatSize;
         /* internal resources for interop */
         size_t mPBOsize;
         GLuint mPBO;
@@ -34,7 +35,8 @@ class image_impl : public AbstractRenderable {
         GLuint mProgram;
         GLuint mMatIndex;
         GLuint mTexIndex;
-        GLuint mIsGrayIndex;
+        GLuint mNumCIndex;
+        GLuint mAlphaIndex;
         GLuint mCMapLenIndex;
         GLuint mCMapIndex;
         /* color map details */

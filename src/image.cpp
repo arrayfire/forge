@@ -39,8 +39,9 @@ image_impl::image_impl(const uint pWidth, const uint pHeight,
                        const fg::ChannelFormat pFormat, const fg::dtype pDataType)
     : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat),
       mGLformat(ctype2gl(mFormat)), mGLiformat(ictype2gl(mFormat)),
-      mDataType(pDataType), mGLType(dtype2gl(mDataType)), mAlpha(1.0f), mKeepARatio(true),
-      mMatIndex(-1), mTexIndex(-1), mIsGrayIndex(-1), mCMapLenIndex(-1), mCMapIndex(-1)
+      mDataType(pDataType), mGLType(dtype2gl(mDataType)), mAlpha(1.0f),
+      mKeepARatio(true), mFormatSize(1), mMatIndex(-1), mTexIndex(-1),
+      mNumCIndex(-1), mAlphaIndex(-1), mCMapLenIndex(-1), mCMapIndex(-1)
 {
     CheckGL("Begin image_impl::image_impl");
 
@@ -49,7 +50,8 @@ image_impl::image_impl(const uint pWidth, const uint pHeight,
     mCMapIndex    = glGetUniformBlockIndex(mProgram, "ColorMap");
     mCMapLenIndex = glGetUniformLocation(mProgram, "cmaplen");
     mTexIndex     = glGetUniformLocation(mProgram, "tex");
-    mIsGrayIndex  = glGetUniformLocation(mProgram, "isGrayScale");
+    mNumCIndex    = glGetUniformLocation(mProgram, "numcomps");
+    mAlphaIndex   = glGetUniformLocation(mProgram, "alpha");
 
     // Initialize OpenGL Items
     glGenTextures(1, &(mTex));
@@ -74,17 +76,16 @@ image_impl::image_impl(const uint pWidth, const uint pHeight,
         case GL_UNSIGNED_BYTE:  typeSize = sizeof(uchar ); break;
         default: typeSize = sizeof(float); break;
     }
-    size_t formatSize = 0;
     switch(mFormat) {
-        case fg::FG_GRAYSCALE: formatSize = 1;   break;
-        case fg::FG_RG:        formatSize = 2;   break;
-        case fg::FG_RGB:       formatSize = 3;   break;
-        case fg::FG_BGR:       formatSize = 3;   break;
-        case fg::FG_RGBA:      formatSize = 4;   break;
-        case fg::FG_BGRA:      formatSize = 4;   break;
-        default: formatSize = 1; break;
+        case fg::FG_GRAYSCALE: mFormatSize = 1;   break;
+        case fg::FG_RG:        mFormatSize = 2;   break;
+        case fg::FG_RGB:       mFormatSize = 3;   break;
+        case fg::FG_BGR:       mFormatSize = 3;   break;
+        case fg::FG_RGBA:      mFormatSize = 4;   break;
+        case fg::FG_BGRA:      mFormatSize = 4;   break;
+        default: mFormatSize = 1; break;
     }
-    mPBOsize = mWidth * mHeight * formatSize * typeSize;
+    mPBOsize = mWidth * mHeight * mFormatSize * typeSize;
     glBufferData(GL_PIXEL_UNPACK_BUFFER, mPBOsize, NULL, GL_STREAM_COPY);
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -134,6 +135,8 @@ void image_impl::render(const int pWindowId,
                         const int pX, const int pY, const int pVPW, const int pVPH,
                         const glm::mat4& pTransform)
 {
+    CheckGL("Begin image_impl::render");
+
     float xscale = 1.f;
     float yscale = 1.f;
     if (mKeepARatio) {
@@ -152,9 +155,12 @@ void image_impl::render(const int pWindowId,
 
     glm::mat4 strans = glm::scale(pTransform, glm::vec3(xscale, yscale, 1));
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glUseProgram(mProgram);
 
-    glUniform1i(mIsGrayIndex, mFormat==fg::FG_GRAYSCALE);
+    glUniform1i(mNumCIndex, mFormatSize);
+    glUniform1f(mAlphaIndex, mAlpha);
 
     // load texture from PBO
     glActiveTexture(GL_TEXTURE0);
@@ -172,8 +178,6 @@ void image_impl::render(const int pWindowId,
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, mColorMapUBO);
     glUniformBlockBinding(mProgram, mCMapIndex, 0);
 
-    CheckGL("Before render");
-
     // Draw to screen
     bindResources(pWindowId);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -184,7 +188,9 @@ void image_impl::render(const int pWindowId,
 
     // ubind the shader program
     glUseProgram(0);
-    CheckGL("After render");
+    glDisable(GL_BLEND);
+
+    CheckGL("End image_impl::render");
 }
 
 }
