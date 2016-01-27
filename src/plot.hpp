@@ -34,7 +34,6 @@ class plot_impl : public AbstractRenderable {
         GLuint    mNumPoints;
         fg::dtype mDataType;
         GLenum    mGLType;
-        bool      mIsPVCOn;
         fg::MarkerType mMarkerType;
         fg::PlotType   mPlotType;
         /* OpenGL Objects */
@@ -43,6 +42,7 @@ class plot_impl : public AbstractRenderable {
         /* shaderd variable index locations */
         GLuint    mPlotMatIndex;
         GLuint    mPlotPVCOnIndex;
+        GLuint    mPlotPVAOnIndex;
         GLuint    mPlotUColorIndex;
         GLuint    mPlotRangeIndex;
         GLuint    mPlotPointIndex;
@@ -50,6 +50,7 @@ class plot_impl : public AbstractRenderable {
         GLuint    mPlotAlphaIndex;
 
         GLuint    mMarkerPVCOnIndex;
+        GLuint    mMarkerPVAOnIndex;
         GLuint    mMarkerTypeIndex;
         GLuint    mMarkerColIndex;
         GLuint    mMarkerMatIndex;
@@ -166,14 +167,15 @@ class plot_impl : public AbstractRenderable {
         plot_impl(const uint pNumPoints, const fg::dtype pDataType,
                   const fg::PlotType pPlotType, const fg::MarkerType pMarkerType)
             : mNumPoints(pNumPoints), mDataType(pDataType), mGLType(dtype2gl(mDataType)),
-            mIsPVCOn(false), mMarkerType(pMarkerType), mPlotType(pPlotType),
-            mPlotProgram(-1), mMarkerProgram(-1), mPlotMatIndex(-1), mPlotPVCOnIndex(-1),
-            mPlotUColorIndex(-1), mPlotRangeIndex(-1), mPlotPointIndex(-1), mPlotColorIndex(-1),
-            mPlotAlphaIndex(-1), mMarkerPVCOnIndex(-1), mMarkerTypeIndex(-1),
-            mMarkerColIndex(-1), mMarkerMatIndex(-1), mMarkerPointIndex(-1),
-            mMarkerColorIndex(-1), mMarkerAlphaIndex(-1)
+            mMarkerType(pMarkerType), mPlotType(pPlotType), mPlotProgram(-1), mMarkerProgram(-1),
+            mPlotMatIndex(-1), mPlotPVCOnIndex(-1), mPlotPVAOnIndex(-1), mPlotUColorIndex(-1),
+            mPlotRangeIndex(-1), mPlotPointIndex(-1), mPlotColorIndex(-1), mPlotAlphaIndex(-1),
+            mMarkerPVCOnIndex(-1), mMarkerPVAOnIndex(-1), mMarkerTypeIndex(-1), mMarkerColIndex(-1),
+            mMarkerMatIndex(-1), mMarkerPointIndex(-1), mMarkerColorIndex(-1), mMarkerAlphaIndex(-1)
         {
             CheckGL("Begin plot_impl::plot_impl");
+            mIsPVCOn = false;
+            mIsPVAOn = false;
 
             setColor(0, 1, 0, 1);
             setLegend(std::string(""));
@@ -194,12 +196,14 @@ class plot_impl : public AbstractRenderable {
 
             mPlotMatIndex    = glGetUniformLocation(mPlotProgram, "transform");
             mPlotPVCOnIndex  = glGetUniformLocation(mPlotProgram, "isPVCOn");
+            mPlotPVAOnIndex  = glGetUniformLocation(mPlotProgram, "isPVAOn");
             mPlotPointIndex  = glGetAttribLocation (mPlotProgram, "point");
             mPlotColorIndex  = glGetAttribLocation (mPlotProgram, "color");
             mPlotAlphaIndex  = glGetAttribLocation (mPlotProgram, "alpha");
 
             mMarkerMatIndex   = glGetUniformLocation(mMarkerProgram, "transform");
             mMarkerPVCOnIndex = glGetUniformLocation(mMarkerProgram, "isPVCOn");
+            mMarkerPVAOnIndex = glGetUniformLocation(mMarkerProgram, "isPVAOn");
             mMarkerTypeIndex  = glGetUniformLocation(mMarkerProgram, "marker_type");
             mMarkerColIndex   = glGetUniformLocation(mMarkerProgram, "marker_color");
             mMarkerPointIndex = glGetAttribLocation (mMarkerProgram, "point");
@@ -247,6 +251,8 @@ class plot_impl : public AbstractRenderable {
                     const glm::mat4& pTransform)
         {
             CheckGL("Begin plot_impl::render");
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_SCISSOR_TEST);
 
             glm::mat4 mvp(1.0);
@@ -263,6 +269,7 @@ class plot_impl : public AbstractRenderable {
                 }
                 glUniformMatrix4fv(mPlotMatIndex, 1, GL_FALSE, glm::value_ptr(mvp));
                 glUniform1i(mPlotPVCOnIndex, mIsPVCOn);
+                glUniform1i(mPlotPVAOnIndex, mIsPVAOn);
 
                 plot_impl::bindResources(pWindowId);
                 glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
@@ -278,6 +285,7 @@ class plot_impl : public AbstractRenderable {
 
                 glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(mvp));
                 glUniform1i(mMarkerPVCOnIndex, mIsPVCOn);
+                glUniform1i(mMarkerPVAOnIndex, mIsPVAOn);
                 glUniform1i(mMarkerTypeIndex, mMarkerType);
                 glUniform4fv(mMarkerColIndex, 1, mColor);
 
@@ -291,6 +299,7 @@ class plot_impl : public AbstractRenderable {
             }
 
             glDisable(GL_SCISSOR_TEST);
+            glDisable(GL_BLEND);
             CheckGL("End plot_impl::render");
         }
 };

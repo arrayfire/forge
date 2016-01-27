@@ -118,6 +118,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
     glUniformMatrix4fv(mSurfMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
     glUniform2fv(mSurfRangeIndex, 3, mRange);
     glUniform1i(mSurfPVCIndex, mIsPVCOn);
+    glUniform1i(mSurfPVAIndex, mIsPVAOn);
 
     bindResources(pWindowId);
     glDrawElements(GL_TRIANGLE_STRIP, mIBOSize, GL_UNSIGNED_SHORT, (void*)0 );
@@ -130,6 +131,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
 
         glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
         glUniform1i(mMarkerPVCIndex, mIsPVCOn);
+        glUniform1i(mMarkerPVAIndex, mIsPVAOn);
         glUniform1i(mMarkerTypeIndex, mMarkerType);
         glUniform4fv(mMarkerColIndex, 1, mColor);
 
@@ -147,19 +149,22 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
 surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
                            fg::dtype pDataType, fg::MarkerType pMarkerType)
     : mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints), mDataType(dtype2gl(pDataType)),
-      mIsPVCOn(false), mMarkerType(pMarkerType), mIBO(0), mIBOSize(0), mMarkerProgram(-1),
-      mSurfProgram(-1), mMarkerMatIndex(-1), mMarkerPointIndex(-1), mMarkerColorIndex(-1),
-      mMarkerAlphaIndex(-1), mMarkerPVCIndex(-1), mMarkerTypeIndex(-1), mMarkerColIndex(-1),
+      mMarkerType(pMarkerType), mIBO(0), mIBOSize(0), mMarkerProgram(-1), mSurfProgram(-1),
+      mMarkerMatIndex(-1), mMarkerPointIndex(-1), mMarkerColorIndex(-1), mMarkerAlphaIndex(-1),
+      mMarkerPVCIndex(-1), mMarkerPVAIndex(-1), mMarkerTypeIndex(-1), mMarkerColIndex(-1),
       mSurfMatIndex(-1), mSurfRangeIndex(-1), mSurfPointIndex(-1), mSurfColorIndex(-1),
-      mSurfAlphaIndex(-1), mSurfPVCIndex(-1)
+      mSurfAlphaIndex(-1), mSurfPVCIndex(-1), mSurfPVAIndex(-1)
 {
     CheckGL("Begin surface_impl::surface_impl");
+    mIsPVCOn = false;
+    mIsPVAOn = false;
     setColor(0.9, 0.5, 0.6, 1.0);
     setLegend(std::string(""));
 
     mMarkerProgram   = initShaders(glsl::plot3_vs.c_str(), glsl::marker_fs.c_str());
     mMarkerMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
     mMarkerPVCIndex  = glGetUniformLocation(mMarkerProgram, "isPVCOn");
+    mMarkerPVAIndex  = glGetUniformLocation(mMarkerProgram, "isPVAOn");
     mMarkerTypeIndex = glGetUniformLocation(mMarkerProgram, "marker_type");
     mMarkerColIndex  = glGetUniformLocation(mMarkerProgram, "marker_color");
     mMarkerPointIndex= glGetAttribLocation (mMarkerProgram, "point");
@@ -170,6 +175,7 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
     mSurfMatIndex   = glGetUniformLocation(mSurfProgram, "transform");
     mSurfRangeIndex = glGetUniformLocation(mSurfProgram, "minmaxs");
     mSurfPVCIndex   = glGetUniformLocation(mSurfProgram, "isPVCOn");
+    mSurfPVAIndex   = glGetUniformLocation(mSurfProgram, "isPVAOn");
     mSurfPointIndex = glGetAttribLocation (mSurfProgram, "point");
     mSurfColorIndex = glGetAttribLocation (mSurfProgram, "color");
     mSurfAlphaIndex = glGetAttribLocation (mSurfProgram, "alpha");
@@ -228,9 +234,12 @@ void surface_impl::render(const int pWindowId,
                           const glm::mat4 &pModel)
 {
     CheckGL("Begin surface_impl::render");
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glm::mat4 mvp(1.0);
     computeTransformMat(mvp, pModel);
     renderGraph(pWindowId, mvp);
+    glDisable(GL_BLEND);
     CheckGL("End surface_impl::render");
 }
 
@@ -242,6 +251,7 @@ void scatter3_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
 
         glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(transform));
         glUniform1i(mMarkerPVCIndex, mIsPVCOn);
+        glUniform1i(mMarkerPVAIndex, mIsPVAOn);
         glUniform1i(mMarkerTypeIndex, mMarkerType);
         glUniform4fv(mMarkerColIndex, 1, mColor);
 

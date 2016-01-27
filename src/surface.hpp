@@ -26,6 +26,7 @@ class surface_impl : public AbstractRenderable {
         GLuint    mNumYPoints;
         GLenum    mDataType;
         bool      mIsPVCOn;
+        bool      mIsPVAOn;
         fg::MarkerType mMarkerType;
         /* OpenGL Objects */
         GLuint    mIBO;
@@ -38,6 +39,7 @@ class surface_impl : public AbstractRenderable {
         GLuint    mMarkerColorIndex;
         GLuint    mMarkerAlphaIndex;
         GLuint    mMarkerPVCIndex;
+        GLuint    mMarkerPVAIndex;
         GLuint    mMarkerTypeIndex;
         GLuint    mMarkerColIndex;
 
@@ -47,6 +49,7 @@ class surface_impl : public AbstractRenderable {
         GLuint    mSurfColorIndex;
         GLuint    mSurfAlphaIndex;
         GLuint    mSurfPVCIndex;
+        GLuint    mSurfPVAIndex;
 
         std::map<int, GLuint> mVAOMap;
 
@@ -65,6 +68,14 @@ class surface_impl : public AbstractRenderable {
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,
                     const glm::mat4 &pTransform);
+
+        inline void usePerVertexColors(const bool pFlag=true) {
+            mIsPVCOn = pFlag;
+        }
+
+        inline void usePerVertexAlphas(const bool pFlag=true) {
+            mIsPVAOn = pFlag;
+        }
 };
 
 class scatter3_impl : public surface_impl {

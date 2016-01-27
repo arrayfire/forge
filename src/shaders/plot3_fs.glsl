@@ -2,6 +2,7 @@
 
 uniform vec2 minmaxs[3];
 uniform bool isPVCOn;
+uniform bool isPVAOn;
 
 in vec4 pervcol;
 in vec4 hpoint;
@@ -22,8 +23,10 @@ void main(void)
 
    float height = (minmaxs[2].y- hpoint.z)/(minmaxs[2].y-minmaxs[2].x);
 
+   float a  = isPVAOn ? pervcol.w : 1.0;
+
    if(nin_bounds)
        discard;
    else
-       outColor = isPVCOn ? pervcol : vec4(hsv2rgb(vec3(height, 1.f, 1.f)),1);
+       outColor = isPVCOn ? vec4(pervcol.xyz, a) : vec4(hsv2rgb(vec3(height, 1, 1)),1);
 }

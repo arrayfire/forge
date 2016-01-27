@@ -155,6 +155,8 @@ class AbstractRenderable {
         GLfloat     mColor[4];
         GLfloat     mRange[6];
         std::string mLegend;
+        bool        mIsPVCOn;
+        bool        mIsPVAOn;
 
     public:
         /* Getter functions for OpenGL buffer objects
@@ -165,8 +167,8 @@ class AbstractRenderable {
          *  abo is for alpha values for those vertices
          */
         GLuint vbo() const { return mVBO; }
-        GLuint cbo() const { return mCBO; }
-        GLuint abo() const { return mABO; }
+        GLuint cbo() { mIsPVCOn = true; return mCBO; }
+        GLuint abo() { mIsPVAOn = true; return mABO; }
         size_t vboSize() const { return mVBOSize; }
         size_t cboSize() const { return mCBOSize; }
         size_t aboSize() const { return mABOSize; }

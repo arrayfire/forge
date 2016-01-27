@@ -31,18 +31,22 @@ struct Bitmap {
     unsigned width;
     unsigned height;
 };
+
 Bitmap createBitmap(unsigned w, unsigned h);
+
 void destroyBitmap(Bitmap& bmp);
+
 void kernel(Bitmap& bmp);
-void populateBins(Bitmap& bmp, int *hist_array, const unsigned nbins);
+
+void populateBins(Bitmap& bmp, int *hist_array, const unsigned nbins, float *hist_cols);
 
 float perlinNoise(float x, float y, float z, int tileSize);
+
 float octavesPerlin(float x, float y, float z, int octaves, float persistence, int tileSize);
 
-int main(void) {
-
+int main(void)
+{
     Bitmap bmp = createBitmap(DIMX, DIMY);
-
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
@@ -82,39 +86,31 @@ int main(void) {
      */
     hist.setColor(fg::FG_YELLOW);
 
-    /*
-     * generate image, and prepare data to pass into
-     * Histogram's underlying vertex buffer object
-     */
-    kernel(bmp);
-    fg::copy(img, bmp.ptr);
-
-    /* copy your data into the vertex buffer object exposed by
-     * fg::Histogram class and then proceed to rendering.
-     * To help the users with copying the data from compute
-     * memory to display memory, Forge provides copy headers
-     * along with the library to help with this task
-     */
-    std::vector<int> histArray(NBINS, 0);
-    populateBins(bmp, histArray.data(), NBINS);
-    fg::copy(hist, histArray.data());
-
     do {
+        /*
+         * generate image, and prepare data to pass into
+         * Histogram's underlying vertex buffer object
+         */
+        kernel(bmp);
+        fg::copy(img, bmp.ptr);
+
+        /* copy your data into the vertex buffer object exposed by
+         * fg::Histogram class and then proceed to rendering.
+         * To help the users with copying the data from compute
+         * memory to display memory, Forge provides copy headers
+         * along with the library to help with this task
+         */
+        std::vector<int> histArray(NBINS, 0);
+        std::vector<float> colArray(3*NBINS, 0.0f);
+        populateBins(bmp, histArray.data(), NBINS, colArray.data());
+
+        fg::copy(hist, histArray.data());
+        fg::copy(hist, colArray.data(), fg::FG_COLOR_BUFFER);
+
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
         wnd.draw(1, 0, chart, "Histogram of Noisy Image");
 
         wnd.swapBuffers();
-
-        kernel(bmp);
-        fg::copy(img, bmp.ptr);
-
-        std::vector<int> histArray(NBINS, 0);
-        populateBins(bmp, histArray.data(), NBINS);
-
-        // limit histogram update frequency
-        if(fmod(t,0.4f) < 0.02f)
-            fg::copy(hist, histArray.data());
-
     } while(!wnd.close());
 
     return 0;
@@ -135,7 +131,8 @@ void destroyBitmap(Bitmap& bmp)
     delete[] bmp.ptr;
 }
 
-void kernel(Bitmap& bmp) {
+void kernel(Bitmap& bmp)
+{
     static unsigned tileSize=100;
     for (unsigned y=0; y<bmp.height; ++y) {
         for (unsigned x=0; x<bmp.width; ++x) {
@@ -151,18 +148,25 @@ void kernel(Bitmap& bmp) {
     tileSize++;
 }
 
-void populateBins(Bitmap& bmp, int *hist_array, const unsigned nbins){
+void populateBins(Bitmap& bmp, int *hist_array, const unsigned nbins, float *hist_cols)
+{
     for (unsigned y=0; y<bmp.height; ++y) {
         for (unsigned x=0; x<bmp.width; ++x) {
             int offset  = x + y * bmp.width;
             unsigned char noiseVal = bmp.ptr[offset*4];
-            hist_array[(int)((float)noiseVal/255.f * nbins)]++;
+            unsigned idx = (int)((float)noiseVal/255.f * nbins);
+            hist_array[idx]++;
         }
     }
 
+    for (unsigned b=0; b<nbins; ++b) {
+        hist_cols[3*b+0] = std::rand()/(float)RAND_MAX;
+        hist_cols[3*b+1] = std::rand()/(float)RAND_MAX;
+        hist_cols[3*b+2] = std::rand()/(float)RAND_MAX;
+    }
 }
 
-struct vec3{
+struct vec3 {
     float x;
     float y;
     float z;
@@ -172,10 +176,13 @@ struct vec3{
     vec3 operator-(vec3 rhs){ return vec3(x-rhs.x, y-rhs.y, z-rhs.z);}
 };
 
-float interp(float t){
+float interp(float t)
+{
     return ((6 * t - 15) * t + 10) * t * t * t;
 }
-const inline float lerp (float x0, float x1, float t) {
+
+const inline float lerp (float x0, float x1, float t)
+{
         return x0 + (x1 - x0) * t;
 }
 
@@ -199,7 +206,8 @@ static const int perm[] = { 26, 58, 229, 82, 132, 72, 144, 251, 196, 192, 127, 1
 
 static const vec3 default_gradients[] = { {1,1,0}, {-1,1,0}, {1,-1,0}, {-1,-1,0} };
 
-float perlinNoise(float x, float y, float z, int tileSize){
+float perlinNoise(float x, float y, float z, int tileSize)
+{
     int x_grid = (int)x/tileSize;
     int y_grid = (int)y/tileSize;
     unsigned rand_id0 = perm[(x_grid+2*y_grid) % 256 ] % 4;
@@ -222,7 +230,8 @@ float perlinNoise(float x, float y, float z, int tileSize){
     return lerp(lerp(influence_vecs[0], influence_vecs[1], u), lerp(influence_vecs[2], influence_vecs[3], u), v);
 }
 
-float octavesPerlin(float x, float y, float z, int octaves, float persistence, int tileSize){
+float octavesPerlin(float x, float y, float z, int octaves, float persistence, int tileSize)
+{
     float total = 0, max_value = 0;
     float amplitude = 1, frequency = 1;
     for(int i=0; i<octaves; ++i){

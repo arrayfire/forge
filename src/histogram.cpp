@@ -70,11 +70,13 @@ void hist_impl::unbindResources() const
 
 hist_impl::hist_impl(const uint pNBins, const fg::dtype pDataType)
  :  mDataType(pDataType), mGLType(dtype2gl(mDataType)), mNBins(pNBins),
-    mIsPVCOn(false), mProgram(0), mYMaxIndex(-1), mNBinsIndex(-1),
-    mMatIndex(-1), mPointIndex(-1), mFreqIndex(-1), mColorIndex(-1),
-    mAlphaIndex(-1), mPVCIndex(-1), mBColorIndex(-1)
+    mProgram(0), mYMaxIndex(-1), mNBinsIndex(-1), mMatIndex(-1), mPointIndex(-1),
+    mFreqIndex(-1), mColorIndex(-1), mAlphaIndex(-1), mPVCIndex(-1), mPVAIndex(-1),
+    mBColorIndex(-1)
 {
     CheckGL("Begin hist_impl::hist_impl");
+    mIsPVCOn = false;
+    mIsPVAOn = false;
 
     setColor(0.8f, 0.6f, 0.0f, 1.0f);
     setLegend(std::string(""));
@@ -85,6 +87,7 @@ hist_impl::hist_impl(const uint pNBins, const fg::dtype pDataType)
     mNBinsIndex  = glGetUniformLocation(mProgram, "nbins"    );
     mMatIndex    = glGetUniformLocation(mProgram, "transform");
     mPVCIndex    = glGetUniformLocation(mProgram, "isPVCOn"  );
+    mPVAIndex    = glGetUniformLocation(mProgram, "isPVAOn"  );
     mBColorIndex = glGetUniformLocation(mProgram, "barColor" );
     mPointIndex  = glGetAttribLocation (mProgram, "point"    );
     mFreqIndex   = glGetAttribLocation (mProgram, "freq"     );
@@ -136,6 +139,8 @@ void hist_impl::render(const int pWindowId,
                        const glm::mat4& pTransform)
 {
     CheckGL("Begin hist_impl::render");
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_SCISSOR_TEST);
     glScissor(pX, pY, pVPW, pVPH);
     glUseProgram(mProgram);
@@ -144,6 +149,7 @@ void hist_impl::render(const int pWindowId,
     glUniform1f(mNBinsIndex, (GLfloat)mNBins);
     glUniformMatrix4fv(mMatIndex, 1, GL_FALSE, glm::value_ptr(pTransform));
     glUniform1i(mPVCIndex, mIsPVCOn);
+    glUniform1i(mPVAIndex, mIsPVAOn);
     glUniform4fv(mBColorIndex, 1, mColor);
 
     /* render a rectangle for each bin. Same
@@ -155,6 +161,7 @@ void hist_impl::render(const int pWindowId,
 
     glUseProgram(0);
     glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_BLEND);
     CheckGL("End hist_impl::render");
 }
 

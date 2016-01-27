@@ -13,6 +13,12 @@
 namespace fg
 {
 
+enum BufferType {
+    FG_VERTEX_BUFFER = 0,
+    FG_COLOR_BUFFER  = 1,
+    FG_ALPHA_BUFFER  = 2
+};
+
 static void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& queue)
 {
     cl::BufferGL pboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, out.pbo(), NULL);
@@ -37,16 +43,34 @@ static void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& q
  * Currently fg::Plot, fg::Histogram objects in Forge library fit the bill
  */
 template<class Renderable>
-void copy(Renderable& out, const cl::Buffer& in, const cl::CommandQueue& queue)
+void copy(Renderable& out, const cl::Buffer& in, const cl::CommandQueue& queue,
+          const BufferType bufferType=FG_VERTEX_BUFFER)
 {
-    cl::BufferGL vboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, out.vertices(), NULL);
+    unsigned rId = 0;
+    size_t size = 0;
+    switch(bufferType) {
+        case FG_VERTEX_BUFFER:
+            rId = out.vertices();
+            size = out.verticesSize();
+            break;
+        case FG_COLOR_BUFFER:
+            rId = out.colors();
+            size = out.colorsSize();
+            break;
+        case FG_ALPHA_BUFFER:
+            rId = out.alphas();
+            size = out.alphasSize();
+            break;
+    }
+
+    cl::BufferGL vboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, rId, NULL);
 
     std::vector<cl::Memory> shared_objects;
     shared_objects.push_back(vboMapBuffer);
 
     glFinish();
     queue.enqueueAcquireGLObjects(&shared_objects);
-    queue.enqueueCopyBuffer(in, vboMapBuffer, 0, 0, out.verticesSize(), NULL, NULL);
+    queue.enqueueCopyBuffer(in, vboMapBuffer, 0, 0, size, NULL, NULL);
     queue.finish();
     queue.enqueueReleaseGLObjects(&shared_objects);
 }

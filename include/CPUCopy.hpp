@@ -13,6 +13,12 @@
 namespace fg
 {
 
+enum BufferType {
+    FG_VERTEX_BUFFER = 0,
+    FG_COLOR_BUFFER  = 1,
+    FG_ALPHA_BUFFER  = 2
+};
+
 template<typename T>
 void copy(fg::Image& out, const T * dataPtr)
 {
@@ -31,10 +37,26 @@ void copy(fg::Image& out, const T * dataPtr)
  * Currently fg::Plot, fg::Histogram objects in Forge library fit the bill
  */
 template<class Renderable, typename T>
-void copy(Renderable& out, const T * dataPtr)
+void copy(Renderable& out, const T * dataPtr, const BufferType bufferType=FG_VERTEX_BUFFER)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, out.vertices());
-    glBufferSubData(GL_ARRAY_BUFFER, 0, out.verticesSize(), dataPtr);
+    unsigned rId = 0;
+    size_t size = 0;
+    switch(bufferType) {
+        case FG_VERTEX_BUFFER:
+            rId = out.vertices();
+            size = out.verticesSize();
+            break;
+        case FG_COLOR_BUFFER:
+            rId = out.colors();
+            size = out.colorsSize();
+            break;
+        case FG_ALPHA_BUFFER:
+            rId = out.alphas();
+            size = out.alphasSize();
+            break;
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, rId);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, size, dataPtr);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 

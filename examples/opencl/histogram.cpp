@@ -133,24 +133,39 @@ static const std::string fractal_ocl_kernel =
 "    if(get_global_id(0) < size) {\n"
 "        out[get_global_id(0)] = 0;\n"
 "    }\n"
+"}\n"
+"float rand(int x)\n"
+"{\n"
+"    x = (x << 13) ^ x;\n"
+"    return ( 1.0 - ( (x * (x * x * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);\n"
+"}\n"
+"kernel\n"
+"void set_colors(global float* out, uint const seed)\n"
+"{\n"
+"    int i = get_global_id(0);\n"
+"    out[3*i+0] = (1+rand(seed * i))/2.0f;\n"
+"    out[3*i+1] = (1+rand(seed ^ i))/2.0f;\n"
+"    out[3*i+2] = (1+rand(seed / i))/2.0f;\n"
 "}\n";
 
 inline int divup(int a, int b)
 {
     return (a+b-1)/b;
 }
-void kernel(cl::Buffer& devOut, cl::Buffer& histOut, cl::CommandQueue& queue)
+
+void kernel(cl::Buffer& devOut, cl::Buffer& histOut, cl::Buffer& colors, cl::CommandQueue& queue)
 {
     static std::once_flag   compileFlag;
     static cl::Program      prog;
-    static cl::Kernel       kern_img, kern_hist, kern_zero;
+    static cl::Kernel       kern_img, kern_hist, kern_zero, kern_colors;
 
     std::call_once(compileFlag,
         [queue]() {
         prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), fractal_ocl_kernel, true);
-            kern_img  = cl::Kernel(prog, "image_gen");
-            kern_hist = cl::Kernel(prog, "hist_freq");
-            kern_zero = cl::Kernel(prog, "zero_buffer");
+            kern_img    = cl::Kernel(prog, "image_gen");
+            kern_hist   = cl::Kernel(prog, "hist_freq");
+            kern_zero   = cl::Kernel(prog, "zero_buffer");
+            kern_colors = cl::Kernel(prog, "set_colors");
         });
 
     static const NDRange local(16, 16);
@@ -177,6 +192,10 @@ void kernel(cl::Buffer& devOut, cl::Buffer& histOut, cl::CommandQueue& queue)
     kern_hist.setArg(3, DIMY);
     kern_hist.setArg(4, NBINS);
     queue.enqueueNDRangeKernel(kern_hist, cl::NullRange, global, local);
+
+    kern_colors.setArg(0, colors);
+    kern_colors.setArg(1, std::rand());
+    queue.enqueueNDRangeKernel(kern_colors, cl::NullRange, global_hist);
 }
 
 int main(void)
@@ -267,32 +286,36 @@ int main(void)
 
         cl::Buffer devOut(context, CL_MEM_READ_WRITE, IMG_SIZE);
         cl::Buffer histOut(context, CL_MEM_READ_WRITE, NBINS * sizeof(int));
+        cl::Buffer colors(context, CL_MEM_READ_WRITE, 3 * NBINS * sizeof(float));
 
         /*
          * generate image, and prepare data to pass into
          * Histogram's underlying vertex buffer object
          */
-        kernel(devOut, histOut, queue);
+        kernel(devOut, histOut, colors, queue);
          /* To help the users with copying the data from compute
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
         fg::copy(img, devOut, queue);
         fg::copy(hist, histOut, queue);
+        fg::copy(hist, colors, queue, fg::FG_COLOR_BUFFER);
 
         do {
-            kernel(devOut, histOut, queue);
-            fg::copy(img, devOut, queue);
-
-            // limit histogram update frequency
-            if(fmod(persistance, 0.4f) < 0.02f)
-                fg::copy(hist, histOut, queue);
-
-            // draw window and poll for events last
             wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
             wnd.draw(1, 0, chart, "Histogram of Noisy Image");
 
             wnd.swapBuffers();
+
+            kernel(devOut, histOut, colors, queue);
+            fg::copy(img, devOut, queue);
+
+            // limit histogram update frequency
+            if (fmod(persistance, 0.4f) < 0.02f) {
+                fg::copy(hist, histOut, queue);
+                fg::copy(hist, colors, queue, fg::FG_COLOR_BUFFER);
+            }
+
         } while(!wnd.close());
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;

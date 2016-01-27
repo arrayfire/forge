@@ -23,7 +23,6 @@ class hist_impl : public AbstractRenderable {
         fg::dtype mDataType;
         GLenum    mGLType;
         GLuint    mNBins;
-        bool      mIsPVCOn;
         /* OpenGL Objects */
         GLuint    mProgram;
         /* internal shader attributes for mProgram
@@ -37,6 +36,7 @@ class hist_impl : public AbstractRenderable {
         GLuint    mColorIndex;
         GLuint    mAlphaIndex;
         GLuint    mPVCIndex;
+        GLuint    mPVAIndex;
         GLuint    mBColorIndex;
 
         std::map<int, GLuint> mVAOMap;
