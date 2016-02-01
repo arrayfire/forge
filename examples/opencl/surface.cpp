@@ -159,12 +159,12 @@ int main(void)
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        fg::copy(surf, devOut, queue);
+        fg::copy(surf.vertices(), surf.verticesSize(), devOut, queue);
 
         do {
             t+=0.07;
             kernel(devOut, queue, t);
-            fg::copy(surf, devOut, queue);
+            fg::copy(surf.vertices(), surf.verticesSize(), devOut, queue);
             wnd.draw(chart);
         } while(!wnd.close());
     }catch (fg::Error err) {

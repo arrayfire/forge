@@ -86,6 +86,16 @@ class Plot {
         FGAPI void setLegend(const std::string& pLegend);
 
         /**
+           Set global marker size
+
+           This size will be used for rendering markers if no per vertex marker sizes are provided.
+           This value defaults to 10
+
+           \param[in] pMarkerSize is the target marker size for scatter plots or line plots with markers
+         */
+        FGAPI void setMarkerSize(const float pMarkerSize);
+
+        /**
            Get the OpenGL buffer object identifier for vertices
 
            \return OpenGL VBO resource id.
@@ -107,6 +117,13 @@ class Plot {
         FGAPI uint alphas() const;
 
         /**
+           Get the OpenGL buffer object identifier for markers sizes, per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint markers() const;
+
+        /**
            Get the OpenGL Vertex Buffer Object resource size
 
            \return vertex buffer object size in bytes
@@ -114,18 +131,25 @@ class Plot {
         FGAPI uint verticesSize() const;
 
         /**
-           Get the OpenGL Vertex Buffer Object resource size
+           Get the OpenGL colors Buffer Object resource size
 
            \return colors buffer object size in bytes
          */
         FGAPI uint colorsSize() const;
 
         /**
-           Get the OpenGL Vertex Buffer Object resource size
+           Get the OpenGL alpha Buffer Object resource size
 
            \return alpha buffer object size in bytes
          */
         FGAPI uint alphasSize() const;
+
+        /**
+           Get the OpenGL markers Buffer Object resource size
+
+           \return alpha buffer object size in bytes
+         */
+        FGAPI uint markersSize() const;
 
         /**
            Get the handle to internal implementation of plot

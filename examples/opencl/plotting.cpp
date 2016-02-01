@@ -181,10 +181,10 @@ int main(void)
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        fg::copy(plt0, sinOut, queue);
-        fg::copy(plt1, cosOut, queue);
-        fg::copy(plt2, tanOut, queue);
-        fg::copy(plt3, logOut, queue);
+        fg::copy(plt0.vertices(), plt0.verticesSize(), sinOut, queue);
+        fg::copy(plt1.vertices(), plt1.verticesSize(), cosOut, queue);
+        fg::copy(plt2.vertices(), plt2.verticesSize(), tanOut, queue);
+        fg::copy(plt3.vertices(), plt3.verticesSize(), logOut, queue);
 
         do {
             wnd.draw(chart);

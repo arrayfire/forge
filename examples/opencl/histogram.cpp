@@ -298,8 +298,8 @@ int main(void)
          * along with the library to help with this task
          */
         fg::copy(img, devOut, queue);
-        fg::copy(hist, histOut, queue);
-        fg::copy(hist, colors, queue, fg::FG_COLOR_BUFFER);
+        fg::copy(hist.vertices(), hist.verticesSize(), histOut, queue);
+        fg::copy(hist.vertices(), hist.verticesSize(), colors, queue);
 
         do {
             wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
@@ -312,8 +312,8 @@ int main(void)
 
             // limit histogram update frequency
             if (fmod(persistance, 0.4f) < 0.02f) {
-                fg::copy(hist, histOut, queue);
-                fg::copy(hist, colors, queue, fg::FG_COLOR_BUFFER);
+                fg::copy(hist.vertices(), hist.verticesSize(), histOut, queue);
+                fg::copy(hist.vertices(), hist.verticesSize(), colors, queue);
             }
 
         } while(!wnd.close());

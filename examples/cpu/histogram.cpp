@@ -104,8 +104,8 @@ int main(void)
         std::vector<float> colArray(3*NBINS, 0.0f);
         populateBins(bmp, histArray.data(), NBINS, colArray.data());
 
-        fg::copy(hist, histArray.data());
-        fg::copy(hist, colArray.data(), fg::FG_COLOR_BUFFER);
+        fg::copy(hist.vertices(), hist.verticesSize(), histArray.data());
+        fg::copy(hist.colors(), hist.colorsSize(), colArray.data());
 
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
         wnd.draw(1, 0, chart, "Histogram of Noisy Image");

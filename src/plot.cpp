@@ -40,6 +40,10 @@ void plot_impl::bindResources(const int pWindowId)
         glEnableVertexAttribArray(mPlotAlphaIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mABO);
         glVertexAttribPointer(mPlotAlphaIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
+        // attach radii
+        glEnableVertexAttribArray(mMarkerRadiiIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mRBO);
+        glVertexAttribPointer(mMarkerRadiiIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
@@ -90,12 +94,13 @@ void plot_impl::bindDimSpecificUniforms()
 
 plot_impl::plot_impl(const uint pNumPoints, const fg::dtype pDataType,
                      const fg::PlotType pPlotType, const fg::MarkerType pMarkerType, const int pD)
-    : mDimension(pD), mNumPoints(pNumPoints), mDataType(pDataType), mGLType(dtype2gl(mDataType)),
-    mMarkerType(pMarkerType), mPlotType(pPlotType), mPlotProgram(-1), mMarkerProgram(-1),
-    mPlotMatIndex(-1), mPlotPVCOnIndex(-1), mPlotPVAOnIndex(-1), mPlotUColorIndex(-1),
-    mPlotRangeIndex(-1), mPlotPointIndex(-1), mPlotColorIndex(-1), mPlotAlphaIndex(-1),
-    mMarkerPVCOnIndex(-1), mMarkerPVAOnIndex(-1), mMarkerTypeIndex(-1), mMarkerColIndex(-1),
-    mMarkerMatIndex(-1), mMarkerPointIndex(-1), mMarkerColorIndex(-1), mMarkerAlphaIndex(-1)
+    : mDimension(pD), mMarkerSize(10), mNumPoints(pNumPoints), mDataType(pDataType),
+    mGLType(dtype2gl(mDataType)), mMarkerType(pMarkerType), mPlotType(pPlotType), mIsPVROn(false),
+    mPlotProgram(-1), mMarkerProgram(-1), mRBO(-1), mPlotMatIndex(-1), mPlotPVCOnIndex(-1),
+    mPlotPVAOnIndex(-1), mPlotUColorIndex(-1), mPlotRangeIndex(-1), mPlotPointIndex(-1),
+    mPlotColorIndex(-1), mPlotAlphaIndex(-1), mMarkerPVCOnIndex(-1), mMarkerPVAOnIndex(-1),
+    mMarkerTypeIndex(-1), mMarkerColIndex(-1), mMarkerMatIndex(-1), mMarkerPointIndex(-1),
+    mMarkerColorIndex(-1), mMarkerAlphaIndex(-1), mMarkerRadiiIndex(-1)
 {
     CheckGL("Begin plot_impl::plot_impl");
     mIsPVCOn = false;
@@ -118,6 +123,7 @@ plot_impl::plot_impl(const uint pNumPoints, const fg::dtype pDataType,
 
     mCBOSize = 3*mNumPoints;
     mABOSize = mNumPoints;
+    mRBOSize = mNumPoints;
 
     mPlotMatIndex    = glGetUniformLocation(mPlotProgram, "transform");
     mPlotPVCOnIndex  = glGetUniformLocation(mPlotProgram, "isPVCOn");
@@ -129,19 +135,24 @@ plot_impl::plot_impl(const uint pNumPoints, const fg::dtype pDataType,
     mMarkerMatIndex   = glGetUniformLocation(mMarkerProgram, "transform");
     mMarkerPVCOnIndex = glGetUniformLocation(mMarkerProgram, "isPVCOn");
     mMarkerPVAOnIndex = glGetUniformLocation(mMarkerProgram, "isPVAOn");
+    mMarkerPVROnIndex = glGetUniformLocation(mMarkerProgram, "isPVROn");
     mMarkerTypeIndex  = glGetUniformLocation(mMarkerProgram, "marker_type");
     mMarkerColIndex   = glGetUniformLocation(mMarkerProgram, "marker_color");
+    mMarkerPSizeIndex = glGetUniformLocation(mMarkerProgram, "psize");
     mMarkerPointIndex = glGetAttribLocation (mMarkerProgram, "point");
     mMarkerColorIndex = glGetAttribLocation (mMarkerProgram, "color");
     mMarkerAlphaIndex = glGetAttribLocation (mMarkerProgram, "alpha");
+    mMarkerRadiiIndex = glGetAttribLocation (mMarkerProgram, "pointsize");
 
 #define PLOT_CREATE_BUFFERS(type)   \
         mVBO = createBuffer<type>(GL_ARRAY_BUFFER, mVBOSize, NULL, GL_DYNAMIC_DRAW);    \
         mCBO = createBuffer<float>(GL_ARRAY_BUFFER, mCBOSize, NULL, GL_DYNAMIC_DRAW);   \
         mABO = createBuffer<float>(GL_ARRAY_BUFFER, mABOSize, NULL, GL_DYNAMIC_DRAW);   \
+        mRBO = createBuffer<float>(GL_ARRAY_BUFFER, mRBOSize, NULL, GL_DYNAMIC_DRAW);   \
         mVBOSize *= sizeof(type);   \
         mCBOSize *= sizeof(float);  \
-        mABOSize *= sizeof(float);
+        mABOSize *= sizeof(float);  \
+        mRBOSize *= sizeof(float);
 
         switch(mGLType) {
             case GL_FLOAT          : PLOT_CREATE_BUFFERS(float) ; break;
@@ -171,14 +182,31 @@ plot_impl::~plot_impl()
     CheckGL("End plot_impl::~plot_impl");
 }
 
+void plot_impl::setMarkerSize(const float pMarkerSize)
+{
+    mMarkerSize = pMarkerSize;
+}
+
+GLuint plot_impl::markers()
+{
+    mIsPVROn = true;
+    return mRBO;
+}
+
+size_t plot_impl::markersSizes() const
+{
+    return mRBOSize;
+}
+
 void plot_impl::render(const int pWindowId,
                        const int pX, const int pY, const int pVPW, const int pVPH,
                        const glm::mat4& pTransform)
 {
     CheckGL("Begin plot_impl::render");
+    glEnable(GL_SCISSOR_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_SCISSOR_TEST);
+    glDepthMask(GL_FALSE);
 
     glm::mat4 mvp(1.0);
     this->computeTransformMat(mvp, pTransform, pX, pY, pVPW, pVPH);
@@ -200,14 +228,15 @@ void plot_impl::render(const int pWindowId,
 
     if (mMarkerType != fg::FG_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
-        glPointSize(10);
         glUseProgram(mMarkerProgram);
 
         glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(mvp));
         glUniform1i(mMarkerPVCOnIndex, mIsPVCOn);
         glUniform1i(mMarkerPVAOnIndex, mIsPVAOn);
+        glUniform1i(mMarkerPVROnIndex, mIsPVROn);
         glUniform1i(mMarkerTypeIndex, mMarkerType);
         glUniform4fv(mMarkerColIndex, 1, mColor);
+        glUniform1f(mMarkerPSizeIndex, mMarkerSize);
 
         plot_impl::bindResources(pWindowId);
         glDrawArrays(GL_POINTS, 0, mNumPoints);
@@ -215,11 +244,11 @@ void plot_impl::render(const int pWindowId,
 
         glUseProgram(0);
         glDisable(GL_PROGRAM_POINT_SIZE);
-        glPointSize(1);
     }
 
-    glDisable(GL_SCISSOR_TEST);
     glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_SCISSOR_TEST);
     CheckGL("End plot_impl::render");
 }
 
@@ -313,6 +342,11 @@ void Plot::setLegend(const std::string& pLegend)
     mValue->setLegend(pLegend);
 }
 
+void Plot::setMarkerSize(const float pMarkerSize)
+{
+    mValue->setMarkerSize(pMarkerSize);
+}
+
 uint Plot::vertices() const
 {
     return mValue->vbo();
@@ -328,6 +362,11 @@ uint Plot::alphas() const
     return mValue->abo();
 }
 
+uint Plot::markers() const
+{
+    return mValue->mbo();
+}
+
 uint Plot::verticesSize() const
 {
     return (uint)mValue->vboSize();
@@ -341,6 +380,11 @@ uint Plot::colorsSize() const
 uint Plot::alphasSize() const
 {
     return (uint)mValue->aboSize();
+}
+
+uint Plot::markersSize() const
+{
+    return (uint)mValue->mboSize();
 }
 
 internal::_Plot* Plot::get() const

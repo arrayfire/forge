@@ -30,15 +30,19 @@ namespace internal
 class plot_impl : public AbstractRenderable {
     protected:
         GLuint    mDimension;
+        GLfloat   mMarkerSize;
         /* plot points characteristics */
         GLuint    mNumPoints;
         fg::dtype mDataType;
         GLenum    mGLType;
         fg::MarkerType mMarkerType;
         fg::PlotType   mPlotType;
+        bool      mIsPVROn;
         /* OpenGL Objects */
         GLuint    mPlotProgram;
         GLuint    mMarkerProgram;
+        GLuint    mRBO;
+        size_t    mRBOSize;
         /* shader variable index locations */
         GLuint    mPlotMatIndex;
         GLuint    mPlotPVCOnIndex;
@@ -51,12 +55,15 @@ class plot_impl : public AbstractRenderable {
 
         GLuint    mMarkerPVCOnIndex;
         GLuint    mMarkerPVAOnIndex;
+        GLuint    mMarkerPVROnIndex;
         GLuint    mMarkerTypeIndex;
         GLuint    mMarkerColIndex;
         GLuint    mMarkerMatIndex;
+        GLuint    mMarkerPSizeIndex;
         GLuint    mMarkerPointIndex;
         GLuint    mMarkerColorIndex;
         GLuint    mMarkerAlphaIndex;
+        GLuint    mMarkerRadiiIndex;
 
         std::map<int, GLuint> mVAOMap;
 
@@ -75,6 +82,11 @@ class plot_impl : public AbstractRenderable {
                   const fg::PlotType pPlotType, const fg::MarkerType pMarkerType,
                   const int pDimension=3);
         ~plot_impl();
+
+        void setMarkerSize(const float pMarkerSize);
+
+        GLuint markers();
+        size_t markersSizes() const;
 
         virtual void render(const int pWindowId,
                             const int pX, const int pY, const int pVPW, const int pVPH,
@@ -124,6 +136,10 @@ class _Plot {
             mPlot->setLegend(pLegend);
         }
 
+        inline void setMarkerSize(const float pMarkerSize) {
+            mPlot->setMarkerSize(pMarkerSize);
+        }
+
         inline GLuint vbo() const {
             return mPlot->vbo();
         }
@@ -136,6 +152,10 @@ class _Plot {
             return mPlot->abo();
         }
 
+        inline GLuint mbo() const {
+            return mPlot->markers();
+        }
+
         inline size_t vboSize() const {
             return mPlot->vboSize();
         }
@@ -146,6 +166,10 @@ class _Plot {
 
         inline size_t aboSize() const {
             return mPlot->aboSize();
+        }
+
+        inline size_t mboSize() const {
+            return mPlot->markersSizes();
         }
 
         inline void render(const int pWindowId,

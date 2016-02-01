@@ -62,13 +62,13 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plot3, dev_out);
+    fg::copy(plot3.vertices(), dev_out);
 
 
     do {
         t+=0.01;
         kernel(t, DX, dev_out);
-        fg::copy(plot3, dev_out);
+        fg::copy(plot3.vertices(), dev_out);
         wnd.draw(chart);
     } while(!wnd.close());
 

@@ -26,12 +26,6 @@ static void handleCUDAError(cudaError_t err, const char *file, int line)
 namespace fg
 {
 
-enum BufferType {
-    FG_VERTEX_BUFFER = 0,
-    FG_COLOR_BUFFER  = 1,
-    FG_ALPHA_BUFFER  = 2
-};
-
 template<typename T>
 void copy(fg::Image& out, const T * devicePtr)
 {
@@ -49,33 +43,15 @@ void copy(fg::Image& out, const T * devicePtr)
 }
 
 /*
- * Below functions takes any renderable forge object that has following member functions
- * defined
- *
- * `unsigned Renderable::vertices() const;`
- * `unsigned Renderable::verticesSize() const;`
- *
- * Currently fg::Plot, fg::Histogram objects in Forge library fit the bill
+ * Below functions expects OpenGL resource Id and size in bytes to copy the data from
+ * CUDA device memory location to graphics memory
  */
-template<class Renderable, typename T>
-void copy(Renderable& out, const T * devicePtr, const BufferType bufferType=FG_VERTEX_BUFFER)
+template<typename T>
+void copy(const int resourceId, const T * devicePtr)
 {
-    unsigned rId = 0;
-    switch(bufferType) {
-        case FG_VERTEX_BUFFER:
-            rId = out.vertices();
-            break;
-        case FG_COLOR_BUFFER:
-            rId = out.colors();
-            break;
-        case FG_ALPHA_BUFFER:
-            rId = out.alphas();
-            break;
-    }
-
     cudaGraphicsResource *cudaVBOResource;
-    CUDA_ERROR_CHECK(cudaGraphicsGLRegisterBuffer(&cudaVBOResource, rId, cudaGraphicsMapFlagsWriteDiscard));
-
+    CUDA_ERROR_CHECK(cudaGraphicsGLRegisterBuffer(&cudaVBOResource, resourceId,
+                                                  cudaGraphicsMapFlagsWriteDiscard));
     size_t num_bytes;
     T* vboDevicePtr = NULL;
 

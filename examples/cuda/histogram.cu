@@ -114,8 +114,8 @@ int main(void)
     generateNoisyImage(dev_out);
     generateHistogram(dev_out, hist_out, hist_colors);
     fg::copy(img, dev_out);
-    fg::copy(hist, hist_out);
-    fg::copy(hist, hist_colors, fg::FG_COLOR_BUFFER);
+    fg::copy(hist.vertices(), hist_out);
+    fg::copy(hist.colors(), hist_colors);
 
     do {
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
@@ -127,8 +127,8 @@ int main(void)
         fg::copy(img, dev_out);
         // limit histogram update frequency
         if(fmod(persistance, 0.5f) < 0.01) {
-            fg::copy(hist, hist_out);
-            fg::copy(hist, hist_colors, fg::FG_COLOR_BUFFER);
+            fg::copy(hist.vertices(), hist_out);
+            fg::copy(hist.colors(), hist_colors);
         }
 
     } while(!wnd.close());
