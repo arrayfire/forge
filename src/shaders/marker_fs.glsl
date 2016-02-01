@@ -44,10 +44,8 @@ void main(void)
            in_bounds = true;
    }
 
-   float a  = isPVAOn ? pervcol.w : 1.0;
-
    if(!in_bounds)
        discard;
    else
-       outColor = isPVCOn ? vec4(pervcol.xyz, a) : marker_color;
+       outColor = vec4(isPVCOn ? pervcol.xyz : marker_color.xyz, isPVAOn ? pervcol.w : 1.0);
 }

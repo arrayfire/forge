@@ -28,5 +28,5 @@ void main(void)
    if(nin_bounds)
        discard;
    else
-       outColor = isPVCOn ? vec4(pervcol.xyz, a) : vec4(hsv2rgb(vec3(height, 1, 1)),1);
+       outColor = isPVCOn ? vec4(pervcol.xyz, a) : vec4(hsv2rgb(vec3(height, 1, 1)),a);
 }

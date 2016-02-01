@@ -236,10 +236,14 @@ void surface_impl::render(const int pWindowId,
     CheckGL("Begin surface_impl::render");
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
+
     glm::mat4 mvp(1.0);
     computeTransformMat(mvp, pModel);
     renderGraph(pWindowId, mvp);
+
     glDisable(GL_BLEND);
+    glDisable(GL_SCISSOR_TEST);
     CheckGL("End surface_impl::render");
 }
 

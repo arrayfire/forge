@@ -157,6 +157,8 @@ void image_impl::render(const int pWindowId,
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
+
     glUseProgram(mProgram);
 
     glUniform1i(mNumCIndex, mFormatSize);
@@ -189,6 +191,7 @@ void image_impl::render(const int pWindowId,
     // ubind the shader program
     glUseProgram(0);
     glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
 
     CheckGL("End image_impl::render");
 }
