@@ -97,12 +97,16 @@ void AbstractChart::renderTickLabels(
         /* offset based on text size to align
          * text center with tick mark position */
         if(pCoordsOffset < mTickCount) {
-            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
+            // offset for y axis labels
+            pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f+mTickSize/2);
         }else if(pCoordsOffset >= mTickCount && pCoordsOffset < 2*mTickCount) {
-            pos[1] -= ((CHART2D_FONT_SIZE));
+            // offset for x axis labels
+            pos[0] -= (CHART2D_FONT_SIZE*it->length()/4.0f);
+            pos[1] -= (CHART2D_FONT_SIZE*1.32);
         }else {
-            pos[0] -= ((CHART2D_FONT_SIZE*it->length()/2.0f));
-            pos[1] -= ((CHART2D_FONT_SIZE));
+            // offsets for 3d chart axes ticks
+            pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f);
+            pos[1] -= (CHART2D_FONT_SIZE);
         }
         fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
     }
