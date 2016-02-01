@@ -39,7 +39,7 @@ class plot_impl : public AbstractRenderable {
         /* OpenGL Objects */
         GLuint    mPlotProgram;
         GLuint    mMarkerProgram;
-        /* shaderd variable index locations */
+        /* shader variable index locations */
         GLuint    mPlotMatIndex;
         GLuint    mPlotPVCOnIndex;
         GLuint    mPlotPVAOnIndex;

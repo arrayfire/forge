@@ -325,10 +325,18 @@ void chart2d_impl::generateTickLabels()
     int ticksLeft = mTickCount/2;
     /* push tick points for y axis */
     mYText.push_back(toString(ymid));
+    size_t maxYLabelWidth = 0;
     for (int i = 1; i <= ticksLeft; i++) {
-        mYText.push_back(toString(ymid + i*-ystep));
-        mYText.push_back(toString(ymid + i*ystep));
+        std::string temp = toString(ymid + i*-ystep);
+        mYText.push_back(temp);
+        maxYLabelWidth = std::max(maxYLabelWidth, temp.length());
+        temp = toString(ymid + i*ystep);
+        mYText.push_back(temp);
+        maxYLabelWidth = std::max(maxYLabelWidth, temp.length());
     }
+
+    mLeftMargin = std::max((int)maxYLabelWidth, mLeftMargin);
+
     /* push tick points for x axis */
     mXText.push_back(toString(xmid));
     for (int i = 1; i <= ticksLeft; i++) {
@@ -338,7 +346,7 @@ void chart2d_impl::generateTickLabels()
 }
 
 chart2d_impl::chart2d_impl()
-    :AbstractChart(68, 8, 8, 32) {
+    : AbstractChart(64, 32, 8, 44) {
     generateChartData();
 }
 
@@ -418,16 +426,15 @@ void chart2d_impl::render(const int pWindowId,
     /* render chart axes titles */
     if (!mYTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-        pos[0] = w*(res.x+1.0f)/2.0f;
+        pos[0] = w - CHART2D_FONT_SIZE;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[0] += (mTickSize * (w/pVPW));
         fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
-        pos[1] += (mTickSize * (h/pVPH));
+        pos[1] -= (4*mTickSize * (h/pVPH));
         fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
