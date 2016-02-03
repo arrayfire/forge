@@ -70,7 +70,7 @@ int main(void)
      * so that necessary OpenGL context is created for any
      * other fg::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Plotting Demo");
+    fg::Window wnd(DIMX, DIMY, "Bubble chart with Transparency Demo");
     wnd.makeCurrent();
     /* create an font object and load necessary font
      * and later pass it on to window object so that
