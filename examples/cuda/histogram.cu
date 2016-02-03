@@ -105,9 +105,7 @@ int main(void)
      */
     hist.setColor(fg::FG_YELLOW);
 
-    printf("1\n");
     CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, IMG_SIZE));
-    printf("2\n");
     CUDA_ERROR_CHECK(cudaMalloc((void**)&hist_out, NBINS * sizeof(int)));
     CUDA_ERROR_CHECK(cudaMalloc((void**)&hist_colors, 3*NBINS * sizeof(float)));
 
