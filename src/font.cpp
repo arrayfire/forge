@@ -14,6 +14,8 @@
 #include <shader_headers/font_fs.hpp>
 
 #include <cmath>
+#include <cstring>
+#include <sstream>
 #include <algorithm>
 
 #include <glm/glm.hpp>
@@ -22,6 +24,17 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include FT_STROKER_H
+
+#undef __FTERRORS_H__
+#define FT_ERRORDEF( e, v, s )  { e, s },
+#define FT_ERROR_START_LIST     {
+#define FT_ERROR_END_LIST       { 0, 0 } };
+static const struct {
+    int          code;
+    const char*  message;
+} FT_Errors[] =
+#include FT_ERRORS_H
 
 #ifndef OS_WIN
 #include <fontconfig/fontconfig.h>
@@ -32,98 +45,188 @@
 #include <regex>
 #endif
 
-/* freetype library types */
-static FT_Library  gFTLib;
-static FT_Face     gFTFace;
+#define START_CHAR 32
+#define END_CHAR   126
 
-static const int START_CHAR = 32;
-static const int END_CHAR = 127;
+/* freetype library types */
 
 namespace internal
 {
 
-#define FT_THROW_ERROR(msg, err) \
+#ifdef NDEBUG
+/* Relase Mode */
+#define FT_THROW_ERROR(msg, error) \
     throw fg::Error("Freetype library", __LINE__, msg, err);
 
-void font_impl::extractGlyph(int pCharacter)
+#else
+/* Debug Mode */
+#define FT_THROW_ERROR(msg, err)                                            \
+    do {                                                                    \
+        std::ostringstream ss;                                              \
+        ss << "FT_Error (0x"<< std::hex << FT_Errors[bError].code <<") : "  \
+           << FT_Errors[bError].message << std::endl;                       \
+        throw fg::Error(ss.str().c_str(), __LINE__, msg, err);              \
+    } while(0);
+
+#endif
+
+void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
 {
-    FT_Load_Glyph(gFTFace, FT_Get_Char_Index(gFTFace, pCharacter), FT_LOAD_DEFAULT);
-    FT_Render_Glyph(gFTFace->glyph, FT_RENDER_MODE_NORMAL);
-    FT_Bitmap& bitmap = gFTFace->glyph->bitmap;
+    FT_Library  library;
+    FT_Face     face;
+    /* Initialize freetype font library */
+    FT_Error bError = FT_Init_FreeType(&library);
+    if (bError)
+        FT_THROW_ERROR("Freetype Initialization failed", fg::FG_ERR_FREETYPE_ERROR);
+    /* get font face for requested font */
+    bError = FT_New_Face(library, mTTFfile.c_str(), 0, &face);
+    if (bError) {
+        FT_Done_FreeType(library);
+        FT_THROW_ERROR("Freetype face initilization", fg::FG_ERR_FREETYPE_ERROR);
+    }
+    /* Select charmap */
+    bError = FT_Select_Charmap(face, FT_ENCODING_UNICODE);
+    if (bError) {
+        FT_Done_Face(face);
+        FT_Done_FreeType(library);
+        FT_THROW_ERROR("Freetype charmap set failed", fg::FG_ERR_FREETYPE_ERROR);
+    }
+    /* set the pixel size of font */
+    bError = FT_Set_Pixel_Sizes(face, 0, pFontSize);
+    if (bError) {
+        FT_Done_Face(face);
+        FT_Done_FreeType(library);
+        FT_THROW_ERROR("Freetype char size set failed", fg::FG_ERR_FREETYPE_ERROR);
+    }
 
-    int pIndex = pCharacter - START_CHAR;
+    size_t missed = 0;
 
-    int bmp_w = bitmap.width;
-    int bmp_h = bitmap.rows;
-    int w     = nextP2(bmp_w);
-    int h     = nextP2(bmp_h);
+    /* retrieve the list of current font size */
+    auto& currList = mGlyphLists[pFontSize-MIN_FONT_SIZE];
 
-    std::vector<unsigned char> glyphData(w*h, 0);
-    for (int j=0; j<h; ++j) {
-        for (int i=0; i<w; ++i) {
-            glyphData[ (j*w+i) ] =
-                (i<bmp_w && j<bmp_h ? bitmap.buffer[(bmp_h-1-j)*bmp_w+i] : 0);
+    for (size_t i=0; i<(END_CHAR-START_CHAR+1); ++i)
+    {
+        FT_ULong ccode = (FT_ULong)(START_CHAR + i);
+
+        FT_UInt glyphIndex = FT_Get_Char_Index(face, ccode);
+
+        FT_Int32 flags = 0;
+
+        /* solid outline */
+        flags |= FT_LOAD_NO_BITMAP;
+        flags |= FT_LOAD_FORCE_AUTOHINT;
+
+        /* load glyph */
+        FT_Error bError = FT_Load_Glyph(face, glyphIndex, flags);
+        if (bError) {
+            FT_Done_Face(face);
+            FT_Done_FreeType(library);
+            FT_THROW_ERROR("FT_Load_Glyph failed", fg::FG_ERR_FREETYPE_ERROR);
         }
+
+        FT_Glyph currGlyph;;
+
+        bError = FT_Get_Glyph(face->glyph, &currGlyph);
+        if (bError) {
+            FT_Done_Face(face);
+            FT_Done_FreeType(library);
+            FT_THROW_ERROR("FT_Get_Glyph", fg::FG_ERR_FREETYPE_ERROR);
+        }
+
+        //FIXME Renable when outline strokes are working
+        ///* use stroker to get outline */
+        //FT_Stroker stroker;
+        //bError = FT_Stroker_New(library, &stroker);
+        //if (bError) {
+        //    FT_Stroker_Done(stroker);
+        //    FT_Done_Face(face);
+        //    FT_Done_FreeType(library);
+        //    FT_THROW_ERROR("FT_Stroker_New", fg::FG_ERR_FREETYPE_ERROR);
+        //}
+
+        //FT_Stroker_Set(stroker, (int)(0.75*64), FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+
+        ///* stroke the outline to current glyph */
+        //bError = FT_Glyph_StrokeBorder( &currGlyph, stroker, 0, 1 );
+        ////bError = FT_Glyph_Stroke(&currGlyph, stroker, 1);
+        //if (bError) {
+        //    FT_Stroker_Done(stroker);
+        //    FT_Done_Face(face);
+        //    FT_Done_FreeType(library);
+        //    FT_THROW_ERROR("FT_Glyph_Stroke", fg::FG_ERR_FREETYPE_ERROR);
+        //}
+        //FT_Stroker_Done(stroker);
+
+        /* fixed channel depth of 1 */
+        bError = FT_Glyph_To_Bitmap(&currGlyph, FT_RENDER_MODE_NORMAL, 0, 1);
+        if (bError) {
+            //FIXME Renable when outline strokes are working
+            //FT_Stroker_Done(stroker);
+            FT_Done_Face(face);
+            FT_Done_FreeType(library);
+            FT_THROW_ERROR("FT_Glyph_To_Bitmap", fg::FG_ERR_FREETYPE_ERROR);
+        }
+
+        FT_BitmapGlyph bmpGlyph = (FT_BitmapGlyph) currGlyph;
+        FT_Bitmap bmp = bmpGlyph->bitmap;
+
+        int w = bmp.width + 1;
+        int h = bmp.rows + 1;
+
+        glm::vec4 region = mAtlas->getRegion(w, h);
+
+        if (region.x<0 || region.y<0) {
+            missed++;
+            std::cerr<<"Texture atlas is full"<<std::endl;
+            continue;
+        }
+
+        w = w-1; // reduce by one again to leave one pixel border
+        h = h-1; // reduce by one again to leave one pixel border
+
+        int x = region.x;
+        int y = region.y;
+
+        mAtlas->setRegion(x, y, w, h, bmp.buffer, bmp.pitch);
+
+        Glyph* glyph = new Glyph();
+
+        glyph->mWidth    = w;
+        glyph->mHeight   = h;
+
+        glyph->mBearingX = face->glyph->metrics.horiBearingX>>6;
+        glyph->mBearingY = face->glyph->metrics.horiBearingY>>6;
+
+        glyph->mAdvanceX = face->glyph->advance.x>>6;
+        glyph->mAdvanceY = (face->glyph->metrics.height - face->glyph->metrics.horiBearingY)>>6;
+
+        glyph->mS0       = x/(float)mAtlas->width();
+        glyph->mT1       = y/(float)mAtlas->height();
+        glyph->mS1       = (x + glyph->mWidth)/(float)mAtlas->width();
+        glyph->mT0       = (y + glyph->mHeight)/(float)mAtlas->height();
+
+        currList.push_back(glyph);
+
+        FT_Done_Glyph(currGlyph);
     }
 
-    CheckGL("Before Character texture creation");
-    // texture from it
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glGenTextures(1, &(mCharTextures[pIndex]));
-    glBindTexture(GL_TEXTURE_2D, mCharTextures[pIndex]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-                 w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
-                 (pCharacter==32 ? NULL : &glyphData.front()));
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-    CheckGL("After Character texture creation");
-
-    mAdvX[pIndex] = gFTFace->glyph->advance.x>>6;
-    mBearingX[pIndex] = gFTFace->glyph->metrics.horiBearingX>>6;
-    mCharWidth[pIndex] = gFTFace->glyph->metrics.width>>6;
-
-    mAdvY[pIndex] = (gFTFace->glyph->metrics.height - gFTFace->glyph->metrics.horiBearingY)>>6;
-    mBearingY[pIndex] = gFTFace->glyph->metrics.horiBearingY>>6;
-    mCharHeight[pIndex] = gFTFace->glyph->metrics.height>>6;
-
-    mNewLine = std::max(mNewLine, int(gFTFace->glyph->metrics.height>>6));
-
-    // Rendering data, texture coordinates are always the same,
-    // so now we waste a little memory
-    float quad[8];
-    float quad_texcoords[8] = { 0, 1, 0, 0, 1, 1, 1, 0};
-
-    quad[0] = 0.0f; quad[1] = float(-mAdvY[pIndex]+h);
-    quad[2] = 0.0f; quad[3] = float(-mAdvY[pIndex]);
-    quad[4] = float(w); quad[5] = float(-mAdvY[pIndex]+h);
-    quad[6] = float(w); quad[7] = float(-mAdvY[pIndex]);
-
-    // texture coordinates are duplicated for each character
-    // TODO work on removing this duplicates to reduce memory usage
-    for (int i=0; i<4; ++i) {
-        float* vert_ptr = quad+2*i;
-        float* tex_ptr  = quad_texcoords+2*i;
-        mVertexData.insert(mVertexData.end(), vert_ptr, vert_ptr+2);
-        mVertexData.insert(mVertexData.end(), tex_ptr, tex_ptr+2);
-    }
+    /* cleanup freetype variables */
+    FT_Done_Face(face);
+    FT_Done_FreeType(library);
 }
 
 void font_impl::bindResources(int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
-        GLsizei size = sizeof(glm::vec2);
-        GLuint vao = 0;
-        /* create a vertex array object
-         * with appropriate bindings */
+        size_t sz = 2*sizeof(float);
+        GLuint vao;
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, size*2, 0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, size*2, reinterpret_cast<void*>(size));
-        glBindVertexArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sz, 0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sz, reinterpret_cast<void*>(sz));
         /* store the vertex array object corresponding to
          * the window instance in the map */
         mVAOMap[pWindowId] = vao;
@@ -138,41 +241,54 @@ void font_impl::unbindResources() const
 
 void font_impl::destroyGLResources()
 {
-    if (mIsFontLoaded) {
-        if (mProgram) glDeleteProgram(mProgram);
-        if (mVBO) glDeleteBuffers(1, &mVBO);
-        glDeleteTextures(NUM_CHARS, mCharTextures);
+    if (mVBO)
+        glDeleteBuffers(1, &mVBO);
+    /* remove all glyph structures from heap */
+    for (auto it: mGlyphLists) {
+        /* for each font size glyph list */
+        for (auto& m : it) {
+            delete m; /* delete Glyph structure */
+        }
+        it.clear();
     }
-    if (mProgram) glDeleteProgram(mProgram);
-    if (mSampler) glDeleteSamplers(1, &mSampler);
+    /* clear list */
+    mGlyphLists.clear();
 }
 
 font_impl::font_impl()
-    :   mIsFontLoaded(false), mTTFfile(""),
-        mVBO(0), mProgram(0), mSampler(0)
+    : mTTFfile(""), mIsFontLoaded(false), mAtlas(new FontAtlas(1024, 1024, 1)),
+    mVBO(0), mProgram(0), mOrthoW(1), mOrthoH(1)
 {
-    mProgram = initShaders(glsl::font_vs.c_str(), glsl::font_fs.c_str());
-    memset(mCharTextures, 0, NUM_CHARS);
-    glGenSamplers(1, &mSampler);
-    glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(mSampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glSamplerParameteri(mSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    mProgram   = initShaders(glsl::font_vs.c_str(), glsl::font_fs.c_str());
+    mPMatIndex = glGetUniformLocation(mProgram, "projectionMatrix");
+    mMMatIndex = glGetUniformLocation(mProgram, "modelViewMatrix");
+    mTexIndex  = glGetUniformLocation(mProgram, "tex");
+    mClrIndex  = glGetUniformLocation(mProgram, "textColor");
+
+    mGlyphLists.resize(MAX_FONT_SIZE-MIN_FONT_SIZE+1, GlyphList());
 }
 
 font_impl::~font_impl()
 {
     destroyGLResources();
+    if (mProgram) glDeleteProgram(mProgram);
 }
 
 void font_impl::setOthro2D(int pWidth, int pHeight)
 {
-    mWidth = pWidth;
-    mHeight= pHeight;
+    mOrthoW  = pWidth;
+    mOrthoH  = pHeight;
+    mProjMat = glm::ortho(0.0f, float(mOrthoW), 0.0f, float(mOrthoH));
 }
 
-void font_impl::loadFont(const char* const pFile, int pFontSize)
+void font_impl::loadFont(const char* const pFile)
 {
+    CheckGL("Begin font_impl::loadFont");
+
+    /* Check if font is already loaded. If yes, check if current font load
+     * request is same as earlier. If so, return from the function, otherwise,
+     * cleanup currently used resources and mark accordingly for subsequent
+     * font loading.*/
     if (mIsFontLoaded) {
         if (pFile==mTTFfile)
             return;
@@ -181,54 +297,73 @@ void font_impl::loadFont(const char* const pFile, int pFontSize)
             mIsFontLoaded = false;
         }
     }
-    mLoadedPixelSize = pFontSize;
 
-    CheckGL("Begin Font::loadFont");
-    // Initialize freetype font library
-    FT_Error bError = FT_Init_FreeType(&gFTLib);
-
-    bError = FT_New_Face(gFTLib, pFile, 0, &gFTFace);
-    if(bError) {
-        FT_Done_FreeType(gFTLib);
-        FT_THROW_ERROR("font face creation failed", fg::FG_ERR_FREETYPE_ERROR);
+    mTTFfile = pFile;
+    /* Load different font sizes into font atlas */
+    for (size_t s=MIN_FONT_SIZE; s<=MAX_FONT_SIZE; ++s) {
+        loadAtlasWithGlyphs(s);
     }
 
-    bError = FT_Set_Pixel_Sizes(gFTFace, 0, pFontSize);
-    if (bError) {
-        FT_Done_Face(gFTFace);
-        FT_Done_FreeType(gFTLib);
-        FT_THROW_ERROR("set font size failed", fg::FG_ERR_FREETYPE_ERROR);
+    mAtlas->upload();
+
+    /* push each glyphs vertex and texture data into VBO */
+    std::vector<float> vdata;
+
+    uint index = 0;
+
+    for (size_t f=0; f<mGlyphLists.size(); ++f)
+    {
+        auto& list = mGlyphLists[f];
+
+        for (size_t l=0; l<list.size(); ++l)
+        {
+            Glyph* g = list[l];
+
+            std::vector<float> data(16, 0.0f);
+            data[0] = 0.0f; data[1] = float(-g->mAdvanceY+g->mHeight);
+            data[2] = g->mS0; data[3] = g->mT1;
+
+            data[4] = 0.0f; data[5] = float(-g->mAdvanceY);
+            data[6] = g->mS0; data[7] = g->mT0;
+
+            data[8] = float(g->mWidth); data[9] = float(-g->mAdvanceY+g->mHeight);
+            data[10] = g->mS1; data[11] = g->mT1;
+
+            data[12] = float(g->mWidth); data[13] = float(-g->mAdvanceY);
+            data[14] = g->mS1; data[15] = g->mT0;
+
+            vdata.insert(vdata.end(), data.begin(), data.end());
+
+            g->mOffset = index;
+            index += 4;
+        }
     }
 
-    // read font glyphs for only characters
-    // from ' ' to '~'
-    for (int i=START_CHAR; i<END_CHAR; ++i) extractGlyph(i);
-
-    FT_Done_Face(gFTFace);
-    FT_Done_FreeType(gFTLib);
-
-    mVBO = createBuffer<float>(GL_ARRAY_BUFFER, mVertexData.size(), &(mVertexData.front()), GL_STATIC_DRAW);
+    mVBO = createBuffer(GL_ARRAY_BUFFER, vdata.size(), vdata.data(), GL_STATIC_DRAW);
 
     mIsFontLoaded = true;
-    mTTFfile = pFile;
+
     CheckGL("End Font::loadFont");
 }
 
-void font_impl::loadSystemFont(const char* const pName, int pFontSize)
+void font_impl::loadSystemFont(const char* const pName)
 {
-    //TODO do error checking once it is working
     std::string ttf_file_path;
 
 #ifndef OS_WIN
     // use fontconfig to get the file
     FcConfig* config = FcInitLoadConfigAndFonts();
     if (!config) {
-        FT_THROW_ERROR("fontconfig initilization failed", fg::FG_ERR_FREETYPE_ERROR);
+        throw fg::Error("Fontconfig init failed",
+                        __LINE__, __PRETTY_FUNCTION__,
+                        fg::FG_ERR_FONTCONFIG_ERROR);
     }
     // configure the search pattern,
     FcPattern* pat = FcNameParse((const FcChar8*)(pName));
     if (!pat) {
-        FT_THROW_ERROR("fontconfig pattern creation failed", fg::FG_ERR_FREETYPE_ERROR);
+        throw fg::Error("Fontconfig name parse failed",
+                        __LINE__, __PRETTY_FUNCTION__,
+                        fg::FG_ERR_FONTCONFIG_ERROR);
     }
 
     FcConfigSubstitute(config, pat, FcMatchPattern);
@@ -274,15 +409,15 @@ void font_impl::loadSystemFont(const char* const pName, int pFontSize)
     ttf_file_path += matchedFontFiles[0];
 #endif
 
-    loadFont(ttf_file_path.c_str(), pFontSize);
+    loadFont(ttf_file_path.c_str());
 }
 
 void font_impl::render(int pWindowId,
                        const float pPos[], const float pColor[], const char* pText,
-                       int pFontSize, bool pIsVertical)
+                       size_t pFontSize, bool pIsVertical)
 {
+    CheckGL("Begin font_impl::render ");
     if(!mIsFontLoaded) {
-        std::cerr<<"No font was loaded!, hence skipping text rendering."<<std::endl;
         return;
     }
 
@@ -290,64 +425,53 @@ void font_impl::render(int pWindowId,
     glDepthFunc(GL_ALWAYS);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     glUseProgram(mProgram);
-    GLuint pmat_loc = glGetUniformLocation(mProgram, "projectionMatrix");
-    GLuint mvmat_loc = glGetUniformLocation(mProgram, "modelViewMatrix");
-    GLuint tex_loc = glGetUniformLocation(mProgram, "tex");
-    GLuint col_loc = glGetUniformLocation(mProgram, "textColor");
 
-    glm::mat4 projMat = glm::ortho(0.0f, float(mWidth), 0.0f, float(mHeight));
+    glUniformMatrix4fv(mPMatIndex, 1, GL_FALSE, (GLfloat*)&mProjMat);
+    glUniform4fv(mClrIndex, 1, pColor);
 
-    glUniformMatrix4fv(pmat_loc, 1, GL_FALSE, (GLfloat*)&projMat);
-    glUniform4fv(col_loc, 1, pColor);
-
-    int loc_x = int(pPos[0]);
-    int loc_y = int(pPos[1]);
-    if(pFontSize == -1)
-        pFontSize = mLoadedPixelSize;
-    float scale_factor = float(pFontSize) / float(mLoadedPixelSize);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mAtlas->atlasTextureId());
+    glUniform1i(mTexIndex, 0);
 
     bindResources(pWindowId);
-    CheckGL("After Font::render bind resources");
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(tex_loc, 0);
-    glBindSampler(0, mSampler);
 
-    std::string str(pText);
-    for (std::string::iterator it = str.begin(); it != str.end(); ++it) {
-        char currChar = *it;
+    float loc_x = pPos[0];
+    float loc_y = pPos[1];
 
-        if(currChar == '\n') {
-            // if it is new line, move location to next line
-            loc_x = int(pPos[0]);
-            loc_y -= mNewLine * pFontSize / mLoadedPixelSize;
-        } else if (currChar <= '~' && currChar >= ' ') {
-            // regular characters are rendered as textured quad
-            int idx = int(currChar) - START_CHAR;
-            loc_x += mBearingX[idx] * pFontSize / mLoadedPixelSize;
+    if (pFontSize<MIN_FONT_SIZE) {
+       pFontSize = MIN_FONT_SIZE;
+    }
+    else if (pFontSize>MAX_FONT_SIZE) {
+        pFontSize = MAX_FONT_SIZE;
+    }
 
-            glBindTexture(GL_TEXTURE_2D, mCharTextures[idx]);
+    auto& glyphList = mGlyphLists[pFontSize - MIN_FONT_SIZE];
 
-            /* rotate by 90 degress if we need
-             * to render the characters vertically */
-            glm::mat4 modelView = glm::translate(glm::mat4(1.0f),
-                    glm::vec3(float(loc_x), float(loc_y), 0.0f));
+    for (size_t i=0; i<std::strlen(pText); ++i)
+    {
+        int ccode = pText[i];
 
-            modelView = glm::scale(modelView, glm::vec3(scale_factor));
-            glUniformMatrix4fv(mvmat_loc, 1, GL_FALSE, (GLfloat*)&modelView);
+        if (ccode>=START_CHAR && ccode<=END_CHAR) {
 
-            // Draw letter
-            glDrawArrays(GL_TRIANGLE_STRIP, idx*4, 4);
+            int idx = ccode - START_CHAR;
 
-            loc_x += (mAdvX[idx] - mBearingX[idx]) * pFontSize / mLoadedPixelSize;
-        }
-        /* if the text needs to be rendered vertically,
-         * move the pen cursor to next line after each
-         * character render mandatorily */
-        if (pIsVertical) {
-            loc_x = int(pPos[0]);
-            loc_y -= mNewLine * pFontSize / mLoadedPixelSize;
+            Glyph* g = glyphList[idx];
+
+            if (!pIsVertical)
+                loc_x += g->mBearingX;
+
+            glm::mat4 modelView = glm::translate(glm::mat4(1.0f), glm::vec3(loc_x, loc_y, 0.0f));
+
+            glUniformMatrix4fv(mMMatIndex, 1, GL_FALSE, (GLfloat*)&modelView);
+
+            glDrawArrays(GL_TRIANGLE_STRIP, g->mOffset, 4);
+
+            if (pIsVertical) {
+                loc_y -= (pFontSize-g->mAdvanceY);
+            } else {
+                loc_x += (g->mAdvanceX-g->mBearingX);
+            }
         }
     }
 
@@ -357,7 +481,8 @@ void font_impl::render(int pWindowId,
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    CheckGL("After Font::render ");
+
+    CheckGL("End font_impl::render ");
 }
 
 }
@@ -380,14 +505,14 @@ Font::~Font()
     delete value;
 }
 
-void Font::loadFont(const char* const pFile, int pFontSize)
+void Font::loadFontFile(const char* const pFile)
 {
-    value->loadFont(pFile, pFontSize);
+    value->loadFont(pFile);
 }
 
-void Font::loadSystemFont(const char* const pName, int pFontSize)
+void Font::loadSystemFont(const char* const pName)
 {
-    value->loadSystemFont(pName, pFontSize);
+    value->loadSystemFont(pName);
 }
 
 internal::_Font* Font::get() const

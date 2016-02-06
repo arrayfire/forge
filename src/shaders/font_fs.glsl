@@ -8,7 +8,6 @@ out vec4 outputColor;
 
 void main()
 {
-    vec4 texC = texture(tex, texCoord);
-    vec4 alpha = vec4(1.0, 1.0, 1.0, texC.r);
-    outputColor = alpha*textColor;
+    vec4 texC   = texture(tex, texCoord);
+    outputColor = vec4(textColor.rgb, textColor.a*texC.r);
 }

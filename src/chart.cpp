@@ -33,7 +33,7 @@
 using namespace std;
 typedef std::vector<std::string>::const_iterator StringIter;
 
-static const int CHART2D_FONT_SIZE = 15;
+static const int CHART2D_FONT_SIZE = 16;
 
 const std::shared_ptr<internal::font_impl>& getChartFont()
 {
@@ -42,9 +42,9 @@ const std::shared_ptr<internal::font_impl>& getChartFont()
 
     std::call_once(flag, []() {
 #if defined(OS_WIN)
-        mChartFont.loadSystemFont("Calibri", 32);
+        mChartFont.loadSystemFont("Calibri");
 #else
-        mChartFont.loadSystemFont("Vera", 32);
+        mChartFont.loadSystemFont("Vera");
 #endif
     });
 
@@ -98,7 +98,7 @@ void AbstractChart::renderTickLabels(
          * text center with tick mark position */
         if(pCoordsOffset < mTickCount) {
             // offset for y axis labels
-            pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f+mTickSize/2);
+            pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f+mTickSize);
         }else if(pCoordsOffset >= mTickCount && pCoordsOffset < 2*mTickCount) {
             // offset for x axis labels
             pos[0] -= (CHART2D_FONT_SIZE*it->length()/4.0f);
@@ -430,7 +430,7 @@ void chart2d_impl::render(const int pWindowId,
     /* render chart axes titles */
     if (!mYTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-        pos[0] = 2;
+        pos[0] = 4;
         pos[1] = h*(res.y+1.0f)/2.0f;
         fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
     }

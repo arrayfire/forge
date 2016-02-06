@@ -86,12 +86,6 @@ GLuint createBuffer(GLenum pTarget, size_t pSize, const T* pPtr, GLenum pUsage)
     return retVal;
 }
 
-/* compute the next power of two after given integer
- *
- * @pValue is the value whose next power of two is to be computed
- */
-int nextP2(const int pValue);
-
 #ifdef OS_WIN
 /* Get the paths to font files in Windows system directory
  *
@@ -133,7 +127,6 @@ std::ostream& operator<<(std::ostream&, const glm::mat4&);
 /* get the point of the surface of track ball */
 glm::vec3 trackballPoint(const float pX, const float pY,
                          const float pWidth, const float pHeight);
-
 
 namespace internal
 {

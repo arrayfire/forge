@@ -158,11 +158,6 @@ GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc)
     return shaderProgram;
 }
 
-int nextP2(const int pValue)
-{
-    return int(std::pow(2, (std::ceil(std::log2(pValue)))));
-}
-
 float clampTo01(const float pValue)
 {
     return (pValue < 0.0f ? 0.0f : (pValue>1.0f ? 1.0f : pValue));

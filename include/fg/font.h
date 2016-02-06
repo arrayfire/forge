@@ -49,17 +49,15 @@ class Font {
            Load a given font file
 
            \param[in] pFile True Type Font file path
-           \param[in] pFontSize the size of the font glyphs that will be created
          */
-        FGAPI void loadFont(const char* const pFile, int pFontSize);
+        FGAPI void loadFontFile(const char* const pFile);
 
         /**
            Load a system font based on the name
 
            \param[in] pName True Type Font name
-           \param[in] pFontSize the size of the font glyphs that will be created
          */
-        FGAPI void loadSystemFont(const char* const pName, int pFontSize);
+        FGAPI void loadSystemFont(const char* const pName);
 
         /**
            Get handle for internal implementation of Font object

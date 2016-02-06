@@ -10,14 +10,19 @@
 #pragma once
 
 #include <common.hpp>
+#include <font_atlas.hpp>
+
+#include <map>
 #include <vector>
 #include <memory>
-#include <map>
 
-static const int NUM_CHARS = 95;
+static const size_t MIN_FONT_SIZE = 8;
+static const size_t MAX_FONT_SIZE = 36;
 
 namespace internal
 {
+
+typedef std::vector<Glyph*> GlyphList;
 
 class font_impl {
     private:
@@ -26,24 +31,25 @@ class font_impl {
         std::map<int, GLuint> mVAOMap;
 
         /* attributes */
-        bool mIsFontLoaded;
         std::string mTTFfile;
-        std::vector<float> mVertexData;
-        int mWidth;
-        int mHeight;
-        GLuint mVBO;
-        GLuint mProgram;
-        GLuint mSampler;
+        bool        mIsFontLoaded;
+        FontAtlas*  mAtlas;
+        GLuint      mVBO;
+        GLuint      mProgram;
+        int         mOrthoW;
+        int         mOrthoH;
 
-        GLuint mCharTextures[NUM_CHARS];
-        int mAdvX[NUM_CHARS], mAdvY[NUM_CHARS];
-        int mBearingX[NUM_CHARS], mBearingY[NUM_CHARS];
-        int mCharWidth[NUM_CHARS], mCharHeight[NUM_CHARS];
-        int mLoadedPixelSize, mNewLine;
+        std::vector<GlyphList> mGlyphLists;
 
-        /* helper function to extract glyph of
-         * ASCII character pointed by pIndex*/
-        void extractGlyph(int pIndex);
+        /* OpenGL Data */
+        glm::mat4   mProjMat;
+        GLuint      mPMatIndex;
+        GLuint      mMMatIndex;
+        GLuint      mTexIndex;
+        GLuint      mClrIndex;
+
+        /* load all glyphs and create character atlas */
+        void loadAtlasWithGlyphs(const size_t pFontSize);
 
         /* helper functions to bind and unbind
          * rendering resources */
@@ -59,12 +65,12 @@ class font_impl {
         ~font_impl();
 
         void setOthro2D(int pWidth, int pHeight);
-        void loadFont(const char* const pFile, int pFontSize);
-        void loadSystemFont(const char* const pName, int pFontSize);
+        void loadFont(const char* const pFile);
+        void loadSystemFont(const char* const pName);
 
         void render(int pWindowId,
                     const float pPos[2], const float pColor[4], const char* pText,
-                    int pFontSize = -1, bool pIsVertical = false);
+                    size_t pFontSize, bool pIsVertical = false);
 };
 
 class _Font {
@@ -82,12 +88,12 @@ class _Font {
             fnt->setOthro2D(pWidth, pHeight);
         }
 
-        inline void loadFont(const char* const pFile, int pFontSize) {
-            fnt->loadFont(pFile, pFontSize);
+        inline void loadFont(const char* const pFile) {
+            fnt->loadFont(pFile);
         }
 
-        inline void loadSystemFont(const char* const pName, int pFontSize) {
-            fnt->loadSystemFont(pName, pFontSize);
+        inline void loadSystemFont(const char* const pName) {
+            fnt->loadSystemFont(pName);
         }
 };
 

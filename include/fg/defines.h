@@ -93,6 +93,11 @@ enum ErrorCode {
     FG_ERR_NOT_SUPPORTED  = 5001,           ///< Feature not supported
     FG_ERR_NOT_CONFIGURED = 5002,           ///< Library configuration mismatch
     /*
+     * Font config related error codes
+     * '6**'
+     * */
+    FG_ERR_FONTCONFIG_ERROR = 6001,         ///< Fontconfig related error
+    /*
      * other error codes
      * match the following pattern
      * '9**'

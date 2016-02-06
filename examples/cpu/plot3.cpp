@@ -49,9 +49,9 @@ int main(void)
      * it can be used for rendering text */
     fg::Font fnt;
 #ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
+    fnt.loadSystemFont("Calibri");
 #else
-    fnt.loadSystemFont("Vera", 32);
+    fnt.loadSystemFont("Vera");
 #endif
     wnd.setFont(&fnt);
 
