@@ -133,7 +133,7 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
             FT_THROW_ERROR("FT_Get_Glyph", fg::FG_ERR_FREETYPE_ERROR);
         }
 
-        //FIXME Renable when outline strokes are working
+        ////FIXME Renable when outline strokes are working
         ///* use stroker to get outline */
         //FT_Stroker stroker;
         //bError = FT_Stroker_New(library, &stroker);
@@ -144,11 +144,10 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
         //    FT_THROW_ERROR("FT_Stroker_New", fg::FG_ERR_FREETYPE_ERROR);
         //}
 
-        //FT_Stroker_Set(stroker, (int)(0.75*64), FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+        //FT_Stroker_Set(stroker, 16, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 
         ///* stroke the outline to current glyph */
-        //bError = FT_Glyph_StrokeBorder( &currGlyph, stroker, 0, 1 );
-        ////bError = FT_Glyph_Stroke(&currGlyph, stroker, 1);
+        //bError = FT_Glyph_Stroke(&currGlyph, stroker, 1);
         //if (bError) {
         //    FT_Stroker_Done(stroker);
         //    FT_Done_Face(face);
