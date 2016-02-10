@@ -430,7 +430,7 @@ void chart2d_impl::render(const int pWindowId,
     /* render chart axes titles */
     if (!mYTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-        pos[0] = 4;
+        pos[0] = CHART2D_FONT_SIZE*0.75f; /* additional pixel gap from edge of rendering */
         pos[1] = h*(res.y+1.0f)/2.0f;
         fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
     }

@@ -415,6 +415,8 @@ void font_impl::render(int pWindowId,
                        const float pPos[], const float pColor[], const char* pText,
                        size_t pFontSize, bool pIsVertical)
 {
+    static const glm::mat4 I(1);
+
     CheckGL("Begin font_impl::render ");
     if(!mIsFontLoaded) {
         return;
@@ -445,6 +447,8 @@ void font_impl::render(int pWindowId,
         pFontSize = MAX_FONT_SIZE;
     }
 
+    glm::mat4 R = (pIsVertical ? glm::rotate(I, glm::radians(90.f), glm::vec3(0,0,1)) : I);
+
     auto& glyphList = mGlyphLists[pFontSize - MIN_FONT_SIZE];
 
     for (size_t i=0; i<std::strlen(pText); ++i)
@@ -460,14 +464,14 @@ void font_impl::render(int pWindowId,
             if (!pIsVertical)
                 loc_x += g->mBearingX;
 
-            glm::mat4 modelView = glm::translate(glm::mat4(1.0f), glm::vec3(loc_x, loc_y, 0.0f));
+            glm::mat4 TR = glm::translate(I, glm::vec3(loc_x, loc_y, 0.0f)) * R;
 
-            glUniformMatrix4fv(mMMatIndex, 1, GL_FALSE, (GLfloat*)&modelView);
+            glUniformMatrix4fv(mMMatIndex, 1, GL_FALSE, (GLfloat*)&TR);
 
             glDrawArrays(GL_TRIANGLE_STRIP, g->mOffset, 4);
 
             if (pIsVertical) {
-                loc_y -= (pFontSize-g->mAdvanceY);
+                loc_y += (g->mAdvanceX);
             } else {
                 loc_x += (g->mAdvanceX-g->mBearingX);
             }
