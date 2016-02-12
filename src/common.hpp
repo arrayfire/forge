@@ -61,10 +61,11 @@ GLenum ictype2gl(const fg::ChannelFormat pMode);
  *
  * @pVertShaderSrc is the vertex shader source code string
  * @pFragShaderSrc is the vertex shader source code string
+ * @pGeomShaderSrc is the vertex shader source code string
  *
  * @return GLSL program unique identifier for given shader duo
  */
-GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc);
+GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc, const char* pGeomShaderSrc=NULL);
 
 /* Create OpenGL buffer object
  *

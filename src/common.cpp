@@ -26,6 +26,7 @@ using namespace std;
 typedef struct {
     GLuint vertex;
     GLuint fragment;
+    GLuint geometry;
 } Shaders;
 
 GLenum dtype2gl(const fg::dtype pValue)
@@ -106,6 +107,9 @@ void attachAndLinkProgram(GLuint pProgram, Shaders pShaders)
 {
     glAttachShader(pProgram, pShaders.vertex);
     glAttachShader(pProgram, pShaders.fragment);
+    if (pShaders.geometry>0) {
+        glAttachShader(pProgram, pShaders.geometry);
+    }
 
     glLinkProgram(pProgram);
     GLint linked;
@@ -118,7 +122,9 @@ void attachAndLinkProgram(GLuint pProgram, Shaders pShaders)
     printLinkInfoLog(pProgram);
 }
 
-Shaders loadShaders(const char* pVertexShaderSrc, const char* pFragmentShaderSrc)
+Shaders loadShaders(const char* pVertexShaderSrc,
+                    const char* pFragmentShaderSrc,
+                    const char* pGeometryShaderSrc)
 {
     GLuint f, v;
 
@@ -145,14 +151,27 @@ Shaders loadShaders(const char* pVertexShaderSrc, const char* pFragmentShaderSrc
         printShaderInfoLog(f);
     }
 
-    Shaders out; out.vertex = v; out.fragment = f;
+    GLuint g = 0;
+    /* compile geometry shader if source provided */
+    if (pGeometryShaderSrc) {
+        g = glCreateShader(GL_GEOMETRY_SHADER);
+        glShaderSource(g, 1, &pGeometryShaderSrc, NULL);
+        glCompileShader(g);
+        glGetShaderiv(g, GL_COMPILE_STATUS, &compiled);
+        if (!compiled) {
+            std::cerr << "Geometry shader not compiled." << std::endl;
+            printShaderInfoLog(g);
+        }
+    }
+
+    Shaders out; out.vertex = v; out.fragment = f; out.geometry = g;
 
     return out;
 }
 
-GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc)
+GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc, const char* pGeomShaderSrc)
 {
-    Shaders shrds = loadShaders(pVertShaderSrc, pFragShaderSrc);
+    Shaders shrds = loadShaders(pVertShaderSrc, pFragShaderSrc, pGeomShaderSrc);
     GLuint shaderProgram = glCreateProgram();
     attachAndLinkProgram(shaderProgram, shrds);
     return shaderProgram;
