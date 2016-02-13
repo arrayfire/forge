@@ -108,7 +108,7 @@ void AbstractChart::renderTickLabels(
             pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f);
             pos[1] -= (CHART2D_FONT_SIZE);
         }
-        fonter->render(pWindowId, pos, WHITE, it->c_str(), CHART2D_FONT_SIZE);
+        fonter->render(pWindowId, pos, BLACK, it->c_str(), CHART2D_FONT_SIZE);
     }
 }
 
@@ -399,7 +399,7 @@ void chart2d_impl::render(const int pWindowId,
     glUseProgram(mBorderProgram);
 
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-    glUniform4fv(mBorderUniformColorIndex, 1, WHITE);
+    glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     /* Draw borders */
     glDrawArrays(GL_LINE_LOOP, 0, 4);
 
@@ -411,7 +411,7 @@ void chart2d_impl::render(const int pWindowId,
     glPointSize((GLfloat)mTickSize);
     glUseProgram(mSpriteProgram);
 
-    glUniform4fv(mSpriteUniformTickcolorIndex, 1, WHITE);
+    glUniform4fv(mSpriteUniformTickcolorIndex, 1, BLACK);
     glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     /* Draw tick marks on y axis */
     glUniform1i(mSpriteUniformTickaxisIndex, 1);
@@ -432,14 +432,14 @@ void chart2d_impl::render(const int pWindowId,
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
         pos[0] = CHART2D_FONT_SIZE*0.75f; /* additional pixel gap from edge of rendering */
         pos[1] = h*(res.y+1.0f)/2.0f;
-        fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
+        fonter->render(pWindowId, pos, BLACK, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] -= (4*mTickSize * (h/pVPH));
-        fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
+        fonter->render(pWindowId, pos, BLACK, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
     CheckGL("End chart2d_impl::renderChart");
@@ -646,7 +646,7 @@ void chart3d_impl::render(const int pWindowId,
     glUseProgram(mBorderProgram);
 
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(PVM));
-    glUniform4fv(mBorderUniformColorIndex, 1, WHITE);
+    glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     /* Draw borders */
     glDrawArrays(GL_LINES, 0, 6);
 
@@ -658,7 +658,7 @@ void chart3d_impl::render(const int pWindowId,
     glPointSize((GLfloat)mTickSize);
     glUseProgram(mSpriteProgram);
 
-    glUniform4fv(mSpriteUniformTickcolorIndex, 1, WHITE);
+    glUniform4fv(mSpriteUniformTickcolorIndex, 1, BLACK);
     glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(PVM));
     /* Draw tick marks on z axis */
     glUniform1i(mSpriteUniformTickaxisIndex, 1);
@@ -693,7 +693,7 @@ void chart3d_impl::render(const int pWindowId,
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
         pos[0] -= 6*(mTickSize * (w/pVPW));
         pos[1] += mZTitle.length()/2 * CHART2D_FONT_SIZE;
-        fonter->render(pWindowId, pos, WHITE, mZTitle.c_str(), CHART2D_FONT_SIZE, true);
+        fonter->render(pWindowId, pos, BLACK, mZTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
     if (!mYTitle.empty()) {
         glm::vec4 res = PVM * glm::vec4(1.0f, 0.0f, -1.0f, 1.0f);
@@ -701,7 +701,7 @@ void chart3d_impl::render(const int pWindowId,
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
         pos[0] += 0.5 * ((mTickSize * (w/pVPW)) + mYTitle.length()/2 * CHART2D_FONT_SIZE);
         pos[1] -= 4*(mTickSize * (h/pVPH));
-        fonter->render(pWindowId, pos, WHITE, mYTitle.c_str(), CHART2D_FONT_SIZE);
+        fonter->render(pWindowId, pos, BLACK, mYTitle.c_str(), CHART2D_FONT_SIZE);
     }
     if (!mXTitle.empty()) {
         glm::vec4 res = PVM * glm::vec4(0.0f, -1.0f, -1.0f, 1.0f);
@@ -709,7 +709,7 @@ void chart3d_impl::render(const int pWindowId,
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
         pos[0] -= (mTickSize * (w/pVPW)) + mXTitle.length()/2 * CHART2D_FONT_SIZE;
         pos[1] -= 4*(mTickSize * (h/pVPH));
-        fonter->render(pWindowId, pos, WHITE, mXTitle.c_str(), CHART2D_FONT_SIZE);
+        fonter->render(pWindowId, pos, BLACK, mXTitle.c_str(), CHART2D_FONT_SIZE);
     }
 
     CheckGL("End chart3d_impl::renderChart");

@@ -243,7 +243,7 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     const glm::mat4& mvp = mWindow->mMVPs[0];
     // clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
+    glClearColor(PEARL[0], PEARL[1], PEARL[2], PEARL[3]);
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
@@ -298,7 +298,7 @@ void window_impl::draw(int pColId, int pRowId,
     glScissor(x_off + lef_margin, y_off + bot_margin,
             mWindow->mCellWidth - 2 * rig_margin, mWindow->mCellHeight - 2 * top_margin);
     glEnable(GL_SCISSOR_TEST);
-    glClearColor(GRAY[0], GRAY[1], GRAY[2], GRAY[3]);
+    glClearColor(PEARL[0], PEARL[1], PEARL[2], PEARL[3]);
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
@@ -311,7 +311,7 @@ void window_impl::draw(int pColId, int pRowId,
         mFont->setOthro2D(mWindow->mCellWidth, mWindow->mCellHeight);
         pos[0] = mWindow->mCellWidth / 3.0f;
         pos[1] = mWindow->mCellHeight*0.92f;
-        mFont->render(mID, pos, RED, pTitle, 16);
+        mFont->render(mID, pos, AF_BLUE, pTitle, 16);
     }
 
     CheckGL("End draw(column, row)");
