@@ -595,6 +595,53 @@ void chart3d_impl::generateChartData()
         mXText.push_back(toString(pos));
     }
 
+    /* push grid lines */
+    /* xy plane center lines */
+    pushPoint(decorData, -1.0f, 0.0f, -1.0f);
+    pushPoint(decorData,  1.0f, 0.0f, -1.0f);
+    pushPoint(decorData,  0.0f,-1.0f, -1.0f);
+    pushPoint(decorData,  0.0f, 1.0f, -1.0f);
+    /* xz plane center lines */
+    pushPoint(decorData, -1.0f, -1.0f, 0.0f);
+    pushPoint(decorData, -1.0f,  1.0f, 0.0f);
+    pushPoint(decorData, -1.0f,  0.0f,-1.0f);
+    pushPoint(decorData, -1.0f,  0.0f, 1.0f);
+    /* yz plane center lines */
+    pushPoint(decorData, -1.0f,  1.0f, 0.0f);
+    pushPoint(decorData,  1.0f,  1.0f, 0.0f);
+    pushPoint(decorData,  0.0f,  1.0f,-1.0f);
+    pushPoint(decorData,  0.0f,  1.0f, 1.0f);
+    for (int i=1; i<=ticksLeft; ++i) {
+        float delta = i*step;
+        /* xy plane center lines */
+        pushPoint(decorData, -1.0f,-delta, -1.0f);
+        pushPoint(decorData,  1.0f,-delta, -1.0f);
+        pushPoint(decorData, -1.0f, delta, -1.0f);
+        pushPoint(decorData,  1.0f, delta, -1.0f);
+        pushPoint(decorData,-delta, -1.0f, -1.0f);
+        pushPoint(decorData,-delta,  1.0f, -1.0f);
+        pushPoint(decorData, delta, -1.0f, -1.0f);
+        pushPoint(decorData, delta,  1.0f, -1.0f);
+        /* xz plane center lines */
+        pushPoint(decorData, -1.0f, -1.0f,-delta);
+        pushPoint(decorData, -1.0f,  1.0f,-delta);
+        pushPoint(decorData, -1.0f, -1.0f, delta);
+        pushPoint(decorData, -1.0f,  1.0f, delta);
+        pushPoint(decorData, -1.0f,-delta, -1.0f);
+        pushPoint(decorData, -1.0f,-delta,  1.0f);
+        pushPoint(decorData, -1.0f, delta, -1.0f);
+        pushPoint(decorData, -1.0f, delta,  1.0f);
+        /* yz plane center lines */
+        pushPoint(decorData, -1.0f,  1.0f,-delta);
+        pushPoint(decorData,  1.0f,  1.0f,-delta);
+        pushPoint(decorData, -1.0f,  1.0f, delta);
+        pushPoint(decorData,  1.0f,  1.0f, delta);
+        pushPoint(decorData,-delta,  1.0f, -1.0f);
+        pushPoint(decorData,-delta,  1.0f,  1.0f);
+        pushPoint(decorData, delta,  1.0f, -1.0f);
+        pushPoint(decorData, delta,  1.0f,  1.0f);
+    }
+
     /* check if decoration VBO has been already used(case where
      * tick marks are being changed from default(21) */
     if (mDecorVBO != 0)
@@ -679,6 +726,9 @@ void chart3d_impl::render(const int pWindowId,
     glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     /* Draw borders */
     glDrawArrays(GL_LINES, 0, 6);
+    /* Draw grid */
+    glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
+    glDrawArrays(GL_LINES, 6+3*mTickCount, 12*mTickCount);
 
     glUseProgram(0);
 
