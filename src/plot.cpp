@@ -270,11 +270,11 @@ void plot2d_impl::computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput,
     const float lMargin = 68;
     const float rMargin = 8;
     const float tMargin = 8;
-    const float bMargin = 32;
+    const float bMargin = 44;
     const float tickSize = 10;
 
     float viewWidth    = pVPW - (lMargin + rMargin + tickSize/2);
-    float viewHeight   = pVPH - (bMargin + tMargin + tickSize );
+    float viewHeight   = pVPH - (bMargin + tMargin + tickSize/2);
     float view_scale_x = viewWidth/pVPW;
     float view_scale_y = viewHeight/pVPH;
 
