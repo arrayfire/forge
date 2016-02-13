@@ -94,7 +94,7 @@ void plot_impl::bindDimSpecificUniforms()
 
 plot_impl::plot_impl(const uint pNumPoints, const fg::dtype pDataType,
                      const fg::PlotType pPlotType, const fg::MarkerType pMarkerType, const int pD)
-    : mDimension(pD), mMarkerSize(10), mNumPoints(pNumPoints), mDataType(pDataType),
+    : mDimension(pD), mMarkerSize(12), mNumPoints(pNumPoints), mDataType(pDataType),
     mGLType(dtype2gl(mDataType)), mMarkerType(pMarkerType), mPlotType(pPlotType), mIsPVROn(false),
     mPlotProgram(-1), mMarkerProgram(-1), mRBO(-1), mPlotMatIndex(-1), mPlotPVCOnIndex(-1),
     mPlotPVAOnIndex(-1), mPlotUColorIndex(-1), mPlotRangeIndex(-1), mPlotPointIndex(-1),

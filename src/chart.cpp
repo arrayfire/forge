@@ -252,11 +252,12 @@ void chart2d_impl::generateChartData()
     std::copy(border, border+nValues, std::back_inserter(decorData));
 
     float step = 2.0f/(mTickCount);
+    int ticksLeft = mTickCount/2;
+
     /* push tick points for y axis:
      * push (0) first followed by
      * [-1, 0) ticks and then
      * (0, 1] ticks  */
-    int ticksLeft = mTickCount/2;
     pushPoint(decorData, -1.0f, 0.0f);
     pushTicktextCoords(-1.0f, 0.0f);
     mYText.push_back(toString(0));
@@ -299,6 +300,23 @@ void chart2d_impl::generateChartData()
         pushPoint(decorData, pos, -1.0f);
         pushTicktextCoords(pos, -1.0f);
         mXText.push_back(toString(pos));
+    }
+
+    /* push grid lines */
+    pushPoint(decorData, -1.0f, 0.0f);
+    pushPoint(decorData,  1.0f, 0.0f);
+    pushPoint(decorData,  0.0f,-1.0f);
+    pushPoint(decorData,  0.0f, 1.0f);
+    for (int i=1; i<=ticksLeft; ++i) {
+        float delta = i*step;
+        pushPoint(decorData, -1.0f,-delta);
+        pushPoint(decorData,  1.0f,-delta);
+        pushPoint(decorData, -1.0f, delta);
+        pushPoint(decorData,  1.0f, delta);
+        pushPoint(decorData,-delta, -1.0f);
+        pushPoint(decorData,-delta,  1.0f);
+        pushPoint(decorData, delta, -1.0f);
+        pushPoint(decorData, delta,  1.0f);
     }
 
     /* check if decoration VBO has been already used(case where
@@ -373,10 +391,12 @@ void chart2d_impl::render(const int pWindowId,
                                                 glm::vec3(scale_x, scale_y, 1)),
                                      glm::vec3(offset_x, offset_y, 0));
 
+    trans = pTransform*trans;
+
     /* render all renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, pTransform*trans);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, trans);
     }
 
     chart2d_impl::bindResources(pWindowId);
@@ -388,6 +408,9 @@ void chart2d_impl::render(const int pWindowId,
     glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     /* Draw borders */
     glDrawArrays(GL_LINE_LOOP, 0, 4);
+    /* Draw grid */
+    glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
+    glDrawArrays(GL_LINES, 4+2*mTickCount, 4*mTickCount);
 
     /* reset shader program binding */
     glUseProgram(0);
