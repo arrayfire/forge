@@ -367,12 +367,6 @@ void chart2d_impl::render(const int pWindowId,
     float scale_x = w / pVPW;
     float scale_y = h / pVPH;
 
-    auto &fonter = getChartFont();
-    fonter->setOthro2D(int(w), int(h));
-
-    float pos[2] = {mLegendX, mLegendY};
-    float lcol[4];
-
     /* set uniform attributes of shader
      * for drawing the plot borders */
     glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
@@ -383,14 +377,6 @@ void chart2d_impl::render(const int pWindowId,
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
         renderable->render(pWindowId, pX, pY, pVPW, pVPH, pTransform*trans);
-        renderable->getColor(lcol[0], lcol[1], lcol[2], lcol[3]);
-
-        float cpos[2];
-        glm::vec4 res = trans * glm::vec4(pos[0], pos[1], 0.0f, 1.0f);
-        cpos[0] = res.x * w;
-        cpos[1] = res.y * h;
-        fonter->render(pWindowId, cpos, lcol, renderable->legend().c_str(), CHART2D_FONT_SIZE);
-        pos[1] -= (CHART2D_FONT_SIZE/(float)pVPH);
     }
 
     chart2d_impl::bindResources(pWindowId);
@@ -427,6 +413,10 @@ void chart2d_impl::render(const int pWindowId,
     renderTickLabels(pWindowId, int(w), int(h), mYText, trans, 0, false);
     renderTickLabels(pWindowId, int(w), int(h), mXText, trans, mTickCount, false);
 
+    auto &fonter = getChartFont();
+    fonter->setOthro2D(int(w), int(h));
+
+    float pos[2];
     /* render chart axes titles */
     if (!mYTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
@@ -440,6 +430,23 @@ void chart2d_impl::render(const int pWindowId,
         pos[1] = h*(res.y+1.0f)/2.0f;
         pos[1] -= (4*mTickSize * (h/pVPH));
         fonter->render(pWindowId, pos, BLACK, mXTitle.c_str(), CHART2D_FONT_SIZE);
+    }
+
+    /* render all legends of the respective renderables */
+    pos[0] = mLegendX;
+    pos[1] = mLegendY;
+
+    float lcol[4];
+
+    for (auto renderable : mRenderables) {
+        renderable->getColor(lcol[0], lcol[1], lcol[2], lcol[3]);
+
+        float cpos[2];
+        glm::vec4 res = trans * glm::vec4(pos[0], pos[1], 0.0f, 1.0f);
+        cpos[0] = res.x * w;
+        cpos[1] = res.y * h;
+        fonter->render(pWindowId, cpos, lcol, renderable->legend().c_str(), CHART2D_FONT_SIZE);
+        pos[1] -= (CHART2D_FONT_SIZE/(float)pVPH);
     }
 
     CheckGL("End chart2d_impl::renderChart");

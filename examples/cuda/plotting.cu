@@ -50,15 +50,15 @@ int main(void)
     fg::Plot plt0 = chart.plot( DATA_SIZE, fg::f32);                                 //create a default plot
     fg::Plot plt1 = chart.plot( DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
     fg::Plot plt2 = chart.plot( DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
-    fg::Plot plt3 = chart.plot( DATA_SIZE, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
+    fg::Plot plt3 = chart.plot( DATA_SIZE, fg::f32, fg::FG_SCATTER, fg::FG_CROSS);
 
     /*
      * Set plot colors
      */
-    plt0.setColor(fg::FG_YELLOW);
+    plt0.setColor(fg::FG_RED);
     plt1.setColor(fg::FG_BLUE);
-    plt2.setColor(fg::FG_WHITE);            //use a forge predefined color
-    plt3.setColor((fg::Color) 0xABFF01FF);  //or any hex-valued color
+    plt2.setColor(fg::FG_YELLOW);            //use a forge predefined color
+    plt3.setColor((fg::Color) 0x257973FF);  //or any hex-valued color
     /*
      * Set plot legends
      */

@@ -19,9 +19,10 @@
 
 #include <vector>
 
-static const float BLACK[] = {0.0f   , 0.0f   , 0.0f   , 1.0f};
-static const float PEARL[] = {0.818f, 0.778f, 0.684f, 1.0f};
-static const float AF_BLUE[]  = {0.0588f, 0.1137f, 0.2745f, 1.0f};
+static const float BLACK[]   = {0.0f    , 0.0f    , 0.0f    , 1.0f};
+static const float GRAY[]    = {0.65f   , 0.65f   , 0.65f   , 1.0f};
+static const float PEARL[]   = {0.818f  , 0.778f  , 0.684f  , 1.0f};
+static const float AF_BLUE[] = {0.0588f , 0.1137f , 0.2745f , 1.0f};
 
 /* clamp the float to [0-1] range
  *
