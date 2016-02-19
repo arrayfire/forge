@@ -56,7 +56,7 @@ namespace internal
 #ifdef NDEBUG
 /* Relase Mode */
 #define FT_THROW_ERROR(msg, error) \
-    throw fg::Error("Freetype library", __LINE__, msg, err);
+    throw fg::Error("Freetype library", __LINE__, msg, error);
 
 #else
 /* Debug Mode */
