@@ -47,12 +47,12 @@
  */
 FGAPI GLEWContext* glewGetContext();
 
+namespace fg
+{
+
 typedef unsigned int    uint;
 typedef unsigned short  ushort;
 typedef unsigned char   uchar;
-
-namespace fg
-{
 
 enum ErrorCode {
     FG_SUCCESS            = 0,              ///< Fuction returned successfully.
