@@ -42,7 +42,7 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, SIZE));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, SIZE));
     kernel(dev_out);
     fg::copy(img, dev_out);
 
@@ -50,7 +50,7 @@ int main(void)
         wnd.draw(img);
     } while(!wnd.close());
 
-    CUDA_ERROR_CHECK(cudaFree(dev_out));
+    FORGE_CUDA_CHECK(cudaFree(dev_out));
     return 0;
 }
 

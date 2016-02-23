@@ -49,7 +49,7 @@ int main(void)
     surf.setColor(fg::FG_YELLOW);
 
     static float t=0;
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
     kernel(t, DX, dev_out);
     /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
@@ -66,7 +66,7 @@ int main(void)
         wnd.draw(chart);
     } while(!wnd.close());
 
-    CUDA_ERROR_CHECK(cudaFree(dev_out));
+    FORGE_CUDA_CHECK(cudaFree(dev_out));
     return 0;
 }
 

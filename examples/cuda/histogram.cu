@@ -62,7 +62,7 @@ int main(void)
     float *hist_colors;
     unsigned char *dev_out;
 
-    CUDA_ERROR_CHECK(cudaMalloc((void **)&state, NBINS*sizeof(curandState_t)));
+    FORGE_CUDA_CHECK(cudaMalloc((void **)&state, NBINS*sizeof(curandState_t)));
     setupRandomKernel <<< 1, NBINS >>> (state, 314567);
     cudaMemcpyToSymbol(perm, hperm, 256 * sizeof(int));
 
@@ -105,9 +105,9 @@ int main(void)
      */
     hist.setColor(fg::FG_YELLOW);
 
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, IMG_SIZE));
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&hist_out, NBINS * sizeof(int)));
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&hist_colors, 3*NBINS * sizeof(float)));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, IMG_SIZE));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&hist_out, NBINS * sizeof(int)));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&hist_colors, 3*NBINS * sizeof(float)));
 
     generateNoisyImage(dev_out);
     generateHistogram(dev_out, hist_out, hist_colors);
@@ -131,9 +131,9 @@ int main(void)
 
     } while(!wnd.close());
 
-    CUDA_ERROR_CHECK(cudaFree(dev_out));
-    CUDA_ERROR_CHECK(cudaFree(hist_out));
-    CUDA_ERROR_CHECK(cudaFree(hist_colors));
+    FORGE_CUDA_CHECK(cudaFree(dev_out));
+    FORGE_CUDA_CHECK(cudaFree(hist_out));
+    FORGE_CUDA_CHECK(cudaFree(hist_colors));
     return 0;
 }
 

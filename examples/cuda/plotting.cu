@@ -67,10 +67,10 @@ int main(void)
     plt2.setLegend("Tangent");
     plt3.setLegend("Log base 10");
 
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&sin_out, sizeof(float) * DATA_SIZE * 2));
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&cos_out, sizeof(float) * DATA_SIZE * 2));
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&tan_out, sizeof(float) * DATA_SIZE * 2));
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&log_out, sizeof(float) * DATA_SIZE * 2));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&sin_out, sizeof(float) * DATA_SIZE * 2));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&cos_out, sizeof(float) * DATA_SIZE * 2));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&tan_out, sizeof(float) * DATA_SIZE * 2));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&log_out, sizeof(float) * DATA_SIZE * 2));
 
     kernel(sin_out, 0);
     kernel(cos_out, 1);
@@ -91,10 +91,10 @@ int main(void)
         wnd.draw(chart);
     } while(!wnd.close());
 
-    CUDA_ERROR_CHECK(cudaFree(sin_out));
-    CUDA_ERROR_CHECK(cudaFree(cos_out));
-    CUDA_ERROR_CHECK(cudaFree(tan_out));
-    CUDA_ERROR_CHECK(cudaFree(log_out));
+    FORGE_CUDA_CHECK(cudaFree(sin_out));
+    FORGE_CUDA_CHECK(cudaFree(cos_out));
+    FORGE_CUDA_CHECK(cudaFree(tan_out));
+    FORGE_CUDA_CHECK(cudaFree(log_out));
     return 0;
 }
 
