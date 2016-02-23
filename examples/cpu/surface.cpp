@@ -76,12 +76,12 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(surf.vertices(), surf.verticesSize(), &function[0]);
+    fg::copy(surf.vertices(), surf.verticesSize(), (const void*)function.data());
 
     do {
         t+=0.07;
         gen_surface(t, DX, function);
-        fg::copy(surf.vertices(), surf.verticesSize(), &function[0]);
+        fg::copy(surf.vertices(), surf.verticesSize(), (const void*)function.data());
         wnd.draw(chart);
     } while(!wnd.close());
 

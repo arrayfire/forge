@@ -59,7 +59,7 @@ int main(void)
      * along with the library to help with this task
      */
     kernel(bmp);
-    fg::copy(img, bmp.ptr);
+    fg::copy(img, (const void*)bmp.ptr);
 
     do {
         wnd.draw(img);

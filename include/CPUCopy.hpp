@@ -13,8 +13,8 @@
 namespace fg
 {
 
-template<typename T>
-void copy(fg::Image& out, const T * dataPtr)
+static
+void copy(fg::Image& out, const void * dataPtr)
 {
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, out.pbo());
     glBufferSubData(GL_PIXEL_UNPACK_BUFFER, 0, out.size(), dataPtr);
@@ -25,8 +25,8 @@ void copy(fg::Image& out, const T * dataPtr)
  * Below functions expects OpenGL resource Id and size in bytes to copy the data from
  * cpu memory location to graphics memory
  */
-template<typename T>
-void copy(const int resourceId, const size_t resourceSize, const T * dataPtr)
+static
+void copy(const int resourceId, const size_t resourceSize, const void * dataPtr)
 {
     glBindBuffer(GL_ARRAY_BUFFER, resourceId);
     glBufferSubData(GL_ARRAY_BUFFER, 0, resourceSize, dataPtr);

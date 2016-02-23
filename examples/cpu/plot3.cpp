@@ -71,12 +71,12 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plot3.vertices(), plot3.verticesSize(), &function[0]);
+    fg::copy(plot3.vertices(), plot3.verticesSize(), (const void*)function.data());
 
     do {
         t+=0.01;
         gen_curve(t, DX, function);
-        fg::copy(plot3.vertices(), plot3.verticesSize(), &function[0]);
+        fg::copy(plot3.vertices(), plot3.verticesSize(), (const void*)function.data());
         wnd.draw(chart);
     } while(!wnd.close());
 

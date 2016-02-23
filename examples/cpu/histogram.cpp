@@ -92,7 +92,7 @@ int main(void)
          * Histogram's underlying vertex buffer object
          */
         kernel(bmp);
-        fg::copy(img, bmp.ptr);
+        fg::copy(img, (const void*)bmp.ptr);
 
         /* copy your data into the vertex buffer object exposed by
          * fg::Histogram class and then proceed to rendering.
@@ -104,8 +104,8 @@ int main(void)
         std::vector<float> colArray(3*NBINS, 0.0f);
         populateBins(bmp, histArray.data(), NBINS, colArray.data());
 
-        fg::copy(hist.vertices(), hist.verticesSize(), histArray.data());
-        fg::copy(hist.colors(), hist.colorsSize(), colArray.data());
+        fg::copy(hist.vertices(), hist.verticesSize(), (const void*)histArray.data());
+        fg::copy(hist.colors(), hist.colorsSize(), (const void*)colArray.data());
 
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
         wnd.draw(1, 0, chart, "Histogram of Noisy Image");

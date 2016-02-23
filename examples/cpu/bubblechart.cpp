@@ -108,15 +108,15 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plt1.vertices(), plt1.verticesSize(), cosData.data());
-    fg::copy(plt2.vertices(), plt2.verticesSize(), tanData.data());
+    fg::copy(plt1.vertices(), plt1.verticesSize(), (const void*)cosData.data());
+    fg::copy(plt2.vertices(), plt2.verticesSize(), (const void*)tanData.data());
 
     /* update color value for tan graph */
-    fg::copy(plt2.colors(), plt2.colorsSize(), colors.data());
+    fg::copy(plt2.colors(), plt2.colorsSize(), (const void*)colors.data());
     /* update alpha values for tan graph */
-    fg::copy(plt2.alphas(), plt2.alphasSize(), alphas.data());
+    fg::copy(plt2.alphas(), plt2.alphasSize(), (const void*)alphas.data());
     /* update marker sizes for tan graph markers */
-    fg::copy(plt2.markers(), plt2.markersSize(), radii.data());
+    fg::copy(plt2.markers(), plt2.markersSize(), (const void*)radii.data());
 
     do {
         wnd.draw(chart);
