@@ -23,7 +23,7 @@ IF(TARGET forge)
 ELSE(TARGET forge)
     SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
     FIND_PACKAGE(GLEWmx REQUIRED)
-
+    FIND_PACKAGE(FreeImage REQUIRED)
     FIND_PACKAGE(OpenGL REQUIRED)
     FIND_PACKAGE(Forge REQUIRED)
     SET(X11_LIBS "")
@@ -35,6 +35,7 @@ ELSE(TARGET forge)
         ${FORGE_INCLUDE_DIRS}
         ${OPENGL_INCLUDE_DIR}
         ${GLEW_INCLUDE_DIR}
+        ${FREEIMAGE_INCLUDE_PATH}
         )
     ADD_DEFINITIONS(-DGLEW_MX)
 IF(UNIX)
@@ -71,10 +72,10 @@ FOREACH(FILE ${CPU_EXAMPLE_SRC_FILES})
 
     IF(TARGET forge)
         BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge
-                      "${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY}")
+            "${FREEIMAGE_LIBRARY};${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY}")
     ELSE(TARGET forge)
         BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-            "${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};")
+            "${FREEIMAGE_LIBRARY};${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};")
     ENDIF()
 ENDFOREACH()
 
@@ -90,10 +91,10 @@ IF(CUDA_FOUND)
 
         IF(TARGET forge)
               BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge
-                            "${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}")
+                  "${FREEIMAGE_LIBRARY};${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}")
         ELSE(TARGET forge)
               BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                            "${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}")
+                  "${FREEIMAGE_LIBRARY};${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}")
         ENDIF()
     ENDFOREACH()
 ELSE()
@@ -117,10 +118,10 @@ IF(OpenCL_FOUND)
 
         IF(TARGET forge)
               BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge
-                            "${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${OpenCL_LIBRARIES}")
+                  "${FREEIMAGE_LIBRARY};${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${OpenCL_LIBRARIES}")
         ELSE(TARGET forge)
               BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                            "${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};${OpenCL_LIBRARIES}")
+                  "${FREEIMAGE_LIBRARY};${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};${OpenCL_LIBRARIES}")
         ENDIF()
     ENDFOREACH()
 ELSE()

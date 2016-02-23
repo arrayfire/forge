@@ -47,6 +47,9 @@ class Widget {
         int mCellHeight;
         std::vector<glm::mat4> mMVPs;
 
+        uint    mIndex;
+        GLuint  mFramePBOS[2];
+
         /* Constructors and methods */
         Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible);
 
@@ -82,6 +85,7 @@ class Widget {
 
         void pollEvents();
 
+        void resizePixelBuffers();
 };
 
 }

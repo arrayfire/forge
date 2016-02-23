@@ -75,6 +75,8 @@ class window_impl {
                   const char* pTitle);
 
         void swapBuffers();
+
+        void saveFrameBuffer(const char* pFullPath);
 };
 
 void MakeContextCurrent(const window_impl* pWindow);
@@ -184,6 +186,10 @@ class _Window {
         void draw(int pColId, int pRowId, _Image* pRenderable, const char* pTitle, const bool pKeepAspectRatio) {
             pRenderable->keepAspectRatio(pKeepAspectRatio);
             mWindow->draw(pColId, pRowId, pRenderable->impl(), pTitle);
+        }
+
+        inline void saveFrameBuffer(const char* pFullPath) {
+            mWindow->saveFrameBuffer(pFullPath);
         }
 };
 

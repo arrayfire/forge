@@ -65,8 +65,13 @@ int main(void)
     kernel(bmp);
     fg::copy(img, (const void*)bmp.ptr);
 
+    bool once = true;
     do {
         wnd.draw(img);
+        if (once) {
+            wnd.saveFrameBuffer("fractal.bmp");
+            once = false;
+        }
     } while(!wnd.close());
 
     destroyBitmap(bmp);

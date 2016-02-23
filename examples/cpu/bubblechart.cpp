@@ -108,8 +108,13 @@ int main(void)
     /* update marker sizes for tan graph markers */
     fg::copy(plt2.markers(), plt2.markersSize(), (const void*)radii.data());
 
+    bool once = true;
     do {
         wnd.draw(chart);
+        if (once) {
+            wnd.saveFrameBuffer("bubblechart.png");
+            once = false;
+        }
     } while(!wnd.close());
 
     return 0;

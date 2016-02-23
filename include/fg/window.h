@@ -233,6 +233,18 @@ class Window {
            something in multiview mode
          */
         FGAPI void swapBuffers();
+
+        /**
+           Save window frame buffer to give location in provided image format
+
+           The image format to be saved in is inferred from the file extension
+           provided in the path string.
+
+           \param[in] pFullPath should be the absolute path of the target location
+                      where the framebuffer should be stored. The target image format
+                      is inferred from the file extension.
+         */
+        FGAPI void saveFrameBuffer(const char* pFullPath);
 };
 
 }

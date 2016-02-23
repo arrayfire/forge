@@ -98,6 +98,12 @@ enum ErrorCode {
      * */
     FG_ERR_FONTCONFIG_ERROR = 6001,         ///< Fontconfig related error
     /*
+     * FreeImage errors
+     */
+    FG_ERR_FREEIMAGE_UNKNOWN_FORMAT = 7001, ///< Unknown format, not supported by freeimage
+    FG_ERR_FREEIMAGE_BAD_ALLOC = 7002,      ///< freeimage memory allocation failed
+    FG_ERR_FREEIMAGE_SAVE_FAILED = 7004,    ///< freeimage file save failed
+    /*
      * other error codes
      * match the following pattern
      * '9**'

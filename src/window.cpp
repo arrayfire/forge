@@ -18,6 +18,8 @@
 #include <memory>
 #include <mutex>
 
+#include <FreeImage.h>
+
 using namespace fg;
 
 static GLEWContext* current = nullptr;
@@ -36,6 +38,49 @@ int getNextUniqueId()
     std::lock_guard<std::mutex> lock(wndUnqIdMutex);
     return wndUnqIdTracker++;
 }
+
+class FI_Manager
+{
+    public:
+    static bool initialized;
+    FI_Manager()
+    {
+#ifdef FREEIMAGE_LIB
+        FreeImage_Initialise();
+#endif
+        initialized = true;
+    }
+
+    ~FI_Manager()
+    {
+#ifdef FREEIMAGE_LIB
+        FreeImage_DeInitialise();
+#endif
+    }
+};
+
+bool FI_Manager::initialized = false;
+
+static void FI_Init()
+{
+    static FI_Manager manager = FI_Manager();
+}
+
+class FI_BitmapResource
+{
+public:
+    explicit FI_BitmapResource(FIBITMAP * p) :
+        pBitmap(p)
+    {
+    }
+
+    ~FI_BitmapResource()
+    {
+        FreeImage_Unload(pBitmap);
+    }
+private:
+    FIBITMAP * pBitmap;
+};
 
 namespace internal
 {
@@ -106,6 +151,9 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     } else {
         mCMap = std::make_shared<colormap_impl>();
     }
+
+
+    mWindow->resizePixelBuffers();
 
     /* set the colormap to default */
     mColorMapUBO = mCMap->defaultMap();
@@ -250,8 +298,8 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 
     const glm::mat4& mvp = mWindow->mMVPs[0];
     // clear color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
@@ -265,6 +313,7 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 void window_impl::grid(int pRows, int pCols)
 {
     glViewport(0, 0, mWindow->mWidth, mWindow->mHeight);
+    glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     mWindow->mRows       = pRows;
@@ -306,7 +355,6 @@ void window_impl::draw(int pColId, int pRowId,
     glScissor(x_off + lef_margin, y_off + bot_margin,
             mWindow->mCellWidth - 2 * rig_margin, mWindow->mCellHeight - 2 * top_margin);
     glEnable(GL_SCISSOR_TEST);
-    glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
@@ -330,6 +378,89 @@ void window_impl::swapBuffers()
     mWindow->swapBuffers();
     mWindow->pollEvents();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void window_impl::saveFrameBuffer(const char* pFullPath)
+{
+    if (!pFullPath) {
+        throw fg::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
+                                "Empty path string");
+    }
+
+    FI_Init();
+
+    auto FIErrorHandler = [](FREE_IMAGE_FORMAT pOutputFIFormat, const char* pMessage) {
+        printf("FreeImage Error Handler: %s\n", pMessage);
+    };
+
+    FreeImage_SetOutputMessage(FIErrorHandler);
+
+    FREE_IMAGE_FORMAT format = FreeImage_GetFileType(pFullPath);
+    if (format == FIF_UNKNOWN) {
+        format = FreeImage_GetFIFFromFilename(pFullPath);
+    }
+    if (format == FIF_UNKNOWN) {
+        throw fg::Error("window_impl::saveFrameBuffer", __LINE__,
+                        "Freeimage: unrecognized image format", fg::FG_ERR_FREEIMAGE_UNKNOWN_FORMAT);
+    }
+
+    if (!(format==FIF_BMP || format==FIF_PNG)) {
+        throw fg::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
+                                "Supports only bmp and png as of now");
+    }
+
+    uint w = mWindow->mWidth;
+    uint h = mWindow->mHeight;
+    uint c = 4;
+    uint d = c * 8;
+
+    FIBITMAP* bmp = FreeImage_Allocate(w, h, d);
+    if (!bmp) {
+        throw fg::Error("window_impl::saveFrameBuffer", __LINE__,
+                        "Freeimage: allocation failed", fg::FG_ERR_FREEIMAGE_BAD_ALLOC);
+    }
+
+    FI_BitmapResource bmpUnloader(bmp);
+
+    uint pitch = FreeImage_GetPitch(bmp);
+    uchar* dst = FreeImage_GetBits(bmp);
+
+    // mIndex was incremented after current frame async transfer was initiated
+    // so, move to index i.e. previous pbo to read from it into host memory
+    uint pboIndex = (mWindow->mIndex+1)%2;
+
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, mWindow->mFramePBOS[pboIndex]);
+
+    uchar* src = (uchar*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+
+    if (src) {
+        // copy data from mapped memory location
+        uint w = mWindow->mWidth;
+        uint h = mWindow->mHeight;
+        uint i = 0;
+
+        for (uint y = 0; y < h; ++y) {
+            for (uint x = 0; x < w; ++x) {
+                *(dst + x * c + FI_RGBA_RED  ) = (uchar) src[4*i+0]; // r
+                *(dst + x * c + FI_RGBA_GREEN) = (uchar) src[4*i+1]; // g
+                *(dst + x * c + FI_RGBA_BLUE ) = (uchar) src[4*i+2]; // b
+                *(dst + x * c + FI_RGBA_ALPHA) = (uchar) src[4*i+3]; // a
+                ++i;
+            }
+            dst += pitch;
+        }
+
+        glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+    }
+
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+    int flags = 0;
+    if (format == FIF_JPEG)
+        flags = flags | JPEG_QUALITYSUPERB;
+
+    if (!(FreeImage_Save(format,bmp, pFullPath, flags) == TRUE)) {
+    }
 }
 
 }
@@ -454,6 +585,11 @@ void Window::draw(int pColId, int pRowId, const Chart& pChart, const char* pTitl
 void Window::swapBuffers()
 {
     mValue->swapBuffers();
+}
+
+void Window::saveFrameBuffer(const char* pFullPath)
+{
+    mValue->saveFrameBuffer(pFullPath);
 }
 
 }

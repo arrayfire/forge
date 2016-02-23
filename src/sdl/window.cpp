@@ -33,6 +33,9 @@ Widget::Widget()
     : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
     mWidth(512), mHeight(512), mRows(1), mCols(1)
 {
+    mIndex = 0;
+    mFramePBOS[0] = 0;
+    mFramePBOS[1] = 0;
     mCellWidth  = mWidth;
     mCellHeight = mHeight;
 }
@@ -40,6 +43,10 @@ Widget::Widget()
 Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
     : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mRows(1), mCols(1)
 {
+    mIndex = 0;
+    mFramePBOS[0] = 0;
+    mFramePBOS[1] = 0;
+
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "ERROR: SDL wasn't able to initalize\n";
         SDL_THROW_ERROR("SDL initilization failed", fg::FG_ERR_GL_ERROR)
@@ -87,6 +94,8 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
 
 Widget::~Widget()
 {
+    glDeleteBuffers(2, mFramePBOS);
+
     SDL_DestroyWindow(mWindow);
     SDL_GL_DeleteContext(mContext);
 }
@@ -139,6 +148,13 @@ void Widget::setSize(unsigned pW, unsigned pH)
 void Widget::swapBuffers()
 {
     SDL_GL_SwapWindow(mWindow);
+
+    glReadBuffer(GL_FRONT);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBOS[mIndex]);
+    glReadPixels(0, 0, mWidth, mHeight, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+    mIndex = (mIndex+1)%2;
 }
 
 void Widget::hide()
@@ -185,6 +201,7 @@ void Widget::pollEvents()
                     mHeight     = evnt.window.data2;
                     mCellWidth  = mWidth  / mCols;
                     mCellHeight = mHeight / mRows;
+                    resizePixelBuffers();
                     break;
             }
         }
@@ -255,6 +272,25 @@ void Widget::pollEvents()
             mLastYPos = evnt.motion.y;
         }
     }
+}
+
+void Widget::resizePixelBuffers()
+{
+    if (mFramePBOS[0]!=0 && mFramePBOS[1]!=0)
+        glDeleteBuffers(2, mFramePBOS);
+
+    uint w = mWidth;
+    uint h = mHeight;
+
+    glGenBuffers(1, mFramePBOS);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBOS[0]);
+    glBufferData(GL_PIXEL_PACK_BUFFER, w*h*4*sizeof(internal::uchar), 0, GL_DYNAMIC_READ);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+    glGenBuffers(1, mFramePBOS+1);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBOS[1]);
+    glBufferData(GL_PIXEL_PACK_BUFFER, w*h*4*sizeof(internal::uchar), 0, GL_DYNAMIC_READ);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
 }
