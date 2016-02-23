@@ -177,13 +177,14 @@ void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,
     generateTickLabels();
 }
 
-void AbstractChart::setAxesTitles(const std::string& pXTitle,
-                                  const std::string& pYTitle,
-                                  const std::string& pZTitle)
+void AbstractChart::setAxesTitles(const char* pXTitle,
+                                  const char* pYTitle,
+                                  const char* pZTitle)
 {
     mXTitle = std::string(pXTitle);
     mYTitle = std::string(pYTitle);
-    mZTitle = std::string(pZTitle);
+    if (pZTitle)
+        mZTitle = std::string(pZTitle);
 }
 
 void AbstractChart::setLegendPosition(const float pX, const float pY)
@@ -811,9 +812,9 @@ Chart::~Chart()
     delete mValue;
 }
 
-void Chart::setAxesTitles(const std::string pX,
-                          const std::string pY,
-                          const std::string pZ)
+void Chart::setAxesTitles(const char* pX,
+                          const char* pY,
+                          const char* pZ)
 {
     mValue->setAxesTitles(pX, pY, pZ);
 }

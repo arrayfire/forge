@@ -132,6 +132,10 @@ glm::vec3 trackballPoint(const float pX, const float pY,
 namespace internal
 {
 
+typedef unsigned int    uint;
+typedef unsigned short  ushort;
+typedef unsigned char   uchar;
+
 /* Basic renderable class
  *
  * Any object that is renderable to a window should inherit from this
@@ -188,8 +192,8 @@ class AbstractRenderable {
 
         /* Set legend for rendering
          */
-        void setLegend(const std::string& pLegend) {
-            mLegend = pLegend;
+        void setLegend(const char* pLegend) {
+            mLegend = std::string(pLegend);
         }
 
         /* Get legend string

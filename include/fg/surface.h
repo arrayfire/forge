@@ -11,8 +11,6 @@
 
 #include <fg/defines.h>
 
-#include <string>
-
 namespace internal
 {
 class _Surface;
@@ -82,7 +80,7 @@ class Surface {
 
            \param[in] pLegend
          */
-        FGAPI void setLegend(const std::string& pLegend);
+        FGAPI void setLegend(const char* pLegend);
 
         /**
            Get the OpenGL buffer object identifier for vertices

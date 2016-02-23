@@ -11,8 +11,6 @@
 
 #include <fg/defines.h>
 
-#include <string>
-
 namespace internal
 {
 class _Plot;
@@ -83,7 +81,7 @@ class Plot {
 
            \param[in] pLegend
          */
-        FGAPI void setLegend(const std::string& pLegend);
+        FGAPI void setLegend(const char* pLegend);
 
         /**
            Set global marker size

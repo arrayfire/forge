@@ -15,7 +15,6 @@
 #include <fg/surface.h>
 #include <fg/histogram.h>
 
-#include <string>
 #include <vector>
 
 namespace internal
@@ -60,9 +59,9 @@ class Chart {
            \param[in] pY is y-axis title label
            \param[in] pZ is z-axis title label
          */
-        FGAPI void setAxesTitles(const std::string pX,
-                                 const std::string pY,
-                                 const std::string pZ=std::string(""));
+        FGAPI void setAxesTitles(const char* pX,
+                                 const char* pY,
+                                 const char* pZ=NULL);
 
         /**
            Set axes data ranges

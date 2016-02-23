@@ -117,7 +117,7 @@ class _Surface {
             mSurface->setColor(pRed, pGreen, pBlue, pAlpha);
         }
 
-        inline void setLegend(const std::string& pLegend) {
+        inline void setLegend(const char* pLegend) {
             mSurface->setLegend(pLegend);
         }
 

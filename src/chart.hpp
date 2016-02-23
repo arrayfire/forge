@@ -85,9 +85,9 @@ class AbstractChart : public AbstractRenderable {
                       const int pTopMargin, const int pBottomMargin);
         virtual ~AbstractChart();
 
-        void setAxesTitles(const std::string& pXTitle,
-                           const std::string& pYTitle,
-                           const std::string& pZTitle);
+        void setAxesTitles(const char* pXTitle,
+                           const char* pYTitle,
+                           const char* pZTitle);
 
         void setAxesLimits(const float pXmin, const float pXmax,
                            const float pYmin, const float pYmax,
@@ -168,9 +168,9 @@ class _Chart {
             return mChart;
         }
 
-        inline void setAxesTitles(const std::string& pX,
-                                  const std::string& pY,
-                                  const std::string& pZ) {
+        inline void setAxesTitles(const char* pX,
+                                  const char* pY,
+                                  const char* pZ) {
             mChart->setAxesTitles(pX, pY, pZ);
         }
 

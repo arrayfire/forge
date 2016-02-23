@@ -107,7 +107,7 @@ plot_impl::plot_impl(const uint pNumPoints, const fg::dtype pDataType,
     mIsPVAOn = false;
 
     setColor(0, 1, 0, 1);
-    setLegend(std::string(""));
+    mLegend  = std::string("");
 
     if (mDimension==2) {
         mPlotProgram     = initShaders(glsl::marker2d_vs.c_str(), glsl::histogram_fs.c_str());
@@ -337,7 +337,7 @@ void Plot::setColor(const float pRed, const float pGreen,
     mValue->setColor(pRed, pGreen, pBlue, pAlpha);
 }
 
-void Plot::setLegend(const std::string& pLegend)
+void Plot::setLegend(const char* pLegend)
 {
     mValue->setLegend(pLegend);
 }

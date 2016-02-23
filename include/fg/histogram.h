@@ -81,7 +81,7 @@ class Histogram {
 
            \param[in] pLegend
          */
-        FGAPI void setLegend(const std::string pLegend);
+        FGAPI void setLegend(const char* pLegend);
 
         /**
            Get the OpenGL buffer object identifier for vertices

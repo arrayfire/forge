@@ -73,7 +73,7 @@ class _Histogram {
             mHistogram->setColor(pRed, pGreen, pBlue, pAlpha);
         }
 
-        inline void setLegend(const std::string pLegend) {
+        inline void setLegend(const char* pLegend) {
             mHistogram->setLegend(pLegend);
         }
 

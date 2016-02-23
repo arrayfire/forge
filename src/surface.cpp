@@ -159,7 +159,7 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
     mIsPVCOn = false;
     mIsPVAOn = false;
     setColor(0.9, 0.5, 0.6, 1.0);
-    setLegend(std::string(""));
+    mLegend  = std::string("");
 
     mMarkerProgram   = initShaders(glsl::plot3_vs.c_str(), glsl::marker_fs.c_str());
     mMarkerMatIndex  = glGetUniformLocation(mMarkerProgram, "transform");
@@ -303,7 +303,7 @@ void Surface::setColor(const float pRed, const float pGreen,
     mValue->setColor(pRed, pGreen, pBlue, pAlpha);
 }
 
-void Surface::setLegend(const std::string& pLegend)
+void Surface::setLegend(const char* pLegend)
 {
     mValue->setLegend(pLegend);
 }

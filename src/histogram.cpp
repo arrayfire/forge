@@ -79,7 +79,7 @@ hist_impl::hist_impl(const uint pNBins, const fg::dtype pDataType)
     mIsPVAOn = false;
 
     setColor(0.8f, 0.6f, 0.0f, 1.0f);
-    setLegend(std::string(""));
+    mLegend  = std::string("");
 
     mProgram = initShaders(glsl::histogram_vs.c_str(), glsl::histogram_fs.c_str());
 
@@ -203,7 +203,7 @@ void Histogram::setColor(const float pRed, const float pGreen,
     mValue->setColor(pRed, pGreen, pBlue, pAlpha);
 }
 
-void Histogram::setLegend(const std::string pLegend)
+void Histogram::setLegend(const char* pLegend)
 {
     mValue->setLegend(pLegend);
 }

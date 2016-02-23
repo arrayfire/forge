@@ -132,7 +132,7 @@ class _Plot {
             mPlot->setColor(pRed, pGreen, pBlue, pAlpha);
         }
 
-        inline void setLegend(const std::string pLegend) {
+        inline void setLegend(const char* pLegend) {
             mPlot->setLegend(pLegend);
         }
 
