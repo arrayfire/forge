@@ -48,16 +48,6 @@ int main(void)
      */
     fg::Window wnd(DIMX, DIMY, "3d Surface Demo");
     wnd.makeCurrent();
-    /* create an font object and load necessary font
-     * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
-#ifdef OS_WIN
-    fnt.loadSystemFont("Calibri");
-#else
-    fnt.loadSystemFont("Vera");
-#endif
-    wnd.setFont(&fnt);
 
     fg::Chart chart(fg::FG_3D);
     chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, -5.f, 10.f);

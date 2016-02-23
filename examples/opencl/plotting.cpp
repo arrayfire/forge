@@ -85,16 +85,6 @@ int main(void)
         */
         fg::Window wnd(DIMX, DIMY, "Plotting Demo");
         wnd.makeCurrent();
-        /* create an font object and load necessary font
-        * and later pass it on to window object so that
-        * it can be used for rendering text */
-        fg::Font fnt;
-#ifdef OS_WIN
-        fnt.loadSystemFont("Calibri");
-#else
-        fnt.loadSystemFont("Vera");
-#endif
-        wnd.setFont(&fnt);
 
         fg::Chart chart(fg::FG_2D);
         chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.1f, 1.1f);

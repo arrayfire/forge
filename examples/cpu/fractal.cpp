@@ -37,9 +37,13 @@ int main(void)
      */
     fg::Window wnd(DIMX, DIMY, "Fractal Demo");
     wnd.makeCurrent();
+
     /* create an font object and load necessary font
      * and later pass it on to window object so that
-     * it can be used for rendering text */
+     * it can be used for rendering text
+     *
+     * NOTE: THIS IS OPTIONAL STEP, BY DEFAULT WINDOW WILL
+     * HAVE FONT ALREADY SETUP*/
     fg::Font fnt;
 #ifdef OS_WIN
     fnt.loadSystemFont("Calibri");

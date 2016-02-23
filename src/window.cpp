@@ -116,6 +116,14 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     mats.resize(mWindow->mRows*mWindow->mCols);
     std::fill(mats.begin(), mats.end(), glm::mat4(1));
 
+    /* setup default window font */
+    mFont = std::make_shared<font_impl>();
+#ifdef OS_WIN
+    mFont->loadSystemFont("Calibri");
+#else
+    mFont->loadSystemFont("Vera");
+#endif
+
     CheckGL("End Window::Window");
 }
 

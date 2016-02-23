@@ -54,16 +54,6 @@ int main(void)
      */
     fg::Window wnd(DIMX, DIMY, "Histogram Demo");
     wnd.makeCurrent();
-    /* create an font object and load necessary font
-     * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
-#ifdef OS_WIN
-    fnt.loadSystemFont("Calibri");
-#else
-    fnt.loadSystemFont("Vera");
-#endif
-    wnd.setFont(&fnt);
 
     /*
      * Split the window into grid regions
