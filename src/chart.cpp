@@ -900,15 +900,11 @@ Surface Chart::surface(const uint pNumXPoints, const uint pNumYPoints, const dty
 
 void Chart::render(const Window& pWindow,
                    const int pX, const int pY, const int pVPW, const int pVPH,
-                   const std::vector<float>& pTransform) const
+                   const float* pTransform) const
 {
-    if (pTransform.size() < 16) {
-        throw ArgumentError("Chart::render", __LINE__, 5,
-                "Insufficient transform matrix data");
-    }
     mValue->render(pWindow.get()->getID(),
                    pX, pY, pVPW, pVPH,
-                   glm::make_mat4(pTransform.data()));
+                   glm::make_mat4(pTransform));
 }
 
 internal::_Chart* Chart::get() const

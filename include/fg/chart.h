@@ -15,8 +15,6 @@
 #include <fg/surface.h>
 #include <fg/histogram.h>
 
-#include <vector>
-
 namespace internal
 {
 class _Chart;
@@ -174,12 +172,14 @@ class Chart {
            \param[in] pY is y coordinate of origin of viewport in window coordinates
            \param[in] pVPW is the width of the viewport
            \param[in] pVPH is the height of the viewport
-           \param[in] pTransform is an array of floats. This vector is expected to contain
+           \param[in] pTransform is an array of floats. This array is expected to contain
                       at least 16 elements
+
+           Note: pTransform array is assumed to be of expected length.
          */
         FGAPI void render(const Window& pWindow,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const std::vector<float>& pTransform) const;
+                          const float* pTransform) const;
 
         /**
            Get the handle to internal implementation of Chart
