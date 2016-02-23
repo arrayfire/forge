@@ -28,19 +28,15 @@ Widget::Widget()
     : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
    mWidth(512), mHeight(512), mRows(1), mCols(1)
 {
-    mIndex = 0;
-    mFramePBOS[0] = 0;
-    mFramePBOS[1] = 0;
     mCellWidth  = mWidth;
     mCellHeight = mHeight;
+    mFramePBO   = 0;
 }
 
 Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
     : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mRows(1), mCols(1)
 {
-    mIndex = 0;
-    mFramePBOS[0] = 0;
-    mFramePBOS[1] = 0;
+    mFramePBO   = 0;
 
     if (!glfwInit()) {
         std::cerr << "ERROR: GLFW wasn't able to initalize\n";
@@ -112,7 +108,7 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
 
 Widget::~Widget()
 {
-    glDeleteBuffers(2, mFramePBOS);
+    glDeleteBuffers(1, &mFramePBO);
 
     if (mWindow)
         glfwDestroyWindow(mWindow);
@@ -170,11 +166,9 @@ void Widget::swapBuffers()
     glfwSwapBuffers(mWindow);
 
     glReadBuffer(GL_FRONT);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBOS[mIndex]);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBO);
     glReadPixels(0, 0, mWidth, mHeight, GL_RGBA, GL_UNSIGNED_BYTE, 0);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
-    mIndex = (mIndex+1)%2;
 }
 
 void Widget::hide()
@@ -294,19 +288,14 @@ void Widget::pollEvents()
 
 void Widget::resizePixelBuffers()
 {
-    if (mFramePBOS[0]!=0 && mFramePBOS[1]!=0)
-        glDeleteBuffers(2, mFramePBOS);
+    if (mFramePBO!=0)
+        glDeleteBuffers(1, &mFramePBO);
 
     uint w = mWidth;
     uint h = mHeight;
 
-    glGenBuffers(1, mFramePBOS);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBOS[0]);
-    glBufferData(GL_PIXEL_PACK_BUFFER, w*h*4*sizeof(internal::uchar), 0, GL_DYNAMIC_READ);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
-    glGenBuffers(1, mFramePBOS+1);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBOS[1]);
+    glGenBuffers(1, &mFramePBO);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBO);
     glBufferData(GL_PIXEL_PACK_BUFFER, w*h*4*sizeof(internal::uchar), 0, GL_DYNAMIC_READ);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }

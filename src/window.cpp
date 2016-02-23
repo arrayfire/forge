@@ -425,11 +425,11 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
     uint pitch = FreeImage_GetPitch(bmp);
     uchar* dst = FreeImage_GetBits(bmp);
 
-    // mIndex was incremented after current frame async transfer was initiated
-    // so, move to index i.e. previous pbo to read from it into host memory
-    uint pboIndex = (mWindow->mIndex+1)%2;
-
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mWindow->mFramePBOS[pboIndex]);
+    /* as glReadPixels was called using PBO earlier, hopefully
+     * it was async call(which it should be unless vendor driver
+     * is doing something fishy) and the transfer is over by now
+     * */
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, mWindow->mFramePBO);
 
     uchar* src = (uchar*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 
