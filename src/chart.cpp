@@ -394,6 +394,15 @@ void chart2d_impl::render(const int pWindowId,
 
     trans = pTransform*trans;
 
+    /* Draw grid */
+    chart2d_impl::bindResources(pWindowId);
+    glUseProgram(mBorderProgram);
+    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
+    glDrawArrays(GL_LINES, 4+2*mTickCount, 4*mTickCount);
+    glUseProgram(0);
+    chart2d_impl::unbindResources();
+
     /* render all renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
@@ -402,18 +411,11 @@ void chart2d_impl::render(const int pWindowId,
 
     chart2d_impl::bindResources(pWindowId);
 
-    /* bind the plotting shader program  */
     glUseProgram(mBorderProgram);
-
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     /* Draw borders */
     glDrawArrays(GL_LINE_LOOP, 0, 4);
-    /* Draw grid */
-    glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
-    glDrawArrays(GL_LINES, 4+2*mTickCount, 4*mTickCount);
-
-    /* reset shader program binding */
     glUseProgram(0);
 
     /* bind the sprite shader program to
@@ -444,7 +446,7 @@ void chart2d_impl::render(const int pWindowId,
     /* render chart axes titles */
     if (!mYTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-        pos[0] = CHART2D_FONT_SIZE*0.75f; /* additional pixel gap from edge of rendering */
+        pos[0] = CHART2D_FONT_SIZE; /* additional pixel gap from edge of rendering */
         pos[1] = h*(res.y+1.0f)/2.0f;
         fonter->render(pWindowId, pos, BLACK, mYTitle.c_str(), CHART2D_FONT_SIZE, true);
     }
@@ -713,24 +715,28 @@ void chart3d_impl::render(const int pWindowId,
 
     CheckGL("Being chart3d_impl::renderChart");
 
+    /* draw grid */
+    chart3d_impl::bindResources(pWindowId);
+    glUseProgram(mBorderProgram);
+    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(PVM));
+    glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
+    glDrawArrays(GL_LINES, 6+3*mTickCount, 12*mTickCount);
+    glUseProgram(0);
+    chart3d_impl::unbindResources();
+
     /* render all the renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
         renderable->render(pWindowId, pX, pY, pVPW, pVPH, PV*pTransform);
     }
 
+    /* Draw borders */
     chart3d_impl::bindResources(pWindowId);
 
     glUseProgram(mBorderProgram);
-
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(PVM));
     glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
-    /* Draw borders */
     glDrawArrays(GL_LINES, 0, 6);
-    /* Draw grid */
-    glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
-    glDrawArrays(GL_LINES, 6+3*mTickCount, 12*mTickCount);
-
     glUseProgram(0);
 
     /* bind the sprite shader program to
