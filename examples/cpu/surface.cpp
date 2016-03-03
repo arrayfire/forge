@@ -49,12 +49,12 @@ int main(void)
     fg::Window wnd(DIMX, DIMY, "3d Surface Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(fg::FG_3D);
+    fg::Chart chart(FG_3D);
     chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, -5.f, 10.f);
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    fg::Surface surf = chart.surface(XSIZE, YSIZE, fg::f32);
-    surf.setColor(fg::FG_YELLOW);
+    fg::Surface surf = chart.surface(XSIZE, YSIZE, f32);
+    surf.setColor(FG_YELLOW);
 
     //generate a surface
     std::vector<float> function;

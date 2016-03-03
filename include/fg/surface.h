@@ -11,15 +11,44 @@
 
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Surface;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_surface(fg_surface *pSurface,
+                            const uint pXPoints, const uint pYPoints,
+                            const fg_dtype pType,
+                            const fg_plot_type pPlotType,
+                            const fg_marker_type pMarkerType);
+
+FGAPI fg_err fg_destroy_surface(fg_surface pSurface);
+
+FGAPI fg_err fg_set_surface_color(fg_surface pSurface,
+                                  const float pRed, const float pGreen,
+                                  const float pBlue, const float pAlpha);
+
+FGAPI fg_err fg_set_surface_legend(fg_surface pSurface, const char* pLegend);
+
+FGAPI fg_err fg_get_surface_vbo(uint* pOut, fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_cbo(uint* pOut, fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_abo(uint* pOut, fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_vbo_size(uint* pOut, fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_cbo_size(uint* pOut, fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_abo_size(uint* pOut, fg_surface pSurface);
+
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 
 namespace fg
 {
-
-class Window;
 
 /**
    \class Surface
@@ -28,7 +57,7 @@ class Window;
  */
 class Surface {
     private:
-        internal::_Surface* mValue;
+        fg_surface mValue;
 
     public:
         /**
@@ -127,7 +156,9 @@ class Surface {
         /**
            Get the handle to internal implementation of surface
          */
-        FGAPI internal::_Surface* get() const;
+        FGAPI fg_surface get() const;
 };
 
 }
+
+#endif

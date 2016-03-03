@@ -214,9 +214,9 @@ int main(void)
          */
         wnd.grid(WIN_ROWS, WIN_COLS);
 
-        fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
+        fg::Image img(DIMX, DIMY, FG_RGBA, u8);
 
-        fg::Chart chart(fg::FG_2D);
+        fg::Chart chart(FG_2D);
         /* set x axis limits to maximum and minimum values of data
          * and y axis limits to range [0, nBins]*/
         chart.setAxesLimits(0, 1, 0, 1000);
@@ -224,11 +224,11 @@ int main(void)
         /*
          * Create histogram object specifying number of bins
          */
-        fg::Histogram hist = chart.histogram(NBINS, fg::u8);
+        fg::Histogram hist = chart.histogram(NBINS, u8);
         /*
          * Set histogram colors
          */
-        hist.setColor(fg::FG_YELLOW);
+        hist.setColor(FG_YELLOW);
 
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU

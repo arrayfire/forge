@@ -55,7 +55,7 @@ int main(void)
     /* Create an image object which creates the necessary
      * textures and pixel buffer objects to hold the image
      * */
-    fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
+    fg::Image img(DIMX, DIMY, FG_RGBA, u8);
     /* copy your data into the pixel buffer object exposed by
      * fg::Image class and then proceed to rendering.
      * To help the users with copying the data from compute
@@ -65,13 +65,8 @@ int main(void)
     kernel(bmp);
     fg::copy(img, (const void*)bmp.ptr);
 
-    bool once = true;
     do {
         wnd.draw(img);
-        if (once) {
-            wnd.saveFrameBuffer("fractal.bmp");
-            once = false;
-        }
     } while(!wnd.close());
 
     destroyBitmap(bmp);

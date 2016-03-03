@@ -10,6 +10,18 @@
 #ifndef __CPU_DATA_COPY_H__
 #define __CPU_DATA_COPY_H__
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#ifdef __cplusplus
+
 namespace fg
 {
 
@@ -34,5 +46,7 @@ void copy(const int resourceId, const size_t resourceSize, const void * dataPtr)
 }
 
 }
+
+#endif
 
 #endif //__CPU_DATA_COPY_H__

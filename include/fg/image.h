@@ -11,10 +11,44 @@
 
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Image;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_image(fg_image* pImage,
+                             const uint pWidth, const uint pHeight,
+                             const fg_channel_format pFormat, const fg_dtype pType);
+
+FGAPI fg_err fg_destroy_image(fg_image pImage);
+
+FGAPI fg_err fg_set_image_alpha(fg_image pImage, const float pAlpha);
+
+FGAPI fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio);
+
+FGAPI fg_err fg_get_image_width(uint *pOut, fg_image pImage);
+
+FGAPI fg_err fg_get_image_height(uint *pOut, fg_image pImage);
+
+FGAPI fg_err fg_get_image_pixelformat(fg_channel_format* pOut, fg_image pImage);
+
+FGAPI fg_err fg_get_image_type(fg_dtype* pOut, fg_image pImage);
+
+FGAPI fg_err fg_get_image_pbo(uint* pOut, fg_image pImage);
+
+FGAPI fg_err fg_get_image_pbo_size(uint* pOut, fg_image pImage);
+
+FGAPI fg_err fg_render_image(fg_window pWindow,
+                             const fg_image pImage,
+                             const int pX, const int pY, const int pWidth, const int pHeight,
+                             const float* pTransform);
+
+#ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
 
 namespace fg
 {
@@ -28,7 +62,7 @@ class Window;
  */
 class Image {
     private:
-        internal::_Image* mValue;
+        fg_image mValue;
 
     public:
         /**
@@ -128,7 +162,9 @@ class Image {
         /**
            Get the handle to internal implementation of Image
          */
-        FGAPI internal::_Image* get() const;
+        FGAPI fg_image get() const;
 };
 
 }
+
+#endif

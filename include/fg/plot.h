@@ -11,15 +11,52 @@
 
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Plot;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_plot(fg_plot *pPlot,
+                            const uint pNPoints, const fg_dtype pType,
+                            const fg_chart_type pChartType,
+                            const fg_plot_type pPlotType,
+                            const fg_marker_type pMarkerType);
+
+FGAPI fg_err fg_destroy_plot(fg_plot pPlot);
+
+FGAPI fg_err fg_set_plot_color(fg_plot pPlot,
+                               const float pRed, const float pGreen,
+                               const float pBlue, const float pAlpha);
+
+FGAPI fg_err fg_set_plot_legend(fg_plot pPlot, const char* pLegend);
+
+FGAPI fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize);
+
+FGAPI fg_err fg_get_plot_vbo(uint* pOut, fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_cbo(uint* pOut, fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_abo(uint* pOut, fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_mbo(uint* pOut, fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_vbo_size(uint* pOut, fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_cbo_size(uint* pOut, fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_abo_size(uint* pOut, fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_mbo_size(uint* pOut, fg_plot pPlot);
+
+#ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
 
 namespace fg
 {
-
-class Window;
 
 /**
    \class Plot
@@ -28,7 +65,7 @@ class Window;
  */
 class Plot {
     private:
-        internal::_Plot* mValue;
+        fg_plot mValue;
 
     public:
         /**
@@ -152,7 +189,9 @@ class Plot {
         /**
            Get the handle to internal implementation of plot
          */
-        FGAPI internal::_Plot* get() const;
+        FGAPI fg_plot get() const;
 };
 
 }
+
+#endif

@@ -15,10 +15,55 @@
 #include <fg/surface.h>
 #include <fg/histogram.h>
 
-namespace internal
-{
-class _Chart;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_chart(fg_chart *pHandle,
+                             const fg_chart_type pChartType);
+
+FGAPI fg_err fg_destroy_chart(fg_chart pHandle);
+
+FGAPI fg_err fg_set_chart_axes_titles(fg_chart pHandle,
+                                      const char* pX,
+                                      const char* pY,
+                                      const char* pZ);
+
+FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
+                                      const float pXmin, const float pXmax,
+                                      const float pYmin, const float pYmax,
+                                      const float pZmin, const float pZmax);
+
+FGAPI fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const float pY);
+
+FGAPI fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
+                                   const uint pWidth, const uint pHeight,
+                                   const fg_channel_format pFormat,
+                                   const fg_dtype pType);
+
+FGAPI fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
+                                       const uint pNBins, const fg_dtype pType);
+
+FGAPI fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
+                                  const uint pNPoints, const fg_dtype pType,
+                                  const fg_plot_type pPlotType, const fg_marker_type pMarkerType);
+
+FGAPI fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
+                                     const uint pXPoints, const uint pYPoints, const fg_dtype pType,
+                                     const fg_plot_type pPlotType, const fg_marker_type pMarkerType);
+
+FGAPI fg_err fg_render_chart(fg_window pWindow,
+                             const fg_chart pChart,
+                             const int pX, const int pY, const int pWidth, const int pHeight,
+                             const float* pTransform);
+
+#ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
 
 namespace fg
 {
@@ -34,8 +79,7 @@ namespace fg
  */
 class Chart {
     private:
-        ChartType mChartType;
-        internal::_Chart* mValue;
+        fg_chart mValue;
 
     public:
         /**
@@ -44,6 +88,11 @@ class Chart {
            \param[in] cType is chart dimension property
          */
         FGAPI Chart(const ChartType cType);
+
+        /**
+           Chart copy constructor
+         */
+        FGAPI Chart(const Chart& pOther);
 
         /**
            Chart destructor
@@ -184,7 +233,9 @@ class Chart {
         /**
            Get the handle to internal implementation of Chart
          */
-        FGAPI internal::_Chart* get() const;
+        FGAPI fg_chart get() const;
 };
 
 }
+
+#endif

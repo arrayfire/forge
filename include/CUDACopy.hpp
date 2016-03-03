@@ -11,6 +11,19 @@
 #define __CUDA_DATA_COPY_H__
 
 #include <cuda_gl_interop.h>
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#ifdef __cplusplus
+
 #include <cstdio>
 
 static void handleCUDAError(cudaError_t err, const char *file, int line)
@@ -63,5 +76,7 @@ void copy(const int resourceId, const T * devicePtr)
 }
 
 }
+
+#endif
 
 #endif //__CUDA_DATA_COPY_H__

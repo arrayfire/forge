@@ -73,20 +73,20 @@ int main(void)
     fg::Window wnd(DIMX, DIMY, "Bubble chart with Transparency Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(fg::FG_2D);
+    fg::Chart chart(FG_2D);
     chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.1f, 1.1f);
 
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt1 = chart.plot(cosData.size()/2, fg::f32,
-                               fg::FG_LINE, fg::FG_TRIANGLE); //or specify a specific plot type
-    fg::Plot plt2 = chart.plot(tanData.size()/2, fg::f32,
-                               fg::FG_LINE, fg::FG_CIRCLE); //last parameter specifies marker shape
+    fg::Plot plt1 = chart.plot(cosData.size()/2, f32,
+                               FG_LINE, FG_TRIANGLE); //or specify a specific plot type
+    fg::Plot plt2 = chart.plot(tanData.size()/2, f32,
+                               FG_LINE, FG_CIRCLE); //last parameter specifies marker shape
 
     /* Set plot colors */
-    plt1.setColor(fg::FG_RED);
-    plt2.setColor(fg::FG_GREEN);            //use a forge predefined color
+    plt1.setColor(FG_RED);
+    plt2.setColor(FG_GREEN);            //use a forge predefined color
     /* Set plot legends */
     plt1.setLegend("Cosine");
     plt2.setLegend("Tangent");
@@ -108,13 +108,8 @@ int main(void)
     /* update marker sizes for tan graph markers */
     fg::copy(plt2.markers(), plt2.markersSize(), (const void*)radii.data());
 
-    bool once = true;
     do {
         wnd.draw(chart);
-        if (once) {
-            wnd.saveFrameBuffer("bubblechart.png");
-            once = false;
-        }
     } while(!wnd.close());
 
     return 0;

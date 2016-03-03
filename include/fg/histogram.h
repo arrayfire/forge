@@ -11,15 +11,43 @@
 
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Histogram;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_histogram(fg_histogram *pHistogram,
+                                 const uint nbins, const fg_dtype type);
+
+FGAPI fg_err fg_destroy_histogram(fg_histogram pHistogram);
+
+FGAPI fg_err fg_set_histogram_color(fg_histogram pHistogram,
+                                    const float pRed, const float pGreen,
+                                    const float pBlue, const float pAlpha);
+
+FGAPI fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegend);
+
+FGAPI fg_err fg_get_histogram_vbo(uint* out, fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_cbo(uint* out, fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_abo(uint* out, fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_vbo_size(uint* out, fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_cbo_size(uint* out, fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_abo_size(uint* out, fg_histogram pHistogram);
+
+#ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
 
 namespace fg
 {
-
-class Window;
 
 /**
    \class Histogram
@@ -28,7 +56,7 @@ class Window;
  */
 class Histogram {
     private:
-        internal::_Histogram* mValue;
+        fg_histogram mValue;
 
     public:
         /**
@@ -128,7 +156,9 @@ class Histogram {
         /**
            Get the handle to internal implementation of Histogram
          */
-        FGAPI internal::_Histogram* get() const;
+        FGAPI fg_histogram get() const;
 };
 
 }
+
+#endif

@@ -84,7 +84,7 @@ ENDIF(APPLE)
 
 ADD_EXECUTABLE(glsl2cpp "${CMAKE_MODULE_PATH}/glsl2cpp.cpp")
 
-ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(src/backend/opengl)
 
 IF(BUILD_EXAMPLES)
     ADD_SUBDIRECTORY(examples)

@@ -47,14 +47,19 @@
  */
 FGAPI GLEWContext* glewGetContext();
 
-namespace fg
-{
+typedef void* fg_window;
+typedef void* fg_font;
+typedef void* fg_chart;
+typedef void* fg_image;
+typedef void* fg_histogram;
+typedef void* fg_plot;
+typedef void* fg_surface;
 
 typedef unsigned int    uint;
 typedef unsigned short  ushort;
 typedef unsigned char   uchar;
 
-enum ErrorCode {
+typedef enum {
     FG_SUCCESS            = 0,              ///< Fuction returned successfully.
     /*
      * Arguement related error codes that are
@@ -111,28 +116,28 @@ enum ErrorCode {
     FG_ERR_INTERNAL       = 9001,           ///< Internal error
     FG_ERR_RUNTIME        = 9002,           ///< Runtime error
     FG_ERR_UNKNOWN        = 9003            ///< Unkown error
-};
+} fg_err;
 
-enum ChannelFormat {
+typedef enum {
     FG_GRAYSCALE = 100,                     ///< Single channel
     FG_RG        = 200,                     ///< Three(Red, Green & Blue) channels
     FG_RGB       = 300,                     ///< Three(Red, Green & Blue) channels
     FG_BGR       = 301,                     ///< Three(Red, Green & Blue) channels
     FG_RGBA      = 400,                     ///< Four(Red, Green, Blue & Alpha) channels
     FG_BGRA      = 401                      ///< Four(Red, Green, Blue & Alpha) channels
-};
+} fg_channel_format;
 
-enum ChartType {
+typedef enum {
     FG_2D = 2,                              ///< Two dimensional charts
     FG_3D = 3                               ///< Three dimensional charts
-};
+} fg_chart_type;
 
 /**
    Color maps
 
    \image html gfx_palette.png
  */
-enum ColorMap {
+typedef enum {
     FG_DEFAULT_MAP  = 0,                    ///< Default [0-255] grayscale colormap
     FG_SPECTRUM_MAP = 1,                    ///< Spectrum color
     FG_COLORS_MAP   = 2,                    ///< Pure Colors
@@ -140,9 +145,9 @@ enum ColorMap {
     FG_MOOD_MAP     = 4,                    ///< Mood color map
     FG_HEAT_MAP     = 5,                    ///< Heat color map
     FG_BLUE_MAP     = 6                     ///< Blue color map
-};
+} fg_color_map;
 
-enum Color {
+typedef enum {
     FG_RED     = 0xFF0000FF,
     FG_GREEN   = 0x00FF00FF,
     FG_BLUE    = 0x0000FFFF,
@@ -151,9 +156,9 @@ enum Color {
     FG_MAGENTA = 0xFF00FFFF,
     FG_WHITE   = 0xFFFFFFFF,
     FG_BLACK   = 0x000000FF
-};
+} fg_color;
 
-enum dtype {
+typedef enum {
     s8  = 0,                                ///< Signed byte (8-bits)
     u8  = 1,                                ///< Unsigned byte (8-bits)
     s32 = 2,                                ///< Signed integer (32-bits)
@@ -161,15 +166,15 @@ enum dtype {
     f32 = 4,                                ///< Float (32-bits)
     s16 = 5,                                ///< Signed integer (16-bits)
     u16 = 6                                 ///< Unsigned integer (16-bits)
-};
+} fg_dtype;
 
-enum PlotType {
+typedef enum {
     FG_LINE         = 0,                    ///< Line plot
     FG_SCATTER      = 1,                    ///< Scatter plot
     FG_SURFACE      = 2                     ///< Surface plot
-};
+} fg_plot_type;
 
-enum MarkerType {
+typedef enum {
     FG_NONE         = 0,                    ///< No marker
     FG_POINT        = 1,                    ///< Point marker
     FG_CIRCLE       = 2,                    ///< Circle marker
@@ -178,6 +183,19 @@ enum MarkerType {
     FG_CROSS        = 5,                    ///< Cross-hair marker
     FG_PLUS         = 6,                    ///< Plus symbol marker
     FG_STAR         = 7                     ///< Star symbol marker
-};
+} fg_marker_type;
 
+
+#ifdef __cplusplus
+namespace fg
+{
+    typedef fg_err ErrorCode;
+    typedef fg_channel_format ChannelFormat;
+    typedef fg_chart_type ChartType;
+    typedef fg_color_map ColorMap;
+    typedef fg_color Color;
+    typedef fg_dtype dtype;
+    typedef fg_plot_type PlotType;
+    typedef fg_marker_type MarkerType;
 }
+#endif

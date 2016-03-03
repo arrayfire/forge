@@ -10,6 +10,8 @@
 #pragma once
 
 #include <fg/defines.h>
+
+#ifdef __cplusplus
 #include <iostream>
 #include <stdexcept>
 
@@ -106,3 +108,5 @@ public:
 };
 
 }
+
+#endif // __cplusplus
