@@ -296,7 +296,7 @@ void Widget::resizePixelBuffers()
 
     glGenBuffers(1, &mFramePBO);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBO);
-    glBufferData(GL_PIXEL_PACK_BUFFER, w*h*4*sizeof(internal::uchar), 0, GL_DYNAMIC_READ);
+    glBufferData(GL_PIXEL_PACK_BUFFER, w*h*4*sizeof(uchar), 0, GL_DYNAMIC_READ);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
