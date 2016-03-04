@@ -171,6 +171,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 #else
     mFont->loadSystemFont("Vera");
 #endif
+    glEnable(GL_DEPTH_TEST);
 
     CheckGL("End Window::Window");
 }
