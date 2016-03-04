@@ -14,27 +14,26 @@
 #include <vector>
 #include <iostream>
 
-const unsigned DIMX = 800;
-const unsigned DIMY = 800;
-
-static const float XMIN = -1.0f;
-static const float XMAX = 2.f;
-static const float YMIN = -1.0f;
-static const float YMAX = 1.f;
-
-const float DX = 0.01;
-const size_t XSIZE = (XMAX-XMIN)/DX+1;
-const size_t YSIZE = (YMAX-YMIN)/DX+1;
-
-bool set=false;
 using namespace std;
-void gen_surface(float t, float dx, std::vector<float> &vec ){
+
+static const float XMIN = -8.0f;
+static const float XMAX = 8.f;
+static const float YMIN = -8.0f;
+static const float YMAX = 8.f;
+
+const float DX = 0.5;
+const size_t XSIZE = (XMAX-XMIN)/DX;
+const size_t YSIZE = (YMAX-YMIN)/DX;
+
+void genSurface(float dx, std::vector<float> &vec )
+{
     vec.clear();
     for(float x=XMIN; x < XMAX; x+=dx){
         for(float y=YMIN; y < YMAX; y+=dx){
             vec.push_back(x);
             vec.push_back(y);
-            vec.push_back(10*x*-abs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5);
+            float z = sqrt(x*x+y*y) + 2.2204e-16;
+            vec.push_back(sin(z)/z);
         }
     }
 }
@@ -46,11 +45,11 @@ int main(void)
      * so that necessary OpenGL context is created for any
      * other fg::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "3d Surface Demo");
+    fg::Window wnd(1024, 768, "3d Surface Demo");
     wnd.makeCurrent();
 
     fg::Chart chart(FG_3D);
-    chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, -5.f, 10.f);
+    chart.setAxesLimits(-10.f, 10.f, -10.f, 10.f, -0.5f, 1.f);
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
     fg::Surface surf = chart.surface(XSIZE, YSIZE, f32);
@@ -58,8 +57,8 @@ int main(void)
 
     //generate a surface
     std::vector<float> function;
-    static float t=0;
-    gen_surface(t, DX, function);
+
+    genSurface(DX, function);
     /* copy your data into the pixel buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
@@ -69,12 +68,8 @@ int main(void)
     fg::copy(surf.vertices(), surf.verticesSize(), (const void*)function.data());
 
     do {
-        t+=0.07;
-        gen_surface(t, DX, function);
-        fg::copy(surf.vertices(), surf.verticesSize(), (const void*)function.data());
         wnd.draw(chart);
     } while(!wnd.close());
 
     return 0;
 }
-
