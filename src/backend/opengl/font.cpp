@@ -424,7 +424,7 @@ void font_impl::render(int pWindowId,
         return;
     }
 
-    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
     glDepthFunc(GL_ALWAYS);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -484,7 +484,7 @@ void font_impl::render(int pWindowId,
 
     glUseProgram(0);
     glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);
 
     CheckGL("End font_impl::render ");

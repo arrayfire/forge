@@ -157,9 +157,9 @@ void image_impl::render(const int pWindowId,
 
     glm::mat4 strans = glm::scale(pTransform, glm::vec3(xscale, yscale, 1));
 
+    glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable(GL_DEPTH_TEST);
 
     glUseProgram(mProgram);
 
@@ -193,7 +193,7 @@ void image_impl::render(const int pWindowId,
     // ubind the shader program
     glUseProgram(0);
     glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
 
     CheckGL("End image_impl::render");
 }

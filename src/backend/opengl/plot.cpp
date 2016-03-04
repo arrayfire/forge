@@ -206,9 +206,9 @@ void plot_impl::render(const int pWindowId,
 {
     CheckGL("Begin plot_impl::render");
     glEnable(GL_SCISSOR_TEST);
+    glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable(GL_DEPTH_TEST);
 
     glm::mat4 mvp(1.0);
     this->computeTransformMat(mvp, pTransform, pX, pY, pVPW, pVPH);
@@ -249,7 +249,7 @@ void plot_impl::render(const int pWindowId,
     }
 
     glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
     glDisable(GL_SCISSOR_TEST);
     CheckGL("End plot_impl::render");
 }

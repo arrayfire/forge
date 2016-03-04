@@ -141,10 +141,10 @@ void hist_impl::render(const int pWindowId,
                        const glm::mat4& pTransform)
 {
     CheckGL("Begin hist_impl::render");
+    glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_SCISSOR_TEST);
-    glDisable(GL_DEPTH_TEST);
 
     glScissor(pX, pY, pVPW, pVPH);
     glUseProgram(mProgram);
@@ -166,7 +166,7 @@ void hist_impl::render(const int pWindowId,
     glUseProgram(0);
     glDisable(GL_SCISSOR_TEST);
     glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
     CheckGL("End hist_impl::render");
 }
 
