@@ -234,16 +234,23 @@ void surface_impl::render(const int pWindowId,
                           const glm::mat4 &pModel)
 {
     CheckGL("Begin surface_impl::render");
-    glDepthMask(GL_FALSE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // FIXME: even when per vertex alpha is enabled
+    // primitives of transparent object should be sorted
+    // from the furthest to closest primitive
+    if (mIsPVAOn) {
+        glDepthMask(GL_FALSE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
     glm::mat4 mvp(1.0);
     computeTransformMat(mvp, pModel);
     renderGraph(pWindowId, mvp);
 
-    glDisable(GL_BLEND);
-    glDepthMask(GL_TRUE);
+    if (mIsPVAOn) {
+        glDisable(GL_BLEND);
+        glDepthMask(GL_TRUE);
+    }
     CheckGL("End surface_impl::render");
 }
 
