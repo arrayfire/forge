@@ -58,7 +58,7 @@ fg_err fg_set_surface_legend(fg_surface pSurface, const char* pLegend)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_surface_vbo(uint* pOut, fg_surface pSurface)
+fg_err fg_get_surface_vbo(uint* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = getSurface(pSurface)->vbo();
@@ -68,7 +68,7 @@ fg_err fg_get_surface_vbo(uint* pOut, fg_surface pSurface)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_surface_cbo(uint* pOut, fg_surface pSurface)
+fg_err fg_get_surface_cbo(uint* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = getSurface(pSurface)->cbo();
@@ -78,7 +78,7 @@ fg_err fg_get_surface_cbo(uint* pOut, fg_surface pSurface)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_surface_abo(uint* pOut, fg_surface pSurface)
+fg_err fg_get_surface_abo(uint* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = getSurface(pSurface)->abo();
@@ -88,7 +88,7 @@ fg_err fg_get_surface_abo(uint* pOut, fg_surface pSurface)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_surface_vbo_size(uint* pOut, fg_surface pSurface)
+fg_err fg_get_surface_vbo_size(uint* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = (uint)getSurface(pSurface)->vboSize();
@@ -98,7 +98,7 @@ fg_err fg_get_surface_vbo_size(uint* pOut, fg_surface pSurface)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_surface_cbo_size(uint* pOut, fg_surface pSurface)
+fg_err fg_get_surface_cbo_size(uint* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = (uint)getSurface(pSurface)->cboSize();
@@ -108,7 +108,7 @@ fg_err fg_get_surface_cbo_size(uint* pOut, fg_surface pSurface)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_surface_abo_size(uint* pOut, fg_surface pSurface)
+fg_err fg_get_surface_abo_size(uint* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = (uint)getSurface(pSurface)->aboSize();

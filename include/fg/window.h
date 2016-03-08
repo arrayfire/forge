@@ -39,37 +39,37 @@ FGAPI fg_err fg_set_window_size(fg_window pWindow, const uint pWidth, const uint
 
 FGAPI fg_err fg_set_window_colormap(fg_window pWindow, const fg_color_map pColorMap);
 
-FGAPI fg_err fg_get_window_context_handle(long long *pContext, fg_window pWindow);
+FGAPI fg_err fg_get_window_context_handle(long long *pContext, const fg_window pWindow);
 
-FGAPI fg_err fg_get_window_display_handle(long long *pDisplay, fg_window pWindow);
+FGAPI fg_err fg_get_window_display_handle(long long *pDisplay, const fg_window pWindow);
 
-FGAPI fg_err fg_get_window_width(int *pWidth, fg_window pWindow);
+FGAPI fg_err fg_get_window_width(int *pWidth, const fg_window pWindow);
 
-FGAPI fg_err fg_get_window_height(int *pHeight, fg_window pWindow);
+FGAPI fg_err fg_get_window_height(int *pHeight, const fg_window pWindow);
 
-FGAPI fg_err fg_make_window_current(fg_window pWindow);
+FGAPI fg_err fg_make_window_current(const fg_window pWindow);
 
-FGAPI fg_err fg_hide_window(fg_window pWindow);
+FGAPI fg_err fg_hide_window(const fg_window pWindow);
 
-FGAPI fg_err fg_show_window(fg_window pWindow);
+FGAPI fg_err fg_show_window(const fg_window pWindow);
 
-FGAPI fg_err fg_close_window(bool* pIsClosed, fg_window pWindow);
+FGAPI fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow);
 
-FGAPI fg_err fg_draw_image(fg_window pWindow, fg_image pImage, const bool pKeepAspectRatio);
+FGAPI fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage, const bool pKeepAspectRatio);
 
-FGAPI fg_err fg_draw_chart(fg_window pWindow, fg_chart pChart);
+FGAPI fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart);
 
 FGAPI fg_err fg_setup_window_layout(int pRows, int pCols, fg_window pWindow);
 
-FGAPI fg_err fg_draw_image_to_cell(fg_window pWindow, int pColId, int pRowId,
-                                   fg_image pImage, const char* pTitle, const bool pKeepAspectRatio);
+FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, int pColId, int pRowId,
+                                   const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio);
 
-FGAPI fg_err fg_draw_chart_to_cell(fg_window pWindow, int pColId, int pRowId,
-                                   fg_chart pChart, const char* pTitle);
+FGAPI fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pColId, int pRowId,
+                                   const fg_chart pChart, const char* pTitle);
 
-FGAPI fg_err fg_swap_window_buffers(fg_window pWindow);
+FGAPI fg_err fg_swap_window_buffers(const fg_window pWindow);
 
-FGAPI fg_err fg_save_window_framebuffer(const char* pFullPath, fg_window pWindow);
+FGAPI fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window pWindow);
 
 #ifdef __cplusplus
 }

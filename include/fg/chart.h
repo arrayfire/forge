@@ -53,7 +53,7 @@ FGAPI fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
                                      const uint pXPoints, const uint pYPoints, const fg_dtype pType,
                                      const fg_plot_type pPlotType, const fg_marker_type pMarkerType);
 
-FGAPI fg_err fg_render_chart(fg_window pWindow,
+FGAPI fg_err fg_render_chart(const fg_window pWindow,
                              const fg_chart pChart,
                              const int pX, const int pY, const int pWidth, const int pHeight,
                              const float* pTransform);

@@ -29,17 +29,17 @@ FGAPI fg_err fg_set_surface_color(fg_surface pSurface,
 
 FGAPI fg_err fg_set_surface_legend(fg_surface pSurface, const char* pLegend);
 
-FGAPI fg_err fg_get_surface_vbo(uint* pOut, fg_surface pSurface);
+FGAPI fg_err fg_get_surface_vbo(uint* pOut, const fg_surface pSurface);
 
-FGAPI fg_err fg_get_surface_cbo(uint* pOut, fg_surface pSurface);
+FGAPI fg_err fg_get_surface_cbo(uint* pOut, const fg_surface pSurface);
 
-FGAPI fg_err fg_get_surface_abo(uint* pOut, fg_surface pSurface);
+FGAPI fg_err fg_get_surface_abo(uint* pOut, const fg_surface pSurface);
 
-FGAPI fg_err fg_get_surface_vbo_size(uint* pOut, fg_surface pSurface);
+FGAPI fg_err fg_get_surface_vbo_size(uint* pOut, const fg_surface pSurface);
 
-FGAPI fg_err fg_get_surface_cbo_size(uint* pOut, fg_surface pSurface);
+FGAPI fg_err fg_get_surface_cbo_size(uint* pOut, const fg_surface pSurface);
 
-FGAPI fg_err fg_get_surface_abo_size(uint* pOut, fg_surface pSurface);
+FGAPI fg_err fg_get_surface_abo_size(uint* pOut, const fg_surface pSurface);
 
 #ifdef __cplusplus
 }

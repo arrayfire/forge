@@ -68,7 +68,7 @@ fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_plot_vbo(uint* pOut, fg_plot pPlot)
+fg_err fg_get_plot_vbo(uint* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->vbo();
@@ -78,7 +78,7 @@ fg_err fg_get_plot_vbo(uint* pOut, fg_plot pPlot)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_plot_cbo(uint* pOut, fg_plot pPlot)
+fg_err fg_get_plot_cbo(uint* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->cbo();
@@ -88,7 +88,7 @@ fg_err fg_get_plot_cbo(uint* pOut, fg_plot pPlot)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_plot_abo(uint* pOut, fg_plot pPlot)
+fg_err fg_get_plot_abo(uint* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->abo();
@@ -98,7 +98,7 @@ fg_err fg_get_plot_abo(uint* pOut, fg_plot pPlot)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_plot_mbo(uint* pOut, fg_plot pPlot)
+fg_err fg_get_plot_mbo(uint* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->mbo();
@@ -108,7 +108,7 @@ fg_err fg_get_plot_mbo(uint* pOut, fg_plot pPlot)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_plot_vbo_size(uint* pOut, fg_plot pPlot)
+fg_err fg_get_plot_vbo_size(uint* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = (uint)getPlot(pPlot)->vboSize();
@@ -118,7 +118,7 @@ fg_err fg_get_plot_vbo_size(uint* pOut, fg_plot pPlot)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_plot_cbo_size(uint* pOut, fg_plot pPlot)
+fg_err fg_get_plot_cbo_size(uint* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = (uint)getPlot(pPlot)->cboSize();
@@ -128,7 +128,7 @@ fg_err fg_get_plot_cbo_size(uint* pOut, fg_plot pPlot)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_plot_abo_size(uint* pOut, fg_plot pPlot)
+fg_err fg_get_plot_abo_size(uint* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = (uint)getPlot(pPlot)->aboSize();
@@ -138,7 +138,7 @@ fg_err fg_get_plot_abo_size(uint* pOut, fg_plot pPlot)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_plot_mbo_size(uint* pOut, fg_plot pPlot)
+fg_err fg_get_plot_mbo_size(uint* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = (uint)getPlot(pPlot)->mboSize();

@@ -55,7 +55,7 @@ fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegend)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_histogram_vbo(uint* pOut, fg_histogram pHistogram)
+fg_err fg_get_histogram_vbo(uint* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = getHistogram(pHistogram)->vbo();
@@ -65,7 +65,7 @@ fg_err fg_get_histogram_vbo(uint* pOut, fg_histogram pHistogram)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_histogram_cbo(uint* pOut, fg_histogram pHistogram)
+fg_err fg_get_histogram_cbo(uint* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = getHistogram(pHistogram)->cbo();
@@ -75,7 +75,7 @@ fg_err fg_get_histogram_cbo(uint* pOut, fg_histogram pHistogram)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_histogram_abo(uint* pOut, fg_histogram pHistogram)
+fg_err fg_get_histogram_abo(uint* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = getHistogram(pHistogram)->abo();
@@ -85,7 +85,7 @@ fg_err fg_get_histogram_abo(uint* pOut, fg_histogram pHistogram)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_histogram_vbo_size(uint* pOut, fg_histogram pHistogram)
+fg_err fg_get_histogram_vbo_size(uint* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = (uint)getHistogram(pHistogram)->vboSize();
@@ -95,7 +95,7 @@ fg_err fg_get_histogram_vbo_size(uint* pOut, fg_histogram pHistogram)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_histogram_cbo_size(uint* pOut, fg_histogram pHistogram)
+fg_err fg_get_histogram_cbo_size(uint* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = (uint)getHistogram(pHistogram)->cboSize();
@@ -105,7 +105,7 @@ fg_err fg_get_histogram_cbo_size(uint* pOut, fg_histogram pHistogram)
     return FG_SUCCESS;
 }
 
-fg_err fg_get_histogram_abo_size(uint* pOut, fg_histogram pHistogram)
+fg_err fg_get_histogram_abo_size(uint* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = (uint)getHistogram(pHistogram)->aboSize();

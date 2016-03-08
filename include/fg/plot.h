@@ -32,21 +32,21 @@ FGAPI fg_err fg_set_plot_legend(fg_plot pPlot, const char* pLegend);
 
 FGAPI fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize);
 
-FGAPI fg_err fg_get_plot_vbo(uint* pOut, fg_plot pPlot);
+FGAPI fg_err fg_get_plot_vbo(uint* pOut, const fg_plot pPlot);
 
-FGAPI fg_err fg_get_plot_cbo(uint* pOut, fg_plot pPlot);
+FGAPI fg_err fg_get_plot_cbo(uint* pOut, const fg_plot pPlot);
 
-FGAPI fg_err fg_get_plot_abo(uint* pOut, fg_plot pPlot);
+FGAPI fg_err fg_get_plot_abo(uint* pOut, const fg_plot pPlot);
 
-FGAPI fg_err fg_get_plot_mbo(uint* pOut, fg_plot pPlot);
+FGAPI fg_err fg_get_plot_mbo(uint* pOut, const fg_plot pPlot);
 
-FGAPI fg_err fg_get_plot_vbo_size(uint* pOut, fg_plot pPlot);
+FGAPI fg_err fg_get_plot_vbo_size(uint* pOut, const fg_plot pPlot);
 
-FGAPI fg_err fg_get_plot_cbo_size(uint* pOut, fg_plot pPlot);
+FGAPI fg_err fg_get_plot_cbo_size(uint* pOut, const fg_plot pPlot);
 
-FGAPI fg_err fg_get_plot_abo_size(uint* pOut, fg_plot pPlot);
+FGAPI fg_err fg_get_plot_abo_size(uint* pOut, const fg_plot pPlot);
 
-FGAPI fg_err fg_get_plot_mbo_size(uint* pOut, fg_plot pPlot);
+FGAPI fg_err fg_get_plot_mbo_size(uint* pOut, const fg_plot pPlot);
 
 #ifdef __cplusplus
 }

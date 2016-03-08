@@ -27,17 +27,17 @@ FGAPI fg_err fg_set_histogram_color(fg_histogram pHistogram,
 
 FGAPI fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegend);
 
-FGAPI fg_err fg_get_histogram_vbo(uint* out, fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_vbo(uint* out, const fg_histogram pHistogram);
 
-FGAPI fg_err fg_get_histogram_cbo(uint* out, fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_cbo(uint* out, const fg_histogram pHistogram);
 
-FGAPI fg_err fg_get_histogram_abo(uint* out, fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_abo(uint* out, const fg_histogram pHistogram);
 
-FGAPI fg_err fg_get_histogram_vbo_size(uint* out, fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_vbo_size(uint* out, const fg_histogram pHistogram);
 
-FGAPI fg_err fg_get_histogram_cbo_size(uint* out, fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_cbo_size(uint* out, const fg_histogram pHistogram);
 
-FGAPI fg_err fg_get_histogram_abo_size(uint* out, fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_abo_size(uint* out, const fg_histogram pHistogram);
 
 #ifdef __cplusplus
 }

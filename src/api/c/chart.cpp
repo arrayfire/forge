@@ -163,7 +163,7 @@ fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
     return FG_SUCCESS;
 }
 
-fg_err fg_render_chart(fg_window pWindow, const fg_chart pChart,
+fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
                        const int pX, const int pY, const int pWidth, const int pHeight,
                        const float* pTransform)
 {

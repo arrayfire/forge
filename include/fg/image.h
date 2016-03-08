@@ -26,19 +26,19 @@ FGAPI fg_err fg_set_image_alpha(fg_image pImage, const float pAlpha);
 
 FGAPI fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio);
 
-FGAPI fg_err fg_get_image_width(uint *pOut, fg_image pImage);
+FGAPI fg_err fg_get_image_width(uint *pOut, const fg_image pImage);
 
-FGAPI fg_err fg_get_image_height(uint *pOut, fg_image pImage);
+FGAPI fg_err fg_get_image_height(uint *pOut, const fg_image pImage);
 
-FGAPI fg_err fg_get_image_pixelformat(fg_channel_format* pOut, fg_image pImage);
+FGAPI fg_err fg_get_image_pixelformat(fg_channel_format* pOut, const fg_image pImage);
 
-FGAPI fg_err fg_get_image_type(fg_dtype* pOut, fg_image pImage);
+FGAPI fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage);
 
-FGAPI fg_err fg_get_image_pbo(uint* pOut, fg_image pImage);
+FGAPI fg_err fg_get_image_pbo(uint* pOut, const fg_image pImage);
 
-FGAPI fg_err fg_get_image_pbo_size(uint* pOut, fg_image pImage);
+FGAPI fg_err fg_get_image_pbo_size(uint* pOut, const fg_image pImage);
 
-FGAPI fg_err fg_render_image(fg_window pWindow,
+FGAPI fg_err fg_render_image(const fg_window pWindow,
                              const fg_image pImage,
                              const int pX, const int pY, const int pWidth, const int pHeight,
                              const float* pTransform);
