@@ -18,11 +18,9 @@ namespace fg
 Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow, const bool invisible)
 {
     if (pWindow == nullptr) {
-        mValue = getHandle(new common::Window(pWidth, pHeight,
-                                                                 pTitle, nullptr, invisible));
+        mValue = getHandle(new common::Window(pWidth, pHeight, pTitle, nullptr, invisible));
     } else {
-        mValue = getHandle(new common::Window(pWidth, pHeight,
-                                                                 pTitle, getWindow(pWindow->get()), invisible));
+        mValue = getHandle(new common::Window(pWidth, pHeight, pTitle, getWindow(pWindow->get()), invisible));
     }
 }
 

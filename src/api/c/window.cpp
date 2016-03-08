@@ -22,7 +22,7 @@ fg_err fg_create_window(fg_window *pWindow,
     try {
         common::Window* shrdWnd = getWindow(pShareWindow);
         common::Window* temp = nullptr;
-        if (pWindow == nullptr) {
+        if (shrdWnd == nullptr) {
             temp = new common::Window(pWidth, pHeight, pTitle, nullptr, pInvisible);
         } else {
             temp = new common::Window(pWidth, pHeight, pTitle, shrdWnd, pInvisible);

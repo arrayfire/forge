@@ -20,7 +20,7 @@ fg_err fg_create_histogram(fg_histogram *pHistogram,
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }
 
 fg_err fg_destroy_histogram(fg_histogram pHistogram)
@@ -30,7 +30,7 @@ fg_err fg_destroy_histogram(fg_histogram pHistogram)
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }
 
 fg_err fg_set_histogram_color(fg_histogram pHistogram,
@@ -42,7 +42,7 @@ fg_err fg_set_histogram_color(fg_histogram pHistogram,
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }
 
 fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegend)
@@ -52,7 +52,7 @@ fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegend)
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }
 
 fg_err fg_get_histogram_vbo(uint* pOut, fg_histogram pHistogram)
@@ -62,7 +62,7 @@ fg_err fg_get_histogram_vbo(uint* pOut, fg_histogram pHistogram)
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }
 
 fg_err fg_get_histogram_cbo(uint* pOut, fg_histogram pHistogram)
@@ -72,7 +72,7 @@ fg_err fg_get_histogram_cbo(uint* pOut, fg_histogram pHistogram)
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }
 
 fg_err fg_get_histogram_abo(uint* pOut, fg_histogram pHistogram)
@@ -82,7 +82,7 @@ fg_err fg_get_histogram_abo(uint* pOut, fg_histogram pHistogram)
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }
 
 fg_err fg_get_histogram_vbo_size(uint* pOut, fg_histogram pHistogram)
@@ -92,7 +92,7 @@ fg_err fg_get_histogram_vbo_size(uint* pOut, fg_histogram pHistogram)
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }
 
 fg_err fg_get_histogram_cbo_size(uint* pOut, fg_histogram pHistogram)
@@ -102,7 +102,7 @@ fg_err fg_get_histogram_cbo_size(uint* pOut, fg_histogram pHistogram)
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }
 
 fg_err fg_get_histogram_abo_size(uint* pOut, fg_histogram pHistogram)
@@ -112,5 +112,5 @@ fg_err fg_get_histogram_abo_size(uint* pOut, fg_histogram pHistogram)
     }
     CATCHALL
 
-        return FG_SUCCESS;
+    return FG_SUCCESS;
 }

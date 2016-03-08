@@ -90,13 +90,13 @@ FILE(GLOB api_headers
 FILE(GLOB c_api_headers
     "${PROJECT_SOURCE_DIR}/src/api/c/*.hpp"
     )
-FILE(GLOB c_api_headers
+FILE(GLOB c_api_sources
     "${PROJECT_SOURCE_DIR}/src/api/c/*.cpp"
     )
 FILE(GLOB cpp_api_headers
     "${PROJECT_SOURCE_DIR}/src/api/cpp/*.hpp"
     )
-FILE(GLOB cpp_api_headers
+FILE(GLOB cpp_api_sources
     "${PROJECT_SOURCE_DIR}/src/api/cpp/*.cpp"
     )
 
