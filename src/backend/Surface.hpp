@@ -37,6 +37,10 @@ class Surface {
             };
         }
 
+        Surface(const fg_surface pOther) {
+            mSurface = reinterpret_cast<Surface*>(pOther)->impl();
+        }
+
         inline const std::shared_ptr<detail::surface_impl>& impl() const {
             return mSurface;
         }

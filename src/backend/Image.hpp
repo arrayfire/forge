@@ -28,6 +28,10 @@ class Image {
                const fg::ChannelFormat pFormat, const fg::dtype pDataType)
             : mImage(std::make_shared<detail::image_impl>(pWidth, pHeight, pFormat, pDataType)) {}
 
+        Image(const fg_image pOther) {
+            mImage = reinterpret_cast<Image*>(pOther)->impl();
+        }
+
         inline const std::shared_ptr<detail::image_impl>& impl() const { return mImage; }
 
         inline void setAlpha(const float pAlpha) { mImage->setAlpha(pAlpha); }

@@ -34,6 +34,10 @@ class Plot {
             }
         }
 
+        Plot(const fg_plot pOther) {
+            mPlot = reinterpret_cast<Plot*>(pOther)->impl();
+        }
+
         inline const std::shared_ptr<detail::plot_impl>& impl() const {
             return mPlot;
         }

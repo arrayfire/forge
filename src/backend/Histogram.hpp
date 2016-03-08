@@ -25,6 +25,10 @@ class Histogram {
         Histogram(uint pNBins, fg::dtype pDataType)
             : mHistogram(std::make_shared<detail::hist_impl>(pNBins, pDataType)) {}
 
+        Histogram(const fg_histogram pOther) {
+            mHistogram = reinterpret_cast<Histogram*>(pOther)->impl();
+        }
+
         inline const std::shared_ptr<detail::hist_impl>& impl() const {
             return mHistogram;
         }

@@ -28,7 +28,7 @@ Image::Image(const uint pWidth, const uint pHeight,
 
 Image::Image(const Image& pOther)
 {
-    mValue = getHandle(new common::Image(*getImage(pOther.get())));
+    mValue = getHandle(new common::Image(pOther.get()));
 }
 
 Image::~Image()

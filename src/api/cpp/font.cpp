@@ -22,7 +22,7 @@ Font::Font()
 
 Font::Font(const Font& other)
 {
-    mValue = getHandle(new common::Font(*getFont(other.get())));
+    mValue = getHandle(new common::Font(other.get()));
 }
 
 Font::~Font()

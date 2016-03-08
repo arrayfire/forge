@@ -41,6 +41,10 @@ class Window {
             }
         }
 
+        Window(const fg_window pOther) {
+            mWindow = reinterpret_cast<Window*>(pOther)->impl();
+        }
+
         inline const std::shared_ptr<detail::window_impl>& impl () const {
             return mWindow;
         }

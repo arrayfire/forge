@@ -23,7 +23,7 @@ Plot::Plot(const uint pNumPoints, const dtype pDataType, const ChartType pChartT
 
 Plot::Plot(const Plot& pOther)
 {
-    mValue = getHandle(new common::Plot(*getPlot(pOther.get())));
+    mValue = getHandle(new common::Plot(pOther.get()));
 }
 
 Plot::~Plot()

@@ -31,7 +31,7 @@ Window::~Window()
 
 Window::Window(const Window& other)
 {
-    mValue = getHandle(new common::Window(*getWindow(other.get())));
+    mValue = getHandle(new common::Window(other.get()));
 }
 
 void Window::setFont(Font* pFont)

@@ -19,25 +19,29 @@ namespace common
 
 class Font {
     private:
-        std::shared_ptr<detail::font_impl> fnt;
+        std::shared_ptr<detail::font_impl> mFont;
 
     public:
-        Font() : fnt(std::make_shared<detail::font_impl>()) {}
+        Font() : mFont(std::make_shared<detail::font_impl>()) {}
+
+        Font(const fg_font pOther) {
+            mFont = reinterpret_cast<Font*>(pOther)->impl();
+        }
 
         const std::shared_ptr<detail::font_impl>& impl() const {
-            return fnt;
+            return mFont;
         }
 
         inline void setOthro2D(int pWidth, int pHeight) {
-            fnt->setOthro2D(pWidth, pHeight);
+            mFont->setOthro2D(pWidth, pHeight);
         }
 
         inline void loadFont(const char* const pFile) {
-            fnt->loadFont(pFile);
+            mFont->loadFont(pFile);
         }
 
         inline void loadSystemFont(const char* const pName) {
-            fnt->loadSystemFont(pName);
+            mFont->loadSystemFont(pName);
         }
 };
 

@@ -22,7 +22,7 @@ Histogram::Histogram(const uint pNBins, const dtype pDataType)
 
 Histogram::Histogram(const Histogram& pOther)
 {
-    mValue = getHandle(new common::Histogram(*getHistogram(pOther.get())));
+    mValue = getHandle(new common::Histogram(pOther.get()));
 }
 
 Histogram::~Histogram()

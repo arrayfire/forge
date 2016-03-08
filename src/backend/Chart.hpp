@@ -40,6 +40,10 @@ class Chart {
             }
         }
 
+        Chart(const fg_chart pOther) {
+            mChart = reinterpret_cast<Chart*>(pOther)->impl();
+        }
+
         inline fg::ChartType chartType() const {
             return mChartType;
         }

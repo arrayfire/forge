@@ -22,7 +22,7 @@ Surface::Surface(unsigned pNumXPoints, unsigned pNumYPoints, dtype pDataType, Pl
 
 Surface::Surface(const Surface& other)
 {
-    mValue = getHandle(new common::Surface(*getSurface(other.get())));
+    mValue = getHandle(new common::Surface(other.get()));
 }
 
 Surface::~Surface()

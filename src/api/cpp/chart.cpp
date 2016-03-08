@@ -34,7 +34,7 @@ Chart::Chart(const ChartType cType)
 
 Chart::Chart(const Chart& pOther)
 {
-    mValue = getHandle(new common::Chart(*getChart(pOther.get())));
+    mValue = getHandle(new common::Chart(pOther.get()));
 }
 
 Chart::~Chart()
