@@ -10,7 +10,7 @@
 #include <fg/surface.h>
 
 #include <handle.hpp>
-#include <Surface.hpp>
+#include <chart_renderables.hpp>
 
 namespace fg
 {

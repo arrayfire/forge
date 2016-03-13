@@ -10,7 +10,7 @@
 #include <fg/histogram.h>
 
 #include <handle.hpp>
-#include <Histogram.hpp>
+#include <chart_renderables.hpp>
 
 fg_err fg_create_histogram(fg_histogram *pHistogram,
         const uint pNBins, const fg_dtype pType)

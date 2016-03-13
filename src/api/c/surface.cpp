@@ -10,7 +10,7 @@
 #include <fg/surface.h>
 
 #include <handle.hpp>
-#include <Surface.hpp>
+#include <chart_renderables.hpp>
 
 fg_err fg_create_surface(fg_surface *pSurface,
                       const uint pXPoints, const uint pYPoints,

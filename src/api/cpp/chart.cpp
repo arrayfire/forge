@@ -17,11 +17,9 @@
 
 #include <handle.hpp>
 #include <Chart.hpp>
+#include <chart_renderables.hpp>
 #include <Font.hpp>
-#include <Histogram.hpp>
 #include <Image.hpp>
-#include <Plot.hpp>
-#include <Surface.hpp>
 #include <Window.hpp>
 
 namespace fg

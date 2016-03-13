@@ -10,7 +10,7 @@
 #include <fg/plot.h>
 
 #include <handle.hpp>
-#include <Plot.hpp>
+#include <chart_renderables.hpp>
 
 namespace fg
 {

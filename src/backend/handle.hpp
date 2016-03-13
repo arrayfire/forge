@@ -15,10 +15,7 @@
 #include <Font.hpp>
 #include <Image.hpp>
 #include <Chart.hpp>
-#include <Histogram.hpp>
-#include <Plot.hpp>
-#include <Surface.hpp>
-
+#include <chart_renderables.hpp>
 
 fg_window getHandle(common::Window* pValue);
 

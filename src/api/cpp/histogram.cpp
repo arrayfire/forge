@@ -10,7 +10,7 @@
 #include <fg/histogram.h>
 
 #include <handle.hpp>
-#include <Histogram.hpp>
+#include <chart_renderables.hpp>
 
 namespace fg
 {

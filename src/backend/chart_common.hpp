@@ -10,66 +10,69 @@
 #pragma once
 
 #include <backend.hpp>
-#include <histogram.hpp>
 
 #include <memory>
 
 namespace common
 {
 
-class Histogram {
-    private:
-        std::shared_ptr<detail::hist_impl> mHistogram;
+// Objects of type `RenderableType` in the following class definition
+// should implement all the member functons of ChartRenderableBase
+// class, otherwise you cannot use this class.
+template<class RenderableType>
+class ChartRenderableBase {
+    protected:
+        std::shared_ptr< RenderableType > mShrdPtr;
 
     public:
-        Histogram(uint pNBins, fg::dtype pDataType)
-            : mHistogram(std::make_shared<detail::hist_impl>(pNBins, pDataType)) {}
-
-        Histogram(const fg_histogram pOther) {
-            mHistogram = reinterpret_cast<Histogram*>(pOther)->impl();
+        ChartRenderableBase() {
         }
 
-        inline const std::shared_ptr<detail::hist_impl>& impl() const {
-            return mHistogram;
+        ChartRenderableBase(const std::shared_ptr< RenderableType > &pValue)
+            : mShrdPtr(pValue) {
+        }
+
+        inline const std::shared_ptr< RenderableType >& impl() const {
+            return mShrdPtr;
         }
 
         inline void setColor(const float pRed, const float pGreen,
                              const float pBlue, const float pAlpha) {
-            mHistogram->setColor(pRed, pGreen, pBlue, pAlpha);
+            mShrdPtr->setColor(pRed, pGreen, pBlue, pAlpha);
         }
 
         inline void setLegend(const char* pLegend) {
-            mHistogram->setLegend(pLegend);
+            mShrdPtr->setLegend(pLegend);
         }
 
         inline GLuint vbo() const {
-            return mHistogram->vbo();
+            return mShrdPtr->vbo();
         }
 
         inline GLuint cbo() const {
-            return mHistogram->cbo();
+            return mShrdPtr->cbo();
         }
 
         inline GLuint abo() const {
-            return mHistogram->abo();
+            return mShrdPtr->abo();
         }
 
         inline size_t vboSize() const {
-            return mHistogram->vboSize();
+            return mShrdPtr->vboSize();
         }
 
         inline size_t cboSize() const {
-            return mHistogram->cboSize();
+            return mShrdPtr->cboSize();
         }
 
         inline size_t aboSize() const {
-            return mHistogram->aboSize();
+            return mShrdPtr->aboSize();
         }
 
         inline void render(const int pWindowId,
                            const int pX, const int pY, const int pVPW, const int pVPH,
                            const glm::mat4& pTransform) const {
-            mHistogram->render(pWindowId, pX, pY, pVPW, pVPH, pTransform);
+            mShrdPtr->render(pWindowId, pX, pY, pVPW, pVPH, pTransform);
         }
 };
 

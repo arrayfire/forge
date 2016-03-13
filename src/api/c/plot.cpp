@@ -10,7 +10,7 @@
 #include <fg/plot.h>
 
 #include <handle.hpp>
-#include <Plot.hpp>
+#include <chart_renderables.hpp>
 
 fg_err fg_create_plot(fg_plot *pPlot,
                       const uint pNPoints, const fg_dtype pType,
