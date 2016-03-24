@@ -20,62 +20,82 @@
 #include <algorithm>
 #include "cl_helpers.h"
 
-const unsigned DIMX = 1000;
-const unsigned DIMY = 800;
+static const float XMIN = -8.0f;
+static const float XMAX = 8.f;
+static const float YMIN = -8.0f;
+static const float YMAX = 8.f;
 
-static const float XMIN = -1.0f;
-static const float XMAX = 2.f;
-static const float YMIN = -1.0f;
-static const float YMAX = 1.f;
-
-const float DX = 0.01;
-const unsigned XSIZE = (XMAX-XMIN)/DX+1;
-const unsigned YSIZE = (YMAX-YMIN)/DX+1;
-
+const float DX = 0.5;
+const unsigned XSIZE = (XMAX-XMIN)/DX;
+const unsigned YSIZE = (YMAX-YMIN)/DX;
 
 using namespace std;
 
-static const std::string sincos_surf_kernel =
-"kernel void sincos_surf(global float* out, const float dx, const float t, const float xmin, const float ymin, const unsigned w, const unsigned h)\n"
-"{\n"
-"    int offset = get_global_id(0);\n"
-"    unsigned i = offset%h;\n"
-"    unsigned j = offset/h;\n"
-"\n"
-"      float x = xmin + i*dx;\n"
-"      float y = ymin + j*dx;\n"
-"      out[offset*3 + 0] = x;\n"
-"      out[offset*3 + 1] = y;\n"
-"      out[offset*3 + 2] = 10*x*-fabs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5;\n"
-"}\n";
+static const std::string sin_surf_kernel =
+R"EOK(
+kernel
+void surf(global float* out, const float dx,
+          const float xmin, const float ymin,
+          const unsigned w, const unsigned h)
+{
+    int i = get_global_id(0);
+    int j = get_global_id(1);
 
-inline int divup(int a, int b)
+    float x = xmin + i*dx;
+    float y = ymin + j*dx;
+
+    if (i<w && j<h) {
+        int offset = j + i * h;
+        out[ 3 * offset     ] = x;
+        out[ 3 * offset + 1 ] = y;
+        float z = sqrt(x*x+y*y) + 2.2204e-16;
+        out[ 3 * offset + 2 ] = sin(z)/z;
+    }
+}
+)EOK";
+
+inline
+int divup(int a, int b)
 {
     return (a+b-1)/b;
 }
 
-void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, float t)
+void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, cl::Device& device)
 {
-    static std::once_flag   compileFlag;
-    static cl::Program      prog;
-    static cl::Kernel       kern;
+    static bool compileFlag = true;
+    static cl::Program prog;
+    static cl::Kernel  kern;
 
-    std::call_once(compileFlag,
-        [queue]() {
-        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), sincos_surf_kernel, true);
-            kern = cl::Kernel(prog, "sincos_surf");
-        });
+    if (compileFlag) {
+        try {
+            prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), sin_surf_kernel, false);
 
-    NDRange global(XSIZE*YSIZE);
+            std::vector<cl::Device> devs;
+            devs.push_back(device);
+            prog.build(devs);
+
+            kern = cl::Kernel(prog, "surf");
+        } catch (cl::Error err) {
+            std::cout << "Compile Errors: " << std::endl;
+            std::cout << err.what() << err.err() << std::endl;
+            std::cout << prog.getBuildInfo<CL_PROGRAM_BUILD_LOG>(device) << std::endl;
+            exit(255);
+        }
+        std::cout<< "Kernels compiled successfully" << std::endl;
+        compileFlag = false;
+    }
+
+    NDRange local(8, 8);
+    NDRange global(local[0]*divup(XSIZE, local[0]),
+                   local[1]*divup(YSIZE, local[1]));
 
     kern.setArg(0, devOut);
     kern.setArg(1, DX);
-    kern.setArg(2, t);
-    kern.setArg(3, XMIN);
-    kern.setArg(4, YMIN);
-    kern.setArg(5, XSIZE);
-    kern.setArg(6, YSIZE);
-    queue.enqueueNDRangeKernel(kern, cl::NullRange, global);
+    kern.setArg(2, XMIN);
+    kern.setArg(3, YMIN);
+    kern.setArg(4, XSIZE);
+    kern.setArg(5, YSIZE);
+    queue.enqueueNDRangeKernel(kern, cl::NullRange, global, local);
 }
 
 int main(void)
@@ -86,11 +106,11 @@ int main(void)
          * so that necessary OpenGL context is created for any
          * other fg::* object to be created successfully
          */
-        fg::Window wnd(DIMX, DIMY, "3d Surface Demo");
+        fg::Window wnd(1024, 768, "3d Surface Demo");
         wnd.makeCurrent();
 
         fg::Chart chart(FG_3D);
-        chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, -5.f, 10.f);
+        chart.setAxesLimits(-10.f, 10.f, -10.f, 10.f, -0.5f, 1.f);
         chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
         fg::Surface surf = chart.surface(XSIZE, YSIZE, f32);
@@ -141,8 +161,8 @@ int main(void)
         }
 
         cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * XSIZE * YSIZE * 3);
-        static float t=0;
-        kernel(devOut, queue, t);
+
+        kernel(devOut, queue, device);
         /* copy your data into the pixel buffer object exposed by
          * fg::Surface class and then proceed to rendering.
          * To help the users with copying the data from compute
@@ -152,9 +172,6 @@ int main(void)
         fg::copy(surf.vertices(), surf.verticesSize(), devOut, queue);
 
         do {
-            t+=0.07;
-            kernel(devOut, queue, t);
-            fg::copy(surf.vertices(), surf.verticesSize(), devOut, queue);
             wnd.draw(chart);
         } while(!wnd.close());
     }catch (fg::Error err) {

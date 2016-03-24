@@ -5,19 +5,16 @@
 #include <cstdio>
 #include <iostream>
 
-const unsigned DIMX = 1000;
-const unsigned DIMY = 800;
+const float XMIN = -8.0f;
+const float XMAX = 8.f;
+const float YMIN = -8.0f;
+const float YMAX = 8.f;
 
-const float XMIN = -1.0f;
-const float XMAX = 2.f;
-const float YMIN = -1.0f;
-const float YMAX = 1.f;
+const float DX = 0.5;
+const size_t XSIZE = (XMAX-XMIN)/DX;
+const size_t YSIZE = (YMAX-YMIN)/DX;
 
-const float DX = 0.01;
-const size_t XSIZE = (XMAX-XMIN)/DX+1;
-const size_t YSIZE = (YMAX-YMIN)/DX+1;
-
-void kernel(float t, float dx, float* dev_out);
+void kernel(float dx, float* dev_out);
 
 int main(void)
 {
@@ -28,19 +25,18 @@ int main(void)
      * so that necessary OpenGL context is created for any
      * other fg::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "3d Surface Demo");
+    fg::Window wnd(1024, 768, "3d Surface Demo");
     wnd.makeCurrent();
 
     fg::Chart chart(FG_3D);
-    chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, -5.f, 10.f);
+    chart.setAxesLimits(-10.f, 10.f, -10.f, 10.f, -0.5f, 1.f);
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
     fg::Surface surf = chart.surface(XSIZE, YSIZE, f32);
     surf.setColor(FG_YELLOW);
 
-    static float t=0;
     FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
-    kernel(t, DX, dev_out);
+    kernel(DX, dev_out);
     /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
@@ -50,9 +46,6 @@ int main(void)
     fg::copy(surf.vertices(), dev_out);
 
     do {
-        t+=0.07;
-        kernel(t, DX, dev_out);
-        fg::copy(surf.vertices(), dev_out);
         wnd.draw(chart);
     } while(!wnd.close());
 
@@ -62,7 +55,7 @@ int main(void)
 
 
 __global__
-void sincos_surf(float t, float dx, float* out,
+void sincos_surf(float dx, float* out,
 				 const float XMIN, const float YMIN,
 				 const size_t XSIZE, const size_t YSIZE)
 {
@@ -75,20 +68,22 @@ void sincos_surf(float t, float dx, float* out,
         int offset = j + i * YSIZE;
         out[ 3 * offset     ] = x;
         out[ 3 * offset + 1 ] = y;
-        out[ 3 * offset + 2 ] = 10*x*-abs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5;
+        float z = sqrt(x*x+y*y) + 2.2204e-16;
+        out[ 3 * offset + 2 ] = sinf(z)/z;
     }
 }
 
-inline int divup(int a, int b)
+inline
+int divup(int a, int b)
 {
     return (a+b-1)/b;
 }
 
-void kernel(float t, float dx, float* dev_out)
+void kernel(float dx, float* dev_out)
 {
     static const dim3 threads(8, 8);
     dim3 blocks(divup(XSIZE, threads.x),
                 divup(YSIZE, threads.y));
 
-    sincos_surf<<< blocks, threads >>>(t, dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
+    sincos_surf<<< blocks, threads >>>(dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
 }
