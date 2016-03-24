@@ -37,7 +37,6 @@ class PerlinNoise
     private:
         float base[IMGW][IMGH];
         float perlin[IMGW][IMGH];
-        unsigned int factor;
     public:
         PerlinNoise();
         float noise(float u, float v);

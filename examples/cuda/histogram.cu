@@ -19,17 +19,36 @@ const unsigned IMGW = 256;
 const unsigned IMGH = 256;
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
-const unsigned IMG_SIZE = IMGW * IMGH * 4;
 const unsigned WIN_ROWS = 1;
 const unsigned WIN_COLS = 2;
 const unsigned NBINS = 256;
-const float PERSISTENCE = 0.5f;
-
-void genBaseNoise(float* baseNoise);
-void genPerlinNoise(unsigned char* perlinNoise, float* baseNoise);
-void genHistogram(unsigned char* perlinNoise, int* histOut, float* histColors);
 
 curandState_t* state;
+
+struct Bitmap {
+    unsigned char *ptr;
+    unsigned width;
+    unsigned height;
+};
+
+class PerlinNoise
+{
+    public:
+        float* base;
+        float* perlin;
+
+        PerlinNoise();
+        ~PerlinNoise();
+        void generateNoise();
+};
+
+Bitmap createBitmap(unsigned w, unsigned h);
+
+void destroyBitmap(Bitmap& bmp);
+
+void kernel(Bitmap& bmp, PerlinNoise& pn);
+
+void populateBins(Bitmap& bmp, int *hist_array, const unsigned nbins, float *hist_cols);
 
 __global__
 void setupRandomKernel(curandState *states, unsigned long long seed)
@@ -40,11 +59,7 @@ void setupRandomKernel(curandState *states, unsigned long long seed)
 
 int main(void)
 {
-    float* baseNoise;
-    unsigned char* perlinNoise;
-
-    int *histOut;
-    float *histColors;
+    Bitmap bmp = createBitmap(IMGW, IMGH);
 
     FORGE_CUDA_CHECK(cudaMalloc((void **)&state, NBINS*sizeof(curandState_t)));
     setupRandomKernel <<< 1, NBINS >>> (state, 314567);
@@ -75,48 +90,70 @@ int main(void)
     /*
      * Create histogram object specifying number of bins
      */
-    fg::Histogram hist = chart.histogram(NBINS, u8);
+    fg::Histogram hist = chart.histogram(NBINS, s32);
     /*
      * Set histogram colors
      */
     hist.setColor(FG_YELLOW);
 
-    // IMG_SIZE/4 pixels of each 4 bytes(float)
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&baseNoise, IMG_SIZE));
-    // IMG_SIZE/4 pixels of each 1 bytes(unsigned char)
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&perlinNoise, IMG_SIZE));
+    PerlinNoise noiseGenerator;
+    int *histOut;
+    float *histColors;
+
     FORGE_CUDA_CHECK(cudaMalloc((void**)&histOut, NBINS * sizeof(int)));
     FORGE_CUDA_CHECK(cudaMalloc((void**)&histColors, 3*NBINS * sizeof(float)));
 
-    genBaseNoise(baseNoise);
-    genPerlinNoise(perlinNoise, baseNoise);
-    genHistogram(perlinNoise, histOut, histColors);
-
-    fg::copy(img, perlinNoise);
-    fg::copy(hist.vertices(), histOut);
-    fg::copy(hist.colors(), histColors);
-
+    unsigned frame = 0;
     do {
-        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
-        wnd.draw(1, 0, chart, "Histogram of Noisy Image");
-        wnd.swapBuffers();
+        if (frame%8==0) {
+            kernel(bmp, noiseGenerator);
+            fg::copy(img, bmp.ptr);
 
-        // limit histogram update frequency
-        //if(fmod(persistance, 0.5f) < 0.01) {
-            genBaseNoise(baseNoise);
-            genPerlinNoise(perlinNoise, baseNoise);
-            genHistogram(perlinNoise, histOut, histColors);
+            populateBins(bmp, histOut, NBINS, histColors);
 
-            fg::copy(img, perlinNoise);
             fg::copy(hist.vertices(), histOut);
             fg::copy(hist.colors(), histColors);
-        //}
+            frame = 0;
+        }
+
+        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
+        wnd.draw(1, 0, chart, "Histogram of Noisy Image");
+
+        wnd.swapBuffers();
+        frame++;
     } while(!wnd.close());
 
-    FORGE_CUDA_CHECK(cudaFree(perlinNoise));
     FORGE_CUDA_CHECK(cudaFree(histOut));
     FORGE_CUDA_CHECK(cudaFree(histColors));
     return 0;
+}
+
+Bitmap createBitmap(unsigned w, unsigned h)
+{
+    Bitmap retVal;
+    retVal.width = w;
+    retVal.height= h;
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&retVal.ptr, sizeof(unsigned char)*4*w*h));
+    return retVal;
+}
+
+void destroyBitmap(Bitmap& bmp)
+{
+    FORGE_CUDA_CHECK(cudaFree(bmp.ptr));
+}
+
+PerlinNoise::PerlinNoise()
+{
+    const size_t IMG_SIZE = IMGW*IMGH*sizeof(float);
+
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&base, IMG_SIZE));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&perlin, IMG_SIZE));
+}
+
+PerlinNoise::~PerlinNoise()
+{
+    FORGE_CUDA_CHECK(cudaFree(base));
+    FORGE_CUDA_CHECK(cudaFree(perlin));
 }
 
 inline
@@ -125,80 +162,116 @@ int divup(int a, int b)
     return (a+b-1)/b;
 }
 
+__device__
+float interp(float x0, float x1, float alpha)
+{
+    return x0 * (1 - alpha) + alpha * x1;
+}
+
 __global__
-void baseNoiseKernel(float* baseNoise, curandState* state)
+void perlinInitKernel(float* base, float* perlin, curandState* state)
 {
     int x = blockIdx.x * blockDim.x  + threadIdx.x;
     int y = blockIdx.y * blockDim.y  + threadIdx.y;
 
     if (x<IMGW && y<IMGH) {
-        baseNoise[y*IMGW+x] = curand_uniform(&state[0]);
+        int index = y*IMGW + x;
+        base[index] = curand_uniform(&state[index%NBINS]);
+        perlin[index] = 0.0f;
     }
-}
-
-void genBaseNoise(float* baseNoise)
-{
-    static const dim3 threads(8, 8);
-    dim3 blocks(divup(IMGW, threads.x),
-                divup(IMGH, threads.y));
-
-    baseNoiseKernel<<< blocks, threads >>>(baseNoise, state);
-}
-
-__device__ __inline__
-float interp(float x0, float x1, float t)
-{
-    return x0 + (x1 - x0) * t;
 }
 
 __global__
-void perlinKernel(unsigned char* perlinNoise, float* baseNoise)
+void perlinComputeKernel(float* perlin, float* base, float amp, int period)
 {
-    int i = blockIdx.x * blockDim.x  + threadIdx.x;
-    int j = blockIdx.y * blockDim.y  + threadIdx.y;
+    uint x = blockIdx.x * blockDim.x  + threadIdx.x;
+    uint y = blockIdx.y * blockDim.y  + threadIdx.y;
 
-    if (i<IMGW && j<IMGH) {
-        float pnoise = 0.0f;
-        float amp    = 1.0f;
-        float tamp   = 0.0f;
+    if (x<IMGW && y<IMGH) {
+        int index  = y*IMGW + x;
 
-        for (int octave=6; octave>=0; --octave)
-        {
-            int period = 1 << octave;
-            float freq = 1.0f / period;
+        float freq = 1.0f / period;
 
-            int si0 = (i/period) * period;
-            int si1 = (si0 + period) % IMGW;
-            float hblend = (i - si0) * freq;
+        int si0 = (x/period) * period;
+        int si1 = (si0 + period) % IMGW;
+        float hblend = (x - si0) * freq;
 
-            int sj0 = (j/period) * period;
-            int sj1 = (sj0 + period) % IMGH;
-            float vblend = (j - sj0) * freq;
+        int sj0 = (y/period) * period;
+        int sj1 = (sj0 + period) % IMGH;
+        float vblend = (y - sj0) * freq;
 
-            float top = interp(baseNoise[si0+IMGW*sj0], baseNoise[si1+IMGW*sj0], hblend);
-            float bot = interp(baseNoise[si0+IMGW*sj1], baseNoise[si1+IMGW*sj1], hblend);
+        float top = interp(base[si0+IMGW*sj0], base[si1+IMGW*sj0], hblend);
+        float bot = interp(base[si0+IMGW*sj1], base[si1+IMGW*sj1], hblend);
 
-            pnoise += (amp * interp(top, bot, vblend));
-
-            tamp += amp;
-            amp *= PERSISTENCE;
-        }
-
-        uint offset = i+j*IMGW;
-        perlinNoise[4*offset+0] = pnoise/tamp;
-        perlinNoise[4*offset+1] = pnoise/tamp;
-        perlinNoise[4*offset+2] = pnoise/tamp;
-        perlinNoise[4*offset+3] = 255;
+        perlin[index] += (amp * interp(top, bot, vblend));
     }
 }
 
-void genPerlinNoise(unsigned char* perlinNoise, float* baseNoise)
+__global__
+void perlinNormalize(float* perlin, float tamp)
 {
-    static const dim3 threads(8, 8);
-    dim3 blocks(divup(IMGW, threads.x),
-                divup(IMGH, threads.y));
+    int x = blockIdx.x * blockDim.x  + threadIdx.x;
+    int y = blockIdx.y * blockDim.y  + threadIdx.y;
 
-    perlinKernel<<< blocks, threads >>>(perlinNoise, baseNoise);
+    if (x<IMGW && y<IMGH) {
+        int index = y*IMGW + x;
+        perlin[index] = perlin[index]/tamp;
+    }
+}
+
+void PerlinNoise::generateNoise()
+{
+    static dim3 threads(32, 8);
+    dim3 blocks(divup(IMGW, threads.x), divup(IMGH, threads.y));
+
+    float persistence = 0.5f;
+    float amp  = 1.0f;
+    float tamp = 0.0f;
+
+    perlinInitKernel<<< blocks, threads >>> (base, perlin, state);
+
+    for (int octave=6; octave>=0; --octave) {
+        int period = 1 << octave;
+
+        perlinComputeKernel<<< blocks, threads >>>(perlin, base, amp, period);
+
+        tamp += amp;
+        amp *= persistence;
+    }
+
+    perlinNormalize<<< blocks, threads >>>(perlin, tamp);
+}
+
+__global__
+void fillImageKernel(unsigned char* ptr, unsigned width, unsigned height, float* perlin)
+{
+    int x = blockIdx.x * blockDim.x  + threadIdx.x;
+    int y = blockIdx.y * blockDim.y  + threadIdx.y;
+
+    if (x<width && y<height) {
+        int offset  = x + y * width;
+
+        unsigned u = (unsigned)(IMGW*x/(float)(width));
+        unsigned v = (unsigned)(IMGH*y/(float)(height));
+        int idx = u + v*IMGW;
+
+        unsigned char val = 255 * perlin[idx];
+        ptr[offset*4 + 0] = val;
+        ptr[offset*4 + 1] = val;
+        ptr[offset*4 + 2] = val;
+        ptr[offset*4 + 3] = 255;
+    }
+}
+
+void kernel(Bitmap& bmp, PerlinNoise& pn)
+{
+    static dim3 threads(32, 8);
+
+    pn.generateNoise();
+
+    dim3 blocks(divup(bmp.width, threads.x), divup(bmp.height, threads.y));
+
+    fillImageKernel<<< blocks, threads >>>(bmp.ptr, bmp.width, bmp.height, pn.perlin);
 }
 
 __global__
@@ -225,15 +298,15 @@ void histColorsKernel(float* histColors, curandState *states)
     histColors[3*bin+2] = curand_uniform(&states[bin]);
 }
 
-void genHistogram(unsigned char * perlinNoise, int* histOut, float* histColors)
+void populateBins(Bitmap& bmp, int *histOut, const unsigned nbins, float *histColors)
 {
     static const dim3 threads(8, 8);
-    dim3 blocks(divup(IMGW, threads.x),
-                divup(IMGH, threads.y));
+    dim3 blocks(divup(bmp.width, threads.x),
+                divup(bmp.height, threads.y));
 
-    cudaMemset(histOut, 0, NBINS * sizeof(int));
+    cudaMemset(histOut, 0, nbins * sizeof(int));
 
-    histogramKernel<<< blocks, threads >>>(perlinNoise, histOut, NBINS);
+    histogramKernel<<< blocks, threads >>>(bmp.ptr, histOut, nbins);
 
-    histColorsKernel<<< 1, NBINS >>>(histColors, state);
+    histColorsKernel<<< 1, nbins >>>(histColors, state);
 }
