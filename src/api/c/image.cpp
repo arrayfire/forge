@@ -23,7 +23,7 @@ fg_err fg_create_image(fg_image* pImage,
                        const fg_channel_format pFormat, const fg_dtype pType)
 {
     try {
-        *pImage = getHandle(new common::Image(pWidth, pHeight, pFormat, pType));
+        *pImage = getHandle(new common::Image(pWidth, pHeight, pFormat, (fg::dtype)pType));
     }
     CATCHALL
 
@@ -93,7 +93,7 @@ fg_err fg_get_image_pixelformat(fg_channel_format* pOut, const fg_image pImage)
 fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage)
 {
     try {
-        *pOut = getImage(pImage)->channelType();
+        *pOut = (fg_dtype)(getImage(pImage)->channelType());
     }
     CATCHALL
 

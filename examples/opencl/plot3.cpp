@@ -87,7 +87,7 @@ int main(void)
         chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
         chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-        fg::Plot plot3 = chart.plot(ZSIZE, f32);
+        fg::Plot plot3 = chart.plot(ZSIZE, fg::f32);
 
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU

@@ -52,7 +52,7 @@ int main(void)
     chart.setAxesLimits(-10.f, 10.f, -10.f, 10.f, -0.5f, 1.f);
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    fg::Surface surf = chart.surface(XSIZE, YSIZE, f32);
+    fg::Surface surf = chart.surface(XSIZE, YSIZE, fg::f32);
     surf.setColor(FG_YELLOW);
 
     //generate a surface

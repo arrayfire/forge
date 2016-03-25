@@ -159,13 +159,13 @@ typedef enum {
 } fg_color;
 
 typedef enum {
-    s8  = 0,                                ///< Signed byte (8-bits)
-    u8  = 1,                                ///< Unsigned byte (8-bits)
-    s32 = 2,                                ///< Signed integer (32-bits)
-    u32 = 3,                                ///< Unsigned integer (32-bits)
-    f32 = 4,                                ///< Float (32-bits)
-    s16 = 5,                                ///< Signed integer (16-bits)
-    u16 = 6                                 ///< Unsigned integer (16-bits)
+    FG_INT8    = 0,                                ///< Signed byte (8-bits)
+    FG_UINT8   = 1,                                ///< Unsigned byte (8-bits)
+    FG_INT32   = 2,                                ///< Signed integer (32-bits)
+    FG_UINT32  = 3,                                ///< Unsigned integer (32-bits)
+    FG_FLOAT32 = 4,                                ///< Float (32-bits)
+    FG_INT16   = 5,                                ///< Signed integer (16-bits)
+    FG_UINT16  = 6                                 ///< Unsigned integer (16-bits)
 } fg_dtype;
 
 typedef enum {
@@ -194,8 +194,17 @@ namespace fg
     typedef fg_chart_type ChartType;
     typedef fg_color_map ColorMap;
     typedef fg_color Color;
-    typedef fg_dtype dtype;
     typedef fg_plot_type PlotType;
     typedef fg_marker_type MarkerType;
+
+    typedef enum {
+        s8  = FG_INT8,
+        u8  = FG_UINT8,
+        s32 = FG_INT32,
+        u32 = FG_UINT32,
+        f32 = FG_FLOAT32,
+        s16 = FG_INT16,
+        u16 = FG_UINT16,
+    } dtype;
 }
 #endif

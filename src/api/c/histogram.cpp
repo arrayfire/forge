@@ -16,7 +16,7 @@ fg_err fg_create_histogram(fg_histogram *pHistogram,
         const uint pNBins, const fg_dtype pType)
 {
     try {
-        *pHistogram = getHandle(new common::Histogram(pNBins, pType));
+        *pHistogram = getHandle(new common::Histogram(pNBins, (fg::dtype)pType));
     }
     CATCHALL
 

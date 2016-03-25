@@ -66,7 +66,7 @@ int main(void)
      */
     wnd.grid(WIN_ROWS, WIN_COLS);
 
-    fg::Image img(IMGW, IMGH, FG_RGBA, u8);
+    fg::Image img(IMGW, IMGH, FG_RGBA, fg::u8);
 
     fg::Chart chart(FG_CHART_2D);
     /* set x axis limits to maximum and minimum values of data
@@ -79,7 +79,7 @@ int main(void)
     /*
      * Create histogram object specifying number of bins
      */
-    fg::Histogram hist = chart.histogram(NBINS, s32);
+    fg::Histogram hist = chart.histogram(NBINS, fg::s32);
     /*
      * Set histogram colors
      */

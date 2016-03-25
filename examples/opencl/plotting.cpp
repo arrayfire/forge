@@ -92,10 +92,10 @@ int main(void)
         /* Create several plot objects which creates the necessary
          * vertex buffer objects to hold the different plot types
          */
-        fg::Plot plt0 = chart.plot(DATA_SIZE, f32);                                 //create a default plot
-        fg::Plot plt1 = chart.plot(DATA_SIZE, f32, FG_PLOT_LINE, FG_MARKER_NONE);       //or specify a specific plot type
-        fg::Plot plt2 = chart.plot(DATA_SIZE, f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE);   //last parameter specifies marker shape
-        fg::Plot plt3 = chart.plot(DATA_SIZE, f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
+        fg::Plot plt0 = chart.plot(DATA_SIZE, fg::f32);                                 //create a default plot
+        fg::Plot plt1 = chart.plot(DATA_SIZE, fg::f32, FG_PLOT_LINE, FG_MARKER_NONE);       //or specify a specific plot type
+        fg::Plot plt2 = chart.plot(DATA_SIZE, fg::f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE);   //last parameter specifies marker shape
+        fg::Plot plt3 = chart.plot(DATA_SIZE, fg::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
 
         /*
          * Set plot colors

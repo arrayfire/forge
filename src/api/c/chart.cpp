@@ -86,7 +86,7 @@ fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
                              const fg_dtype pType)
 {
     try {
-        common::Image* img = new common::Image(pWidth, pHeight, pFormat, pType);
+        common::Image* img = new common::Image(pWidth, pHeight, pFormat, (fg::dtype)pType);
         getChart(pHandle)->addRenderable(img->impl());
         *pImage = getHandle(img);
     }
@@ -102,7 +102,7 @@ fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
         common::Chart* chrt = getChart(pHandle);
 
         if (chrt->chartType()== FG_CHART_2D) {
-            common::Histogram* hist = new common::Histogram(pNBins, pType);
+            common::Histogram* hist = new common::Histogram(pNBins, (fg::dtype)pType);
             chrt->addRenderable(hist->impl());
             *pHistogram = getHandle(hist);
         } else {
@@ -124,11 +124,13 @@ fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
         fg::ChartType ctype = chrt->chartType();
 
         if (ctype == FG_CHART_2D) {
-            common::Plot* plt = new common::Plot(pNPoints, pType, pPlotType, pMarkerType, FG_CHART_2D);
+            common::Plot* plt = new common::Plot(pNPoints, (fg::dtype)pType, pPlotType,
+                                                 pMarkerType, FG_CHART_2D);
             chrt->addRenderable(plt->impl());
             *pPlot = getHandle(plt);
         } else {
-            common::Plot* plt = new common::Plot(pNPoints, pType, pPlotType, pMarkerType, FG_CHART_3D);
+            common::Plot* plt = new common::Plot(pNPoints, (fg::dtype)pType, pPlotType,
+                                                 pMarkerType, FG_CHART_3D);
             chrt->addRenderable(plt->impl());
             *pPlot = getHandle(plt);
         }
@@ -147,7 +149,7 @@ fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
         fg::ChartType ctype = chrt->chartType();
 
         if (ctype == FG_CHART_3D) {
-            common::Surface* surf = new common::Surface(pXPoints, pYPoints, pType,
+            common::Surface* surf = new common::Surface(pXPoints, pYPoints, (fg::dtype)pType,
                                                         pPlotType, pMarkerType);
             chrt->addRenderable(surf->impl());
             *pSurface = getHandle(surf);

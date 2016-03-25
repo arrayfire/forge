@@ -19,7 +19,8 @@ fg_err fg_create_surface(fg_surface *pSurface,
                       const fg_marker_type pMarkerType)
 {
     try {
-        *pSurface = getHandle(new common::Surface(pXPoints, pYPoints, pType, pPlotType, pMarkerType));
+        *pSurface = getHandle(new common::Surface(pXPoints, pYPoints, (fg::dtype)pType,
+                                                  pPlotType, pMarkerType));
     }
     CATCHALL
 

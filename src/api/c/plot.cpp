@@ -19,7 +19,8 @@ fg_err fg_create_plot(fg_plot *pPlot,
                       const fg_marker_type pMarkerType)
 {
     try {
-        *pPlot = getHandle(new common::Plot(pNPoints, pType, pPlotType, pMarkerType, pChartType));
+        *pPlot = getHandle(new common::Plot(pNPoints, (fg::dtype)pType, pPlotType,
+                                            pMarkerType, pChartType));
     }
     CATCHALL
 

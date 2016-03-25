@@ -79,9 +79,9 @@ int main(void)
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt1 = chart.plot(cosData.size()/2, f32,
+    fg::Plot plt1 = chart.plot(cosData.size()/2, fg::f32,
                                FG_PLOT_LINE, FG_MARKER_TRIANGLE); //or specify a specific plot type
-    fg::Plot plt2 = chart.plot(tanData.size()/2, f32,
+    fg::Plot plt2 = chart.plot(tanData.size()/2, fg::f32,
                                FG_PLOT_LINE, FG_MARKER_CIRCLE); //last parameter specifies marker shape
 
     /* Set plot colors */
