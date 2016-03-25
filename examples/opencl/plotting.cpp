@@ -24,25 +24,37 @@ using namespace std;
 
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
-const unsigned WIN_ROWS = 2;
-const unsigned WIN_COLS = 2;
 
 const float    dx = 0.1;
 const float    FRANGE_START = 0.f;
 const float    FRANGE_END = 2 * 3.141592f;
 const unsigned DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
 
-static const std::string sinf_ocl_kernel =
-"kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE)\n"
-"{\n"
-"    unsigned x = get_global_id(0);\n"
-"    if(x < DATA_SIZE){\n"
-"        out[2 * x] = x * dx ;\n"
-"        out[2 * x + 1] = sin(x*dx);\n"
-"    }\n"
-"}\n";
+static const std::string sinf_ocl_kernel = R"(
+kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE, int fnCode)
+{
+    unsigned x = get_global_id(0);
+    if(x < DATA_SIZE) {
+        out[2 * x] = x * dx ;
+        switch(fnCode) {
+            case 0:
+                out[ 2 * x + 1 ] = sin(x*dx);
+                break;
+            case 1:
+                out[ 2 * x + 1 ] = cos(x*dx);
+                break;
+            case 2:
+                out[ 2 * x + 1 ] = tan(x*dx);
+                break;
+            case 3:
+                out[ 2 * x + 1 ] = log10(x*dx);
+                break;
+        }
+    }
+}
+)";
 
-void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
+void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, int fnCode)
 {
     static std::once_flag   compileFlag;
     static cl::Program      prog;
@@ -59,6 +71,7 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
     kern.setArg(0, devOut);
     kern.setArg(1, dx);
     kern.setArg(2, DATA_SIZE);
+    kern.setArg(3, fnCode);
     queue.enqueueNDRangeKernel(kern, cl::NullRange, global);
 }
 
@@ -70,47 +83,34 @@ int main(void)
         * so that necessary OpenGL context is created for any
         * other fg::* object to be created successfully
         */
-        fg::Window wnd(DIMX, DIMY, "Fractal Demo");
+        fg::Window wnd(DIMX, DIMY, "Plotting Demo");
         wnd.makeCurrent();
-        /* create an font object and load necessary font
-        * and later pass it on to window object so that
-        * it can be used for rendering text */
-        fg::Font fnt;
-#ifdef OS_WIN
-        fnt.loadSystemFont("Calibri", 32);
-#else
-        fnt.loadSystemFont("Vera", 32);
-#endif
-        wnd.setFont(&fnt);
 
-        /*
-         * Split the window into grid regions
-         */
-        wnd.grid(WIN_ROWS, WIN_COLS);
+        fg::Chart chart(FG_CHART_2D);
+        chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.1f, 1.1f);
 
         /* Create several plot objects which creates the necessary
          * vertex buffer objects to hold the different plot types
          */
-        fg::Plot plt0(DATA_SIZE, fg::f32);                                 //create a default plot
-        fg::Plot plt1(DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
-        fg::Plot plt2(DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
-        fg::Plot plt3(DATA_SIZE, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
+        fg::Plot plt0 = chart.plot(DATA_SIZE, fg::f32);                                 //create a default plot
+        fg::Plot plt1 = chart.plot(DATA_SIZE, fg::f32, FG_PLOT_LINE, FG_MARKER_NONE);       //or specify a specific plot type
+        fg::Plot plt2 = chart.plot(DATA_SIZE, fg::f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE);   //last parameter specifies marker shape
+        fg::Plot plt3 = chart.plot(DATA_SIZE, fg::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
 
         /*
          * Set plot colors
          */
-        plt0.setColor(fg::FG_YELLOW);
-        plt1.setColor(fg::FG_BLUE);
-        plt2.setColor(fg::FG_WHITE);                                        //use a forge predefined color
-        plt3.setColor((fg::Color) 0xABFF01FF);                              //or any hex-valued color
-
+        plt0.setColor(FG_RED);
+        plt1.setColor(FG_BLUE);
+        plt2.setColor(FG_YELLOW);            //use a forge predefined color
+        plt3.setColor((fg::Color) 0x257973FF);  //or any hex-valued color
         /*
-         * Set draw limits for plots
+         * Set plot legends
          */
-        plt0.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-        plt1.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-        plt2.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-        plt3.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
+        plt0.setLegend("Sine");
+        plt1.setLegend("Cosine");
+        plt2.setLegend("Tangent");
+        plt3.setLegend("Log base 10");
 
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU
@@ -156,8 +156,14 @@ int main(void)
             }
         }
 
-        cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
-        kernel(devOut, queue);
+        cl::Buffer sinOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer cosOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer tanOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer logOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        kernel(sinOut, queue, 0);
+        kernel(cosOut, queue, 1);
+        kernel(tanOut, queue, 2);
+        kernel(logOut, queue, 3);
 
         /* copy your data into the vertex buffer object exposed by
          * fg::Plot class and then proceed to rendering.
@@ -165,18 +171,13 @@ int main(void)
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        fg::copy(plt0, devOut, queue);
-        fg::copy(plt1, devOut, queue);
-        fg::copy(plt2, devOut, queue);
-        fg::copy(plt3, devOut, queue);
+        fg::copy(plt0.vertices(), plt0.verticesSize(), sinOut, queue);
+        fg::copy(plt1.vertices(), plt1.verticesSize(), cosOut, queue);
+        fg::copy(plt2.vertices(), plt2.verticesSize(), tanOut, queue);
+        fg::copy(plt3.vertices(), plt3.verticesSize(), logOut, queue);
 
         do {
-            wnd.draw(0, 0, plt0,  NULL                );
-            wnd.draw(0, 1, plt1, "sinf_line_blue"     );
-            wnd.draw(1, 1, plt2, "sinf_line_triangle" );
-            wnd.draw(1, 0, plt3, "sinf_scatter_point" );
-            // draw window and poll for events last
-            wnd.swapBuffers();
+            wnd.draw(chart);
         } while(!wnd.close());
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;

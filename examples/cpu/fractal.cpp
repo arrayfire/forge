@@ -37,21 +37,25 @@ int main(void)
      */
     fg::Window wnd(DIMX, DIMY, "Fractal Demo");
     wnd.makeCurrent();
+
     /* create an font object and load necessary font
      * and later pass it on to window object so that
-     * it can be used for rendering text */
+     * it can be used for rendering text
+     *
+     * NOTE: THIS IS OPTIONAL STEP, BY DEFAULT WINDOW WILL
+     * HAVE FONT ALREADY SETUP*/
     fg::Font fnt;
 #ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
+    fnt.loadSystemFont("Calibri");
 #else
-    fnt.loadSystemFont("Vera", 32);
+    fnt.loadSystemFont("Vera");
 #endif
     wnd.setFont(&fnt);
 
     /* Create an image object which creates the necessary
      * textures and pixel buffer objects to hold the image
      * */
-    fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
+    fg::Image img(DIMX, DIMY, FG_RGBA, fg::u8);
     /* copy your data into the pixel buffer object exposed by
      * fg::Image class and then proceed to rendering.
      * To help the users with copying the data from compute
@@ -59,7 +63,7 @@ int main(void)
      * along with the library to help with this task
      */
     kernel(bmp);
-    fg::copy(img, bmp.ptr);
+    fg::copy(img, (const void*)bmp.ptr);
 
     do {
         wnd.draw(img);

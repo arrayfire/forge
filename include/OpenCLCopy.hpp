@@ -10,10 +10,23 @@
 #ifndef __OPENCL_DATA_COPY_H__
 #define __OPENCL_DATA_COPY_H__
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#ifdef __cplusplus
+
 namespace fg
 {
 
-static void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& queue)
+static
+void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& queue)
 {
     cl::BufferGL pboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, out.pbo(), NULL);
 
@@ -28,29 +41,27 @@ static void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& q
 }
 
 /*
- * Below functions takes any renderable forge object that has following member functions
- * defined
- *
- * `unsigned Renderable::vbo() const;`
- * `unsigned Renderable::size() const;`
- *
- * Currently fg::Plot, fg::Histogram objects in Forge library fit the bill
+ * Below functions expects OpenGL resource Id and size in bytes to copy the data from
+ * OpenCL Buffer to graphics memory
  */
-template<class Renderable>
-void copy(Renderable& out, const cl::Buffer& in, const cl::CommandQueue& queue)
+static
+void copy(const int resourceId, const size_t resourceSize,
+          const cl::Buffer& in, const cl::CommandQueue& queue)
 {
-    cl::BufferGL vboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, out.vbo(), NULL);
+    cl::BufferGL vboMapBuffer(queue.getInfo<CL_QUEUE_CONTEXT>(), CL_MEM_WRITE_ONLY, resourceId, NULL);
 
     std::vector<cl::Memory> shared_objects;
     shared_objects.push_back(vboMapBuffer);
 
     glFinish();
     queue.enqueueAcquireGLObjects(&shared_objects);
-    queue.enqueueCopyBuffer(in, vboMapBuffer, 0, 0, out.size(), NULL, NULL);
+    queue.enqueueCopyBuffer(in, vboMapBuffer, 0, 0, resourceSize, NULL, NULL);
     queue.finish();
     queue.enqueueReleaseGLObjects(&shared_objects);
 }
 
 }
+
+#endif
 
 #endif //__OPENCL_DATA_COPY_H__

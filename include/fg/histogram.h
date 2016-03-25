@@ -11,10 +11,40 @@
 
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Histogram;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_histogram(fg_histogram *pHistogram,
+                                 const uint nbins, const fg_dtype type);
+
+FGAPI fg_err fg_destroy_histogram(fg_histogram pHistogram);
+
+FGAPI fg_err fg_set_histogram_color(fg_histogram pHistogram,
+                                    const float pRed, const float pGreen,
+                                    const float pBlue, const float pAlpha);
+
+FGAPI fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegend);
+
+FGAPI fg_err fg_get_histogram_vbo(uint* out, const fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_cbo(uint* out, const fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_abo(uint* out, const fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_vbo_size(uint* out, const fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_cbo_size(uint* out, const fg_histogram pHistogram);
+
+FGAPI fg_err fg_get_histogram_abo_size(uint* out, const fg_histogram pHistogram);
+
+#ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
 
 namespace fg
 {
@@ -22,11 +52,11 @@ namespace fg
 /**
    \class Histogram
 
-   \brief Bar graph to display data frequencey.
+   \brief Histogram is a bar graph to display data frequencey.
  */
 class Histogram {
     private:
-        internal::_Histogram* value;
+        fg_histogram mValue;
 
     public:
         /**
@@ -36,14 +66,14 @@ class Histogram {
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Histogram(unsigned pNBins, dtype pDataType);
+        FGAPI Histogram(const uint pNBins, const dtype pDataType);
 
         /**
            Copy constructor for Histogram
 
-           \param[in] other is the Histogram of which we make a copy of.
+           \param[in] pOther is the Histogram of which we make a copy of.
          */
-        FGAPI Histogram(const Histogram& other);
+        FGAPI Histogram(const Histogram& pOther);
 
         /**
            Histogram Destructor
@@ -53,84 +83,82 @@ class Histogram {
         /**
            Set the color of bar in the bar graph(histogram)
 
-           \param[in] col takes values of type fg::Color to define bar color
+           \param[in] pColor takes values of type fg::Color to define bar color
         **/
-        FGAPI void setBarColor(fg::Color col);
-
+        FGAPI void setColor(const Color pColor);
 
         /**
            Set the color of bar in the bar graph(histogram)
 
+           This is global alpha value for the histogram rendering that takes
+           effect if individual bar alphas are not set by calling the following
+           member functions
+               - Histogram::alphas()
+               - Histogram::alphasSize()
+
            \param[in] pRed is Red component in range [0, 1]
            \param[in] pGreen is Green component in range [0, 1]
            \param[in] pBlue is Blue component in range [0, 1]
+           \param[in] pAlpha is Alpha component in range [0, 1]
          */
-        FGAPI void setBarColor(float pRed, float pGreen, float pBlue);
+        FGAPI void setColor(const float pRed, const float pGreen,
+                            const float pBlue, const float pAlpha);
 
         /**
-           Set the chart axes limits
+           Set legend for histogram plot
 
-           \param[in] pXmax is X-Axis maximum value
-           \param[in] pXmin is X-Axis minimum value
-           \param[in] pYmax is Y-Axis maximum value
-           \param[in] pYmin is Y-Axis minimum value
+           \param[in] pLegend
          */
-        FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);
+        FGAPI void setLegend(const char* pLegend);
 
         /**
-           Set axes titles in histogram(bar chart)
-
-           \param[in] pXTitle is X-Axis title
-           \param[in] pYTitle is Y-Axis title
-         */
-        FGAPI void setAxesTitles(const char* pXTitle, const char* pYTitle);
-
-        /**
-           Get X-Axis maximum value
-
-           \return Maximum value along X-Axis
-         */
-        FGAPI float xmax() const;
-
-        /**
-           Get X-Axis minimum value
-
-           \return Minimum value along X-Axis
-         */
-        FGAPI float xmin() const;
-
-        /**
-           Get Y-Axis maximum value
-
-           \return Maximum value along Y-Axis
-         */
-        FGAPI float ymax() const;
-
-        /**
-           Get Y-Axis minimum value
-
-           \return Minimum value along Y-Axis
-         */
-        FGAPI float ymin() const;
-
-        /**
-           Get the OpenGL Vertex Buffer Object identifier
+           Get the OpenGL buffer object identifier for vertices
 
            \return OpenGL VBO resource id.
          */
-        FGAPI unsigned vbo() const;
+        FGAPI uint vertices() const;
+
+        /**
+           Get the OpenGL buffer object identifier for color values per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint colors() const;
+
+        /**
+           Get the OpenGL buffer object identifier for alpha values per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint alphas() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
-           \return OpenGL VBO resource size.
+           \return vertex buffer object size in bytes
          */
-        FGAPI unsigned size() const;
+        FGAPI uint verticesSize() const;
+
+        /**
+           Get the OpenGL Vertex Buffer Object resource size
+
+           \return colors buffer object size in bytes
+         */
+        FGAPI uint colorsSize() const;
+
+        /**
+           Get the OpenGL Vertex Buffer Object resource size
+
+           \return alpha buffer object size in bytes
+         */
+        FGAPI uint alphasSize() const;
 
         /**
            Get the handle to internal implementation of Histogram
          */
-        FGAPI internal::_Histogram* get() const;
+        FGAPI fg_histogram get() const;
 };
 
 }
+
+#endif

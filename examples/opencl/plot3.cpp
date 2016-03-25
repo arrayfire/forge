@@ -82,37 +82,12 @@ int main(void)
          */
         fg::Window wnd(DIMX, DIMY, "Plot3d Demo");
         wnd.makeCurrent();
-        /* create an font object and load necessary font
-         * and later pass it on to window object so that
-         * it can be used for rendering text */
-        fg::Font fnt;
-#ifdef OS_WIN
-        fnt.loadSystemFont("Calibri", 32);
-#else
-        fnt.loadSystemFont("Vera", 32);
-#endif
-        wnd.setFont(&fnt);
 
-        /* Create several plot objects which creates the necessary
-         * vertex buffer objects to hold the different plot types
-         */
-        fg::Plot3 plot3(ZSIZE, fg::f32);
+        fg::Chart chart(FG_CHART_3D);
+        chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
+        chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-        /*
-         * Set draw limits for plots
-         */
-        plot3.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, 0.f);
-
-        /*
-         * Set draw limits for plots
-         */
-        plot3.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, 0.f);
-
-        /*
-         * Set axis titles
-         */
-        plot3.setAxesTitles("x-axis", "y-axis", "z-axis");
-
+        fg::Plot plot3 = chart.plot(ZSIZE, fg::f32);
 
         Platform plat = getPlatform();
         // Select the default platform and create a context using this platform and the GPU
@@ -167,14 +142,13 @@ int main(void)
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        fg::copy(plot3, devOut, queue);
+        fg::copy(plot3.vertices(), plot3.verticesSize(), devOut, queue);
 
         do {
             t+=0.01;
             kernel(devOut, queue, t);
-            fg::copy(plot3, devOut, queue);
-            // draw window and poll for events last
-            wnd.draw(plot3);
+            fg::copy(plot3.vertices(), plot3.verticesSize(), devOut, queue);
+            wnd.draw(chart);
         } while(!wnd.close());
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;

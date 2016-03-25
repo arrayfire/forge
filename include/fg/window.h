@@ -12,15 +12,71 @@
 #include <fg/defines.h>
 #include <fg/font.h>
 #include <fg/image.h>
-#include <fg/plot.h>
-#include <fg/plot3.h>
+#include <fg/chart.h>
 #include <fg/surface.h>
 #include <fg/histogram.h>
 
-namespace internal
-{
-class _Window;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_window(fg_window *pWindow,
+                              const int pWidth, const int pHeight,
+                              const char* pTitle,
+                              const fg_window pShareWindow,
+                              const bool pInvisible);
+
+FGAPI fg_err fg_destroy_window(fg_window pWindow);
+
+FGAPI fg_err fg_set_window_font(fg_window pWindow, fg_font pFont);
+
+FGAPI fg_err fg_set_window_title(fg_window pWindow, const char* pTitle);
+
+FGAPI fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY);
+
+FGAPI fg_err fg_set_window_size(fg_window pWindow, const uint pWidth, const uint pHeight);
+
+FGAPI fg_err fg_set_window_colormap(fg_window pWindow, const fg_color_map pColorMap);
+
+FGAPI fg_err fg_get_window_context_handle(long long *pContext, const fg_window pWindow);
+
+FGAPI fg_err fg_get_window_display_handle(long long *pDisplay, const fg_window pWindow);
+
+FGAPI fg_err fg_get_window_width(int *pWidth, const fg_window pWindow);
+
+FGAPI fg_err fg_get_window_height(int *pHeight, const fg_window pWindow);
+
+FGAPI fg_err fg_make_window_current(const fg_window pWindow);
+
+FGAPI fg_err fg_hide_window(const fg_window pWindow);
+
+FGAPI fg_err fg_show_window(const fg_window pWindow);
+
+FGAPI fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow);
+
+FGAPI fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage, const bool pKeepAspectRatio);
+
+FGAPI fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart);
+
+FGAPI fg_err fg_setup_window_layout(int pRows, int pCols, fg_window pWindow);
+
+FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, int pColId, int pRowId,
+                                   const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio);
+
+FGAPI fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pColId, int pRowId,
+                                   const fg_chart pChart, const char* pTitle);
+
+FGAPI fg_err fg_swap_window_buffers(const fg_window pWindow);
+
+FGAPI fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window pWindow);
+
+#ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
 
 namespace fg
 {
@@ -32,7 +88,7 @@ namespace fg
  */
 class Window {
     private:
-        internal::_Window* value;
+        fg_window mValue;
 
         Window() {}
 
@@ -126,7 +182,7 @@ class Window {
         /**
            \return internal handle for window implementation
          */
-        FGAPI internal::_Window* get() const;
+        FGAPI fg_window get() const;
 
         /**
            Make the current window's OpenGL context active context
@@ -166,47 +222,15 @@ class Window {
         FGAPI void draw(const Image& pImage, const bool pKeepAspectRatio=true);
 
         /**
-           Render a Plot to Window
+           Render a chart to Window
 
-           \param[in] pPlot is an object of class Plot
-
-           \note this draw call does a OpenGL swap buffer, so we do not need
-           to call Window::draw() after this function is called upon for rendering
-           a plot
-         */
-        FGAPI void draw(const Plot& pPlot);
-
-        /**
-           Render a Plot3 to Window
-
-           \param[in] pPlot3 is an object of class Plot3
+           \param[in] pChart is an chart object
 
            \note this draw call does a OpenGL swap buffer, so we do not need
            to call Window::draw() after this function is called upon for rendering
            a plot
          */
-        FGAPI void draw(const Plot3& pPlot3);
-
-        /**
-           Render a Surface to Window
-
-           \param[in] pSurface is an object of class Surface
-
-           \note this draw call does a OpenGL swap buffer, so we do not need
-           to call Window::draw() after this function is called upon for rendering
-           a plot
-         */
-        FGAPI void draw(const Surface& pSurface);
-        /**
-           Render Histogram to Window
-
-           \param[in] pHist is an object of class Histogram
-
-           \note this draw call does a OpenGL swap buffer, so we do not need
-           to call Window::draw() after this function is called upon for rendering
-           a histogram
-         */
-        FGAPI void draw(const Histogram& pHist);
+        FGAPI void draw(const Chart& pChart);
 
         /**
            Setup grid layout for multivew mode
@@ -241,14 +265,14 @@ class Window {
         FGAPI void draw(int pColId, int pRowId, const Image& pImage, const char* pTitle=0, const bool pKeepAspectRatio=true);
 
         /**
-           Render Plot to given sub-region of the window in multiview mode
+           Render the chart to given sub-region of the window in multiview mode
 
            Window::grid should have been already called before any of the draw calls
            that accept coloum index and row index is used to render an object.
 
            \param[in] pColId is coloumn index
            \param[in] pRowId is row index
-           \param[in] pPlot is an object of class Plot
+           \param[in] pChart is a Chart with one or more plottable renderables
            \param[in] pTitle is the title that will be displayed for the cell represented
                       by \p pColId and \p pRowId
 
@@ -257,65 +281,7 @@ class Window {
            Window::draw() once all draw calls corresponding to all sub-regions are called
            when in multiview mode.
          */
-        FGAPI void draw(int pColId, int pRowId, const Plot& pPlot, const char* pTitle = 0);
-
-
-        /**
-           Render Plot3 to given sub-region of the window in multiview mode
-
-           Window::grid should have been already called before any of the draw calls
-           that accept coloum index and row index is used to render an object.
-
-           \param[in] pColId is coloumn index
-           \param[in] pRowId is row index
-           \param[in] pPlot3 is an object of class Plot3
-           \param[in] pTitle is the title that will be displayed for the cell represented
-                      by \p pColId and \p pRowId
-
-           \note This draw call doesn't do OpenGL swap buffer since it doesn't have the
-           knowledge of which sub-regions already got rendered. We should call
-           Window::draw() once all draw calls corresponding to all sub-regions are called
-           when in multiview mode.
-         */
-        FGAPI void draw(int pColId, int pRowId, const Plot3& pPlot3, const char* pTitle = 0);
-
-        /**
-           Render Surface to given sub-region of the window in multiview mode
-
-           Window::grid should have been already called before any of the draw calls
-           that accept coloum index and row index is used to render an object.
-
-           \param[in] pColId is coloumn index
-           \param[in] pRowId is row index
-           \param[in] pSurface is an object of class Surface
-           \param[in] pTitle is the title that will be displayed for the cell represented
-                      by \p pColId and \p pRowId
-
-           \note This draw call doesn't do OpenGL swap buffer since it doesn't have the
-           knowledge of which sub-regions already got rendered. We should call
-           Window::draw() once all draw calls corresponding to all sub-regions are called
-           when in multiview mode.
-         */
-        FGAPI void draw(int pColId, int pRowId, const Surface& pSurface, const char* pTitle = 0);
-
-        /**
-           Render Histogram to given sub-region of the window in multiview mode
-
-           Window::grid should have been already called before any of the draw calls
-           that accept coloum index and row index is used to render an object.
-
-           \param[in] pColId is coloumn index
-           \param[in] pRowId is row index
-           \param[in] pHist is an object of class Histogram
-           \param[in] pTitle is the title that will be displayed for the cell represented
-                      by \p pColId and \p pRowId
-
-           \note This draw call doesn't do OpenGL swap buffer since it doesn't have the
-           knowledge of which sub-regions already got rendered. We should call
-           Window::draw() once all draw calls corresponding to all sub-regions are called
-           when in multiview mode.
-         */
-        FGAPI void draw(int pColId, int pRowId, const Histogram& pHist, const char* pTitle = 0);
+        FGAPI void draw(int pColId, int pRowId, const Chart& pChart, const char* pTitle = 0);
 
         /**
            Swaps background OpenGL buffer with front buffer
@@ -324,6 +290,20 @@ class Window {
            something in multiview mode
          */
         FGAPI void swapBuffers();
+
+        /**
+           Save window frame buffer to give location in provided image format
+
+           The image format to be saved in is inferred from the file extension
+           provided in the path string.
+
+           \param[in] pFullPath should be the absolute path of the target location
+                      where the framebuffer should be stored. The target image format
+                      is inferred from the file extension.
+         */
+        FGAPI void saveFrameBuffer(const char* pFullPath);
 };
 
 }
+
+#endif

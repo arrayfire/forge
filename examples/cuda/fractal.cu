@@ -21,28 +21,18 @@ int main(void)
      */
     fg::Window wnd(DIMX, DIMY, "Fractal Demo");
     wnd.makeCurrent();
-    /* create an font object and load necessary font
-     * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
-#ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
-#else
-    fnt.loadSystemFont("Vera", 32);
-#endif
-    wnd.setFont(&fnt);
 
     /* Create an image object which creates the necessary
      * textures and pixel buffer objects to hold the image
      * */
-    fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
+    fg::Image img(DIMX, DIMY, FG_RGBA, fg::u8);
     /* copy your data into the pixel buffer object exposed by
      * fg::Image class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, SIZE));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, SIZE));
     kernel(dev_out);
     fg::copy(img, dev_out);
 
@@ -50,7 +40,7 @@ int main(void)
         wnd.draw(img);
     } while(!wnd.close());
 
-    CUDA_ERROR_CHECK(cudaFree(dev_out));
+    FORGE_CUDA_CHECK(cudaFree(dev_out));
     return 0;
 }
 
@@ -85,9 +75,9 @@ void julia(unsigned char* out)
         // now calculate the value at that position
         int juliaValue = julia(x, y);
 
-        out[offset*4 + 0] = 255 * juliaValue;
+        out[offset*4 + 2] = 255 * juliaValue;
+        out[offset*4 + 0] = 0;
         out[offset*4 + 1] = 0;
-        out[offset*4 + 2] = 0;
         out[offset*4 + 3] = 255;
     }
 }

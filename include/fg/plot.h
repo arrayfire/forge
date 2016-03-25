@@ -11,10 +11,49 @@
 
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Plot;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_plot(fg_plot *pPlot,
+                            const uint pNPoints, const fg_dtype pType,
+                            const fg_chart_type pChartType,
+                            const fg_plot_type pPlotType,
+                            const fg_marker_type pMarkerType);
+
+FGAPI fg_err fg_destroy_plot(fg_plot pPlot);
+
+FGAPI fg_err fg_set_plot_color(fg_plot pPlot,
+                               const float pRed, const float pGreen,
+                               const float pBlue, const float pAlpha);
+
+FGAPI fg_err fg_set_plot_legend(fg_plot pPlot, const char* pLegend);
+
+FGAPI fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize);
+
+FGAPI fg_err fg_get_plot_vbo(uint* pOut, const fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_cbo(uint* pOut, const fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_abo(uint* pOut, const fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_mbo(uint* pOut, const fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_vbo_size(uint* pOut, const fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_cbo_size(uint* pOut, const fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_abo_size(uint* pOut, const fg_plot pPlot);
+
+FGAPI fg_err fg_get_plot_mbo_size(uint* pOut, const fg_plot pPlot);
+
+#ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
 
 namespace fg
 {
@@ -22,11 +61,11 @@ namespace fg
 /**
    \class Plot
 
-   \brief Line graph to display plots.
+   \brief Plot is a line graph to display two dimensional data.
  */
 class Plot {
     private:
-        internal::_Plot* value;
+        fg_plot mValue;
 
     public:
         /**
@@ -35,15 +74,21 @@ class Plot {
            \param[in] pNumPoints is number of data points to display
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of plot data
+           \param[in] pChartType dictates the dimensionality of the chart
+           \param[in] pPlotType dictates the type of plot/graph,
+                      it can take one of the values of \ref PlotType
+           \param[in] pMarkerType indicates which symbol is rendered as marker. It can take one of
+                      the values of \ref MarkerType.
          */
-        FGAPI Plot(unsigned pNumPoints, dtype pDataType, fg::PlotType=fg::FG_LINE, fg::MarkerType=fg::FG_NONE);
+        FGAPI Plot(const uint pNumPoints, const dtype pDataType, const ChartType pChartType,
+                   const PlotType pPlotType=FG_PLOT_LINE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
            Copy constructor for Plot
 
-           \param[in] other is the Plot of which we make a copy of.
+           \param[in] pOther is the Plot of which we make a copy of.
          */
-        FGAPI Plot(const Plot& other);
+        FGAPI Plot(const Plot& pOther);
 
         /**
            Plot Destructor
@@ -53,9 +98,9 @@ class Plot {
         /**
            Set the color of line graph(plot)
 
-           \param[in] col takes values of fg::Color to define plot color
+           \param[in] pColor takes values of fg::Color to define plot color
         */
-        FGAPI void setColor(fg::Color col);
+        FGAPI void setColor(const fg::Color pColor);
 
         /**
            Set the color of line graph(plot)
@@ -63,73 +108,90 @@ class Plot {
            \param[in] pRed is Red component in range [0, 1]
            \param[in] pGreen is Green component in range [0, 1]
            \param[in] pBlue is Blue component in range [0, 1]
+           \param[in] pAlpha is Blue component in range [0, 1]
          */
-        FGAPI void setColor(float pRed, float pGreen, float pBlue);
+        FGAPI void setColor(const float pRed, const float pGreen,
+                            const float pBlue, const float pAlpha);
 
         /**
-           Set the chart axes limits
+           Set plot legend
 
-           \param[in] pXmax is X-Axis maximum value
-           \param[in] pXmin is X-Axis minimum value
-           \param[in] pYmax is Y-Axis maximum value
-           \param[in] pYmin is Y-Axis minimum value
+           \param[in] pLegend
          */
-        FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);
+        FGAPI void setLegend(const char* pLegend);
 
         /**
-           Set axes titles in histogram(bar chart)
+           Set global marker size
 
-           \param[in] pXTitle is X-Axis title
-           \param[in] pYTitle is Y-Axis title
+           This size will be used for rendering markers if no per vertex marker sizes are provided.
+           This value defaults to 10
+
+           \param[in] pMarkerSize is the target marker size for scatter plots or line plots with markers
          */
-        FGAPI void setAxesTitles(const char* pXTitle, const char* pYTitle);
+        FGAPI void setMarkerSize(const float pMarkerSize);
 
         /**
-           Get X-Axis maximum value
-
-           \return Maximum value along X-Axis
-         */
-        FGAPI float xmax() const;
-
-        /**
-           Get X-Axis minimum value
-
-           \return Minimum value along X-Axis
-         */
-        FGAPI float xmin() const;
-
-        /**
-           Get Y-Axis maximum value
-
-           \return Maximum value along Y-Axis
-         */
-        FGAPI float ymax() const;
-
-        /**
-           Get Y-Axis minimum value
-
-           \return Minimum value along Y-Axis
-         */
-        FGAPI float ymin() const;
-
-        /**
-           Get the OpenGL Vertex Buffer Object identifier
+           Get the OpenGL buffer object identifier for vertices
 
            \return OpenGL VBO resource id.
          */
-        FGAPI unsigned vbo() const;
+        FGAPI uint vertices() const;
+
+        /**
+           Get the OpenGL buffer object identifier for color values per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint colors() const;
+
+        /**
+           Get the OpenGL buffer object identifier for alpha values per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint alphas() const;
+
+        /**
+           Get the OpenGL buffer object identifier for markers sizes, per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint markers() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
-           \return OpenGL VBO resource size.
+           \return vertex buffer object size in bytes
          */
-        FGAPI unsigned size() const;
+        FGAPI uint verticesSize() const;
 
         /**
-           Get the handle to internal implementation of Histogram
+           Get the OpenGL colors Buffer Object resource size
+
+           \return colors buffer object size in bytes
          */
-        FGAPI internal::_Plot* get() const;
+        FGAPI uint colorsSize() const;
+
+        /**
+           Get the OpenGL alpha Buffer Object resource size
+
+           \return alpha buffer object size in bytes
+         */
+        FGAPI uint alphasSize() const;
+
+        /**
+           Get the OpenGL markers Buffer Object resource size
+
+           \return alpha buffer object size in bytes
+         */
+        FGAPI uint markersSize() const;
+
+        /**
+           Get the handle to internal implementation of plot
+         */
+        FGAPI fg_plot get() const;
 };
 
 }
+
+#endif

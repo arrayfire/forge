@@ -113,21 +113,11 @@ int main(void)
         */
         fg::Window wnd(DIMX, DIMY, "Fractal Demo");
         wnd.makeCurrent();
-        /* create an font object and load necessary font
-        * and later pass it on to window object so that
-        * it can be used for rendering text */
-        fg::Font fnt;
-#ifdef OS_WIN
-        fnt.loadSystemFont("Calibri", 32);
-#else
-        fnt.loadSystemFont("Vera", 32);
-#endif
-        wnd.setFont(&fnt);
 
         /* Create an image object which creates the necessary
         * textures and pixel buffer objects to hold the image
         * */
-        fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
+        fg::Image img(DIMX, DIMY, FG_RGBA, fg::u8);
 
 
         Platform plat = getPlatform();

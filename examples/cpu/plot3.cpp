@@ -24,7 +24,9 @@ const float DX = 0.005;
 const size_t ZSIZE = (ZMAX-ZMIN)/DX+1;
 
 using namespace std;
-void gen_curve(float t, float dx, std::vector<float> &vec ) {
+
+void gen_curve(float t, float dx, std::vector<float> &vec )
+{
     vec.clear();
     for(float z=ZMIN; z < ZMAX; z+=dx){
         vec.push_back(cos(z*t+t)/z);
@@ -33,7 +35,8 @@ void gen_curve(float t, float dx, std::vector<float> &vec ) {
     }
 }
 
-int main(void){
+int main(void)
+{
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
@@ -41,31 +44,12 @@ int main(void){
      */
     fg::Window wnd(DIMX, DIMY, "Plot3d Demo");
     wnd.makeCurrent();
-    /* create an font object and load necessary font
-     * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
-#ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
-#else
-    fnt.loadSystemFont("Vera", 32);
-#endif
-    wnd.setFont(&fnt);
 
-    /* Create several plot objects which creates the necessary
-     * vertex buffer objects to hold the different plot types
-     */
-    fg::Plot3 plot3(ZSIZE, fg::f32);
+    fg::Chart chart(FG_CHART_3D);
+    chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
+    chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    /*
-     * Set draw limits for plots
-     */
-    plot3.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, 0.f);
-
-    /*
-    * Set axis titles
-    */
-    plot3.setAxesTitles("x-axis", "y-axis", "z-axis");
+    fg::Plot plot3 = chart.plot(ZSIZE, fg::f32);
 
     //generate a surface
     std::vector<float> function;
@@ -77,14 +61,13 @@ int main(void){
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copy(plot3, &function[0]);
+    fg::copy(plot3.vertices(), plot3.verticesSize(), (const void*)function.data());
 
     do {
         t+=0.01;
         gen_curve(t, DX, function);
-        copy(plot3, &function[0]);
-        // draw window and poll for events last
-        wnd.draw(plot3);
+        fg::copy(plot3.vertices(), plot3.verticesSize(), (const void*)function.data());
+        wnd.draw(chart);
     } while(!wnd.close());
 
     return 0;

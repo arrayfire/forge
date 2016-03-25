@@ -10,10 +10,24 @@
 #pragma once
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Font;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_font(fg_font* pFont);
+
+FGAPI fg_err fg_destroy_font(fg_font pFont);
+
+FGAPI fg_err fg_load_font_file(fg_font pFont, const char* const pFileFullPath);
+
+FGAPI fg_err fg_load_system_font(fg_font pFont, const char* const pFontName);
+
+#ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
 
 namespace fg
 {
@@ -25,7 +39,7 @@ namespace fg
  */
 class Font {
     private:
-        internal::_Font* value;
+        fg_font mValue;
 
     public:
         /**
@@ -49,22 +63,22 @@ class Font {
            Load a given font file
 
            \param[in] pFile True Type Font file path
-           \param[in] pFontSize the size of the font glyphs that will be created
          */
-        FGAPI void loadFont(const char* const pFile, int pFontSize);
+        FGAPI void loadFontFile(const char* const pFile);
 
         /**
            Load a system font based on the name
 
            \param[in] pName True Type Font name
-           \param[in] pFontSize the size of the font glyphs that will be created
          */
-        FGAPI void loadSystemFont(const char* const pName, int pFontSize);
+        FGAPI void loadSystemFont(const char* const pName);
 
         /**
            Get handle for internal implementation of Font object
          */
-        FGAPI internal::_Font* get() const;
+        FGAPI fg_font get() const;
 };
 
 }
+
+#endif

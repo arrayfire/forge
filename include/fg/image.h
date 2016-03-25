@@ -11,20 +11,58 @@
 
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Image;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_image(fg_image* pImage,
+                             const uint pWidth, const uint pHeight,
+                             const fg_channel_format pFormat, const fg_dtype pType);
+
+FGAPI fg_err fg_destroy_image(fg_image pImage);
+
+FGAPI fg_err fg_set_image_alpha(fg_image pImage, const float pAlpha);
+
+FGAPI fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio);
+
+FGAPI fg_err fg_get_image_width(uint *pOut, const fg_image pImage);
+
+FGAPI fg_err fg_get_image_height(uint *pOut, const fg_image pImage);
+
+FGAPI fg_err fg_get_image_pixelformat(fg_channel_format* pOut, const fg_image pImage);
+
+FGAPI fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage);
+
+FGAPI fg_err fg_get_image_pbo(uint* pOut, const fg_image pImage);
+
+FGAPI fg_err fg_get_image_pbo_size(uint* pOut, const fg_image pImage);
+
+FGAPI fg_err fg_render_image(const fg_window pWindow,
+                             const fg_image pImage,
+                             const int pX, const int pY, const int pWidth, const int pHeight,
+                             const float* pTransform);
+
+#ifdef __cplusplus
 }
+#endif
+
+
+#ifdef __cplusplus
 
 namespace fg
 {
 
+class Window;
+
 /**
    \class Image
+
+   \brief Image is plain rendering of an image over the window or sub-region of it.
  */
 class Image {
     private:
-        internal::_Image* value;
+        fg_image mValue;
 
     public:
         /**
@@ -37,14 +75,15 @@ class Image {
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Image(unsigned pWidth, unsigned pHeight, ChannelFormat pFormat, dtype pDataType);
+        FGAPI Image(const uint pWidth, const uint pHeight,
+                    const ChannelFormat pFormat=FG_RGBA, const dtype pDataType=f32);
 
         /**
            Copy constructor of Image
 
-           \param[in] other is the Image of which we make a copy of.
+           \param[in] pOther is the Image of which we make a copy of.
          */
-        FGAPI Image(const Image& other);
+        FGAPI Image(const Image& pOther);
 
         /**
            Image Destructor
@@ -52,16 +91,30 @@ class Image {
         FGAPI ~Image();
 
         /**
+           Set a global alpha value for rendering the image
+
+           \param[in] pAlpha
+         */
+        FGAPI void setAlpha(const float pAlpha);
+
+        /**
+           Set option to inform whether to maintain aspect ratio of original image
+
+           \param[in] pKeep
+         */
+        FGAPI void keepAspectRatio(const bool pKeep);
+
+        /**
            Get Image width
            \return image width
          */
-        FGAPI unsigned width() const;
+        FGAPI uint width() const;
 
         /**
            Get Image height
            \return image width
          */
-        FGAPI unsigned height() const;
+        FGAPI uint height() const;
 
         /**
            Get Image's channel format
@@ -80,19 +133,38 @@ class Image {
 
            \return OpenGL PBO resource id.
          */
-        FGAPI unsigned pbo() const;
+        FGAPI uint pbo() const;
 
         /**
            Get the OpenGL Pixel Buffer Object resource size
 
            \return OpenGL PBO resource size.
          */
-        FGAPI unsigned size() const;
+        FGAPI uint size() const;
+
+        /**
+           Render the image to given window
+
+           \param[in] pWindow is target window to where image will be rendered
+           \param[in] pX is x coordinate of origin of viewport in window coordinates
+           \param[in] pY is y coordinate of origin of viewport in window coordinates
+           \param[in] pVPW is the width of the viewport
+           \param[in] pVPH is the height of the viewport
+           \param[in] pTransform is an array of floats. This array is expected to contain
+                      at least 16 elements
+
+           Note: pTransform array is assumed to be of expected length.
+         */
+        FGAPI void render(const Window& pWindow,
+                          const int pX, const int pY, const int pVPW, const int pVPH,
+                          const float* pTransform) const;
 
         /**
            Get the handle to internal implementation of Image
          */
-        FGAPI internal::_Image* get() const;
+        FGAPI fg_image get() const;
 };
 
 }
+
+#endif

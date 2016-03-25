@@ -10,11 +10,23 @@
 #ifndef __CPU_DATA_COPY_H__
 #define __CPU_DATA_COPY_H__
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#ifdef __cplusplus
+
 namespace fg
 {
 
-template<typename T>
-void copy(fg::Image& out, const T * dataPtr)
+static
+void copy(fg::Image& out, const void * dataPtr)
 {
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, out.pbo());
     glBufferSubData(GL_PIXEL_UNPACK_BUFFER, 0, out.size(), dataPtr);
@@ -22,22 +34,19 @@ void copy(fg::Image& out, const T * dataPtr)
 }
 
 /*
- * Below functions takes any renderable forge object that has following member functions
- * defined
- *
- * `unsigned Renderable::vbo() const;`
- * `unsigned Renderable::size() const;`
- *
- * Currently fg::Plot, fg::Histogram objects in Forge library fit the bill
+ * Below functions expects OpenGL resource Id and size in bytes to copy the data from
+ * cpu memory location to graphics memory
  */
-template<class Renderable, typename T>
-void copy(Renderable& out, const T * dataPtr)
+static
+void copy(const int resourceId, const size_t resourceSize, const void * dataPtr)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, out.vbo());
-    glBufferSubData(GL_ARRAY_BUFFER, 0, out.size(), dataPtr);
+    glBindBuffer(GL_ARRAY_BUFFER, resourceId);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, resourceSize, dataPtr);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 }
+
+#endif
 
 #endif //__CPU_DATA_COPY_H__

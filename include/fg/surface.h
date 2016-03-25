@@ -11,10 +11,41 @@
 
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Surface;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+FGAPI fg_err fg_create_surface(fg_surface *pSurface,
+                            const uint pXPoints, const uint pYPoints,
+                            const fg_dtype pType,
+                            const fg_plot_type pPlotType,
+                            const fg_marker_type pMarkerType);
+
+FGAPI fg_err fg_destroy_surface(fg_surface pSurface);
+
+FGAPI fg_err fg_set_surface_color(fg_surface pSurface,
+                                  const float pRed, const float pGreen,
+                                  const float pBlue, const float pAlpha);
+
+FGAPI fg_err fg_set_surface_legend(fg_surface pSurface, const char* pLegend);
+
+FGAPI fg_err fg_get_surface_vbo(uint* pOut, const fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_cbo(uint* pOut, const fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_abo(uint* pOut, const fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_vbo_size(uint* pOut, const fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_cbo_size(uint* pOut, const fg_surface pSurface);
+
+FGAPI fg_err fg_get_surface_abo_size(uint* pOut, const fg_surface pSurface);
+
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 
 namespace fg
 {
@@ -22,11 +53,11 @@ namespace fg
 /**
    \class Surface
 
-   \brief 3d graph to display plots.
+   \brief Surface is a graph to display three dimensional data.
  */
 class Surface {
     private:
-        internal::_Surface* value;
+        fg_surface mValue;
 
     public:
         /**
@@ -40,14 +71,15 @@ class Surface {
                       are FG_SURFACE and FG_SCATTER)
            \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_SCATTER plot type
          */
-        FGAPI Surface(unsigned pNumXPoints, unsigned pNumYPoints, dtype pDataType, PlotType pPlotType=fg::FG_SURFACE, MarkerType pMarkerType=fg::FG_NONE);
+        FGAPI Surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
+                      const PlotType pPlotType=FG_PLOT_SURFACE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
            Copy constructor for Plot
 
-           \param[in] other is the Plot of which we make a copy of.
+           \param[in] pOther is the Plot of which we make a copy of.
          */
-        FGAPI Surface(const Surface& other);
+        FGAPI Surface(const Surface& pOther);
 
         /**
            Plot Destructor
@@ -57,9 +89,9 @@ class Surface {
         /**
            Set the color of line graph(plot)
 
-           \param[in] col takes values of fg::Color to define plot color
+           \param[in] pColor takes values of fg::Color to define plot color
         */
-        FGAPI void setColor(fg::Color col);
+        FGAPI void setColor(const fg::Color pColor);
 
         /**
            Set the color of line graph(plot)
@@ -67,90 +99,66 @@ class Surface {
            \param[in] pRed is Red component in range [0, 1]
            \param[in] pGreen is Green component in range [0, 1]
            \param[in] pBlue is Blue component in range [0, 1]
+           \param[in] pAlpha is Blue component in range [0, 1]
          */
-        FGAPI void setColor(float pRed, float pGreen, float pBlue);
+        FGAPI void setColor(const float pRed, const float pGreen,
+                            const float pBlue, const float pAlpha);
 
         /**
-           Set the chart axes limits
+           Set plot legend
 
-           \param[in] pXmax is X-Axis maximum value
-           \param[in] pXmin is X-Axis minimum value
-           \param[in] pYmax is Y-Axis maximum value
-           \param[in] pYmin is Y-Axis minimum value
-           \param[in] pZmax is Z-Axis maximum value
-           \param[in] pZmin is Z-Axis minimum value
+           \param[in] pLegend
          */
-        FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin, float pZmax, float pZmin);
+        FGAPI void setLegend(const char* pLegend);
 
         /**
-           Set axes titles
-
-           \param[in] pXTitle is X-Axis title
-           \param[in] pYTitle is Y-Axis title
-           \param[in] pZTitle is Z-Axis title
-         */
-        FGAPI void setAxesTitles(const char* pXTitle, const char* pYTitle, const char* pZTitle);
-
-        /**
-           Get X-Axis maximum value
-
-           \return Maximum value along X-Axis
-         */
-        FGAPI float xmax() const;
-
-        /**
-           Get X-Axis minimum value
-
-           \return Minimum value along X-Axis
-         */
-        FGAPI float xmin() const;
-
-        /**
-           Get Y-Axis maximum value
-
-           \return Maximum value along Y-Axis
-         */
-        FGAPI float ymax() const;
-
-        /**
-           Get Y-Axis minimum value
-
-           \return Minimum value along Y-Axis
-         */
-        FGAPI float ymin() const;
-
-        /**
-           Get Z-Axis maximum value
-
-           \return Maximum value along Z-Axis
-         */
-        FGAPI float zmax() const;
-
-        /**
-           Get Z-Axis minimum value
-
-           \return Minimum value along Z-Axis
-         */
-        FGAPI float zmin() const;
-
-        /**
-           Get the OpenGL Vertex Buffer Object identifier
+           Get the OpenGL buffer object identifier for vertices
 
            \return OpenGL VBO resource id.
          */
-        FGAPI unsigned vbo() const;
+        FGAPI uint vertices() const;
+
+        /**
+           Get the OpenGL buffer object identifier for color values per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint colors() const;
+
+        /**
+           Get the OpenGL buffer object identifier for alpha values per vertex
+
+           \return OpenGL VBO resource id.
+         */
+        FGAPI uint alphas() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
-           \return OpenGL VBO resource size.
+           \return vertex buffer object size in bytes
          */
-        FGAPI unsigned size() const;
+        FGAPI uint verticesSize() const;
 
         /**
-           Get the handle to internal implementation of _Surface
+           Get the OpenGL Vertex Buffer Object resource size
+
+           \return colors buffer object size in bytes
          */
-        FGAPI internal::_Surface* get() const;
+        FGAPI uint colorsSize() const;
+
+        /**
+           Get the OpenGL Vertex Buffer Object resource size
+
+           \return alpha buffer object size in bytes
+         */
+        FGAPI uint alphasSize() const;
+
+        /**
+           Get the handle to internal implementation of surface
+         */
+        FGAPI fg_surface get() const;
 };
 
 }
+
+#endif
