@@ -125,7 +125,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
     unbindResources();
     glUseProgram(0);
 
-    if(mMarkerType != FG_NONE) {
+    if(mMarkerType != FG_MARKER_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 
@@ -256,7 +256,7 @@ void surface_impl::render(const int pWindowId,
 
 void scatter3_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
 {
-    if(mMarkerType != FG_NONE) {
+    if(mMarkerType != FG_MARKER_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 

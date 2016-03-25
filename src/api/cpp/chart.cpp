@@ -92,7 +92,7 @@ Histogram Chart::histogram(const uint pNBins, const dtype pDataType)
     common::Chart* chrt = getChart(mValue);
     ChartType ctype = chrt->chartType();
 
-    if (ctype == FG_2D) {
+    if (ctype == FG_CHART_2D) {
         Histogram retVal(pNBins, pDataType);
         chrt->addRenderable(getHistogram(retVal.get())->impl());
         return retVal;
@@ -108,12 +108,12 @@ Plot Chart::plot(const uint pNumPoints, const dtype pDataType,
     common::Chart* chrt = getChart(mValue);
     ChartType ctype = chrt->chartType();
 
-    if (ctype == FG_2D) {
-        Plot retVal(pNumPoints, pDataType, FG_2D, pPlotType, pMarkerType);
+    if (ctype == FG_CHART_2D) {
+        Plot retVal(pNumPoints, pDataType, FG_CHART_2D, pPlotType, pMarkerType);
         chrt->addRenderable(getPlot(retVal.get())->impl());
         return retVal;
     } else {
-        Plot retVal(pNumPoints, pDataType, FG_3D, pPlotType, pMarkerType);
+        Plot retVal(pNumPoints, pDataType, FG_CHART_3D, pPlotType, pMarkerType);
         chrt->addRenderable(getPlot(retVal.get())->impl());
         return retVal;
     }
@@ -125,7 +125,7 @@ Surface Chart::surface(const uint pNumXPoints, const uint pNumYPoints, const dty
     common::Chart* chrt = getChart(mValue);
     ChartType ctype = chrt->chartType();
 
-    if (ctype == FG_3D) {
+    if (ctype == FG_CHART_3D) {
         Surface retVal(pNumXPoints, pNumYPoints, pDataType, pPlotType, pMarkerType);
         getChart(mValue)->addRenderable(getSurface(retVal.get())->impl());
         return retVal;

@@ -31,7 +31,7 @@ fg_err fg_create_chart(fg_chart *pHandle,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_destroy_chart(fg_chart pHandle)
@@ -41,7 +41,7 @@ fg_err fg_destroy_chart(fg_chart pHandle)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_set_chart_axes_titles(fg_chart pHandle,
@@ -54,7 +54,7 @@ fg_err fg_set_chart_axes_titles(fg_chart pHandle,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_set_chart_axes_limits(fg_chart pHandle,
@@ -67,7 +67,7 @@ fg_err fg_set_chart_axes_limits(fg_chart pHandle,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const float pY)
@@ -77,7 +77,7 @@ fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const floa
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
@@ -92,7 +92,7 @@ fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
@@ -101,7 +101,7 @@ fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
     try {
         common::Chart* chrt = getChart(pHandle);
 
-        if (chrt->chartType()== FG_2D) {
+        if (chrt->chartType()== FG_CHART_2D) {
             common::Histogram* hist = new common::Histogram(pNBins, pType);
             chrt->addRenderable(hist->impl());
             *pHistogram = getHandle(hist);
@@ -112,7 +112,7 @@ fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
@@ -123,19 +123,19 @@ fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
         common::Chart* chrt = getChart(pHandle);
         fg::ChartType ctype = chrt->chartType();
 
-        if (ctype == FG_2D) {
-            common::Plot* plt = new common::Plot(pNPoints, pType, pPlotType, pMarkerType, FG_2D);
+        if (ctype == FG_CHART_2D) {
+            common::Plot* plt = new common::Plot(pNPoints, pType, pPlotType, pMarkerType, FG_CHART_2D);
             chrt->addRenderable(plt->impl());
             *pPlot = getHandle(plt);
         } else {
-            common::Plot* plt = new common::Plot(pNPoints, pType, pPlotType, pMarkerType, FG_3D);
+            common::Plot* plt = new common::Plot(pNPoints, pType, pPlotType, pMarkerType, FG_CHART_3D);
             chrt->addRenderable(plt->impl());
             *pPlot = getHandle(plt);
         }
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
@@ -146,7 +146,7 @@ fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
         common::Chart* chrt = getChart(pHandle);
         fg::ChartType ctype = chrt->chartType();
 
-        if (ctype == FG_3D) {
+        if (ctype == FG_CHART_3D) {
             common::Surface* surf = new common::Surface(pXPoints, pYPoints, pType,
                                                         pPlotType, pMarkerType);
             chrt->addRenderable(surf->impl());
@@ -158,7 +158,7 @@ fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
@@ -172,5 +172,5 @@ fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }

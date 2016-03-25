@@ -45,7 +45,7 @@ int main(void)
     fg::Window wnd(DIMX, DIMY, "Plot3d Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(FG_3D);
+    fg::Chart chart(FG_CHART_3D);
     chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 

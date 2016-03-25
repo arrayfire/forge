@@ -28,7 +28,7 @@ int main(void)
     fg::Window wnd(1024, 768, "3d Surface Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(FG_3D);
+    fg::Chart chart(FG_CHART_3D);
     chart.setAxesLimits(-10.f, 10.f, -10.f, 10.f, -0.5f, 1.f);
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 

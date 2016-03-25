@@ -31,16 +31,16 @@ int main(void)
     wnd.makeCurrent();
     wnd.grid(1,2);
 
-    fg::Chart chart(FG_2D);
+    fg::Chart chart(FG_CHART_2D);
     chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.1f, 1.1f);
 
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
     fg::Plot plt0 = chart.plot( DATA_SIZE, f32);                                 //create a default plot
-    fg::Plot plt1 = chart.plot( DATA_SIZE, f32, FG_LINE, FG_NONE);       //or specify a specific plot type
-    fg::Plot plt2 = chart.plot( DATA_SIZE, f32, FG_LINE, FG_TRIANGLE);   //last parameter specifies marker shape
-    fg::Plot plt3 = chart.plot( DATA_SIZE, f32, FG_SCATTER, FG_CROSS);
+    fg::Plot plt1 = chart.plot( DATA_SIZE, f32, FG_PLOT_LINE, FG_MARKER_NONE);       //or specify a specific plot type
+    fg::Plot plt2 = chart.plot( DATA_SIZE, f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE);   //last parameter specifies marker shape
+    fg::Plot plt3 = chart.plot( DATA_SIZE, f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
 
     /*
      * Set plot colors

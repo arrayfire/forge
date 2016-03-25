@@ -60,7 +60,7 @@ typedef unsigned short  ushort;
 typedef unsigned char   uchar;
 
 typedef enum {
-    FG_SUCCESS            = 0,              ///< Fuction returned successfully.
+    FG_ERR_NONE           = 0,              ///< Fuction returned successfully.
     /*
      * Arguement related error codes that are
      * generated when invalid arguments are
@@ -128,8 +128,8 @@ typedef enum {
 } fg_channel_format;
 
 typedef enum {
-    FG_2D = 2,                              ///< Two dimensional charts
-    FG_3D = 3                               ///< Three dimensional charts
+    FG_CHART_2D = 2,                        ///< Two dimensional charts
+    FG_CHART_3D = 3                         ///< Three dimensional charts
 } fg_chart_type;
 
 /**
@@ -138,13 +138,13 @@ typedef enum {
    \image html gfx_palette.png
  */
 typedef enum {
-    FG_DEFAULT_MAP  = 0,                    ///< Default [0-255] grayscale colormap
-    FG_SPECTRUM_MAP = 1,                    ///< Spectrum color
-    FG_COLORS_MAP   = 2,                    ///< Pure Colors
-    FG_RED_MAP      = 3,                    ///< Red color map
-    FG_MOOD_MAP     = 4,                    ///< Mood color map
-    FG_HEAT_MAP     = 5,                    ///< Heat color map
-    FG_BLUE_MAP     = 6                     ///< Blue color map
+    FG_COLOR_MAP_DEFAULT  = 0,              ///< Default [0-255] grayscale colormap
+    FG_COLOR_MAP_SPECTRUM = 1,              ///< Spectrum color
+    FG_COLOR_MAP_COLORS   = 2,              ///< Pure Colors
+    FG_COLOR_MAP_RED      = 3,              ///< Red color map
+    FG_COLOR_MAP_MOOD     = 4,              ///< Mood color map
+    FG_COLOR_MAP_HEAT     = 5,              ///< Heat color map
+    FG_COLOR_MAP_BLUE     = 6               ///< Blue color map
 } fg_color_map;
 
 typedef enum {
@@ -169,20 +169,20 @@ typedef enum {
 } fg_dtype;
 
 typedef enum {
-    FG_LINE         = 0,                    ///< Line plot
-    FG_SCATTER      = 1,                    ///< Scatter plot
-    FG_SURFACE      = 2                     ///< Surface plot
+    FG_PLOT_LINE         = 0,                    ///< Line plot
+    FG_PLOT_SCATTER      = 1,                    ///< Scatter plot
+    FG_PLOT_SURFACE      = 2                     ///< Surface plot
 } fg_plot_type;
 
 typedef enum {
-    FG_NONE         = 0,                    ///< No marker
-    FG_POINT        = 1,                    ///< Point marker
-    FG_CIRCLE       = 2,                    ///< Circle marker
-    FG_SQUARE       = 3,                    ///< Square marker
-    FG_TRIANGLE     = 4,                    ///< Triangle marker
-    FG_CROSS        = 5,                    ///< Cross-hair marker
-    FG_PLUS         = 6,                    ///< Plus symbol marker
-    FG_STAR         = 7                     ///< Star symbol marker
+    FG_MARKER_NONE         = 0,                    ///< No marker
+    FG_MARKER_POINT        = 1,                    ///< Point marker
+    FG_MARKER_CIRCLE       = 2,                    ///< Circle marker
+    FG_MARKER_SQUARE       = 3,                    ///< Square marker
+    FG_MARKER_TRIANGLE     = 4,                    ///< Triangle marker
+    FG_MARKER_CROSS        = 5,                    ///< Cross-hair marker
+    FG_MARKER_PLUS         = 6,                    ///< Plus symbol marker
+    FG_MARKER_STAR         = 7                     ///< Star symbol marker
 } fg_marker_type;
 
 

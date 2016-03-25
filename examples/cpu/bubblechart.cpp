@@ -73,16 +73,16 @@ int main(void)
     fg::Window wnd(DIMX, DIMY, "Bubble chart with Transparency Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(FG_2D);
+    fg::Chart chart(FG_CHART_2D);
     chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.1f, 1.1f);
 
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
     fg::Plot plt1 = chart.plot(cosData.size()/2, f32,
-                               FG_LINE, FG_TRIANGLE); //or specify a specific plot type
+                               FG_PLOT_LINE, FG_MARKER_TRIANGLE); //or specify a specific plot type
     fg::Plot plt2 = chart.plot(tanData.size()/2, f32,
-                               FG_LINE, FG_CIRCLE); //last parameter specifies marker shape
+                               FG_PLOT_LINE, FG_MARKER_CIRCLE); //last parameter specifies marker shape
 
     /* Set plot colors */
     plt1.setColor(FG_RED);

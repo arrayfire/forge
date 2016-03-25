@@ -72,7 +72,7 @@ class Surface {
            \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_SCATTER plot type
          */
         FGAPI Surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
-                      const PlotType pPlotType=FG_SURFACE, const MarkerType pMarkerType=FG_NONE);
+                      const PlotType pPlotType=FG_PLOT_SURFACE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
            Copy constructor for Plot

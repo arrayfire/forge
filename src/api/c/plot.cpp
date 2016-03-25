@@ -23,7 +23,7 @@ fg_err fg_create_plot(fg_plot *pPlot,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_destroy_plot(fg_plot pPlot)
@@ -33,7 +33,7 @@ fg_err fg_destroy_plot(fg_plot pPlot)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_set_plot_color(fg_plot pPlot,
@@ -45,7 +45,7 @@ fg_err fg_set_plot_color(fg_plot pPlot,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_set_plot_legend(fg_plot pPlot, const char* pLegend)
@@ -55,7 +55,7 @@ fg_err fg_set_plot_legend(fg_plot pPlot, const char* pLegend)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize)
@@ -65,7 +65,7 @@ fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_plot_vbo(uint* pOut, const fg_plot pPlot)
@@ -75,7 +75,7 @@ fg_err fg_get_plot_vbo(uint* pOut, const fg_plot pPlot)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_plot_cbo(uint* pOut, const fg_plot pPlot)
@@ -85,7 +85,7 @@ fg_err fg_get_plot_cbo(uint* pOut, const fg_plot pPlot)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_plot_abo(uint* pOut, const fg_plot pPlot)
@@ -95,7 +95,7 @@ fg_err fg_get_plot_abo(uint* pOut, const fg_plot pPlot)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_plot_mbo(uint* pOut, const fg_plot pPlot)
@@ -105,7 +105,7 @@ fg_err fg_get_plot_mbo(uint* pOut, const fg_plot pPlot)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_plot_vbo_size(uint* pOut, const fg_plot pPlot)
@@ -115,7 +115,7 @@ fg_err fg_get_plot_vbo_size(uint* pOut, const fg_plot pPlot)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_plot_cbo_size(uint* pOut, const fg_plot pPlot)
@@ -125,7 +125,7 @@ fg_err fg_get_plot_cbo_size(uint* pOut, const fg_plot pPlot)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_plot_abo_size(uint* pOut, const fg_plot pPlot)
@@ -135,7 +135,7 @@ fg_err fg_get_plot_abo_size(uint* pOut, const fg_plot pPlot)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_plot_mbo_size(uint* pOut, const fg_plot pPlot)
@@ -145,5 +145,5 @@ fg_err fg_get_plot_mbo_size(uint* pOut, const fg_plot pPlot)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }

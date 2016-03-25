@@ -29,9 +29,9 @@ class Chart {
     public:
         Chart(const fg::ChartType cType)
             : mChartType(cType) {
-            if (cType == FG_2D) {
+            if (cType == FG_CHART_2D) {
                 mChart = std::make_shared<detail::chart2d_impl>();
-            } else if (cType == FG_3D) {
+            } else if (cType == FG_CHART_3D) {
                 mChart = std::make_shared<detail::chart3d_impl>();
             } else {
                 throw fg::ArgumentError("Chart::Chart",

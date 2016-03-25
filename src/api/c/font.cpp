@@ -19,7 +19,7 @@ fg_err fg_create_font(fg_font* pFont)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_destroy_font(fg_font pFont)
@@ -29,7 +29,7 @@ fg_err fg_destroy_font(fg_font pFont)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_load_font_file(fg_font pFont, const char* const pFileFullPath)
@@ -39,7 +39,7 @@ fg_err fg_load_font_file(fg_font pFont, const char* const pFileFullPath)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_load_system_font(fg_font pFont, const char* const pFontName)
@@ -49,5 +49,5 @@ fg_err fg_load_system_font(fg_font pFont, const char* const pFontName)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }

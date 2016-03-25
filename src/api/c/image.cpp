@@ -27,7 +27,7 @@ fg_err fg_create_image(fg_image* pImage,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_destroy_image(fg_image pImage)
@@ -37,7 +37,7 @@ fg_err fg_destroy_image(fg_image pImage)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_set_image_alpha(fg_image pImage, const float pAlpha)
@@ -47,7 +47,7 @@ fg_err fg_set_image_alpha(fg_image pImage, const float pAlpha)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio)
@@ -57,7 +57,7 @@ fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_image_width(uint *pOut, const fg_image pImage)
@@ -67,7 +67,7 @@ fg_err fg_get_image_width(uint *pOut, const fg_image pImage)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_image_height(uint *pOut, const fg_image pImage)
@@ -77,7 +77,7 @@ fg_err fg_get_image_height(uint *pOut, const fg_image pImage)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_image_pixelformat(fg_channel_format* pOut, const fg_image pImage)
@@ -87,7 +87,7 @@ fg_err fg_get_image_pixelformat(fg_channel_format* pOut, const fg_image pImage)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage)
@@ -97,7 +97,7 @@ fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_image_pbo(uint* pOut, const fg_image pImage)
@@ -107,7 +107,7 @@ fg_err fg_get_image_pbo(uint* pOut, const fg_image pImage)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_get_image_pbo_size(uint* pOut, const fg_image pImage)
@@ -117,7 +117,7 @@ fg_err fg_get_image_pbo_size(uint* pOut, const fg_image pImage)
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }
 
 fg_err fg_render_image(const fg_window pWindow,
@@ -132,5 +132,5 @@ fg_err fg_render_image(const fg_window pWindow,
     }
     CATCHALL
 
-    return FG_SUCCESS;
+    return FG_ERR_NONE;
 }

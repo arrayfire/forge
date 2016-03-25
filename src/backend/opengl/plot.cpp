@@ -213,7 +213,7 @@ void plot_impl::render(const int pWindowId,
     glm::mat4 mvp(1.0);
     this->computeTransformMat(mvp, pTransform, pX, pY, pVPW, pVPH);
 
-    if (mPlotType == FG_LINE) {
+    if (mPlotType == FG_PLOT_LINE) {
         glUseProgram(mPlotProgram);
 
         this->bindDimSpecificUniforms();
@@ -228,7 +228,7 @@ void plot_impl::render(const int pWindowId,
         glUseProgram(0);
     }
 
-    if (mMarkerType != FG_NONE) {
+    if (mMarkerType != FG_MARKER_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 

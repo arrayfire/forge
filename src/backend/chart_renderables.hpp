@@ -38,7 +38,7 @@ class Plot : public ChartRenderableBase<detail::plot_impl> {
         Plot(const uint pNumPoints, const fg::dtype pDataType,
               const fg::PlotType pPlotType, const fg::MarkerType pMarkerType,
               const fg::ChartType pChartType) {
-            if (pChartType == FG_2D) {
+            if (pChartType == FG_CHART_2D) {
                 mShrdPtr = std::make_shared< detail::plot2d_impl >(pNumPoints, pDataType,
                               pPlotType, pMarkerType);
             } else {
@@ -68,13 +68,13 @@ class Plot : public ChartRenderableBase<detail::plot_impl> {
 class Surface : public ChartRenderableBase<detail::surface_impl> {
     public:
         Surface(const uint pNumXPoints, const uint pNumYPoints,
-                 const fg::dtype pDataType, const fg::PlotType pPlotType=FG_SURFACE,
-                 const fg::MarkerType pMarkerType=FG_NONE) {
+                 const fg::dtype pDataType, const fg::PlotType pPlotType=FG_PLOT_SURFACE,
+                 const fg::MarkerType pMarkerType=FG_MARKER_NONE) {
             switch(pPlotType){
-                case(FG_SURFACE):
+                case(FG_PLOT_SURFACE):
                     mShrdPtr = std::make_shared<detail::surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
                     break;
-                case(FG_SCATTER):
+                case(FG_PLOT_SCATTER):
                     mShrdPtr = std::make_shared<detail::scatter3_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
                     break;
                 default:

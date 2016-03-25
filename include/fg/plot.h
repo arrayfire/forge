@@ -81,7 +81,7 @@ class Plot {
                       the values of \ref MarkerType.
          */
         FGAPI Plot(const uint pNumPoints, const dtype pDataType, const ChartType pChartType,
-                   const PlotType pPlotType=FG_LINE, const MarkerType pMarkerType=FG_NONE);
+                   const PlotType pPlotType=FG_PLOT_LINE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
            Copy constructor for Plot

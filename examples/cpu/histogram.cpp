@@ -68,7 +68,7 @@ int main(void)
 
     fg::Image img(IMGW, IMGH, FG_RGBA, u8);
 
-    fg::Chart chart(FG_2D);
+    fg::Chart chart(FG_CHART_2D);
     /* set x axis limits to maximum and minimum values of data
      * and y axis limits to range [0, number of pixels ideally]
      * but practically total number of pixels as y range will skew

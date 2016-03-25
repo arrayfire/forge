@@ -84,7 +84,7 @@ class scatter3_impl : public surface_impl {
 
    public:
        scatter3_impl(const uint pNumXPoints, const uint pNumYPoints,
-                     const fg::dtype pDataType, const fg::MarkerType pMarkerType=FG_NONE)
+                     const fg::dtype pDataType, const fg::MarkerType pMarkerType=FG_MARKER_NONE)
            : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType) {}
 };
 

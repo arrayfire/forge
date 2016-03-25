@@ -197,7 +197,7 @@ class Chart {
                       the values of \ref MarkerType.
          */
         FGAPI Plot plot(const uint pNumPoints, const dtype pDataType,
-                        const PlotType pPlotType=FG_LINE, const MarkerType pMarkerType=FG_NONE);
+                        const PlotType pPlotType=FG_PLOT_LINE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
            Create and add an Plot object to the current chart
@@ -211,7 +211,7 @@ class Chart {
            \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_SCATTER plot type
          */
         FGAPI Surface surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
-                              const PlotType pPlotType=FG_SURFACE, const MarkerType pMarkerType=FG_NONE);
+                              const PlotType pPlotType=FG_PLOT_SURFACE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
            Render the chart to given window
