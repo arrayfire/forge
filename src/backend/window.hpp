@@ -10,11 +10,11 @@
 #pragma once
 
 #include <backend.hpp>
-#include <window.hpp>
+#include <window_impl.hpp>
 
-#include <Chart.hpp>
-#include <Font.hpp>
-#include <Image.hpp>
+#include <chart.hpp>
+#include <font.hpp>
+#include <image.hpp>
 
 #include <memory>
 

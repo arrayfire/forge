@@ -10,7 +10,7 @@
 #include <fg/plot.h>
 
 #include <err_opengl.hpp>
-#include <plot.hpp>
+#include <plot_impl.hpp>
 
 #include <cmath>
 

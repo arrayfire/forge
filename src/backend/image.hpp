@@ -10,7 +10,7 @@
 #pragma once
 
 #include <backend.hpp>
-#include <image.hpp>
+#include <image_impl.hpp>
 
 #include <glm/glm.hpp>
 

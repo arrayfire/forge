@@ -11,10 +11,10 @@
 
 #include <fg/exception.h>
 
-#include <Window.hpp>
-#include <Font.hpp>
-#include <Image.hpp>
-#include <Chart.hpp>
+#include <window.hpp>
+#include <font.hpp>
+#include <image.hpp>
+#include <chart.hpp>
 #include <chart_renderables.hpp>
 
 fg_window getHandle(common::Window* pValue);

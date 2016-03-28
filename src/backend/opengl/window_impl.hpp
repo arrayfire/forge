@@ -17,10 +17,10 @@
 #include <sdl/window.hpp>
 #endif
 
-#include <colormap.hpp>
-#include <font.hpp>
-#include <image.hpp>
-#include <chart.hpp>
+#include <colormap_impl.hpp>
+#include <font_impl.hpp>
+#include <image_impl.hpp>
+#include <chart_impl.hpp>
 
 #include <memory>
 

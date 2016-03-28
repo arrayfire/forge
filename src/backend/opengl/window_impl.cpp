@@ -12,7 +12,7 @@
 
 #include <common.hpp>
 #include <err_opengl.hpp>
-#include <window.hpp>
+#include <window_impl.hpp>
 
 #include <algorithm>
 #include <memory>

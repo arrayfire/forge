@@ -11,7 +11,7 @@
 
 #include <handle.hpp>
 #include <err_common.hpp>
-#include <Window.hpp>
+#include <window.hpp>
 
 fg_err fg_create_window(fg_window *pWindow,
                         const int pWidth, const int pHeight,

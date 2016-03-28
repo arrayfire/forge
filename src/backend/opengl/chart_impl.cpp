@@ -11,17 +11,17 @@
 #include <fg/exception.h>
 #include <fg/window.h>
 
-#include <Font.hpp>
+#include <font.hpp>
 
 #include <common.hpp>
 #include <err_opengl.hpp>
-#include <font.hpp>
-#include <chart.hpp>
-#include <image.hpp>
-#include <histogram.hpp>
-#include <plot.hpp>
-#include <surface.hpp>
-#include <window.hpp>
+#include <font_impl.hpp>
+#include <chart_impl.hpp>
+#include <image_impl.hpp>
+#include <histogram_impl.hpp>
+#include <plot_impl.hpp>
+#include <surface_impl.hpp>
+#include <window_impl.hpp>
 #include <shader_headers/chart_vs.hpp>
 #include <shader_headers/chart_fs.hpp>
 #include <shader_headers/tick_fs.hpp>

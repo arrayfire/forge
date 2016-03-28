@@ -51,7 +51,7 @@
  */
 
 
-#include <font_atlas.hpp>
+#include <font_atlas_impl.hpp>
 #include <common.hpp>
 #include <err_opengl.hpp>
 

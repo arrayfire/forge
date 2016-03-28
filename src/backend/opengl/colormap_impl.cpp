@@ -8,7 +8,7 @@
 ********************************************************/
 
 #include <common.hpp>
-#include <colormap.hpp>
+#include <colormap_impl.hpp>
 #include <cmap.hpp>
 
 #define CREATE_UNIFORM_BUFFER(color_array, size)  \

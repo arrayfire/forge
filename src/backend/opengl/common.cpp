@@ -8,7 +8,7 @@
  ********************************************************/
 
 #include <common.hpp>
-#include <window.hpp>
+#include <window_impl.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 

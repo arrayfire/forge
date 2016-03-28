@@ -16,11 +16,11 @@
 #include <fg/window.h>
 
 #include <handle.hpp>
-#include <Chart.hpp>
+#include <chart.hpp>
 #include <chart_renderables.hpp>
-#include <Font.hpp>
-#include <Image.hpp>
-#include <Window.hpp>
+#include <font.hpp>
+#include <image.hpp>
+#include <window.hpp>
 
 namespace fg
 {
