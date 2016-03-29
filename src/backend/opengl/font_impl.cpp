@@ -403,7 +403,7 @@ void font_impl::loadSystemFont(const char* const pName)
        first possible match for given input font name parameter
     */
     if (matchedFontFiles.size()==0)
-        FT_THROW_ERROR("loadSystemFont failed to find the given font name", fg::FG_ERR_FREETYPE_ERROR);
+        FT_THROW_ERROR("loadSystemFont failed to find the given font name", FG_ERR_FREETYPE_ERROR);
 
     ttf_file_path = buf;
     ttf_file_path += "\\Fonts\\";
