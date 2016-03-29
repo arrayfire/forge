@@ -10,7 +10,7 @@
 #pragma once
 
 #include <common.hpp>
-#include <font_atlas.hpp>
+#include <font_atlas_impl.hpp>
 
 #include <map>
 #include <vector>

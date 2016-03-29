@@ -11,24 +11,24 @@
 
 #include <chart_common.hpp>
 #include <backend.hpp>
-#include <histogram.hpp>
-#include <plot.hpp>
-#include <surface.hpp>
+#include <histogram_impl.hpp>
+#include <plot_impl.hpp>
+#include <surface_impl.hpp>
 
 #include <memory>
 
 namespace common
 {
 
-class Histogram : public ChartRenderableBase<detail::hist_impl> {
+class Histogram : public ChartRenderableBase<detail::histogram_impl> {
     public:
         Histogram(uint pNBins, fg::dtype pDataType)
-            : ChartRenderableBase<detail::hist_impl>(
-                    std::make_shared<detail::hist_impl>(pNBins, pDataType)) {
+            : ChartRenderableBase<detail::histogram_impl>(
+                    std::make_shared<detail::histogram_impl>(pNBins, pDataType)) {
         }
 
         Histogram(const fg_histogram pOther)
-            : ChartRenderableBase<detail::hist_impl>(
+            : ChartRenderableBase<detail::histogram_impl>(
                     reinterpret_cast<Histogram*>(pOther)->impl()) {
         }
 };

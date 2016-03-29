@@ -12,7 +12,7 @@
 
 #include <common.hpp>
 #include <err_opengl.hpp>
-#include <histogram.hpp>
+#include <histogram_impl.hpp>
 #include <shader_headers/histogram_vs.hpp>
 #include <shader_headers/histogram_fs.hpp>
 
@@ -27,10 +27,10 @@ using namespace std;
 namespace opengl
 {
 
-void hist_impl::bindResources(const int pWindowId)
+void histogram_impl::bindResources(const int pWindowId)
 {
     if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
-        CheckGL("Begin hist_impl::bindResources");
+        CheckGL("Begin histogram_impl::bindResources");
         GLuint vao = 0;
         /* create a vertex array object
          * with appropriate bindings */
@@ -59,24 +59,24 @@ void hist_impl::bindResources(const int pWindowId)
         /* store the vertex array object corresponding to
          * the window instance in the map */
         mVAOMap[pWindowId] = vao;
-        CheckGL("End hist_impl::bindResources");
+        CheckGL("End histogram_impl::bindResources");
     }
 
     glBindVertexArray(mVAOMap[pWindowId]);
 }
 
-void hist_impl::unbindResources() const
+void histogram_impl::unbindResources() const
 {
     glBindVertexArray(0);
 }
 
-hist_impl::hist_impl(const uint pNBins, const fg::dtype pDataType)
+histogram_impl::histogram_impl(const uint pNBins, const fg::dtype pDataType)
  :  mDataType(pDataType), mGLType(dtype2gl(mDataType)), mNBins(pNBins),
     mProgram(0), mYMaxIndex(-1), mNBinsIndex(-1), mMatIndex(-1), mPointIndex(-1),
     mFreqIndex(-1), mColorIndex(-1), mAlphaIndex(-1), mPVCIndex(-1), mPVAIndex(-1),
     mBColorIndex(-1)
 {
-    CheckGL("Begin hist_impl::hist_impl");
+    CheckGL("Begin histogram_impl::histogram_impl");
     mIsPVCOn = false;
     mIsPVAOn = false;
 
@@ -115,16 +115,16 @@ hist_impl::hist_impl(const uint pNBins, const fg::dtype pDataType)
         case GL_SHORT          : HIST_CREATE_BUFFERS(short) ; break;
         case GL_UNSIGNED_SHORT : HIST_CREATE_BUFFERS(ushort); break;
         case GL_UNSIGNED_BYTE  : HIST_CREATE_BUFFERS(float) ; break;
-        default: fg::TypeError("hist_impl::hist_impl", __LINE__, 1, mDataType);
+        default: fg::TypeError("histogram_impl::histogram_impl", __LINE__, 1, mDataType);
     }
 #undef HIST_CREATE_BUFFERS
 
-    CheckGL("End hist_impl::hist_impl");
+    CheckGL("End histogram_impl::histogram_impl");
 }
 
-hist_impl::~hist_impl()
+histogram_impl::~histogram_impl()
 {
-    CheckGL("Begin hist_impl::~hist_impl");
+    CheckGL("Begin histogram_impl::~histogram_impl");
     for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
         GLuint vao = it->second;
         glDeleteVertexArrays(1, &vao);
@@ -133,14 +133,14 @@ hist_impl::~hist_impl()
     glDeleteBuffers(1, &mCBO);
     glDeleteBuffers(1, &mABO);
     glDeleteProgram(mProgram);
-    CheckGL("End hist_impl::~hist_impl");
+    CheckGL("End histogram_impl::~histogram_impl");
 }
 
-void hist_impl::render(const int pWindowId,
+void histogram_impl::render(const int pWindowId,
                        const int pX, const int pY, const int pVPW, const int pVPH,
                        const glm::mat4& pTransform)
 {
-    CheckGL("Begin hist_impl::render");
+    CheckGL("Begin histogram_impl::render");
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -159,15 +159,15 @@ void hist_impl::render(const int pWindowId,
     /* render a rectangle for each bin. Same
      * rectangle is scaled and translated accordingly
      * for each bin. OpenGL instanced rendering is used to do it.*/
-    hist_impl::bindResources(pWindowId);
+    histogram_impl::bindResources(pWindowId);
     glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, mNBins);
-    hist_impl::unbindResources();
+    histogram_impl::unbindResources();
 
     glUseProgram(0);
     glDisable(GL_SCISSOR_TEST);
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
-    CheckGL("End hist_impl::render");
+    CheckGL("End histogram_impl::render");
 }
 
 }

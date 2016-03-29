@@ -10,7 +10,7 @@
 #include <fg/font.h>
 
 #include <handle.hpp>
-#include <Font.hpp>
+#include <font.hpp>
 
 fg_err fg_create_font(fg_font* pFont)
 {

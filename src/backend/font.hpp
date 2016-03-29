@@ -10,7 +10,7 @@
 #pragma once
 
 #include <backend.hpp>
-#include <font.hpp>
+#include <font_impl.hpp>
 
 #include <memory>
 

@@ -17,7 +17,7 @@
 namespace opengl
 {
 
-class hist_impl : public AbstractRenderable {
+class histogram_impl : public AbstractRenderable {
     private:
         /* plot points characteristics */
         fg::dtype mDataType;
@@ -48,8 +48,8 @@ class hist_impl : public AbstractRenderable {
         void computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput);
 
     public:
-        hist_impl(const uint pNBins, const fg::dtype pDataType);
-        ~hist_impl();
+        histogram_impl(const uint pNBins, const fg::dtype pDataType);
+        ~histogram_impl();
 
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,

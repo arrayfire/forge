@@ -10,7 +10,7 @@
 #include <fg/font.h>
 
 #include <handle.hpp>
-#include <Font.hpp>
+#include <font.hpp>
 
 namespace fg
 {

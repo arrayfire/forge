@@ -10,7 +10,7 @@
 #include <fg/window.h>
 
 #include <handle.hpp>
-#include <Window.hpp>
+#include <window.hpp>
 
 namespace fg
 {

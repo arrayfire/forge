@@ -11,8 +11,8 @@
 #include <fg/window.h>
 
 #include <handle.hpp>
-#include <Image.hpp>
-#include <Window.hpp>
+#include <image.hpp>
+#include <window.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>

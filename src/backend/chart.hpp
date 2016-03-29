@@ -12,7 +12,7 @@
 #include <fg/defines.h>
 
 #include <backend.hpp>
-#include <chart.hpp>
+#include <chart_impl.hpp>
 
 #include <glm/glm.hpp>
 
