@@ -41,6 +41,7 @@
 #endif
 
 #include <GL/glew.h>
+#include <cstdlib>
 
 /**
   Requirment by GLEWmx

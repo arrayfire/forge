@@ -65,8 +65,8 @@ namespace opengl
 #define FT_THROW_ERROR(msg, err)                                            \
     do {                                                                    \
         std::ostringstream ss;                                              \
-        ss << "FT_Error (0x"<< std::hex << FT_Errors[bError].code <<") : "  \
-           << FT_Errors[bError].message << std::endl;                       \
+        ss << "FT_Error (0x"<< std::hex << FT_Errors[err].code <<") : "     \
+           << FT_Errors[err].message << std::endl;                          \
         throw fg::Error(ss.str().c_str(), __LINE__, msg, err);              \
     } while(0);
 

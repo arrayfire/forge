@@ -33,6 +33,7 @@
 #include <cmath>
 #include <mutex>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 typedef std::vector<std::string>::const_iterator StringIter;

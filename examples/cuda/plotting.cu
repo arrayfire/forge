@@ -8,7 +8,7 @@
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
-static const float    dx = 0.1;
+__device__ static const float    dx = 0.1;
 static const float    FRANGE_START = 0.f;
 static const float    FRANGE_END = 2 * 3.141592f;
 static const size_t   DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
