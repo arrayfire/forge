@@ -1,7 +1,6 @@
-SET(VER 0.9.6.3)
+SET(VER 0.9.7.4)
 SET(URL https://github.com/g-truc/glm/archive/${VER}.tar.gz)
-SET(MD5 bc288083697d25dfbd41a813929086f0)
-
+SET(MD5 475b0092c3baaf6ac899dc0dcd87f898)
 SET(thirdPartyDir "${CMAKE_BINARY_DIR}/third_party")
 SET(srcDir "${thirdPartyDir}/glm-${VER}")
 SET(archive ${srcDir}.tar.gz)
