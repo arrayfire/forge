@@ -12,7 +12,7 @@ A prototype of the OpenGL interop library that can be used with ArrayFire. The g
 
 ### Dependencies
 * [GLEW](http://glew.sourceforge.net/)
-* [GLFW](http://www.glfw.org/)
+* [GLFW](http://www.glfw.org/), optionally you can build with [SDL2](https://www.libsdl.org/) alternative too.
 * [freetype](http://www.freetype.org/)
 * On `Linux` and `OS X`, [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) is required.
 
