@@ -34,7 +34,7 @@ int main(void)
      * so that necessary OpenGL context is created for any
      * other fg::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Plot 3d Demo");
+    fg::Window wnd(DIMX, DIMY, "Three dimensional line plot demo");
     wnd.makeCurrent();
 
     fg::Chart chart(FG_CHART_3D);
@@ -68,12 +68,12 @@ int main(void)
 
 
 __global__
-void gen_curve(float t, float dx, float* out, const float ZMIN, const size_t ZSIZE)
+void generateCurve(float t, float dx, float* out, const float ZMIN, const size_t ZSIZE)
 {
     int offset = blockIdx.x * blockDim.x  + threadIdx.x;
 
     float z = ZMIN + offset*dx;
-    if(offset < ZSIZE){
+    if(offset < ZSIZE) {
         out[ 3 * offset     ] = cos(z*t+t)/z;
         out[ 3 * offset + 1 ] = sin(z*t+t)/z;
         out[ 3 * offset + 2 ] = z + 0.1*sin(t);
@@ -90,5 +90,5 @@ void kernel(float t, float dx, float* dev_out)
     static const dim3 threads(1024);
     dim3 blocks(divup(ZSIZE, 1024));
 
-    gen_curve<<< blocks, threads >>>(t, dx, dev_out, ZMIN, ZSIZE);
+    generateCurve<<< blocks, threads >>>(t, dx, dev_out, ZMIN, ZSIZE);
 }

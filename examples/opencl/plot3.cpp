@@ -33,7 +33,7 @@ static const unsigned ZSIZE = (ZMAX-ZMIN)/DX+1;
 using namespace std;
 
 static const std::string sincos_surf_kernel =
-"kernel void gen_curve(global float* out, const float t, const float dx, const float zmin, const unsigned SIZE)\n"
+"kernel void generateCurve(global float* out, const float t, const float dx, const float zmin, const unsigned SIZE)\n"
 "{\n"
 "    int offset = get_global_id(0);\n"
 "\n"
@@ -59,7 +59,7 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, float t)
     std::call_once(compileFlag,
         [queue]() {
         prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), sincos_surf_kernel, true);
-            kern = cl::Kernel(prog, "gen_curve");
+            kern = cl::Kernel(prog, "generateCurve");
         });
 
     NDRange global(ZSIZE);
@@ -80,7 +80,7 @@ int main(void)
          * so that necessary OpenGL context is created for any
          * other fg::* object to be created successfully
          */
-        fg::Window wnd(DIMX, DIMY, "Plot3d Demo");
+        fg::Window wnd(DIMX, DIMY, "Three dimensional line plot demo");
         wnd.makeCurrent();
 
         fg::Chart chart(FG_CHART_3D);

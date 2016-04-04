@@ -14,7 +14,7 @@
 #include <vector>
 #include <iostream>
 
-const unsigned DIMX = 800;
+const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
 static const float ZMIN = 0.1f;
@@ -25,10 +25,11 @@ const size_t ZSIZE = (ZMAX-ZMIN)/DX+1;
 
 using namespace std;
 
-void gen_curve(float t, float dx, std::vector<float> &vec )
+void generateCurve(float t, float dx, std::vector<float> &vec )
 {
     vec.clear();
-    for(float z=ZMIN; z < ZMAX; z+=dx){
+    for (int i=0; i<ZSIZE; ++i) {
+        float z = ZMIN + i*dx;
         vec.push_back(cos(z*t+t)/z);
         vec.push_back(sin(z*t+t)/z);
         vec.push_back(z+0.1*sin(t));
@@ -42,7 +43,7 @@ int main(void)
      * so that necessary OpenGL context is created for any
      * other fg::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Plot3d Demo");
+    fg::Window wnd(DIMX, DIMY, "Three dimensional line plot demo");
     wnd.makeCurrent();
 
     fg::Chart chart(FG_CHART_3D);
@@ -54,7 +55,7 @@ int main(void)
     //generate a surface
     std::vector<float> function;
     static float t=0;
-    gen_curve(t, DX, function);
+    generateCurve(t, DX, function);
     /* copy your data into the pixel buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
@@ -65,7 +66,7 @@ int main(void)
 
     do {
         t+=0.01;
-        gen_curve(t, DX, function);
+        generateCurve(t, DX, function);
         fg::copy(plot3.vertices(), plot3.verticesSize(), (const void*)function.data());
         wnd.draw(chart);
     } while(!wnd.close());
