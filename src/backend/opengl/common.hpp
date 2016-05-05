@@ -18,6 +18,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include <vector>
+#include <iterator>
 
 static const float BLACK[]   = {0.0f    , 0.0f    , 0.0f    , 1.0f};
 static const float GRAY[]    = {0.85f   , 0.85f   , 0.85f   , 1.0f};
