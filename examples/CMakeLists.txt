@@ -43,6 +43,11 @@ ELSE(TARGET forge)
     ADD_DEFINITIONS(-DGLEW_MX)
 IF(UNIX)
     ADD_DEFINITIONS(-Wall -std=c++11 -fvisibility=hidden)
+    # GCC 5.3 and above give errors for mempcy from <string.h>
+    # This is a (temporary) fix for that
+    IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.3.0")
+        ADD_DEFINITIONS(-D_FORCE_INLINES)
+    ENDIF()
 ENDIF()
 
 # OS Definitions
