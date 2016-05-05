@@ -1,12 +1,19 @@
 #
 # Make a version file that includes the Forge version and git revision
 #
+CMAKE_POLICY(PUSH)
+
+IF("${CMAKE_VERSION}" VERSION_GREATER "3.1" OR "${CMAKE_VERSION}" VERSION_EQUAL "3.1")
+    CMAKE_POLICY(SET CMP0054 OLD)
+ENDIF()
+
 SET(FG_VERSION_MAJOR "1")
 SET(FG_VERSION_MINOR "0")
 SET(FG_VERSION_PATCH "beta")
 
 SET(FG_VERSION "${FG_VERSION_MAJOR}.${FG_VERSION_MINOR}.${FG_VERSION_PATCH}")
 SET(FG_API_VERSION_CURRENT ${FG_VERSION_MAJOR}${FG_VERSION_MINOR})
+
 
 # From CMake 3.0.0 CMAKE_<LANG>_COMPILER_ID is AppleClang for OSX machines
 # that use clang for compilations
@@ -36,3 +43,5 @@ CONFIGURE_FILE(
     ${CMAKE_MODULE_PATH}/version.h.in
     ${CMAKE_SOURCE_DIR}/include/fg/version.h
 )
+
+CMAKE_POLICY(POP)

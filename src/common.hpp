@@ -14,6 +14,7 @@
 #include <fg/exception.h>
 #include <err_common.hpp>
 #include <vector>
+#include <iterator>
 
 static const float GRAY[]  = {0.0f   , 0.0f   , 0.0f   , 1.0f};
 static const float WHITE[] = {1.0f   , 1.0f   , 1.0f   , 1.0f};

@@ -39,6 +39,11 @@ ELSE(TARGET forge)
     ADD_DEFINITIONS(-DGLEW_MX)
 IF(UNIX)
     ADD_DEFINITIONS(-Wall -std=c++11 -fvisibility=hidden)
+    # GCC 5.3 and above give errors for mempcy from <string.h>
+    # This is a (temporary) fix for that
+    IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.3.0")
+        ADD_DEFINITIONS(-D_FORCE_INLINES)
+    ENDIF()
 ENDIF()
 
 # OS Definitions
@@ -89,11 +94,11 @@ IF(CUDA_FOUND)
         GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
 
         IF(TARGET forge)
-              BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge
-                            "${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}")
+            BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge
+                "${FREEIMAGE_LIBRARY};${CUDA_LIBRARIES}")
         ELSE(TARGET forge)
-              BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                            "${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}")
+            BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
+                "${FREEIMAGE_LIBRARY};${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};${CUDA_LIBRARIES}")
         ENDIF()
     ENDFOREACH()
 ELSE()

@@ -58,7 +58,6 @@ ELSE (WIN32)
             /sw/lib
             /opt/local/lib
             ${GLEW_ROOT_DIR}/lib
-            NO_DEFAULT_PATH
             DOC "The GLEWmx library")
         UNSET(PX)
         UNSET(SX)
@@ -75,7 +74,6 @@ ELSE (WIN32)
             /sw/lib
             /opt/local/lib
             ${GLEW_ROOT_DIR}/lib
-            NO_DEFAULT_PATH
             DOC "The GLEWmx library")
     ENDIF (USE_GLEWmx_STATIC)
 ENDIF (WIN32)
