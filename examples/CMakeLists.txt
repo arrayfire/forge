@@ -95,10 +95,10 @@ IF (BUILD_EXAMPLES_CUDA)
 
             IF(TARGET forge)
                 BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge
-                    "${FREEIMAGE_LIBRARY};${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}")
+                    "${FREEIMAGE_LIBRARY};${CUDA_LIBRARIES}")
             ELSE(TARGET forge)
                 BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                    "${FREEIMAGE_LIBRARY};${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};${CUDA_CUDA_LIBRARY};${CUDA_LIBRARIES}")
+                    "${FREEIMAGE_LIBRARY};${GLEWmx_LIBRARY};${OPENGL_gl_LIBRARY};${X11_LIBS};${CUDA_LIBRARIES}")
             ENDIF()
         ENDFOREACH()
     ELSE()
