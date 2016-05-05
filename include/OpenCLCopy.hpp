@@ -25,9 +25,9 @@ static void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& q
     cl_int res = queue.enqueueAcquireGLObjects(&shared_objects, NULL, &ev);
     ev.wait();
 
-    queue.enqueueCopyBuffer(in, pboMapBuffer, 0, 0, out.size(), NULL, NULL);
+    queue.enqueueCopyBuffer(in, pboMapBuffer, 0, 0, out.size(), NULL, &ev);
     res = queue.enqueueReleaseGLObjects(&shared_objects, NULL, &ev);
-    queue.finish();
+    ev.finish();
 }
 
 /*
@@ -52,9 +52,9 @@ void copy(Renderable& out, const cl::Buffer& in, const cl::CommandQueue& queue)
     cl_int res = queue.enqueueAcquireGLObjects(&shared_objects, NULL, &ev);
     ev.wait();
 
-    queue.enqueueCopyBuffer(in, vboMapBuffer, 0, 0, out.size(), NULL, NULL);
+    queue.enqueueCopyBuffer(in, vboMapBuffer, 0, 0, out.size(), NULL, ^&ev);
     res = queue.enqueueReleaseGLObjects(&shared_objects, NULL, &ev);
-    queue.finish();
+    ev.wait();
 }
 
 }
