@@ -20,14 +20,8 @@
 
 #include <FreeImage.h>
 
+using namespace gl;
 using namespace fg;
-
-static GLEWContext* current = nullptr;
-
-GLEWContext* glewGetContext()
-{
-    return current;
-}
 
 /* following function is thread safe */
 int getNextUniqueId()
@@ -90,7 +84,6 @@ void MakeContextCurrent(const window_impl* pWindow)
     CheckGL("Begin MakeContextCurrent");
     if (pWindow != NULL) {
         pWindow->get()->makeContextCurrent();
-        current = pWindow->glewContext();
     }
     CheckGL("End MakeContextCurrent");
 }
@@ -107,39 +100,9 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, nullptr, invisible);
     }
 
-    /* create glew context so that it will bind itself to windows */
-    if (auto observe = pWindow.lock()) {
-        mGLEWContext = observe->glewContext();
-    } else {
-        mGLEWContext = new GLEWContext();
-        if (mGLEWContext == NULL) {
-            std::cerr<<"Error: Could not create GLEW Context!\n";
-            throw fg::Error("window_impl constructor", __LINE__,
-                    "GLEW context creation failed", FG_ERR_GL_ERROR);
-        }
-    }
-
-    /* Set context (before glewInit()) */
     MakeContextCurrent(this);
 
-    /* GLEW Initialization - Must be done */
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-    if (err != GLEW_OK) {
-        char buffer[128];
-        sprintf(buffer, "GLEW init failed: Error: %s\n", glewGetErrorString(err));
-        throw fg::Error("window_impl constructor", __LINE__, buffer, FG_ERR_GL_ERROR);
-    }
-    err = glGetError();
-    if (err!=GL_NO_ERROR && err!=GL_INVALID_ENUM) {
-        /* ignore this error, as GLEW is known to
-         * have this issue with 3.2+ core profiles
-         * they are yet to fix this in GLEW
-         */
-        ForceCheckGL("GLEW initilization failed");
-        throw fg::Error("window_impl constructor", __LINE__,
-                "GLEW initilization failed", FG_ERR_GL_ERROR);
-    }
+    glbinding::Binding::initialize(false); // lazy function pointer evaluation
 
     mCxt = mWindow->getGLContextHandle();
     mDsp = mWindow->getDisplayHandle();
@@ -258,11 +221,6 @@ int window_impl::width() const
 int window_impl::height() const
 {
     return mWindow->mHeight;
-}
-
-GLEWContext* window_impl::glewContext() const
-{
-    return mGLEWContext;
 }
 
 const wtk::Widget* window_impl::get() const

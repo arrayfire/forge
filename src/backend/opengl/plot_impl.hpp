@@ -29,43 +29,43 @@ namespace opengl
 
 class plot_impl : public AbstractRenderable {
     protected:
-        GLuint    mDimension;
-        GLfloat   mMarkerSize;
+        gl::GLuint     mDimension;
+        gl::GLfloat    mMarkerSize;
         /* plot points characteristics */
-        GLuint    mNumPoints;
-        fg::dtype mDataType;
-        GLenum    mGLType;
+        gl::GLuint     mNumPoints;
+        fg::dtype      mDataType;
+        gl::GLenum     mGLType;
         fg::MarkerType mMarkerType;
         fg::PlotType   mPlotType;
-        bool      mIsPVROn;
+        bool           mIsPVROn;
         /* OpenGL Objects */
-        GLuint    mPlotProgram;
-        GLuint    mMarkerProgram;
-        GLuint    mRBO;
-        size_t    mRBOSize;
+        gl::GLuint    mPlotProgram;
+        gl::GLuint    mMarkerProgram;
+        gl::GLuint    mRBO;
+        size_t        mRBOSize;
         /* shader variable index locations */
-        GLuint    mPlotMatIndex;
-        GLuint    mPlotPVCOnIndex;
-        GLuint    mPlotPVAOnIndex;
-        GLuint    mPlotUColorIndex;
-        GLuint    mPlotRangeIndex;
-        GLuint    mPlotPointIndex;
-        GLuint    mPlotColorIndex;
-        GLuint    mPlotAlphaIndex;
+        gl::GLuint    mPlotMatIndex;
+        gl::GLuint    mPlotPVCOnIndex;
+        gl::GLuint    mPlotPVAOnIndex;
+        gl::GLuint    mPlotUColorIndex;
+        gl::GLuint    mPlotRangeIndex;
+        gl::GLuint    mPlotPointIndex;
+        gl::GLuint    mPlotColorIndex;
+        gl::GLuint    mPlotAlphaIndex;
 
-        GLuint    mMarkerPVCOnIndex;
-        GLuint    mMarkerPVAOnIndex;
-        GLuint    mMarkerPVROnIndex;
-        GLuint    mMarkerTypeIndex;
-        GLuint    mMarkerColIndex;
-        GLuint    mMarkerMatIndex;
-        GLuint    mMarkerPSizeIndex;
-        GLuint    mMarkerPointIndex;
-        GLuint    mMarkerColorIndex;
-        GLuint    mMarkerAlphaIndex;
-        GLuint    mMarkerRadiiIndex;
+        gl::GLuint    mMarkerPVCOnIndex;
+        gl::GLuint    mMarkerPVAOnIndex;
+        gl::GLuint    mMarkerPVROnIndex;
+        gl::GLuint    mMarkerTypeIndex;
+        gl::GLuint    mMarkerColIndex;
+        gl::GLuint    mMarkerMatIndex;
+        gl::GLuint    mMarkerPSizeIndex;
+        gl::GLuint    mMarkerPointIndex;
+        gl::GLuint    mMarkerColorIndex;
+        gl::GLuint    mMarkerAlphaIndex;
+        gl::GLuint    mMarkerRadiiIndex;
 
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, gl::GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
@@ -85,7 +85,7 @@ class plot_impl : public AbstractRenderable {
 
         void setMarkerSize(const float pMarkerSize);
 
-        GLuint markers();
+        uint markers();
         size_t markersSizes() const;
 
         virtual void render(const int pWindowId,

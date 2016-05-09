@@ -35,7 +35,9 @@
 #include <sstream>
 #include <algorithm>
 
+using namespace gl;
 using namespace std;
+
 typedef std::vector<std::string>::const_iterator StringIter;
 
 static const int CHART2D_FONT_SIZE = 16;
@@ -331,8 +333,7 @@ void chart2d_impl::generateChartData()
         glDeleteBuffers(1, &mDecorVBO);
 
     /* create vbo that has the border and axis data */
-    mDecorVBO = createBuffer<float>(GL_ARRAY_BUFFER, decorData.size(),
-                                    &(decorData.front()), GL_STATIC_DRAW);
+    mDecorVBO = createBuffer<float>(GL_ARRAY_BUFFER, decorData.size(), &(decorData.front()), GL_STATIC_DRAW);
     CheckGL("End chart2d_impl::generateChartData");
 }
 
@@ -763,7 +764,7 @@ void chart3d_impl::render(const int pWindowId,
     glDrawArrays(GL_POINTS, 6 + (2*mTickCount), mTickCount);
 
     glUseProgram(0);
-    glPointSize(1);
+    glPointSize((GLfloat)1);
     glDisable(GL_PROGRAM_POINT_SIZE);
 
     chart3d_impl::unbindResources();

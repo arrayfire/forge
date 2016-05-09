@@ -14,6 +14,7 @@
 
 #include <cmath>
 
+using namespace gl;
 using namespace std;
 
 // identity matrix

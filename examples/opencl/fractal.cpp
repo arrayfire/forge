@@ -8,6 +8,7 @@
  ********************************************************/
 
 #include <forge.h>
+#include <glbinding/gl/gl.h>
 #define __CL_ENABLE_EXCEPTIONS
 #include <cl.hpp>
 #include <OpenCLCopy.hpp>
@@ -20,6 +21,7 @@
 #include "cl_helpers.h"
 
 using namespace cl;
+using namespace gl;
 using namespace std;
 
 const unsigned DIMX = 512;

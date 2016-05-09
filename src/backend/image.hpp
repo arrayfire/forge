@@ -46,7 +46,7 @@ class Image {
 
         inline fg::dtype channelType() const { return mImage->channelType(); }
 
-        inline GLuint pbo() const { return mImage->pbo(); }
+        inline uint pbo() const { return mImage->pbo(); }
 
         inline size_t size() const { return mImage->size(); }
 

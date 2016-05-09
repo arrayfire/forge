@@ -47,22 +47,22 @@ class AbstractChart : public AbstractRenderable {
         std::string mYTitle;
         std::string mZTitle;
         /* OpenGL Objects */
-        GLuint mDecorVBO;
-        GLuint mBorderProgram;
-        GLuint mSpriteProgram;
+        gl::GLuint mDecorVBO;
+        gl::GLuint mBorderProgram;
+        gl::GLuint mSpriteProgram;
         /* shader uniform variable locations */
-        GLuint mBorderAttribPointIndex;
-        GLuint mBorderUniformColorIndex;
-        GLuint mBorderUniformMatIndex;
-        GLuint mSpriteUniformMatIndex;
-        GLuint mSpriteUniformTickcolorIndex;
-        GLuint mSpriteUniformTickaxisIndex;
+        gl::GLuint mBorderAttribPointIndex;
+        gl::GLuint mBorderUniformColorIndex;
+        gl::GLuint mBorderUniformMatIndex;
+        gl::GLuint mSpriteUniformMatIndex;
+        gl::GLuint mSpriteUniformTickcolorIndex;
+        gl::GLuint mSpriteUniformTickaxisIndex;
         /* Chart legend position*/
         float mLegendX;
         float mLegendY;
         /* VAO map to store a vertex array object
          * for each valid window context */
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, gl::GLuint> mVAOMap;
         /* list of renderables to be displayed on the chart*/
         std::vector< std::shared_ptr<AbstractRenderable> > mRenderables;
 

@@ -56,7 +56,7 @@ class Plot : public ChartRenderableBase<detail::plot_impl> {
             mShrdPtr->setMarkerSize(pMarkerSize);
         }
 
-        inline GLuint mbo() const {
+        inline uint mbo() const {
             return mShrdPtr->markers();
         }
 

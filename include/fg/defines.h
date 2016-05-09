@@ -40,13 +40,7 @@
 #define FG_API_VERSION FG_API_VERSION_CURRENT
 #endif
 
-#include <GL/glew.h>
 #include <cstdlib>
-
-/**
-  Requirment by GLEWmx
- */
-FGAPI GLEWContext* glewGetContext();
 
 typedef void* fg_window;
 typedef void* fg_font;

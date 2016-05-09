@@ -31,6 +31,8 @@
 namespace opengl
 {
 
+using namespace gl;
+
 class FontAtlas {
     private:
         size_t mWidth;

@@ -34,7 +34,7 @@ void copy(fg::Image& out, const cl::Buffer& in, const cl::CommandQueue& queue)
     std::vector<cl::Memory> shared_objects;
     shared_objects.push_back(pboMapBuffer);
 
-    glFinish();
+    gl::glFinish();
     cl_int res = queue.enqueueAcquireGLObjects(&shared_objects, NULL, &ev);
     ev.wait();
 
@@ -57,7 +57,7 @@ void copy(const int resourceId, const ::size_t resourceSize,
     std::vector<cl::Memory> shared_objects;
     shared_objects.push_back(vboMapBuffer);
 
-    glFinish();
+    gl::glFinish();
     cl_int res = queue.enqueueAcquireGLObjects(&shared_objects, NULL, &ev);
     ev.wait();
 

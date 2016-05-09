@@ -18,6 +18,7 @@
 #include <sstream>
 #include <cmath>
 
+using namespace gl;
 using namespace fg;
 using namespace std;
 

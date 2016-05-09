@@ -22,6 +22,8 @@ static const size_t MAX_FONT_SIZE = 36;
 namespace opengl
 {
 
+using namespace gl;
+
 typedef std::vector<Glyph*> GlyphList;
 
 class font_impl {

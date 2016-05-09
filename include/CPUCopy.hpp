@@ -22,15 +22,17 @@ extern "C" {
 
 #ifdef __cplusplus
 
+#include <glbinding/gl/gl.h>
+
 namespace fg
 {
 
 static
 void copy(fg::Image& out, const void * dataPtr)
 {
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, out.pbo());
-    glBufferSubData(GL_PIXEL_UNPACK_BUFFER, 0, out.size(), dataPtr);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+    gl::glBindBuffer(gl::GL_PIXEL_UNPACK_BUFFER, out.pbo());
+    gl::glBufferSubData(gl::GL_PIXEL_UNPACK_BUFFER, 0, out.size(), dataPtr);
+    gl::glBindBuffer(gl::GL_PIXEL_UNPACK_BUFFER, 0);
 }
 
 /*
@@ -40,9 +42,9 @@ void copy(fg::Image& out, const void * dataPtr)
 static
 void copy(const int resourceId, const size_t resourceSize, const void * dataPtr)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, resourceId);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, resourceSize, dataPtr);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    gl::glBindBuffer(gl::GL_ARRAY_BUFFER, resourceId);
+    gl::glBufferSubData(gl::GL_ARRAY_BUFFER, 0, resourceSize, dataPtr);
+    gl::glBindBuffer(gl::GL_ARRAY_BUFFER, 0);
 }
 
 }

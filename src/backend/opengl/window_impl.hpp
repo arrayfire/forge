@@ -33,7 +33,6 @@ class window_impl {
         long long     mDsp;
         int           mID;
         wtk::Widget*  mWindow;
-        GLEWContext*  mGLEWContext;
 
         std::shared_ptr<font_impl>     mFont;
         std::shared_ptr<colormap_impl> mCMap;
@@ -58,7 +57,6 @@ class window_impl {
         long long display() const;
         int width() const;
         int height() const;
-        GLEWContext* glewContext() const;
         const wtk::Widget* get() const;
         const std::shared_ptr<colormap_impl>& colorMapPtr() const;
 

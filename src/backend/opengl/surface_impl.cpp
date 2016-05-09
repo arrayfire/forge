@@ -20,6 +20,7 @@
 
 #include <cmath>
 
+using namespace gl;
 using namespace std;
 
 void generateGridIndices(unsigned short rows, unsigned short cols, unsigned short *indices)

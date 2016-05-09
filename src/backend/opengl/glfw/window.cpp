@@ -12,11 +12,19 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <iostream>
-
 using glm::rotate;
 using glm::translate;
 using glm::scale;
+
+using namespace gl;
+
+#ifndef OS_WIN
+#include <GL/glx.h>
+#else
+#include <windows.h>
+#endif
+
+#include <iostream>
 
 #define GLFW_THROW_ERROR(msg, err) \
     throw fg::Error("Window constructor", __LINE__, msg, err);
@@ -51,13 +59,13 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, static_cast<GLint>(GL_TRUE));
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     if (invisible)
-        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+        glfwWindowHint(GLFW_VISIBLE, static_cast<GLint>(GL_FALSE));
     else
-        glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+        glfwWindowHint(GLFW_VISIBLE, static_cast<GLint>(GL_TRUE));
 
     glfwWindowHint(GLFW_SAMPLES, 4);
     mWindow = glfwCreateWindow(pWidth, pHeight, pTitle, nullptr,
@@ -127,9 +135,9 @@ void Widget::makeContextCurrent() const
 long long Widget::getGLContextHandle()
 {
 #ifdef OS_WIN
-    return reinterpret_cast<long long>(glfwGetWGLContext(mWindow));
+    return reinterpret_cast<long long>(wglGetCurrentContext());
 #elif OS_LNX
-    return reinterpret_cast<long long>(glfwGetGLXContext(mWindow));
+    return reinterpret_cast<long long>(glXGetCurrentContext());
 #else
     return 0;
 #endif
@@ -138,9 +146,9 @@ long long Widget::getGLContextHandle()
 long long Widget::getDisplayHandle()
 {
 #ifdef OS_WIN
-    return reinterpret_cast<long long>(GetDC(glfwGetWin32Window(mWindow)));
+    return reinterpret_cast<long long>(wglGetCurrentDC());
 #elif OS_LNX
-    return reinterpret_cast<long long>(glfwGetX11Display());
+    return reinterpret_cast<long long>(glXGetCurrentDisplay());
 #else
     return 0;
 #endif

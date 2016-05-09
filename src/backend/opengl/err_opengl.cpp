@@ -15,6 +15,8 @@
 #include <sstream>
 #include <iostream>
 
+using namespace gl;
+
 void commonErrorCheck(const char *pMsg, const char* pFile, int pLine)
 {
     GLenum x = glGetError();

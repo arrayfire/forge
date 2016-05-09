@@ -22,36 +22,36 @@ namespace opengl
 class surface_impl : public AbstractRenderable {
     protected:
         /* plot points characteristics */
-        GLuint    mNumXPoints;
-        GLuint    mNumYPoints;
-        GLenum    mDataType;
-        bool      mIsPVCOn;
-        bool      mIsPVAOn;
+        gl::GLuint    mNumXPoints;
+        gl::GLuint    mNumYPoints;
+        gl::GLenum    mDataType;
+        bool          mIsPVCOn;
+        bool          mIsPVAOn;
         fg::MarkerType mMarkerType;
         /* OpenGL Objects */
-        GLuint    mIBO;
-        size_t    mIBOSize;
-        GLuint    mMarkerProgram;
-        GLuint    mSurfProgram;
+        gl::GLuint    mIBO;
+        size_t        mIBOSize;
+        gl::GLuint    mMarkerProgram;
+        gl::GLuint    mSurfProgram;
         /* shared variable index locations */
-        GLuint    mMarkerMatIndex;
-        GLuint    mMarkerPointIndex;
-        GLuint    mMarkerColorIndex;
-        GLuint    mMarkerAlphaIndex;
-        GLuint    mMarkerPVCIndex;
-        GLuint    mMarkerPVAIndex;
-        GLuint    mMarkerTypeIndex;
-        GLuint    mMarkerColIndex;
+        gl::GLuint    mMarkerMatIndex;
+        gl::GLuint    mMarkerPointIndex;
+        gl::GLuint    mMarkerColorIndex;
+        gl::GLuint    mMarkerAlphaIndex;
+        gl::GLuint    mMarkerPVCIndex;
+        gl::GLuint    mMarkerPVAIndex;
+        gl::GLuint    mMarkerTypeIndex;
+        gl::GLuint    mMarkerColIndex;
 
-        GLuint    mSurfMatIndex;
-        GLuint    mSurfRangeIndex;
-        GLuint    mSurfPointIndex;
-        GLuint    mSurfColorIndex;
-        GLuint    mSurfAlphaIndex;
-        GLuint    mSurfPVCIndex;
-        GLuint    mSurfPVAIndex;
+        gl::GLuint    mSurfMatIndex;
+        gl::GLuint    mSurfRangeIndex;
+        gl::GLuint    mSurfPointIndex;
+        gl::GLuint    mSurfColorIndex;
+        gl::GLuint    mSurfAlphaIndex;
+        gl::GLuint    mSurfPVCIndex;
+        gl::GLuint    mSurfPVAIndex;
 
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, gl::GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */

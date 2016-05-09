@@ -66,7 +66,7 @@ fg::dtype Image::channelType() const
     return getImage(mValue)->channelType();
 }
 
-GLuint Image::pbo() const
+uint Image::pbo() const
 {
     return getImage(mValue)->pbo();
 }

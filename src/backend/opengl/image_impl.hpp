@@ -21,27 +21,27 @@ class image_impl : public AbstractRenderable {
         uint   mWidth;
         uint   mHeight;
         fg::ChannelFormat mFormat;
-        GLenum mGLformat;
-        GLenum mGLiformat;
+        gl::GLenum mGLformat;
+        gl::GLenum mGLiformat;
         fg::dtype mDataType;
-        GLenum mGLType;
+        gl::GLenum mGLType;
         float  mAlpha;
         bool   mKeepARatio;
         size_t mFormatSize;
         /* internal resources for interop */
         size_t mPBOsize;
-        GLuint mPBO;
-        GLuint mTex;
-        GLuint mProgram;
-        GLuint mMatIndex;
-        GLuint mTexIndex;
-        GLuint mNumCIndex;
-        GLuint mAlphaIndex;
-        GLuint mCMapLenIndex;
-        GLuint mCMapIndex;
+        gl::GLuint mPBO;
+        gl::GLuint mTex;
+        gl::GLuint mProgram;
+        gl::GLuint mMatIndex;
+        gl::GLuint mTexIndex;
+        gl::GLuint mNumCIndex;
+        gl::GLuint mAlphaIndex;
+        gl::GLuint mCMapLenIndex;
+        gl::GLuint mCMapIndex;
         /* color map details */
-        GLuint mColorMapUBO;
-        GLuint mUBOSize;
+        gl::GLuint mColorMapUBO;
+        gl::GLuint mUBOSize;
 
         /* helper functions to bind and unbind
          * resources for render quad primitive */
@@ -53,7 +53,7 @@ class image_impl : public AbstractRenderable {
                    const fg::ChannelFormat pFormat, const fg::dtype pDataType);
         ~image_impl();
 
-        void setColorMapUBOParams(const GLuint pUBO, const GLuint pSize);
+        void setColorMapUBOParams(const gl::GLuint pUBO, const gl::GLuint pSize);
         void setAlpha(const float pAlpha);
         void keepAspectRatio(const bool pKeep=true);
 

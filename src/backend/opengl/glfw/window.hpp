@@ -19,17 +19,16 @@
     #define GLFW_EXPOSE_NATIVE_GLX
 #endif
 
+#include <common.hpp>
 #include <GLFW/glfw3.h>
-#ifndef OS_MAC
-#include <GLFW/glfw3native.h>
-#endif
-
 #include <glm/glm.hpp>
 
 /* the short form wtk stands for
  * Windowing Tool Kit */
 namespace wtk
 {
+
+using namespace gl;
 
 class Widget {
     private:

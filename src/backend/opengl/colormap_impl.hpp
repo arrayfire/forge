@@ -15,6 +15,8 @@
 namespace opengl
 {
 
+using namespace gl;
+
 class colormap_impl {
     private:
         /*

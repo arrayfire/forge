@@ -50,6 +50,8 @@ static const struct {
 #define START_CHAR 32
 #define END_CHAR   126
 
+using namespace gl;
+
 /* freetype library types */
 
 namespace opengl

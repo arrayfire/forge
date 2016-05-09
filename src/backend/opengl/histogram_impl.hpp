@@ -21,25 +21,25 @@ class histogram_impl : public AbstractRenderable {
     private:
         /* plot points characteristics */
         fg::dtype mDataType;
-        GLenum    mGLType;
-        GLuint    mNBins;
+        gl::GLenum    mGLType;
+        gl::GLuint    mNBins;
         /* OpenGL Objects */
-        GLuint    mProgram;
+        gl::GLuint    mProgram;
         /* internal shader attributes for mProgram
         * shader program to render histogram bars for each
         * bin*/
-        GLuint    mYMaxIndex;
-        GLuint    mNBinsIndex;
-        GLuint    mMatIndex;
-        GLuint    mPointIndex;
-        GLuint    mFreqIndex;
-        GLuint    mColorIndex;
-        GLuint    mAlphaIndex;
-        GLuint    mPVCIndex;
-        GLuint    mPVAIndex;
-        GLuint    mBColorIndex;
+        gl::GLuint    mYMaxIndex;
+        gl::GLuint    mNBinsIndex;
+        gl::GLuint    mMatIndex;
+        gl::GLuint    mPointIndex;
+        gl::GLuint    mFreqIndex;
+        gl::GLuint    mColorIndex;
+        gl::GLuint    mAlphaIndex;
+        gl::GLuint    mPVCIndex;
+        gl::GLuint    mPVAIndex;
+        gl::GLuint    mBColorIndex;
 
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, gl::GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
