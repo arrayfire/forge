@@ -191,7 +191,7 @@ TARGET_LINK_LIBRARIES(forge
     PRIVATE ${X11_LIBS}
     )
 
-ADD_DEPENDENCIES(forge ${glsl_shader_targets})
+ADD_DEPENDENCIES(forge ${glsl_shader_targets} glbinding)
 
 INSTALL(TARGETS forge
         EXPORT FORGE
