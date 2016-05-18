@@ -8,9 +8,10 @@
  ********************************************************/
 
 #include <forge.h>
+#include <CUDACopy.hpp>
+
 #include <cuda_runtime.h>
 #include <cuComplex.h>
-#include <CUDACopy.hpp>
 #include <cstdio>
 #include <iostream>
 

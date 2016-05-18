@@ -1,12 +1,22 @@
+/*******************************************************
+* Copyright (c) 2015-2019, ArrayFire
+* All rights reserved.
+*
+* This file is distributed under 3-clause BSD license.
+* The complete license agreement can be obtained at:
+* http://arrayfire.com/licenses/BSD-3-Clause
+********************************************************/
+
 #include <forge.h>
+#include <CUDACopy.hpp>
+
 #include <cuda_runtime.h>
 #include <cuComplex.h>
-#include <CUDACopy.hpp>
 #include <cstdio>
 
 const unsigned DIMX = 512;
 const unsigned DIMY = 512;
-const size_t   SIZE = DIMX*DIMY*4;
+const size_t   TOT_SIZE = DIMX*DIMY*4;
 
 void kernel(unsigned char* dev_out);
 
@@ -32,7 +42,7 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, SIZE));
+	FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, TOT_SIZE));
     kernel(dev_out);
     fg::copy(img, dev_out);
 

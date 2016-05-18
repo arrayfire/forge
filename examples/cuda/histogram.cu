@@ -8,11 +8,12 @@
  ********************************************************/
 
 #include <forge.h>
+#include <CUDACopy.hpp>
+
 #include <cuda_runtime.h>
 #include <curand.h>
 #include <curand_kernel.h>
 #include <cuComplex.h>
-#include <CUDACopy.hpp>
 #include <cstdio>
 
 const unsigned IMGW = 256;

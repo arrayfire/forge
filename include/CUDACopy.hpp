@@ -10,6 +10,11 @@
 #ifndef __CUDA_DATA_COPY_H__
 #define __CUDA_DATA_COPY_H__
 
+#include <glbinding/gl/gl.h>
+using namespace gl;
+#ifdef OS_WIN
+#include <Windows.h>
+#endif
 #include <cuda_gl_interop.h>
 
 
