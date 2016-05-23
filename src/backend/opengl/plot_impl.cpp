@@ -9,6 +9,11 @@
 
 #include <err_opengl.hpp>
 #include <plot_impl.hpp>
+#include <shader_headers/marker2d_vs.hpp>
+#include <shader_headers/marker_fs.hpp>
+#include <shader_headers/histogram_fs.hpp>
+#include <shader_headers/plot3_vs.hpp>
+#include <shader_headers/plot3_fs.hpp>
 
 #include <cmath>
 

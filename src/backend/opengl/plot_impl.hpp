@@ -11,11 +11,6 @@
 
 #include <fg/defines.h>
 #include <common.hpp>
-#include <shader_headers/marker2d_vs.hpp>
-#include <shader_headers/marker_fs.hpp>
-#include <shader_headers/histogram_fs.hpp>
-#include <shader_headers/plot3_vs.hpp>
-#include <shader_headers/plot3_fs.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
