@@ -13,6 +13,7 @@
 #include <fg/image.h>
 #include <fg/plot.h>
 #include <fg/surface.h>
+#include <fg/vector_field.h>
 #include <fg/histogram.h>
 
 
@@ -52,6 +53,9 @@ FGAPI fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
 FGAPI fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
                                      const uint pXPoints, const uint pYPoints, const fg_dtype pType,
                                      const fg_plot_type pPlotType, const fg_marker_type pMarkerType);
+
+FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
+                                          const uint pNPoints, const fg_dtype pType);
 
 FGAPI fg_err fg_render_chart(const fg_window pWindow,
                              const fg_chart pChart,
@@ -212,6 +216,15 @@ class Chart {
          */
         FGAPI Surface surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
                               const PlotType pPlotType=FG_PLOT_SURFACE, const MarkerType pMarkerType=FG_MARKER_NONE);
+
+        /**
+           Create and add an Vector Field object to the current chart
+
+           \param[in] pNumPoints is number of data points to display
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
+                      the integral data type of vector field data
+         */
+        FGAPI VectorField vectorField(const uint pNumPoints, const dtype pDataType);
 
         /**
            Render the chart to given window

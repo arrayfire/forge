@@ -14,6 +14,7 @@
 #include <histogram_impl.hpp>
 #include <plot_impl.hpp>
 #include <surface_impl.hpp>
+#include <vector_field_impl.hpp>
 
 #include <memory>
 
@@ -85,6 +86,32 @@ class Surface : public ChartRenderableBase<detail::surface_impl> {
         Surface(const fg_surface pOther)
             : ChartRenderableBase<detail::surface_impl>(
                     reinterpret_cast<Surface*>(pOther)->impl()) {
+        }
+};
+
+class VectorField : public ChartRenderableBase<detail::vector_field_impl> {
+    public:
+        VectorField(const uint pNumPoints,
+                    const fg::dtype pDataType,
+                    const fg::ChartType pChartType) {
+            if (pChartType == FG_CHART_2D) {
+                mShrdPtr = std::make_shared< detail::vector_field2d_impl >(pNumPoints, pDataType);
+            } else {
+                mShrdPtr = std::make_shared< detail::vector_field_impl >(pNumPoints, pDataType);
+            }
+        }
+
+        VectorField(const fg_vector_field pOther)
+            : ChartRenderableBase<detail::vector_field_impl>(
+                    reinterpret_cast<VectorField*>(pOther)->impl()) {
+        }
+
+        inline GLuint dbo() const {
+            return mShrdPtr->directions();
+        }
+
+        inline size_t dboSize() const {
+            return mShrdPtr->directionsSize();
         }
 };
 

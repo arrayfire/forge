@@ -163,6 +163,22 @@ fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
     return FG_ERR_NONE;
 }
 
+fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
+                                    const uint pNPoints, const fg_dtype pType)
+{
+    try {
+        common::Chart* chrt = getChart(pHandle);
+        common::VectorField* field = new common::VectorField(pNPoints,
+                                                             (fg::dtype)pType,
+                                                             chrt->chartType());
+        chrt->addRenderable(field->impl());
+        *pField = getHandle(field);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
 fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
                        const int pX, const int pY, const int pWidth, const int pHeight,
                        const float* pTransform)

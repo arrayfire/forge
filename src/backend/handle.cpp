@@ -44,6 +44,11 @@ fg_surface getHandle(common::Surface* pValue)
     return reinterpret_cast<fg_surface>(pValue);
 }
 
+fg_vector_field getHandle(common::VectorField* pValue)
+{
+    return reinterpret_cast<fg_vector_field>(pValue);
+}
+
 common::Window* getWindow(const fg_window& pValue)
 {
     return reinterpret_cast<common::Window*>(pValue);
@@ -77,4 +82,9 @@ common::Plot* getPlot(const fg_plot& pValue)
 common::Surface* getSurface(const fg_surface& pValue)
 {
     return reinterpret_cast<common::Surface*>(pValue);
+}
+
+common::VectorField* getVectorField(const fg_vector_field& pValue)
+{
+    return reinterpret_cast<common::VectorField*>(pValue);
 }

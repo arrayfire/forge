@@ -99,13 +99,6 @@ IF (BUILD_EXAMPLES_CUDA)
 
         INCLUDE_DIRECTORIES(${CUDA_INCLUDE_DIRS})
 
-        # GCC 6.0 and above default to g++14, enabling c++11 features by default
-        # Enabling c++11 with nvcc 7.5 + gcc 6.x doesn't seem to work
-        # Only solution for now is to force use c++03 for gcc 6.x
-        IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "6.0.0")
-          SET(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -Xcompiler -std=c++98")
-        ENDIF()
-
         FILE(GLOB CUDA_EXAMPLE_SRC_FILES "cuda/*.cu")
         FOREACH(FILE ${CUDA_EXAMPLE_SRC_FILES})
             GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
