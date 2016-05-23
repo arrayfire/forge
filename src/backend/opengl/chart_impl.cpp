@@ -7,10 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/chart.h>
-#include <fg/exception.h>
-#include <fg/window.h>
-
 #include <font.hpp>
 
 #include <common.hpp>

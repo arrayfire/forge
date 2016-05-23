@@ -7,9 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/image.h>
-#include <fg/window.h>
-
 #include <common.hpp>
 #include <err_opengl.hpp>
 #include <image_impl.hpp>

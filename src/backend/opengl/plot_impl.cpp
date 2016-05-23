@@ -7,8 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/plot.h>
-
 #include <err_opengl.hpp>
 #include <plot_impl.hpp>
 

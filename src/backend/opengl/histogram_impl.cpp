@@ -7,9 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/histogram.h>
-#include <fg/window.h>
-
 #include <common.hpp>
 #include <err_opengl.hpp>
 #include <histogram_impl.hpp>
