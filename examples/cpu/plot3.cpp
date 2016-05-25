@@ -28,7 +28,7 @@ using namespace std;
 void generateCurve(float t, float dx, std::vector<float> &vec )
 {
     vec.clear();
-    for (int i=0; i<ZSIZE; ++i) {
+    for (int i=0; i < (int)ZSIZE; ++i) {
         float z = ZMIN + i*dx;
         vec.push_back(cos(z*t+t)/z);
         vec.push_back(sin(z*t+t)/z);
