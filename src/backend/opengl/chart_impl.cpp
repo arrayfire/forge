@@ -397,8 +397,6 @@ void chart2d_impl::render(const int pWindowId,
                                                 glm::vec3(scale_x, scale_y, 1)),
                                      glm::vec3(offset_x, offset_y, 0));
 
-    trans = pTransform*trans;
-
     /* Draw grid */
     chart2d_impl::bindResources(pWindowId);
     glUseProgram(mBorderProgram);
@@ -411,7 +409,7 @@ void chart2d_impl::render(const int pWindowId,
     /* render all renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, trans);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, trans*pTransform);
     }
 
     chart2d_impl::bindResources(pWindowId);
