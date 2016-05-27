@@ -35,8 +35,8 @@ mat4 rotationMatrix(vec3 axis, float angle)
 
 void main()
 {
-    vec4 pos = transform * gl_in[0].gl_Position;
-    vec2 dir = gs_in[0].dir;
+    vec4 pos = gl_in[0].gl_Position;
+    vec2 dir = normalize(gs_in[0].dir);
 
     mat4 rmat  = rotationMatrix(vec3(0,0,1), atan(dir.y, dir.x));
     mat4 trans = transform * rmat;
