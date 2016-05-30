@@ -2,6 +2,8 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 25) out;
 
+uniform mat4 transform;
+
 in VS_OUT {
     vec4 color;
     vec3 dir;
@@ -35,8 +37,8 @@ void main()
 {
     vec4 pos    = gl_in[0].gl_Position;
     vec3 dir    = normalize(gs_in[0].dir);
-    float theta = acos(dir.z, 1.0);
-    float phi   = atan(dir.y, dir.x);
+    float theta = acos(dir.z/ 1.0);
+    float phi   = atan(dir.y/ dir.x);
     mat4 zrot   = rotationMatrix(vec3(0,0,1), phi);
     vec4 sndAxs = zrot * vec4(0,1,0,1);
     mat4 arot   = rotationMatrix(sndAxs.xyz, theta);
