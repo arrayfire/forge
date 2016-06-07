@@ -87,12 +87,10 @@ namespace opengl
 
 void MakeContextCurrent(const window_impl* pWindow)
 {
-    CheckGL("Begin MakeContextCurrent");
     if (pWindow != NULL) {
         pWindow->get()->makeContextCurrent();
         current = pWindow->glewContext();
     }
-    CheckGL("End MakeContextCurrent");
 }
 
 window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
@@ -101,26 +99,22 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 {
     if (auto observe = pWindow.lock()) {
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, observe->get(), invisible);
+		/* create glew context so that it will bind itself to windows */
+		mGLEWContext = observe->glewContext();
     } else {
         /* when windows are not sharing any context, just create
          * a dummy wtk::Widget object and pass it on */
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, nullptr, invisible);
-    }
-
-    /* create glew context so that it will bind itself to windows */
-    if (auto observe = pWindow.lock()) {
-        mGLEWContext = observe->glewContext();
-    } else {
-        mGLEWContext = new GLEWContext();
-        if (mGLEWContext == NULL) {
-            std::cerr<<"Error: Could not create GLEW Context!\n";
-            throw fg::Error("window_impl constructor", __LINE__,
-                    "GLEW context creation failed", FG_ERR_GL_ERROR);
-        }
-    }
-
-    /* Set context (before glewInit()) */
-    MakeContextCurrent(this);
+		/* create glew context so that it will bind itself to windows */
+		mGLEWContext = new GLEWContext();
+		if (mGLEWContext == NULL) {
+			std::cerr << "Error: Could not create GLEW Context!\n";
+			throw fg::Error("window_impl constructor", __LINE__,
+				"GLEW context creation failed", FG_ERR_GL_ERROR);
+		}
+	}
+	/* Set context (before glewInit()) */
+	MakeContextCurrent(this);
 
     /* GLEW Initialization - Must be done */
     glewExperimental = GL_TRUE;
