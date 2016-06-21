@@ -29,10 +29,9 @@ int main(void)
      */
     fg::Window wnd(DIMX, DIMY, "Plotting Demo");
     wnd.makeCurrent();
-    wnd.grid(1,2);
 
     fg::Chart chart(FG_CHART_2D);
-    chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.1f, 1.1f);
+    chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.0f, 1.0f);
 
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
@@ -91,22 +90,25 @@ int main(void)
 __global__
 void simple_sinf(float* out, const size_t DATA_SIZE, int fnCode)
 {
-    int x = blockIdx.x * blockDim.x  + threadIdx.x;
+    int i = blockIdx.x * blockDim.x  + threadIdx.x;
 
-    if (x<DATA_SIZE) {
-        out[ 2 * x ] = x * dx;
+    if (i<DATA_SIZE) {
+        float x  = FRANGE_START + i*dx;
+        int idx  = 2*i;
+        out[idx] = x;
+
         switch(fnCode) {
             case 0:
-                out[ 2 * x + 1 ] = sinf(x*dx);
+                out[ idx + 1 ] = sinf(x);
                 break;
             case 1:
-                out[ 2 * x + 1 ] = cosf(x*dx);
+                out[ idx + 1 ] = cosf(x);
                 break;
             case 2:
-                out[ 2 * x + 1 ] = tanf(x*dx);
+                out[ idx + 1 ] = tanf(x);
                 break;
             case 3:
-                out[ 2 * x + 1 ] = log10f(x*dx);
+                out[ idx + 1 ] = log10f(x);
                 break;
         }
     }
