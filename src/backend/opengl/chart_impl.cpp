@@ -386,10 +386,12 @@ void chart2d_impl::render(const int pWindowId,
 
     float lgap     = mLeftMargin + mTickSize/2;
     float bgap     = mBottomMargin + mTickSize/2;
-    float w        = pVPW - (lgap + mRightMargin + mTickSize/2);
-    float h        = pVPH - (bgap + mTopMargin + mTickSize/2);
+
     float offset_x = (lgap-mRightMargin) / pVPW;
     float offset_y = (bgap-mTopMargin) / pVPH;
+
+    float w        = pVPW - (lgap + mRightMargin);
+    float h        = pVPH - (bgap + mTopMargin);
     float scale_x  = w / pVPW;
     float scale_y  = h / pVPH;
 
@@ -409,7 +411,7 @@ void chart2d_impl::render(const int pWindowId,
     chart2d_impl::unbindResources();
 
     glEnable(GL_SCISSOR_TEST);
-    glScissor(pX+mLeftMargin, pY+mBottomMargin, w, h);
+    glScissor(pX+mLeftMargin, pY+mBottomMargin+mTickSize/2, w, h);
     /* render all renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
