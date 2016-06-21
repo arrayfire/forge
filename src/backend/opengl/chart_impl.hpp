@@ -67,6 +67,15 @@ class AbstractChart : public AbstractRenderable {
         std::vector< std::shared_ptr<AbstractRenderable> > mRenderables;
 
         /* rendering helper functions */
+        inline float getTickStepSize(float minval, float maxval) const {
+            return (maxval-minval)/(mTickCount-1);
+        }
+
+        int getNumTicksC2E() const {
+            /* Get # of ticks from center(0,0) to edge along axis */
+            return (mTickCount-1)/2;
+        }
+
         void renderTickLabels(const int pWindowId, const uint pW, const uint pH,
                               const std::vector<std::string> &pTexts,
                               const glm::mat4 &pTransformation, const int pCoordsOffset,
@@ -123,7 +132,7 @@ class chart2d_impl : public AbstractChart {
 
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,
-                    const glm::mat4& pTransform);
+                    const glm::mat4 &pView);
 };
 
 class chart3d_impl : public AbstractChart {
@@ -144,7 +153,7 @@ class chart3d_impl : public AbstractChart {
 
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,
-                    const glm::mat4& pTransform);
+                    const glm::mat4 &pView);
 };
 
 }

@@ -52,7 +52,7 @@ int main(void)
     wnd.makeCurrent();
 
     fg::Chart chart(FG_CHART_2D);
-    chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.1f, 1.1f);
+    chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.0f, 1.0f);
 
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types

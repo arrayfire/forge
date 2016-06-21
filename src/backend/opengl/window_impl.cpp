@@ -160,7 +160,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     mUBOSize = mCMap->defaultLen();
     glEnable(GL_MULTISAMPLE);
 
-    std::vector<glm::mat4>& mats = mWindow->mMVPs;
+    std::vector<glm::mat4>& mats = mWindow->mViewMatrices;
     mats.resize(mWindow->mRows*mWindow->mCols);
     std::fill(mats.begin(), mats.end(), glm::mat4(1));
 
@@ -297,14 +297,14 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     mWindow->resetCloseFlag();
     glViewport(0, 0, mWindow->mWidth, mWindow->mHeight);
 
-    const glm::mat4& mvp = mWindow->mMVPs[0];
+    const glm::mat4& viewMatrix = mWindow->mViewMatrices[0];
     // clear color and depth buffers
     glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, 0, 0, mWindow->mWidth, mWindow->mHeight, mvp);
+    pRenderable->render(mID, 0, 0, mWindow->mWidth, mWindow->mHeight, viewMatrix);
 
     mWindow->swapBuffers();
     mWindow->pollEvents();
@@ -322,8 +322,8 @@ void window_impl::grid(int pRows, int pCols)
     mWindow->mCellWidth  = mWindow->mWidth  / mWindow->mCols;
     mWindow->mCellHeight = mWindow->mHeight / mWindow->mRows;
 
-    // resize mvp array for views to appropriate size
-    std::vector<glm::mat4>& mats = mWindow->mMVPs;
+    // resize viewMatrix array for views to appropriate size
+    std::vector<glm::mat4>& mats = mWindow->mViewMatrices;
     mats.resize(mWindow->mRows*mWindow->mCols);
     std::fill(mats.begin(), mats.end(), glm::mat4(1));
 }
@@ -342,7 +342,7 @@ void window_impl::draw(int pColId, int pRowId,
     int x_off = c * mWindow->mCellWidth;
     int y_off = (mWindow->mRows - 1 - r) * mWindow->mCellHeight;
 
-    const glm::mat4& mvp = mWindow->mMVPs[r+c*mWindow->mRows];
+    const glm::mat4& viewMatrix = mWindow->mViewMatrices[r+c*mWindow->mRows];
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
@@ -359,7 +359,7 @@ void window_impl::draw(int pColId, int pRowId,
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight, mvp);
+    pRenderable->render(mID, x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight, viewMatrix);
 
     glDisable(GL_SCISSOR_TEST);
     glViewport(x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight);

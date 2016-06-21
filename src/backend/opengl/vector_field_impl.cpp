@@ -63,39 +63,35 @@ void vector_field_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-void vector_field_impl::computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput,
-                                            const int pX, const int pY,
-                                            const int pVPW, const int pVPH)
+glm::mat4 vector_field_impl::computeModelMatrix()
 {
-    float range_x = mRange[1] - mRange[0];
-    float range_y = mRange[3] - mRange[2];
-    float range_z = mRange[5] - mRange[4];
-    // set scale to zero if input is constant array
-    // otherwise compute scale factor by standard equation
-    float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(range_x);
-    float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(range_y);
-    float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 0.0f : 2/(range_z);
+    float xRange = mRange[1] - mRange[0];
+    float yRange = mRange[3] - mRange[2];
+    float zRange = mRange[5] - mRange[4];
 
-    float coor_offset_x = (-mRange[0] * graph_scale_x);
-    float coor_offset_y = (-mRange[2] * graph_scale_y);
-    float coor_offset_z = (-mRange[4] * graph_scale_z);
+    float xDataScale = std::abs(xRange) < 1.0e-3 ? 0.0f : 4/(xRange);
+    float yDataScale = std::abs(yRange) < 1.0e-3 ? 0.0f : 4/(yRange);
+    float zDataScale = std::abs(zRange) < 1.0e-3 ? 0.0f : 4/(zRange);
 
-    glm::mat4 rMat = glm::rotate(I, -glm::radians(90.f), glm::vec3(1,0,0));
-    glm::mat4 tMat = glm::translate(I,
-            glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z));
-    glm::mat4 sMat = glm::scale(I,
-            glm::vec3(1.0f * graph_scale_x, -1.0f * graph_scale_y, 1.0f * graph_scale_z));
+    float xDataOffset = (-mRange[0] * xDataScale);
+    float yDataOffset = (-mRange[2] * yDataScale);
+    float zDataOffset = (-mRange[4] * zDataScale);
 
-    glm::mat4 model= rMat * tMat * sMat;
+    glm::vec3 scaleVector(xDataScale, -1.0f * yDataScale, zDataScale);
 
-    pOut = pInput * model;
-    glScissor(pX, pY, pVPW, pVPH);
+    glm::vec3 shiftVector(-(mRange[0]+mRange[1])/2.0f,
+                          -(mRange[2]+mRange[3])/2.0f,
+                          -(mRange[4]+mRange[5])/2.0f);
+    shiftVector += glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
+
+    return glm::translate(glm::scale(IDENTITY, scaleVector), shiftVector);
 }
 
 vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDataType, const int pD)
     : mDimension(pD), mNumPoints(pNumPoints), mDataType(pDataType), mGLType(dtype2gl(mDataType)),
-    mFieldProgram(-1), mDBO(-1), mDBOSize(0), mFieldMatIndex(-1), mFieldPointIndex(-1),
+    mFieldProgram(-1), mDBO(-1), mDBOSize(0), mFieldPointIndex(-1),
     mFieldColorIndex(-1), mFieldAlphaIndex(-1), mFieldDirectionIndex(-1),
+    mFieldPVMatIndex(-1), mFieldModelMatIndex(-1), mFieldAScaleMatIndex(-1),
     mFieldPVCOnIndex(-1), mFieldPVAOnIndex(-1), mFieldUColorIndex(-1)
 {
     CheckGL("Begin vector_field_impl::vector_field_impl");
@@ -121,11 +117,14 @@ vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDat
     mCBOSize = 3*mNumPoints;
     mABOSize = mNumPoints;
 
-    mFieldMatIndex    = glGetUniformLocation(mFieldProgram, "transform");
     mFieldPointIndex  = glGetAttribLocation (mFieldProgram, "point");
     mFieldColorIndex  = glGetAttribLocation (mFieldProgram, "color");
     mFieldAlphaIndex  = glGetAttribLocation (mFieldProgram, "alpha");
     mFieldDirectionIndex  = glGetAttribLocation (mFieldProgram, "direction");
+
+    mFieldPVMatIndex    = glGetUniformLocation(mFieldProgram, "viewMat");
+    mFieldModelMatIndex    = glGetUniformLocation(mFieldProgram, "modelMat");
+    mFieldAScaleMatIndex    = glGetUniformLocation(mFieldProgram, "arrowScaleMat");
 
     mFieldPVCOnIndex  = glGetUniformLocation(mFieldProgram, "isPVCOn");
     mFieldPVAOnIndex  = glGetUniformLocation(mFieldProgram, "isPVAOn");
@@ -181,79 +180,53 @@ size_t vector_field_impl::directionsSize() const
 
 void vector_field_impl::render(const int pWindowId,
                        const int pX, const int pY, const int pVPW, const int pVPH,
-                       const glm::mat4& pTransform)
+                       const glm::mat4& pView)
 {
-    CheckGL("Begin vector_field_impl::render");
-    glEnable(GL_SCISSOR_TEST);
-    glDepthMask(GL_FALSE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    static const glm::mat4 ArrowScaleMat = glm::scale(glm::mat4(1), glm::vec3(0.1,0.1,0.1));
 
-    glm::mat4 mvp(1.0);
-    this->computeTransformMat(mvp, pTransform, pX, pY, pVPW, pVPH);
+    CheckGL("Begin vector_field_impl::render");
+    if (mIsPVAOn) {
+        glDepthMask(GL_FALSE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    glm::mat4 model = this->computeModelMatrix();
 
     glUseProgram(mFieldProgram);
 
-    glUniformMatrix4fv(mFieldMatIndex, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniformMatrix4fv(mFieldPVMatIndex, 1, GL_FALSE, glm::value_ptr(pView));
+    glUniformMatrix4fv(mFieldModelMatIndex, 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(mFieldAScaleMatIndex, 1, GL_FALSE, glm::value_ptr(ArrowScaleMat));
     glUniform1i(mFieldPVCOnIndex, mIsPVCOn);
     glUniform1i(mFieldPVAOnIndex, mIsPVAOn);
     glUniform4fv(mFieldUColorIndex, 1, mColor);
 
-    //FIXME remove debug polygon mode setting
     vector_field_impl::bindResources(pWindowId);
     glDrawArrays(GL_POINTS, 0, mNumPoints);
     vector_field_impl::unbindResources();
 
     glUseProgram(0);
 
-    glDisable(GL_BLEND);
-    glDepthMask(GL_TRUE);
-    glDisable(GL_SCISSOR_TEST);
+    if (mIsPVAOn) {
+        glDisable(GL_BLEND);
+        glDepthMask(GL_TRUE);
+    }
     CheckGL("End vector_field_impl::render");
 }
 
-void vector_field2d_impl::computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput,
-                                      const int pX, const int pY,
-                                      const int pVPW, const int pVPH)
+glm::mat4 vector_field2d_impl::computeModelMatrix()
 {
-    float range_x = mRange[1] - mRange[0];
-    float range_y = mRange[3] - mRange[2];
-    // set scale to zero if input is constant array
-    // otherwise compute scale factor by standard equation
-    float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(range_x);
-    float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(range_y);
+    float xRange = mRange[1] - mRange[0];
+    float yRange = mRange[3] - mRange[2];
 
-    float coor_offset_x = (-mRange[0] * graph_scale_x);
-    float coor_offset_y = (-mRange[2] * graph_scale_y);
+    float xDataScale = std::abs(xRange) < 1.0e-3 ? 1.0f : 4/(xRange);
+    float yDataScale = std::abs(yRange) < 1.0e-3 ? 1.0f : 4/(yRange);
 
-    //FIXME: Using hard constants for now, find a way to get chart values
-    const float lMargin = 68;
-    const float rMargin = 8;
-    const float tMargin = 8;
-    const float bMargin = 44;
-    const float tickSize = 10;
+    glm::vec3 shiftVector(-(mRange[0]+mRange[1])/2.0f, -(mRange[2]+mRange[3])/2.0f, 0.0f);
+    glm::vec3 scaleVector(xDataScale, yDataScale, 1);
 
-    float viewWidth    = pVPW - (lMargin + rMargin + tickSize/2);
-    float viewHeight   = pVPH - (bMargin + tMargin + tickSize/2);
-    float view_scale_x = viewWidth/pVPW;
-    float view_scale_y = viewHeight/pVPH;
-
-    coor_offset_x *= view_scale_x;
-    coor_offset_y *= view_scale_y;
-
-    float view_offset_x = (2.0f * (lMargin + tickSize/2 )/ pVPW ) ;
-    float view_offset_y = (2.0f * (bMargin + tickSize )/ pVPH ) ;
-
-    glm::mat4 tMat = glm::translate(I,
-            glm::vec3(-1 + view_offset_x + coor_offset_x  , -1 + view_offset_y + coor_offset_y, 0));
-    pOut = glm::scale(tMat,
-            glm::vec3(graph_scale_x * view_scale_x , graph_scale_y * view_scale_y ,1));
-
-    pOut = pInput * pOut;
-
-    glScissor(pX + lMargin + tickSize/2, pY+bMargin + tickSize/2,
-              pVPW - lMargin - rMargin - tickSize/2,
-              pVPH - bMargin - tMargin - tickSize/2);
+    return glm::translate(glm::scale(IDENTITY, scaleVector), shiftVector);
 }
 
 }

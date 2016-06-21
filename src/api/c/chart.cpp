@@ -180,13 +180,12 @@ fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
 }
 
 fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
-                       const int pX, const int pY, const int pWidth, const int pHeight,
-                       const float* pTransform)
+                       const int pX, const int pY, const int pWidth, const int pHeight)
 {
     try {
         getChart(pChart)->render(getWindow(pWindow)->getID(),
                                  pX, pY, pWidth, pHeight,
-                                 glm::make_mat4(pTransform));
+                                 IDENTITY);
     }
     CATCHALL
 

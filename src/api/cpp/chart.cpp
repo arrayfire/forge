@@ -144,12 +144,11 @@ VectorField Chart::vectorField(const uint pNumPoints, const dtype pDataType)
 }
 
 void Chart::render(const Window& pWindow,
-                   const int pX, const int pY, const int pVPW, const int pVPH,
-                   const float* pTransform) const
+                   const int pX, const int pY, const int pVPW, const int pVPH) const
 {
     getChart(mValue)->render(getWindow(pWindow.get())->getID(),
                              pX, pY, pVPW, pVPH,
-                             glm::make_mat4(pTransform));
+                             IDENTITY);
 }
 
 fg_chart Chart::get() const

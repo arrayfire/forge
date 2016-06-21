@@ -24,6 +24,7 @@ static const float BLACK[]   = {0.0f    , 0.0f    , 0.0f    , 1.0f};
 static const float GRAY[]    = {0.85f   , 0.85f   , 0.85f   , 1.0f};
 static const float WHITE[]   = {1.0f    , 1.0f    , 1.0f    , 1.0f};
 static const float AF_BLUE[] = {0.0588f , 0.1137f , 0.2745f , 1.0f};
+static const glm::mat4 IDENTITY(1.0f);
 
 /* clamp the float to [0-1] range
  *
@@ -237,7 +238,7 @@ class AbstractRenderable {
          */
         virtual void render(const int pWindowId,
                             const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4 &pTransform) = 0;
+                            const glm::mat4 &pView) = 0;
 };
 
 }

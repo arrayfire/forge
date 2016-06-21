@@ -2,7 +2,8 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 25) out;
 
-uniform mat4 transform;
+uniform mat4 arrowScaleMat;
+uniform mat4 viewMat;
 
 in VS_OUT {
     vec4 color;
@@ -37,28 +38,30 @@ void main()
 {
     vec4 pos    = gl_in[0].gl_Position;
     vec3 dir    = normalize(gs_in[0].dir);
+
     float theta = acos(dir.z/ 1.0);
     float phi   = atan(dir.y/ dir.x);
+
     mat4 zrot   = rotationMatrix(vec3(0,0,1), phi);
     vec4 sndAxs = zrot * vec4(0,1,0,1);
     mat4 arot   = rotationMatrix(sndAxs.xyz, theta);
-    mat4 trans  = transform * arot * zrot;
+    mat4 trans  = arrowScaleMat * arot * zrot;
 
-    vec4 origin = pos + trans * vec4(0,0,0,1);
-    vec4 ltop   = pos + trans * vec4(-0.333, 0.333, 0.333, 1.0);
-    vec4 lbot   = pos + trans * vec4(-0.333,-0.333, 0.333, 1.0);
-    vec4 rtop   = pos + trans * vec4(-0.333,-0.333,-0.333, 1.0);
-    vec4 rbot   = pos + trans * vec4(-0.333, 0.333,-0.333, 1.0);
+    vec4 origin = viewMat * (pos + trans * vec4(0,0,0,1));
+    vec4 ltop   = viewMat * (pos + trans * vec4(-0.333, 0.333, 0.333, 1.0));
+    vec4 lbot   = viewMat * (pos + trans * vec4(-0.333,-0.333, 0.333, 1.0));
+    vec4 rtop   = viewMat * (pos + trans * vec4(-0.333,-0.333,-0.333, 1.0));
+    vec4 rbot   = viewMat * (pos + trans * vec4(-0.333, 0.333,-0.333, 1.0));
 
-    vec4 iltop  = pos + trans * vec4(-0.333, 0.167, 0.167, 1.0);
-    vec4 ilbot  = pos + trans * vec4(-0.333,-0.167, 0.167, 1.0);
-    vec4 irtop  = pos + trans * vec4(-0.333,-0.167,-0.167, 1.0);
-    vec4 irbot  = pos + trans * vec4(-0.333, 0.167,-0.167, 1.0);
+    vec4 iltop  = viewMat * (pos + trans * vec4(-0.333, 0.167, 0.167, 1.0));
+    vec4 ilbot  = viewMat * (pos + trans * vec4(-0.333,-0.167, 0.167, 1.0));
+    vec4 irtop  = viewMat * (pos + trans * vec4(-0.333,-0.167,-0.167, 1.0));
+    vec4 irbot  = viewMat * (pos + trans * vec4(-0.333, 0.167,-0.167, 1.0));
 
-    vec4 iltop2 = pos + trans * vec4(-1.000, 0.167, 0.167, 1.0);
-    vec4 ilbot2 = pos + trans * vec4(-1.000,-0.167, 0.167, 1.0);
-    vec4 irtop2 = pos + trans * vec4(-1.000,-0.167,-0.167, 1.0);
-    vec4 irbot2 = pos + trans * vec4(-1.000, 0.167,-0.167, 1.0);
+    vec4 iltop2 = viewMat * (pos + trans * vec4(-1.000, 0.167, 0.167, 1.0));
+    vec4 ilbot2 = viewMat * (pos + trans * vec4(-1.000,-0.167, 0.167, 1.0));
+    vec4 irtop2 = viewMat * (pos + trans * vec4(-1.000,-0.167,-0.167, 1.0));
+    vec4 irbot2 = viewMat * (pos + trans * vec4(-1.000, 0.167,-0.167, 1.0));
 
     pervcol = gs_in[0].color;
 

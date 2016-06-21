@@ -59,8 +59,7 @@ FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHan
 
 FGAPI fg_err fg_render_chart(const fg_window pWindow,
                              const fg_chart pChart,
-                             const int pX, const int pY, const int pWidth, const int pHeight,
-                             const float* pTransform);
+                             const int pX, const int pY, const int pWidth, const int pHeight);
 
 #ifdef __cplusplus
 }
@@ -234,14 +233,9 @@ class Chart {
            \param[in] pY is y coordinate of origin of viewport in window coordinates
            \param[in] pVPW is the width of the viewport
            \param[in] pVPH is the height of the viewport
-           \param[in] pTransform is an array of floats. This array is expected to contain
-                      at least 16 elements
-
-           Note: pTransform array is assumed to be of expected length.
          */
         FGAPI void render(const Window& pWindow,
-                          const int pX, const int pY, const int pVPW, const int pVPH,
-                          const float* pTransform) const;
+                          const int pX, const int pY, const int pVPW, const int pVPH) const;
 
         /**
            Get the handle to internal implementation of Chart

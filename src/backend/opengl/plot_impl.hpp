@@ -67,9 +67,8 @@ class plot_impl : public AbstractRenderable {
         void bindResources(const int pWindowId);
         void unbindResources() const;
 
-        virtual void computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput,
-                                         const int pX, const int pY,
-                                         const int pVPW, const int pVPH);
+        virtual glm::mat4 computeTransformMat(const glm::mat4 pView);
+
         virtual void bindDimSpecificUniforms(); // has to be called only after shaders are bound
 
     public:
@@ -85,14 +84,13 @@ class plot_impl : public AbstractRenderable {
 
         virtual void render(const int pWindowId,
                             const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4& pTransform);
+                            const glm::mat4 &pView);
 };
 
 class plot2d_impl : public plot_impl {
     protected:
-        void computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput,
-                                 const int pX, const int pY,
-                                 const int pVPW, const int pVPH) override;
+        glm::mat4 computeTransformMat(const glm::mat4 pView) override;
+
         void bindDimSpecificUniforms() override; // has to be called only after shaders are bound
 
     public:

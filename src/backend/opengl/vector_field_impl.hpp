@@ -35,11 +35,14 @@ class vector_field_impl : public AbstractRenderable {
         size_t    mDBOSize;
         /* shader variable index locations */
         /* vertex shader */
-        GLuint    mFieldMatIndex;
         GLuint    mFieldPointIndex;
         GLuint    mFieldColorIndex;
         GLuint    mFieldAlphaIndex;
         GLuint    mFieldDirectionIndex;
+        /* geometry shader */
+        GLuint    mFieldPVMatIndex;
+        GLuint    mFieldModelMatIndex;
+        GLuint    mFieldAScaleMatIndex;
         /* fragment shader */
         GLuint    mFieldPVCOnIndex;
         GLuint    mFieldPVAOnIndex;
@@ -52,9 +55,7 @@ class vector_field_impl : public AbstractRenderable {
         void bindResources(const int pWindowId);
         void unbindResources() const;
 
-        virtual void computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput,
-                                         const int pX, const int pY,
-                                         const int pVPW, const int pVPH);
+        virtual glm::mat4 computeModelMatrix();
 
     public:
         vector_field_impl(const uint pNumPoints, const fg::dtype pDataType,
@@ -66,14 +67,12 @@ class vector_field_impl : public AbstractRenderable {
 
         virtual void render(const int pWindowId,
                             const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4& pTransform);
+                            const glm::mat4 &pView);
 };
 
 class vector_field2d_impl : public vector_field_impl {
     protected:
-        void computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput,
-                                 const int pX, const int pY,
-                                 const int pVPW, const int pVPH) override;
+        glm::mat4 computeModelMatrix() override;
     public:
         vector_field2d_impl(const uint pNumPoints, const fg::dtype pDataType)
             : vector_field_impl(pNumPoints, pDataType, 2) {}
