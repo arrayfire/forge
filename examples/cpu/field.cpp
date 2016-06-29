@@ -21,6 +21,7 @@ const float MINIMUM = 1.0f;
 const float MAXIMUM = 20.f;
 const float STEP    = 2.0f;
 const float NELEMS  = (MAXIMUM-MINIMUM+1)/STEP;
+const unsigned DPOINTS[] = {5, 5, 5, 15, 15, 5, 15, 15};
 
 using namespace std;
 
@@ -54,16 +55,22 @@ int main(void)
     chart.setAxesLimits(MINIMUM-1.0f, MAXIMUM, MINIMUM-1.0f, MAXIMUM);
     chart.setAxesTitles("x-axis", "y-axis");
 
+    fg::Plot divPoints = chart.plot(4, fg::u32, FG_PLOT_SCATTER, FG_MARKER_CIRCLE);
+    divPoints.setColor(0.9f, 0.9f, 0.0f, 1.f);
+    divPoints.setLegend("Convergence Points");
+    divPoints.setMarkerSize(24);
+
     fg::VectorField field = chart.vectorField(NELEMS*NELEMS, fg::f32);
     field.setColor(0.f, 0.6f, 0.3f, 1.f);
 
     std::vector<float> points;
-    std::vector<float> colors;
     std::vector<float> dirs;
     generatePoints(points, dirs);
 
     fg::copy(field.vertices(), field.verticesSize(), (const void*)points.data());
     fg::copy(field.directions(), field.directionsSize(), (const void*)dirs.data());
+
+    fg::copy(divPoints.vertices(), divPoints.verticesSize(), (const void*)DPOINTS);
 
     do {
         wnd.draw(chart);

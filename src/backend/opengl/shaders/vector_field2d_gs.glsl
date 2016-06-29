@@ -2,6 +2,8 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 9) out;
 
+const float PiBy2 = 1.57079632679;
+
 uniform mat4 arrowScaleMat;
 uniform mat4 viewMat;
 
@@ -27,7 +29,7 @@ void main()
 {
     vec2 dir  = normalize(gs_in[0].dir);
 
-    mat4 arrowModelMat = arrowScaleMat * zrotate(atan(dir.y, dir.x));
+    mat4 arrowModelMat = arrowScaleMat * zrotate(PiBy2 - atan(dir.y, dir.x));
 
     vec4 pos  = gl_in[0].gl_Position;
 
