@@ -1,6 +1,6 @@
 #version 330
 layout(points) in;
-layout(triangle_strip, max_vertices = 25) out;
+layout(triangle_strip, max_vertices = 32) out;
 
 uniform mat4 arrowScaleMat;
 uniform mat4 viewMat;
@@ -34,6 +34,15 @@ mat4 rotationMatrix(vec3 axis, float angle)
                 0.0, 0.0, 0.0, 1.0);
 }
 
+void emitQuad(vec4 a, vec4 b, vec4 c, vec4 d)
+{
+    gl_Position = a; EmitVertex();
+    gl_Position = b; EmitVertex();
+    gl_Position = c; EmitVertex();
+    gl_Position = d; EmitVertex();
+    EndPrimitive();
+}
+
 void main()
 {
     vec4 pos    = gl_in[0].gl_Position;
@@ -47,77 +56,41 @@ void main()
     mat4 arot   = rotationMatrix(sndAxs.xyz, theta);
     mat4 trans  = arrowScaleMat * arot * zrot;
 
-    vec4 origin = viewMat * (pos + trans * vec4(0,0,0,1));
-    vec4 ltop   = viewMat * (pos + trans * vec4(-0.333, 0.333, 0.333, 1.0));
-    vec4 lbot   = viewMat * (pos + trans * vec4(-0.333,-0.333, 0.333, 1.0));
-    vec4 rtop   = viewMat * (pos + trans * vec4(-0.333,-0.333,-0.333, 1.0));
-    vec4 rbot   = viewMat * (pos + trans * vec4(-0.333, 0.333,-0.333, 1.0));
+    vec4 t  = viewMat * (pos + trans*vec4( 0.000,  0.300,  0.000, 1.000));
 
-    vec4 iltop  = viewMat * (pos + trans * vec4(-0.333, 0.167, 0.167, 1.0));
-    vec4 ilbot  = viewMat * (pos + trans * vec4(-0.333,-0.167, 0.167, 1.0));
-    vec4 irtop  = viewMat * (pos + trans * vec4(-0.333,-0.167,-0.167, 1.0));
-    vec4 irbot  = viewMat * (pos + trans * vec4(-0.333, 0.167,-0.167, 1.0));
+    vec4 a  = viewMat * (pos + trans*vec4(-0.167, -1.000, -0.167, 1.000));
+    vec4 b  = viewMat * (pos + trans*vec4( 0.167, -1.000, -0.167, 1.000));
+    vec4 c  = viewMat * (pos + trans*vec4(-0.167, -1.000,  0.167, 1.000));
+    vec4 d  = viewMat * (pos + trans*vec4( 0.167, -1.000,  0.167, 1.000));
 
-    vec4 iltop2 = viewMat * (pos + trans * vec4(-1.000, 0.167, 0.167, 1.0));
-    vec4 ilbot2 = viewMat * (pos + trans * vec4(-1.000,-0.167, 0.167, 1.0));
-    vec4 irtop2 = viewMat * (pos + trans * vec4(-1.000,-0.167,-0.167, 1.0));
-    vec4 irbot2 = viewMat * (pos + trans * vec4(-1.000, 0.167,-0.167, 1.0));
+    vec4 i0 = viewMat * (pos + trans*vec4(-0.167, -0.333, -0.167, 1.000));
+    vec4 i1 = viewMat * (pos + trans*vec4( 0.167, -0.333, -0.167, 1.000));
+    vec4 i2 = viewMat * (pos + trans*vec4(-0.167, -0.333,  0.167, 1.000));
+    vec4 i3 = viewMat * (pos + trans*vec4( 0.167, -0.333,  0.167, 1.000));
+
+    vec4 e  = viewMat * (pos + trans*vec4(-0.333, -0.333, -0.333, 1.000));
+    vec4 f  = viewMat * (pos + trans*vec4( 0.333, -0.333, -0.333, 1.000));
+    vec4 g  = viewMat * (pos + trans*vec4(-0.333, -0.333,  0.333, 1.000));
+    vec4 h  = viewMat * (pos + trans*vec4( 0.333, -0.333,  0.333, 1.000));
 
     pervcol = gs_in[0].color;
 
-    // Roof top
-    gl_Position = ltop;
-    EmitVertex();
-    gl_Position = origin;
-    EmitVertex();
-    gl_Position = lbot;
-    EmitVertex();
-    gl_Position = rbot;
-    EmitVertex();
-    gl_Position = origin;
-    EmitVertex();
-    gl_Position = rtop;
-    EmitVertex();
-    gl_Position = ltop;
-    EmitVertex();
-    // over the edge areas of roof
-    gl_Position = iltop;
-    EmitVertex();
-    gl_Position = lbot;
-    EmitVertex();
-    gl_Position = ilbot;
-    EmitVertex();
-    gl_Position = rbot;
-    EmitVertex();
-    gl_Position = irbot;
-    EmitVertex();
-    gl_Position = rtop;
-    EmitVertex();
-    gl_Position = irtop;
-    EmitVertex();
-    gl_Position = iltop;
-    EmitVertex();
-    // Pillar
-    gl_Position = iltop2;
-    EmitVertex();
-    gl_Position = ilbot;
-    EmitVertex();
-    gl_Position = ilbot2;
-    EmitVertex();
-    gl_Position = irbot;
-    EmitVertex();
-    gl_Position = irbot2;
-    EmitVertex();
-    gl_Position = irtop;
-    EmitVertex();
-    gl_Position = irtop2;
-    EmitVertex();
-    gl_Position = iltop2;
-    EmitVertex();
-    // Pillar base
-    gl_Position = irbot2;
-    EmitVertex();
-    gl_Position = ilbot2;
-    EmitVertex();
+    emitQuad(a, b, c, d);
+    emitQuad(a, i0, b, i1);
+    emitQuad(b, i1, d, i3);
+    emitQuad(c, d, i2, i3);
+    emitQuad(a, c, i0, i2);
+    emitQuad(e, f, g, h);
+
+    gl_Position = g; EmitVertex();
+    gl_Position = h; EmitVertex();
+    gl_Position = t; EmitVertex();
+    gl_Position = f; EmitVertex();
+    gl_Position = e; EmitVertex();
+    EndPrimitive();
+
+    gl_Position = t; EmitVertex();
+    gl_Position = e; EmitVertex();
+    gl_Position = g; EmitVertex();
     EndPrimitive();
 }

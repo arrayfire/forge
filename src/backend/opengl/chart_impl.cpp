@@ -718,7 +718,7 @@ void chart3d_impl::render(const int pWindowId,
     static const glm::mat4 VIEW = glm::lookAt(glm::vec3(-1.f,0.5f, 1.f),
                                               glm::vec3( 1.f,-1.f,-1.f),
                                               glm::vec3( 0.f, 1.f, 0.f));
-    static const glm::mat4 PROJECTION = glm::ortho(-1.75f, 1.75f, -1.75f, 1.75f, -0.001f, 100.f);
+    static const glm::mat4 PROJECTION = glm::ortho(-1.75f, 1.75f, -1.75f, 1.75f, -0.001f, 1000.f);
     static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
                                    glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
     static const glm::mat4 PV = PROJECTION * VIEW;

@@ -97,11 +97,7 @@ class VectorField : public ChartRenderableBase<detail::vector_field_impl> {
             if (pChartType == FG_CHART_2D) {
                 mShrdPtr = std::make_shared< detail::vector_field2d_impl >(pNumPoints, pDataType);
             } else {
-                throw fg::Error(__PRETTY_FUNCTION__, __LINE__,
-                                "3d fields not yet supported",
-                                FG_ERR_NOT_SUPPORTED);
-                // FIXME Uncomment it once 3d fields are working properly
-                //mShrdPtr = std::make_shared< detail::vector_field_impl >(pNumPoints, pDataType);
+                mShrdPtr = std::make_shared< detail::vector_field_impl >(pNumPoints, pDataType);
             }
         }
 

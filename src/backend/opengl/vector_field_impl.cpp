@@ -202,9 +202,13 @@ void vector_field_impl::render(const int pWindowId,
     glUniform1i(mFieldPVAOnIndex, mIsPVAOn);
     glUniform4fv(mFieldUColorIndex, 1, mColor);
 
+    if (mDimension==3)
+        glEnable(GL_CULL_FACE);
     vector_field_impl::bindResources(pWindowId);
     glDrawArrays(GL_POINTS, 0, mNumPoints);
     vector_field_impl::unbindResources();
+    if (mDimension==3)
+        glDisable(GL_CULL_FACE);
 
     glUseProgram(0);
 
