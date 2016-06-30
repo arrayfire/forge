@@ -19,7 +19,7 @@ const unsigned DIMY = 480;
 const float PI = 3.14159265359;
 const float MINIMUM = 1.0f;
 const float MAXIMUM = 20.f;
-const float STEP    = 2.0f;
+const float STEP    = 4.0f;
 const int NELEMS    = (MAXIMUM-MINIMUM+1)/STEP;
 
 using namespace std;
@@ -75,9 +75,9 @@ void generatePoints(std::vector<float> &points, std::vector<float> &dirs)
                 points.push_back(x);
                 points.push_back(y);
                 points.push_back(z);
-                dirs.push_back(10.0f-x);
-                dirs.push_back(10.0f-y);
-                dirs.push_back(10.0f-z);
+                dirs.push_back(x-10.0f);
+                dirs.push_back(y-10.0f);
+                dirs.push_back(z-10.0f);
             }
         }
     }

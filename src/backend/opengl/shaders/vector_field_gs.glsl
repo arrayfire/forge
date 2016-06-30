@@ -2,6 +2,8 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 32) out;
 
+const float PiBy2 = 1.57079632679;
+
 uniform mat4 arrowScaleMat;
 uniform mat4 viewMat;
 
@@ -48,13 +50,12 @@ void main()
     vec4 pos    = gl_in[0].gl_Position;
     vec3 dir    = normalize(gs_in[0].dir);
 
-    float theta = acos(dir.z/ 1.0);
-    float phi   = atan(dir.y/ dir.x);
+    vec3 originalAxis = vec3(0, 1, 0);
+    vec3 planeNormal = cross(originalAxis, dir);
+    float angle = acos(dot(originalAxis, dir));
+    mat4 rot = rotationMatrix(planeNormal, angle);
 
-    mat4 zrot   = rotationMatrix(vec3(0,0,1), phi);
-    vec4 sndAxs = zrot * vec4(0,1,0,1);
-    mat4 arot   = rotationMatrix(sndAxs.xyz, theta);
-    mat4 trans  = arrowScaleMat * arot * zrot;
+    mat4 trans  = arrowScaleMat * rot;
 
     vec4 t  = viewMat * (pos + trans*vec4( 0.000,  0.300,  0.000, 1.000));
 
