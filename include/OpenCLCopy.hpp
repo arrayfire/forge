@@ -22,6 +22,9 @@ extern "C" {
 
 #ifdef __cplusplus
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
 namespace fg
 {
 
@@ -67,6 +70,8 @@ void copy(const int resourceId, const ::size_t resourceSize,
 }
 
 }
+
+#pragma GCC diagnostic pop
 
 #endif
 

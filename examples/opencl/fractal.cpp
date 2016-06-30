@@ -8,8 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#define __CL_ENABLE_EXCEPTIONS
-#include <cl.hpp>
+#include "cl_helpers.h"
+
 #include <OpenCLCopy.hpp>
 #include <mutex>
 #include <vector>
@@ -17,7 +17,6 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "cl_helpers.h"
 
 using namespace cl;
 using namespace std;
@@ -94,7 +93,7 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
             kern = cl::Kernel(prog, "julia");
         });
 
-    auto juliaOp = cl::make_kernel<Buffer, unsigned, unsigned>(kern);
+    auto juliaOp = cl::KernelFunctor<Buffer, unsigned, unsigned>(kern);
 
     static const NDRange local(8, 8);
     NDRange global(local[0] * divup(DIMX, local[0]),

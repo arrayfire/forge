@@ -8,8 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#define __CL_ENABLE_EXCEPTIONS
-#include <cl.hpp>
+#include "cl_helpers.h"
+
 #include <OpenCLCopy.hpp>
 #include <cmath>
 #include <ctime>
@@ -18,7 +18,6 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "cl_helpers.h"
 
 using namespace cl;
 using namespace std;
