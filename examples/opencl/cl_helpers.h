@@ -105,4 +105,3 @@ bool checkExtnAvailability(const Device &pDevice, std::string pName)
     }
     return ret_val;
 }
-

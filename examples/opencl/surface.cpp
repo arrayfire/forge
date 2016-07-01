@@ -9,8 +9,6 @@
 
 #include <forge.h>
 #include "cl_helpers.h"
-
-#include <OpenCLCopy.hpp>
 #include <mutex>
 #include <complex>
 #include <cmath>
@@ -29,6 +27,22 @@ const unsigned XSIZE = (XMAX-XMIN)/DX;
 const unsigned YSIZE = (YMAX-YMIN)/DX;
 
 using namespace std;
+
+cl::CommandQueue queue;
+cl::Context context;
+
+cl_context getContext()
+{
+    return context();
+}
+
+cl_command_queue getCommandQueue()
+{
+    return queue();
+}
+
+#define USE_FORGE_OPENCL_COPY_HELPERS
+#include <ComputeCopy.h>
 
 static const std::string sin_surf_kernel =
 R"EOK(
@@ -144,8 +158,7 @@ int main(void)
         plat.getDevices(CL_DEVICE_TYPE_GPU, &devs);
 
         Device device;
-        CommandQueue queue;
-        Context context;
+
         for (auto& d : devs) {
             if (checkExtnAvailability(d, CL_GL_SHARING_EXT)) {
                 device = d;
@@ -162,22 +175,27 @@ int main(void)
         cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * XSIZE * YSIZE * 3);
 
         kernel(devOut, queue, device);
+
+        GfxHandle* handle;
+        createGLBuffer(&handle, surf.vertices(), FORGE_VBO);
         /* copy your data into the pixel buffer object exposed by
          * fg::Surface class and then proceed to rendering.
          * To help the users with copying the data from compute
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        fg::copy(surf.vertices(), surf.verticesSize(), devOut, queue);
+        copyToGLBuffer(handle, (ComputeResourceHandle)devOut(), surf.verticesSize());
 
         do {
             wnd.draw(chart);
         } while(!wnd.close());
+
+        releaseGLBuffer(handle);
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     }
+
     return 0;
 }
-

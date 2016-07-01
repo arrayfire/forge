@@ -8,7 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 #include <vector>
@@ -67,14 +68,24 @@ int main(void)
     std::vector<float> dirs;
     generatePoints(points, dirs);
 
-    fg::copy(field.vertices(), field.verticesSize(), (const void*)points.data());
-    fg::copy(field.directions(), field.directionsSize(), (const void*)dirs.data());
+    GfxHandle* handles[3];
 
-    fg::copy(divPoints.vertices(), divPoints.verticesSize(), (const void*)DPOINTS);
+    createGLBuffer(&handles[0], divPoints.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[1], field.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[2], field.directions(), FORGE_VBO);
+
+    copyToGLBuffer(handles[0], (ComputeResourceHandle)DPOINTS, divPoints.verticesSize());
+    copyToGLBuffer(handles[1], (ComputeResourceHandle)points.data(), field.verticesSize());
+    copyToGLBuffer(handles[2], (ComputeResourceHandle)dirs.data(), field.directionsSize());
 
     do {
         wnd.draw(chart);
     } while(!wnd.close());
+
+    // destroy GL-cpu interop buffers
+    releaseGLBuffer(handles[0]);
+    releaseGLBuffer(handles[1]);
+    releaseGLBuffer(handles[2]);
 
     return 0;
 }

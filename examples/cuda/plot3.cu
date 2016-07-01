@@ -10,7 +10,8 @@
 #include <forge.h>
 #include <cuda_runtime.h>
 #include <cuComplex.h>
-#include <CUDACopy.hpp>
+#define USE_FORGE_CUDA_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <cstdio>
 #include <iostream>
 
@@ -46,23 +47,27 @@ int main(void)
     static float t=0;
     FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, ZSIZE * 3 * sizeof(float) ));
     kernel(t, DX, dev_out);
+
+    GfxHandle* handle;
+    createGLBuffer(&handle, plot3.vertices(), FORGE_VBO);
+
     /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plot3.vertices(), dev_out);
-
+    copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, plot3.verticesSize());
 
     do {
         t+=0.01;
         kernel(t, DX, dev_out);
-        fg::copy(plot3.vertices(), dev_out);
+        copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, plot3.verticesSize());
         wnd.draw(chart);
     } while(!wnd.close());
 
     FORGE_CUDA_CHECK(cudaFree(dev_out));
+    releaseGLBuffer(handle);
     return 0;
 }
 

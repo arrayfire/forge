@@ -1,7 +1,17 @@
+/*******************************************************
+ * Copyright (c) 2015-2019, ArrayFire
+ * All rights reserved.
+ *
+ * This file is distributed under 3-clause BSD license.
+ * The complete license agreement can be obtained at:
+ * http://arrayfire.com/licenses/BSD-3-Clause
+ ********************************************************/
+
 #include <forge.h>
 #include <cuda_runtime.h>
 #include <cuComplex.h>
-#include <CUDACopy.hpp>
+#define USE_FORGE_CUDA_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <cstdio>
 #include <iostream>
 
@@ -65,16 +75,23 @@ int main(void)
     kernel(cos_out, 1);
     kernel(tan_out, 2);
     kernel(log_out, 3);
+
+    GfxHandle* handles[4];
+    createGLBuffer(&handles[0], plt0.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[1], plt1.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[2], plt2.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[3], plt3.vertices(), FORGE_VBO);
+
     /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plt0.vertices(), sin_out);
-    fg::copy(plt1.vertices(), cos_out);
-    fg::copy(plt2.vertices(), tan_out);
-    fg::copy(plt3.vertices(), log_out);
+    copyToGLBuffer(handles[0], (ComputeResourceHandle)sin_out, plt0.verticesSize());
+    copyToGLBuffer(handles[1], (ComputeResourceHandle)cos_out, plt1.verticesSize());
+    copyToGLBuffer(handles[2], (ComputeResourceHandle)tan_out, plt2.verticesSize());
+    copyToGLBuffer(handles[3], (ComputeResourceHandle)log_out, plt3.verticesSize());
 
     do {
         wnd.draw(chart);
@@ -84,6 +101,11 @@ int main(void)
     FORGE_CUDA_CHECK(cudaFree(cos_out));
     FORGE_CUDA_CHECK(cudaFree(tan_out));
     FORGE_CUDA_CHECK(cudaFree(log_out));
+    releaseGLBuffer(handles[0]);
+    releaseGLBuffer(handles[1]);
+    releaseGLBuffer(handles[2]);
+    releaseGLBuffer(handles[3]);
+
     return 0;
 }
 

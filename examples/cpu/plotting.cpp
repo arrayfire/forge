@@ -8,7 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 #include <vector>
@@ -77,6 +78,11 @@ int main(void)
     plt2.setLegend("Tangent");
     plt3.setLegend("Log base 10");
 
+    GfxHandle* handles[4];
+    createGLBuffer(&handles[0], plt0.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[1], plt1.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[2], plt2.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[3], plt3.vertices(), FORGE_VBO);
 
     /* copy your data into the pixel buffer object exposed by
      * fg::Plot class and then proceed to rendering.
@@ -84,15 +90,19 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plt0.vertices(), plt0.verticesSize(), (const void*)sinData.data());
-    fg::copy(plt1.vertices(), plt1.verticesSize(), (const void*)cosData.data());
-    fg::copy(plt2.vertices(), plt2.verticesSize(), (const void*)tanData.data());
-    fg::copy(plt3.vertices(), plt3.verticesSize(), (const void*)logData.data());
+    copyToGLBuffer(handles[0], (ComputeResourceHandle)sinData.data(), plt0.verticesSize());
+    copyToGLBuffer(handles[1], (ComputeResourceHandle)cosData.data(), plt1.verticesSize());
+    copyToGLBuffer(handles[2], (ComputeResourceHandle)tanData.data(), plt2.verticesSize());
+    copyToGLBuffer(handles[3], (ComputeResourceHandle)logData.data(), plt3.verticesSize());
 
     do {
         wnd.draw(chart);
     } while(!wnd.close());
 
+    releaseGLBuffer(handles[0]);
+    releaseGLBuffer(handles[1]);
+    releaseGLBuffer(handles[2]);
+    releaseGLBuffer(handles[3]);
+
     return 0;
 }
-

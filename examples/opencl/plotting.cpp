@@ -9,8 +9,6 @@
 
 #include <forge.h>
 #include "cl_helpers.h"
-
-#include <OpenCLCopy.hpp>
 #include <mutex>
 #include <vector>
 #include <sstream>
@@ -28,6 +26,22 @@ const float    dx = 0.1;
 const float    FRANGE_START = 0.f;
 const float    FRANGE_END = 2 * 3.141592f;
 const unsigned DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
+
+cl::CommandQueue queue;
+cl::Context context;
+
+cl_context getContext()
+{
+    return context();
+}
+
+cl_command_queue getCommandQueue()
+{
+    return queue();
+}
+
+#define USE_FORGE_OPENCL_COPY_HELPERS
+#include <ComputeCopy.h>
 
 static const std::string sinf_ocl_kernel = R"(
 kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE, int fnCode)
@@ -140,8 +154,7 @@ int main(void)
         plat.getDevices(CL_DEVICE_TYPE_GPU, &devs);
 
         Device device;
-        CommandQueue queue;
-        Context context;
+
         for (auto& d : devs) {
             if (checkExtnAvailability(d, CL_GL_SHARING_EXT)) {
                 device = d;
@@ -164,20 +177,31 @@ int main(void)
         kernel(tanOut, queue, 2);
         kernel(logOut, queue, 3);
 
+        GfxHandle* handles[4];
+        createGLBuffer(&handles[0], plt0.vertices(), FORGE_VBO);
+        createGLBuffer(&handles[1], plt1.vertices(), FORGE_VBO);
+        createGLBuffer(&handles[2], plt2.vertices(), FORGE_VBO);
+        createGLBuffer(&handles[3], plt3.vertices(), FORGE_VBO);
         /* copy your data into the vertex buffer object exposed by
          * fg::Plot class and then proceed to rendering.
          * To help the users with copying the data from compute
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        fg::copy(plt0.vertices(), plt0.verticesSize(), sinOut, queue);
-        fg::copy(plt1.vertices(), plt1.verticesSize(), cosOut, queue);
-        fg::copy(plt2.vertices(), plt2.verticesSize(), tanOut, queue);
-        fg::copy(plt3.vertices(), plt3.verticesSize(), logOut, queue);
+        copyToGLBuffer(handles[0], (ComputeResourceHandle)sinOut(), plt0.verticesSize());
+        copyToGLBuffer(handles[1], (ComputeResourceHandle)cosOut(), plt1.verticesSize());
+        copyToGLBuffer(handles[2], (ComputeResourceHandle)tanOut(), plt2.verticesSize());
+        copyToGLBuffer(handles[3], (ComputeResourceHandle)logOut(), plt3.verticesSize());
 
         do {
             wnd.draw(chart);
         } while(!wnd.close());
+
+        releaseGLBuffer(handles[0]);
+        releaseGLBuffer(handles[1]);
+        releaseGLBuffer(handles[2]);
+        releaseGLBuffer(handles[3]);
+
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {

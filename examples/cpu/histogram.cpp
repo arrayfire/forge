@@ -8,7 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 #include <cstdlib>
@@ -85,13 +86,22 @@ int main(void)
      */
     hist.setColor(FG_YELLOW);
 
+    GfxHandle* handles[3];
+
+    createGLBuffer(&handles[0], img.pbo(), FORGE_PBO);
+    createGLBuffer(&handles[1], hist.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[2], hist.colors(), FORGE_VBO);
+
     do {
         /*
          * generate image, and prepare data to pass into
          * Histogram's underlying vertex buffer object
          */
         kernel(bmp);
-        fg::copy(img, (const void*)bmp.ptr);
+
+        copyToGLBuffer(handles[0], (ComputeResourceHandle)bmp.ptr, img.size());
+
+        //fg::copy(img, (const void*)bmp.ptr);
 
         /* copy your data into the vertex buffer object exposed by
          * fg::Histogram class and then proceed to rendering.
@@ -103,14 +113,18 @@ int main(void)
         std::vector<float> colArray(3*NBINS, 0.0f);
         populateBins(bmp, histArray.data(), NBINS, colArray.data());
 
-        fg::copy(hist.vertices(), hist.verticesSize(), (const void*)histArray.data());
-        fg::copy(hist.colors(), hist.colorsSize(), (const void*)colArray.data());
+        copyToGLBuffer(handles[1], (ComputeResourceHandle)histArray.data(), hist.verticesSize());
+        copyToGLBuffer(handles[2], (ComputeResourceHandle)colArray.data(), hist.colorsSize());
 
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
         wnd.draw(1, 0, chart, "Histogram of Noisy Image");
 
         wnd.swapBuffers();
     } while(!wnd.close());
+
+    releaseGLBuffer(handles[0]);
+    releaseGLBuffer(handles[1]);
+    releaseGLBuffer(handles[2]);
 
     return 0;
 }

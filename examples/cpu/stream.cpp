@@ -8,7 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 #include <vector>
@@ -109,15 +110,24 @@ int main(void)
     generatePoints(points, dirs);
     generateColors(colors);
 
-    fg::copy(field.vertices(), field.verticesSize(), (const void*)points.data());
-    fg::copy(field.colors(), field.colorsSize(), (const void*)colors.data());
-    fg::copy(field.directions(), field.directionsSize(), (const void*)dirs.data());
+    GfxHandle* handles[3];
+    createGLBuffer(&handles[0], field.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[1], field.colors(), FORGE_VBO);
+    createGLBuffer(&handles[2], field.directions(), FORGE_VBO);
+
+    copyToGLBuffer(handles[0], (ComputeResourceHandle)points.data(),   field.verticesSize());
+    copyToGLBuffer(handles[1], (ComputeResourceHandle)colors.data(),     field.colorsSize());
+    copyToGLBuffer(handles[2], (ComputeResourceHandle)dirs.data()  , field.directionsSize());
 
     do {
         moveColors(colors);
-        fg::copy(field.colors(), field.colorsSize(), (const void*)colors.data());
+        copyToGLBuffer(handles[1], (ComputeResourceHandle)colors.data(), field.colorsSize());
         wnd.draw(chart);
     } while(!wnd.close());
+
+    releaseGLBuffer(handles[0]);
+    releaseGLBuffer(handles[1]);
+    releaseGLBuffer(handles[2]);
 
     return 0;
 }
