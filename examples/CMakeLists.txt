@@ -5,6 +5,9 @@ SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeModules")
 
 OPTION(BUILD_EXAMPLES_CUDA "Turn off/on building cuda examples" ON)
 OPTION(BUILD_EXAMPLES_OPENCL "Turn off/on building opencl examples" ON)
+OPTION(USE_SYSTEM_CL2HPP "Use cl2.hpp header installed on the system" OFF)
+
+INCLUDE(build_cl2hpp)
 
 MACRO(BUILD_EXAMPLE EX_NAME EX_SRC COMPUTE_NAME FG_LIBS COMPUTE_LIBS)
     IF(${COMPUTE_NAME} STREQUAL "cuda")
@@ -18,6 +21,9 @@ MACRO(BUILD_EXAMPLE EX_NAME EX_SRC COMPUTE_NAME FG_LIBS COMPUTE_LIBS)
         OUTPUT_NAME ${EX_NAME}_${COMPUTE_NAME}
         RUNTIME_OUTPUT_DIRECTORY ${DIR_NAME}
         FOLDER "Examples/${COMPUTE_NAME}")
+    IF(${COMPUTE_NAME} STREQUAL "opencl")
+        ADD_DEPENDENCIES(example_${EX_NAME}_${COMPUTE_NAME} cl2hpp)
+    ENDIF()
 ENDMACRO()
 
 IF(TARGET forge)
@@ -41,35 +47,27 @@ ELSE(TARGET forge)
         ${FREEIMAGE_INCLUDE_PATH}
         )
     ADD_DEFINITIONS(-DGLEW_MX)
-IF(UNIX)
-    ADD_DEFINITIONS(-Wall -std=c++11 -fvisibility=hidden)
-    # GCC 5.3 and above give errors for mempcy from <string.h>
-    # This is a (temporary) fix for that
-    IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.3.0")
-        ADD_DEFINITIONS(-D_FORCE_INLINES)
-    ENDIF()
-ENDIF()
-
-# OS Definitions
-IF(UNIX)
-    IF(APPLE)
-        ADD_DEFINITIONS(-DOS_MAC)
-        SET(CMAKE_MACOSX_RPATH ON)
-        SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-        SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-        SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}")
-        SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-        LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}" isSystemDir)
-        IF("${isSystemDir}" STREQUAL "-1")
+    # OS Definitions
+    IF(UNIX)
+        ADD_DEFINITIONS(-Wall -std=c++11 -fvisibility=hidden)
+        IF(APPLE)
+            ADD_DEFINITIONS(-DOS_MAC)
+            SET(CMAKE_MACOSX_RPATH ON)
+            SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+            SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
             SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}")
-        ENDIF("${isSystemDir}" STREQUAL "-1")
-    ELSE(APPLE)
-        ADD_DEFINITIONS(-DOS_LNX)
-    ENDIF(APPLE)
-ELSE(UNIX)
-    ADD_DEFINITIONS(-DOS_WIN -DNOMINMAX)
-ENDIF(UNIX)
+            SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+            LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}" isSystemDir)
+            IF("${isSystemDir}" STREQUAL "-1")
+                SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}")
+            ENDIF("${isSystemDir}" STREQUAL "-1")
+        ELSE(APPLE)
+            ADD_DEFINITIONS(-DOS_LNX)
+        ENDIF(APPLE)
+    ELSE(UNIX)
+        ADD_DEFINITIONS(-DOS_WIN -DNOMINMAX)
+    ENDIF(UNIX)
 ENDIF(TARGET forge)
 
 FILE(GLOB CPU_EXAMPLE_SRC_FILES "cpu/*.cpp")
@@ -90,14 +88,22 @@ ENDFOREACH()
 IF (BUILD_EXAMPLES_CUDA)
     FIND_PACKAGE(CUDA QUIET)
     IF(CUDA_FOUND)
-        INCLUDE_DIRECTORIES(${CUDA_INCLUDE_DIRS})
 
-        # GCC 6.0 and above default to g++14, enabling c++11 features by default
-        # Enabling c++11 with nvcc 7.5 + gcc 6.x doesn't seem to work
-        # Only solution for now is to force use c++03 for gcc 6.x
-        IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "6.0.0")
-          SET(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -Xcompiler -std=c++98")
-        ENDIF()
+        IF(UNIX)
+            # GCC 5.3 and above give errors for mempcy from <string.h>
+            # This is a (temporary) fix for that
+            IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.3.0")
+                ADD_DEFINITIONS(-D_FORCE_INLINES)
+            ENDIF()
+            # GCC 6.0 and above default to g++14, enabling c++11 features by default
+            # Enabling c++11 with nvcc 7.5 + gcc 6.x doesn't seem to work
+            # Only solution for now is to force use c++03 for gcc 6.x
+            IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "6.0.0")
+                SET(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -Xcompiler -std=c++98")
+            ENDIF()
+        ENDIF(UNIX)
+
+        INCLUDE_DIRECTORIES(${CUDA_INCLUDE_DIRS})
 
         FILE(GLOB CUDA_EXAMPLE_SRC_FILES "cuda/*.cu")
         FOREACH(FILE ${CUDA_EXAMPLE_SRC_FILES})
@@ -128,6 +134,7 @@ IF (BUILD_EXAMPLES_OPENCL)
         INCLUDE_DIRECTORIES(
             "${CMAKE_CURRENT_SOURCE_DIR}/opencl"
             ${OpenCL_INCLUDE_DIRS}
+            ${CL2HPP_INCLUDE_DIRECTORY}
             )
         FOREACH(FILE ${OpenCL_EXAMPLE_SRC_FILES})
             GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)

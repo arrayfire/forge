@@ -8,7 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 #include <vector>
@@ -59,17 +60,23 @@ int main(void)
     std::vector<float> function;
 
     genSurface(DX, function);
+
+    GfxHandle* handle;
+    createGLBuffer(&handle, surf.vertices(), FORGE_VBO);
+
     /* copy your data into the pixel buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(surf.vertices(), surf.verticesSize(), (const void*)function.data());
+    copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), surf.verticesSize());
 
     do {
         wnd.draw(chart);
     } while(!wnd.close());
+
+    releaseGLBuffer(handle);
 
     return 0;
 }

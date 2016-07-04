@@ -7,9 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/image.h>
-#include <fg/window.h>
-
 #include <common.hpp>
 #include <err_opengl.hpp>
 #include <image_impl.hpp>
@@ -135,7 +132,7 @@ uint image_impl::size() const { return (uint)mPBOsize; }
 
 void image_impl::render(const int pWindowId,
                         const int pX, const int pY, const int pVPW, const int pVPH,
-                        const glm::mat4& pTransform)
+                        const glm::mat4 &pView)
 {
     CheckGL("Begin image_impl::render");
 
@@ -155,7 +152,7 @@ void image_impl::render(const int pWindowId,
         }
     }
 
-    glm::mat4 strans = glm::scale(pTransform, glm::vec3(xscale, yscale, 1));
+    glm::mat4 strans = glm::scale(pView, glm::vec3(xscale, yscale, 1));
 
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);

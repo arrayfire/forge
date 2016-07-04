@@ -8,16 +8,13 @@
  ********************************************************/
 
 #include <forge.h>
-#define __CL_ENABLE_EXCEPTIONS
-#include <cl.hpp>
-#include <OpenCLCopy.hpp>
+#include "cl_helpers.h"
 #include <mutex>
 #include <vector>
 #include <sstream>
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "cl_helpers.h"
 
 using namespace cl;
 using namespace std;
@@ -25,6 +22,22 @@ using namespace std;
 const unsigned DIMX = 512;
 const unsigned DIMY = 512;
 const unsigned IMG_SIZE = DIMX * DIMY * 4;
+
+cl::CommandQueue queue;
+cl::Context context;
+
+cl_context getContext()
+{
+    return context();
+}
+
+cl_command_queue getCommandQueue()
+{
+    return queue();
+}
+
+#define USE_FORGE_OPENCL_COPY_HELPERS
+#include <ComputeCopy.h>
 
 static const std::string fractal_ocl_kernel =
 "float magnitude(float2 a)\n"
@@ -94,7 +107,7 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
             kern = cl::Kernel(prog, "julia");
         });
 
-    auto juliaOp = cl::make_kernel<Buffer, unsigned, unsigned>(kern);
+    auto juliaOp = cl::KernelFunctor<Buffer, unsigned, unsigned>(kern);
 
     static const NDRange local(8, 8);
     NDRange global(local[0] * divup(DIMX, local[0]),
@@ -149,8 +162,7 @@ int main(void)
         plat.getDevices(CL_DEVICE_TYPE_GPU, &devs);
 
         Device device;
-        CommandQueue queue;
-        Context context;
+
         for (auto& d : devs) {
             if (checkExtnAvailability(d, CL_GL_SHARING_EXT)) {
                 device = d;
@@ -173,11 +185,22 @@ int main(void)
         cl::Buffer devOut(context, CL_MEM_READ_WRITE, IMG_SIZE);
 
         kernel(devOut, queue);
-        fg::copy(img, devOut, queue);
+
+        GfxHandle* handle = 0;
+
+        // create GL-CPU interop buffer
+        createGLBuffer(&handle, img.pbo(), FORGE_PBO);
+
+        // copy the data from compute buffer to graphics buffer
+        copyToGLBuffer(handle, (ComputeResourceHandle)devOut(), img.size());
 
         do {
             wnd.draw(img);
         } while(!wnd.close());
+
+        // destroy GL-CPU Interop buffer
+        releaseGLBuffer(handle);
+
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {

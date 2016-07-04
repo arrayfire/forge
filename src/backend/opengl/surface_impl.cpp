@@ -24,23 +24,23 @@ using namespace std;
 
 void generateGridIndices(unsigned short rows, unsigned short cols, unsigned short *indices)
 {
-    unsigned short idx = 0;
-    for(unsigned short r = 0; r < rows-1; ++r){
-        for(unsigned short c = 0; c < cols*2; ++c){
-            unsigned short i = c + (r * (cols*2));
+unsigned short idx = 0;
+for(unsigned short r = 0; r < rows-1; ++r){
+    for(unsigned short c = 0; c < cols*2; ++c){
+        unsigned short i = c + (r * (cols*2));
 
-            if(c == cols * 2 - 1) {
-                *indices++ = idx;
-            }else{
-                *indices++ = idx;
-                if(i%2 == 0){
-                    idx += cols;
-                } else {
-                    idx -= (r%2 == 0) ? (cols-1) : (cols+1);
-                }
+        if(c == cols * 2 - 1) {
+            *indices++ = idx;
+        }else{
+            *indices++ = idx;
+            if(i%2 == 0){
+                idx += cols;
+            } else {
+                idx -= (r%2 == 0) ? (cols-1) : (cols+1);
             }
         }
     }
+}
 }
 
 namespace opengl
@@ -48,65 +48,62 @@ namespace opengl
 
 void surface_impl::bindResources(const int pWindowId)
 {
-    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
-        GLuint vao = 0;
-        /* create a vertex array object
-         * with appropriate bindings */
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-        // attach plot vertices
-        glEnableVertexAttribArray(mSurfPointIndex);
-        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(mSurfPointIndex, 3, mDataType, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(mSurfColorIndex);
-        glBindBuffer(GL_ARRAY_BUFFER, mCBO);
-        glVertexAttribPointer(mSurfColorIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(mSurfAlphaIndex);
-        glBindBuffer(GL_ARRAY_BUFFER, mABO);
-        glVertexAttribPointer(mSurfAlphaIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
-        //attach indices
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-        glBindVertexArray(0);
-        /* store the vertex array object corresponding to
-         * the window instance in the map */
-        mVAOMap[pWindowId] = vao;
-    }
+if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
+    GLuint vao = 0;
+    /* create a vertex array object
+     * with appropriate bindings */
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    // attach plot vertices
+    glEnableVertexAttribArray(mSurfPointIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glVertexAttribPointer(mSurfPointIndex, 3, mDataType, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(mSurfColorIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, mCBO);
+    glVertexAttribPointer(mSurfColorIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(mSurfAlphaIndex);
+    glBindBuffer(GL_ARRAY_BUFFER, mABO);
+    glVertexAttribPointer(mSurfAlphaIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
+    //attach indices
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+    glBindVertexArray(0);
+    /* store the vertex array object corresponding to
+     * the window instance in the map */
+    mVAOMap[pWindowId] = vao;
+}
 
-    glBindVertexArray(mVAOMap[pWindowId]);
+glBindVertexArray(mVAOMap[pWindowId]);
 }
 
 void surface_impl::unbindResources() const
 {
-    glBindVertexArray(0);
+glBindVertexArray(0);
 }
 
-void surface_impl::computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput)
+glm::mat4 surface_impl::computeTransformMat(const glm::mat4& pView)
 {
-    // identity matrix
-    static const glm::mat4 I(1.0f);
+    static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
+                                   glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
 
     float range_x = mRange[1] - mRange[0];
     float range_y = mRange[3] - mRange[2];
     float range_z = mRange[5] - mRange[4];
     // set scale to zero if input is constant array
     // otherwise compute scale factor by standard equation
-    float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(range_x);
-    float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(range_y);
-    float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 0.0f : 2/(range_z);
+    float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 1.0f : 2/(range_x);
+    float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 1.0f : 2/(range_y);
+    float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 1.0f : 2/(range_z);
 
     float coor_offset_x = (-mRange[0] * graph_scale_x);
     float coor_offset_y = (-mRange[2] * graph_scale_y);
     float coor_offset_z = (-mRange[4] * graph_scale_z);
 
-    glm::mat4 rMat = glm::rotate(I, -glm::radians(90.f), glm::vec3(1,0,0));
-    glm::mat4 tMat = glm::translate(I,
-            glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z));
-    glm::mat4 sMat = glm::scale(I,
-            glm::vec3(1.0f * graph_scale_x, -1.0f * graph_scale_y, 1.0f * graph_scale_z));
+    glm::mat4 sMat = glm::scale(MODEL,
+            glm::vec3(graph_scale_x, -1.0f * graph_scale_y, graph_scale_z));
+    glm::mat4 tMat = glm::translate(sMat,
+            glm::vec3(-1 + coor_offset_x, -1 + coor_offset_y, -1 + coor_offset_z));
 
-    glm::mat4 model = rMat * tMat * sMat;
-
-    pOut = pInput * model;
+    return pView * tMat;
 }
 
 void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
@@ -231,7 +228,7 @@ surface_impl::~surface_impl()
 
 void surface_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4 &pModel)
+                          const glm::mat4& pView)
 {
     CheckGL("Begin surface_impl::render");
     // FIXME: even when per vertex alpha is enabled
@@ -243,9 +240,7 @@ void surface_impl::render(const int pWindowId,
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    glm::mat4 mvp(1.0);
-    computeTransformMat(mvp, pModel);
-    renderGraph(pWindowId, mvp);
+    renderGraph(pWindowId, computeTransformMat(pView));
 
     if (mIsPVAOn) {
         glDisable(GL_BLEND);

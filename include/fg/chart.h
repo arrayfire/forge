@@ -13,6 +13,7 @@
 #include <fg/image.h>
 #include <fg/plot.h>
 #include <fg/surface.h>
+#include <fg/vector_field.h>
 #include <fg/histogram.h>
 
 
@@ -53,10 +54,12 @@ FGAPI fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
                                      const uint pXPoints, const uint pYPoints, const fg_dtype pType,
                                      const fg_plot_type pPlotType, const fg_marker_type pMarkerType);
 
+FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
+                                          const uint pNPoints, const fg_dtype pType);
+
 FGAPI fg_err fg_render_chart(const fg_window pWindow,
                              const fg_chart pChart,
-                             const int pX, const int pY, const int pWidth, const int pHeight,
-                             const float* pTransform);
+                             const int pX, const int pY, const int pWidth, const int pHeight);
 
 #ifdef __cplusplus
 }
@@ -214,6 +217,15 @@ class Chart {
                               const PlotType pPlotType=FG_PLOT_SURFACE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
+           Create and add an Vector Field object to the current chart
+
+           \param[in] pNumPoints is number of data points to display
+           \param[in] pDataType takes one of the values of \ref dtype that indicates
+                      the integral data type of vector field data
+         */
+        FGAPI VectorField vectorField(const uint pNumPoints, const dtype pDataType);
+
+        /**
            Render the chart to given window
 
            \param[in] pWindow is target window to where chart will be rendered
@@ -221,14 +233,9 @@ class Chart {
            \param[in] pY is y coordinate of origin of viewport in window coordinates
            \param[in] pVPW is the width of the viewport
            \param[in] pVPH is the height of the viewport
-           \param[in] pTransform is an array of floats. This array is expected to contain
-                      at least 16 elements
-
-           Note: pTransform array is assumed to be of expected length.
          */
         FGAPI void render(const Window& pWindow,
-                          const int pX, const int pY, const int pVPW, const int pVPH,
-                          const float* pTransform) const;
+                          const int pX, const int pY, const int pVPW, const int pVPH) const;
 
         /**
            Get the handle to internal implementation of Chart

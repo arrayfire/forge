@@ -8,9 +8,7 @@
  ********************************************************/
 
 #include <forge.h>
-#define __CL_ENABLE_EXCEPTIONS
-#include <cl.hpp>
-#include <OpenCLCopy.hpp>
+#include "cl_helpers.h"
 #include <cmath>
 #include <ctime>
 #include <vector>
@@ -18,7 +16,6 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "cl_helpers.h"
 
 using namespace cl;
 using namespace std;
@@ -32,6 +29,22 @@ const unsigned WIN_ROWS = 1;
 const unsigned WIN_COLS = 2;
 const unsigned NBINS = 256;
 const float PERSISTENCE = 0.5f;
+
+cl::CommandQueue queue;
+cl::Context context;
+
+cl_context getContext()
+{
+    return context();
+}
+
+cl_command_queue getCommandQueue()
+{
+    return queue();
+}
+
+#define USE_FORGE_OPENCL_COPY_HELPERS
+#include <ComputeCopy.h>
 
 static const std::string perlinKernels =
 R"EOK(
@@ -320,8 +333,7 @@ int main(void)
         plat.getDevices(CL_DEVICE_TYPE_GPU, &devs);
 
         Device device;
-        CommandQueue queue;
-        Context context;
+
         for (auto& d : devs) {
             if (checkExtnAvailability(d, CL_GL_SHARING_EXT)) {
                 device = d;
@@ -341,14 +353,21 @@ int main(void)
         cl::Buffer histOut(context, CL_MEM_READ_WRITE, NBINS * sizeof(int));
         cl::Buffer colors(context, CL_MEM_READ_WRITE, 3 * NBINS * sizeof(float));
 
+        GfxHandle* handles[3];
+
+        createGLBuffer(&handles[0], img.pbo(), FORGE_PBO);
+        createGLBuffer(&handles[1], hist.vertices(), FORGE_VBO);
+        createGLBuffer(&handles[2], hist.colors(), FORGE_VBO);
+
         unsigned frame = 0;
         do {
             if (frame%8==0) {
                 kernel(image, baseNoise, perlinNoise, histOut, colors, queue, device);
 
-                fg::copy(img, image, queue);
-                fg::copy(hist.vertices(), hist.verticesSize(), histOut, queue);
-                fg::copy(hist.colors(), hist.colorsSize(), colors, queue);
+                copyToGLBuffer(handles[0], (ComputeResourceHandle)image(), img.size());
+                copyToGLBuffer(handles[1], (ComputeResourceHandle)histOut(), hist.verticesSize());
+                copyToGLBuffer(handles[2], (ComputeResourceHandle)colors(), hist.colorsSize());
+
                 frame = 0;
             }
 
@@ -358,6 +377,11 @@ int main(void)
             wnd.swapBuffers();
             frame++;
         } while(!wnd.close());
+
+        releaseGLBuffer(handles[0]);
+        releaseGLBuffer(handles[1]);
+        releaseGLBuffer(handles[2]);
+
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {

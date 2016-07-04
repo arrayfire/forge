@@ -7,10 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/chart.h>
-#include <fg/exception.h>
-#include <fg/window.h>
-
 #include <font.hpp>
 
 #include <common.hpp>
@@ -104,11 +100,12 @@ void AbstractChart::renderTickLabels(
         if(pCoordsOffset < mTickCount) {
             // offset for y axis labels
             pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f+mTickSize);
-        }else if(pCoordsOffset >= mTickCount && pCoordsOffset < 2*mTickCount) {
+            pos[1] -= (CHART2D_FONT_SIZE*.36);
+        } else if(pCoordsOffset >= mTickCount && pCoordsOffset < 2*mTickCount) {
             // offset for x axis labels
             pos[0] -= (CHART2D_FONT_SIZE*it->length()/4.0f);
             pos[1] -= (CHART2D_FONT_SIZE*1.32);
-        }else {
+        } else {
             // offsets for 3d chart axes ticks
             pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f);
             pos[1] -= (CHART2D_FONT_SIZE);
@@ -257,8 +254,8 @@ void chart2d_impl::generateChartData()
     std::vector<float> decorData;
     std::copy(border, border+nValues, std::back_inserter(decorData));
 
-    float step = 2.0f/(mTickCount);
-    int ticksLeft = mTickCount/2;
+    float step = getTickStepSize(-1, 1);
+    int ticksLeft = getNumTicksC2E();
 
     /* push tick points for y axis:
      * push (0) first followed by
@@ -346,11 +343,13 @@ void chart2d_impl::generateTickLabels()
     mYText.clear();
     mZText.clear();
 
-    float xstep = (mXMax-mXMin)/(mTickCount);
-    float ystep = (mYMax-mYMin)/(mTickCount);
-    float xmid = mXMin + (mXMax-mXMin)/2.0f;
-    float ymid = mYMin + (mYMax-mYMin)/2.0f;
-    int ticksLeft = mTickCount/2;
+    float xstep = getTickStepSize(mXMin, mXMax);
+    float ystep = getTickStepSize(mYMin, mYMax);
+    float xmid  = (mXMax+mXMin)/2.0f;
+    float ymid  = (mYMax+mYMin)/2.0f;
+
+    int ticksLeft = getNumTicksC2E();
+
     /* push tick points for y axis */
     mYText.push_back(toString(ymid));
     size_t maxYLabelWidth = 0;
@@ -358,6 +357,7 @@ void chart2d_impl::generateTickLabels()
         std::string temp = toString(ymid + i*-ystep);
         mYText.push_back(temp);
         maxYLabelWidth = std::max(maxYLabelWidth, temp.length());
+
         temp = toString(ymid + i*ystep);
         mYText.push_back(temp);
         maxYLabelWidth = std::max(maxYLabelWidth, temp.length());
@@ -380,16 +380,20 @@ chart2d_impl::chart2d_impl()
 
 void chart2d_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4& pTransform)
+                          const glm::mat4& pView)
 {
     CheckGL("Begin chart2d_impl::renderChart");
 
-    float w = float(pVPW - (mLeftMargin + mRightMargin + mTickSize));
-    float h = float(pVPH - (mTopMargin + mBottomMargin + mTickSize));
-    float offset_x = (2.0f * (mLeftMargin+mTickSize) + (w - pVPW)) / pVPW;
-    float offset_y = (2.0f * (mBottomMargin+mTickSize) + (h - pVPH)) / pVPH;
-    float scale_x = w / pVPW;
-    float scale_y = h / pVPH;
+    float lgap     = mLeftMargin + mTickSize/2;
+    float bgap     = mBottomMargin + mTickSize/2;
+
+    float offset_x = (lgap-mRightMargin) / pVPW;
+    float offset_y = (bgap-mTopMargin) / pVPH;
+
+    float w        = pVPW - (lgap + mRightMargin);
+    float h        = pVPH - (bgap + mTopMargin);
+    float scale_x  = w / pVPW;
+    float scale_y  = h / pVPH;
 
     /* set uniform attributes of shader
      * for drawing the plot borders */
@@ -406,11 +410,14 @@ void chart2d_impl::render(const int pWindowId,
     glUseProgram(0);
     chart2d_impl::unbindResources();
 
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(pX+mLeftMargin, pY+mBottomMargin+mTickSize/2, w, h);
     /* render all renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, trans*pTransform);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, pView * trans);
     }
+    glDisable(GL_SCISSOR_TEST);
 
     chart2d_impl::bindResources(pWindowId);
 
@@ -529,7 +536,8 @@ void chart3d_impl::generateChartData()
     std::vector<float> decorData;
     std::copy(border, border+nValues, std::back_inserter(decorData));
 
-    float step = 2.0f/(mTickCount);
+    float step = getTickStepSize(-1, 1);
+    int ticksLeft = getNumTicksC2E();
 
     /* push tick points for z axis:
      * push (0,0) first followed by
@@ -539,7 +547,6 @@ void chart3d_impl::generateChartData()
     pushTicktextCoords(-1.0f, -1.0f, 0.0f);
     mZText.push_back(toString(0));
 
-    int ticksLeft = mTickCount/2;
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
         float neg = i*-step;
@@ -668,13 +675,15 @@ void chart3d_impl::generateTickLabels()
     mYText.clear();
     mZText.clear();
 
-    float xstep = (mXMax-mXMin)/(mTickCount);
-    float ystep = (mYMax-mYMin)/(mTickCount);
-    float zstep = (mZMax-mZMin)/(mTickCount);
-    float xmid = mXMin + (mXMax-mXMin)/2.0f;
-    float ymid = mYMin + (mYMax-mYMin)/2.0f;
-    float zmid = mZMin + (mZMax-mZMin)/2.0f;
-    int ticksLeft = mTickCount/2;
+    float xstep = getTickStepSize(mXMin, mXMax);
+    float ystep = getTickStepSize(mYMin, mYMax);
+    float zstep = getTickStepSize(mZMin, mZMax);
+    float xmid  = (mXMax+mXMin)/2.0f;
+    float ymid  = (mYMax+mYMin)/2.0f;
+    float zmid  = (mZMax+mZMin)/2.0f;
+
+    int ticksLeft = getNumTicksC2E();
+
     /* push tick points for z axis */
     mZText.push_back(toString(zmid));
     for (int i = 1; i <= ticksLeft; i++) {
@@ -702,17 +711,16 @@ chart3d_impl::chart3d_impl()
 
 void chart3d_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4& pTransform)
+                          const glm::mat4& pView)
 {
     /* set uniform attributes of shader
      * for drawing the plot borders */
     static const glm::mat4 VIEW = glm::lookAt(glm::vec3(-1.f,0.5f, 1.f),
                                               glm::vec3( 1.f,-1.f,-1.f),
                                               glm::vec3( 0.f, 1.f, 0.f));
-    static const glm::mat4 PROJECTION = glm::ortho(-2.f, 2.f, -2.f, 2.f, -1.f, 100.f);
+    static const glm::mat4 PROJECTION = glm::ortho(-1.75f, 1.75f, -1.75f, 1.75f, -0.001f, 1000.f);
     static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
-                                   glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0)) *
-                                   glm::scale(glm::mat4(1.f), glm::vec3(1.0f, 1.0f, 1.0f));
+                                   glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
     static const glm::mat4 PV = PROJECTION * VIEW;
     static const glm::mat4 PVM = PV * MODEL;
 
@@ -727,11 +735,15 @@ void chart3d_impl::render(const int pWindowId,
     glUseProgram(0);
     chart3d_impl::unbindResources();
 
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(pX, pY, pVPW, pVPH);
+    glm::mat4 renderableMat = PROJECTION * pView * VIEW;
     /* render all the renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, PV*pTransform);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, renderableMat);
     }
+    glDisable(GL_SCISSOR_TEST);
 
     /* Draw borders */
     chart3d_impl::bindResources(pWindowId);

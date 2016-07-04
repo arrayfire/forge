@@ -1,7 +1,17 @@
+/*******************************************************
+ * Copyright (c) 2015-2019, ArrayFire
+ * All rights reserved.
+ *
+ * This file is distributed under 3-clause BSD license.
+ * The complete license agreement can be obtained at:
+ * http://arrayfire.com/licenses/BSD-3-Clause
+ ********************************************************/
+
 #include <forge.h>
 #include <cuda_runtime.h>
 #include <cuComplex.h>
-#include <CUDACopy.hpp>
+#define USE_FORGE_CUDA_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <cstdio>
 #include <iostream>
 
@@ -37,27 +47,31 @@ int main(void)
 
     FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
     kernel(DX, dev_out);
+
+    GfxHandle* handle;
+    createGLBuffer(&handle, surf.vertices(), FORGE_VBO);
     /* copy your data into the vertex buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(surf.vertices(), dev_out);
+    copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, surf.verticesSize());
 
     do {
         wnd.draw(chart);
     } while(!wnd.close());
 
     FORGE_CUDA_CHECK(cudaFree(dev_out));
+    releaseGLBuffer(handle);
     return 0;
 }
 
 
-__global__
+    __global__
 void sincos_surf(float dx, float* out,
-				 const float XMIN, const float YMIN,
-				 const size_t XSIZE, const size_t YSIZE)
+        const float XMIN, const float YMIN,
+        const size_t XSIZE, const size_t YSIZE)
 {
     int i = blockIdx.x * blockDim.x  + threadIdx.x;
     int j = blockIdx.y * blockDim.y  + threadIdx.y;
@@ -73,7 +87,7 @@ void sincos_surf(float dx, float* out,
     }
 }
 
-inline
+    inline
 int divup(int a, int b)
 {
     return (a+b-1)/b;
@@ -83,7 +97,7 @@ void kernel(float dx, float* dev_out)
 {
     static const dim3 threads(8, 8);
     dim3 blocks(divup(XSIZE, threads.x),
-                divup(YSIZE, threads.y));
+            divup(YSIZE, threads.y));
 
     sincos_surf<<< blocks, threads >>>(dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
 }

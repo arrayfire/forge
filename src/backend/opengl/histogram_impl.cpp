@@ -7,9 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/histogram.h>
-#include <fg/window.h>
-
 #include <common.hpp>
 #include <err_opengl.hpp>
 #include <histogram_impl.hpp>
@@ -138,20 +135,18 @@ histogram_impl::~histogram_impl()
 
 void histogram_impl::render(const int pWindowId,
                        const int pX, const int pY, const int pVPW, const int pVPH,
-                       const glm::mat4& pTransform)
+                       const glm::mat4& pView)
 {
     CheckGL("Begin histogram_impl::render");
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_SCISSOR_TEST);
 
-    glScissor(pX, pY, pVPW, pVPH);
     glUseProgram(mProgram);
 
     glUniform1f(mYMaxIndex, mRange[3]);
     glUniform1f(mNBinsIndex, (GLfloat)mNBins);
-    glUniformMatrix4fv(mMatIndex, 1, GL_FALSE, glm::value_ptr(pTransform));
+    glUniformMatrix4fv(mMatIndex, 1, GL_FALSE, glm::value_ptr(pView));
     glUniform1i(mPVCIndex, mIsPVCOn);
     glUniform1i(mPVAIndex, mIsPVAOn);
     glUniform4fv(mBColorIndex, 1, mColor);
@@ -164,7 +159,6 @@ void histogram_impl::render(const int pWindowId,
     histogram_impl::unbindResources();
 
     glUseProgram(0);
-    glDisable(GL_SCISSOR_TEST);
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
     CheckGL("End histogram_impl::render");
