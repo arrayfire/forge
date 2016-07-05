@@ -31,6 +31,8 @@ fg_plot getHandle(common::Plot* pValue);
 
 fg_surface getHandle(common::Surface* pValue);
 
+fg_vector_field getHandle(common::VectorField* pValue);
+
 common::Window* getWindow(const fg_window& pValue);
 
 common::Font* getFont(const fg_font& pValue);
@@ -44,3 +46,5 @@ common::Histogram* getHistogram(const fg_histogram& pValue);
 common::Plot* getPlot(const fg_plot& pValue);
 
 common::Surface* getSurface(const fg_surface& pValue);
+
+common::VectorField* getVectorField(const fg_vector_field& pValue);

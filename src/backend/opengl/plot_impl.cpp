@@ -7,18 +7,18 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/plot.h>
-
 #include <err_opengl.hpp>
 #include <plot_impl.hpp>
+#include <shader_headers/marker2d_vs.hpp>
+#include <shader_headers/marker_fs.hpp>
+#include <shader_headers/histogram_fs.hpp>
+#include <shader_headers/plot3_vs.hpp>
+#include <shader_headers/plot3_fs.hpp>
 
 #include <cmath>
 
 using namespace gl;
 using namespace std;
-
-// identity matrix
-static const glm::mat4 I(1.0f);
 
 namespace opengl
 {
@@ -61,33 +61,31 @@ void plot_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-void plot_impl::computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput,
-                                    const int pX, const int pY,
-                                    const int pVPW, const int pVPH)
+glm::mat4 plot_impl::computeTransformMat(const glm::mat4 pView)
 {
-    float range_x = mRange[1] - mRange[0];
-    float range_y = mRange[3] - mRange[2];
-    float range_z       = mRange[5] - mRange[4];
-    // set scale to zero if input is constant array
-    // otherwise compute scale factor by standard equation
-    float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(range_x);
-    float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(range_y);
-    float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 0.0f : 2/(range_z);
+    static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
+                                   glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
 
-    float coor_offset_x = (-mRange[0] * graph_scale_x);
-    float coor_offset_y = (-mRange[2] * graph_scale_y);
-    float coor_offset_z = (-mRange[4] * graph_scale_z);
+    float xRange = mRange[1] - mRange[0];
+    float yRange = mRange[3] - mRange[2];
+    float zRange = mRange[5] - mRange[4];
 
-    glm::mat4 rMat = glm::rotate(I, -glm::radians(90.f), glm::vec3(1,0,0));
-    glm::mat4 tMat = glm::translate(I,
-            glm::vec3(-1 + coor_offset_x  , -1 + coor_offset_y, -1 + coor_offset_z));
-    glm::mat4 sMat = glm::scale(I,
-            glm::vec3(1.0f * graph_scale_x, -1.0f * graph_scale_y, 1.0f * graph_scale_z));
+    float xDataScale = std::abs(xRange) < 1.0e-3 ? 0.0f : 2/(xRange);
+    float yDataScale = std::abs(yRange) < 1.0e-3 ? 0.0f : 2/(yRange);
+    float zDataScale = std::abs(zRange) < 1.0e-3 ? 0.0f : 2/(zRange);
 
-    glm::mat4 model= rMat * tMat * sMat;
+    float xDataOffset = (-mRange[0] * xDataScale);
+    float yDataOffset = (-mRange[2] * yDataScale);
+    float zDataOffset = (-mRange[4] * zDataScale);
 
-    pOut = pInput * model;
-    glScissor(pX, pY, pVPW, pVPH);
+    glm::vec3 scaleVector(xDataScale, -1.0f * yDataScale, zDataScale);
+
+    glm::vec3 shiftVector(-(mRange[0]+mRange[1])/2.0f,
+                          -(mRange[2]+mRange[3])/2.0f,
+                          -(mRange[4]+mRange[5])/2.0f);
+    shiftVector += glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
+
+    return pView * glm::translate(glm::scale(MODEL, scaleVector), shiftVector);
 }
 
 void plot_impl::bindDimSpecificUniforms()
@@ -203,22 +201,22 @@ size_t plot_impl::markersSizes() const
 
 void plot_impl::render(const int pWindowId,
                        const int pX, const int pY, const int pVPW, const int pVPH,
-                       const glm::mat4& pTransform)
+                       const glm::mat4& pView)
 {
     CheckGL("Begin plot_impl::render");
-    glEnable(GL_SCISSOR_TEST);
-    glDepthMask(GL_FALSE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (mIsPVAOn) {
+        glDepthMask(GL_FALSE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
-    glm::mat4 mvp(1.0);
-    this->computeTransformMat(mvp, pTransform, pX, pY, pVPW, pVPH);
+    glm::mat4 viewModelMatrix = this->computeTransformMat(pView);
 
     if (mPlotType == FG_PLOT_LINE) {
         glUseProgram(mPlotProgram);
 
         this->bindDimSpecificUniforms();
-        glUniformMatrix4fv(mPlotMatIndex, 1, GL_FALSE, glm::value_ptr(mvp));
+        glUniformMatrix4fv(mPlotMatIndex, 1, GL_FALSE, glm::value_ptr(viewModelMatrix));
         glUniform1i(mPlotPVCOnIndex, mIsPVCOn);
         glUniform1i(mPlotPVAOnIndex, mIsPVAOn);
 
@@ -233,7 +231,7 @@ void plot_impl::render(const int pWindowId,
         glEnable(GL_PROGRAM_POINT_SIZE);
         glUseProgram(mMarkerProgram);
 
-        glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(mvp));
+        glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(viewModelMatrix));
         glUniform1i(mMarkerPVCOnIndex, mIsPVCOn);
         glUniform1i(mMarkerPVAOnIndex, mIsPVAOn);
         glUniform1i(mMarkerPVROnIndex, mIsPVROn);
@@ -249,54 +247,25 @@ void plot_impl::render(const int pWindowId,
         glDisable(GL_PROGRAM_POINT_SIZE);
     }
 
-    glDisable(GL_BLEND);
-    glDepthMask(GL_TRUE);
-    glDisable(GL_SCISSOR_TEST);
+    if (mIsPVAOn) {
+        glDisable(GL_BLEND);
+        glDepthMask(GL_TRUE);
+    }
     CheckGL("End plot_impl::render");
 }
 
-void plot2d_impl::computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput,
-                                      const int pX, const int pY,
-                                      const int pVPW, const int pVPH)
+glm::mat4 plot2d_impl::computeTransformMat(const glm::mat4 pView)
 {
-    float range_x = mRange[1] - mRange[0];
-    float range_y = mRange[3] - mRange[2];
-    // set scale to zero if input is constant array
-    // otherwise compute scale factor by standard equation
-    float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 0.0f : 2/(range_x);
-    float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 0.0f : 2/(range_y);
+    float xRange = mRange[1] - mRange[0];
+    float yRange = mRange[3] - mRange[2];
 
-    float coor_offset_x = (-mRange[0] * graph_scale_x);
-    float coor_offset_y = (-mRange[2] * graph_scale_y);
+    float xDataScale = std::abs(xRange) < 1.0e-3 ? 1.0f : 2/(xRange);
+    float yDataScale = std::abs(yRange) < 1.0e-3 ? 1.0f : 2/(yRange);
 
-    //FIXME: Using hard constants for now, find a way to get chart values
-    const float lMargin = 68;
-    const float rMargin = 8;
-    const float tMargin = 8;
-    const float bMargin = 44;
-    const float tickSize = 10;
+    glm::vec3 shiftVector(-(mRange[0]+mRange[1])/2.0f, -(mRange[2]+mRange[3])/2.0f, 0.0f);
+    glm::vec3 scaleVector(xDataScale, yDataScale, 1);
 
-    float viewWidth    = pVPW - (lMargin + rMargin + tickSize/2);
-    float viewHeight   = pVPH - (bMargin + tMargin + tickSize/2);
-    float view_scale_x = viewWidth/pVPW;
-    float view_scale_y = viewHeight/pVPH;
-
-    coor_offset_x *= view_scale_x;
-    coor_offset_y *= view_scale_y;
-
-    float view_offset_x = (2.0f * (lMargin + tickSize/2 )/ pVPW ) ;
-    float view_offset_y = (2.0f * (bMargin + tickSize )/ pVPH ) ;
-
-    glm::mat4 tMat = glm::translate(I,
-            glm::vec3(-1 + view_offset_x + coor_offset_x  , -1 + view_offset_y + coor_offset_y, 0));
-    pOut = glm::scale(tMat,
-            glm::vec3(graph_scale_x * view_scale_x , graph_scale_y * view_scale_y ,1));
-
-    pOut = pInput * pOut;
-
-    glScissor(pX + lMargin + tickSize/2, pY+bMargin + tickSize/2,
-              pVPW - lMargin - rMargin - tickSize/2,
-              pVPH - bMargin - tMargin - tickSize/2);
+    return pView * glm::translate(glm::scale(IDENTITY, scaleVector), shiftVector);
 }
 
 void plot2d_impl::bindDimSpecificUniforms()

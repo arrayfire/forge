@@ -9,17 +9,8 @@
 
 #pragma once
 
-#ifdef OS_WIN
-    #define GLFW_EXPOSE_NATIVE_WIN32
-    #define GLFW_EXPOSE_NATIVE_WGL
-#endif
-
-#ifdef OS_LNX
-    #define GLFW_EXPOSE_NATIVE_X11
-    #define GLFW_EXPOSE_NATIVE_GLX
-#endif
-
 #include <common.hpp>
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
@@ -54,7 +45,7 @@ class Widget {
         int mCols;
         int mCellWidth;
         int mCellHeight;
-        std::vector<glm::mat4> mMVPs;
+        std::vector<glm::mat4> mViewMatrices;
 
         GLuint  mFramePBO;
 

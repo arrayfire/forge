@@ -8,9 +8,7 @@
  ********************************************************/
 
 #include <forge.h>
-#define __CL_ENABLE_EXCEPTIONS
-#include <cl.hpp>
-#include <OpenCLCopy.hpp>
+#include "cl_helpers.h"
 #include <mutex>
 #include <complex>
 #include <cmath>
@@ -18,7 +16,6 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "cl_helpers.h"
 
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
@@ -29,8 +26,23 @@ static const float ZMAX = 10.f;
 const float DX = 0.005;
 static const unsigned ZSIZE = (ZMAX-ZMIN)/DX+1;
 
-
 using namespace std;
+
+cl::CommandQueue queue;
+cl::Context context;
+
+cl_context getContext()
+{
+    return context();
+}
+
+cl_command_queue getCommandQueue()
+{
+    return queue();
+}
+
+#define USE_FORGE_OPENCL_COPY_HELPERS
+#include <ComputeCopy.h>
 
 static const std::string sincos_surf_kernel =
 "kernel void generateCurve(global float* out, const float t, const float dx, const float zmin, const unsigned SIZE)\n"
@@ -118,8 +130,7 @@ int main(void)
         plat.getDevices(CL_DEVICE_TYPE_GPU, &devs);
 
         Device device;
-        CommandQueue queue;
-        Context context;
+
         for (auto& d : devs) {
             if (checkExtnAvailability(d, CL_GL_SHARING_EXT)) {
                 device = d;
@@ -136,20 +147,26 @@ int main(void)
         cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * ZSIZE * 3);
         static float t=0;
         kernel(devOut, queue, t);
+
+        GfxHandle* handle;
+        createGLBuffer(&handle, plot3.vertices(), FORGE_VBO);
         /* copy your data into the pixel buffer object exposed by
          * fg::Surface class and then proceed to rendering.
          * To help the users with copying the data from compute
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        fg::copy(plot3.vertices(), plot3.verticesSize(), devOut, queue);
+        copyToGLBuffer(handle, (ComputeResourceHandle)devOut(), plot3.verticesSize());
 
         do {
             t+=0.01;
             kernel(devOut, queue, t);
-            fg::copy(plot3.vertices(), plot3.verticesSize(), devOut, queue);
+            copyToGLBuffer(handle, (ComputeResourceHandle)devOut(), plot3.verticesSize());
             wnd.draw(chart);
         } while(!wnd.close());
+
+        releaseGLBuffer(handle);
+
     }catch (fg::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {

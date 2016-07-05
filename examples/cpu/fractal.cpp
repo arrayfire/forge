@@ -8,7 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 
@@ -63,12 +64,21 @@ int main(void)
      * along with the library to help with this task
      */
     kernel(bmp);
-    fg::copy(img, (const void*)bmp.ptr);
+
+    GfxHandle* handle = 0;
+
+    // create GL-CPU interop buffer
+    createGLBuffer(&handle, img.pbo(), FORGE_PBO);
+
+    // copy the data from compute buffer to graphics buffer
+    copyToGLBuffer(handle, (ComputeResourceHandle)bmp.ptr, img.size());
 
     do {
         wnd.draw(img);
     } while(!wnd.close());
 
+    // destroy GL-CPU Interop buffer
+    releaseGLBuffer(handle);
     destroyBitmap(bmp);
     return 0;
 }

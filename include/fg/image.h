@@ -40,8 +40,7 @@ FGAPI fg_err fg_get_image_pbo_size(uint* pOut, const fg_image pImage);
 
 FGAPI fg_err fg_render_image(const fg_window pWindow,
                              const fg_image pImage,
-                             const int pX, const int pY, const int pWidth, const int pHeight,
-                             const float* pTransform);
+                             const int pX, const int pY, const int pWidth, const int pHeight);
 
 #ifdef __cplusplus
 }
@@ -150,14 +149,9 @@ class Image {
            \param[in] pY is y coordinate of origin of viewport in window coordinates
            \param[in] pVPW is the width of the viewport
            \param[in] pVPH is the height of the viewport
-           \param[in] pTransform is an array of floats. This array is expected to contain
-                      at least 16 elements
-
-           Note: pTransform array is assumed to be of expected length.
          */
         FGAPI void render(const Window& pWindow,
-                          const int pX, const int pY, const int pVPW, const int pVPH,
-                          const float* pTransform) const;
+                          const int pX, const int pY, const int pVPW, const int pVPH) const;
 
         /**
            Get the handle to internal implementation of Image

@@ -8,12 +8,12 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CUDACopy.hpp>
-
 #include <cuda_runtime.h>
 #include <curand.h>
 #include <curand_kernel.h>
 #include <cuComplex.h>
+#define USE_FORGE_CUDA_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <cstdio>
 
 const unsigned IMGW = 256;
@@ -104,16 +104,23 @@ int main(void)
     FORGE_CUDA_CHECK(cudaMalloc((void**)&histOut, NBINS * sizeof(int)));
     FORGE_CUDA_CHECK(cudaMalloc((void**)&histColors, 3*NBINS * sizeof(float)));
 
+    GfxHandle* handles[3];
+
+    createGLBuffer(&handles[0], img.pbo(), FORGE_PBO);
+    createGLBuffer(&handles[1], hist.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[2], hist.colors(), FORGE_VBO);
+
     unsigned frame = 0;
     do {
         if (frame%8==0) {
             kernel(bmp, noiseGenerator);
-            fg::copy(img, bmp.ptr);
+            copyToGLBuffer(handles[0], (ComputeResourceHandle)bmp.ptr, img.size());
 
             populateBins(bmp, histOut, NBINS, histColors);
 
-            fg::copy(hist.vertices(), histOut);
-            fg::copy(hist.colors(), histColors);
+            copyToGLBuffer(handles[1], (ComputeResourceHandle)histOut, hist.verticesSize());
+            copyToGLBuffer(handles[2], (ComputeResourceHandle)histColors, hist.colorsSize());
+
             frame = 0;
         }
 
@@ -126,6 +133,10 @@ int main(void)
 
     FORGE_CUDA_CHECK(cudaFree(histOut));
     FORGE_CUDA_CHECK(cudaFree(histColors));
+    releaseGLBuffer(handles[0]);
+    releaseGLBuffer(handles[1]);
+    releaseGLBuffer(handles[2]);
+
     return 0;
 }
 

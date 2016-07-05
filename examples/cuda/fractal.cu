@@ -1,17 +1,17 @@
 /*******************************************************
-* Copyright (c) 2015-2019, ArrayFire
-* All rights reserved.
-*
-* This file is distributed under 3-clause BSD license.
-* The complete license agreement can be obtained at:
-* http://arrayfire.com/licenses/BSD-3-Clause
-********************************************************/
+ * Copyright (c) 2015-2019, ArrayFire
+ * All rights reserved.
+ *
+ * This file is distributed under 3-clause BSD license.
+ * The complete license agreement can be obtained at:
+ * http://arrayfire.com/licenses/BSD-3-Clause
+ ********************************************************/
 
 #include <forge.h>
-#include <CUDACopy.hpp>
-
 #include <cuda_runtime.h>
 #include <cuComplex.h>
+#define USE_FORGE_CUDA_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <cstdio>
 
 const unsigned DIMX = 512;
@@ -36,6 +36,12 @@ int main(void)
      * textures and pixel buffer objects to hold the image
      * */
     fg::Image img(DIMX, DIMY, FG_RGBA, fg::u8);
+
+    GfxHandle* handle = 0;
+
+    // create GL-CPU interop buffer
+    createGLBuffer(&handle, img.pbo(), FORGE_PBO);
+
     /* copy your data into the pixel buffer object exposed by
      * fg::Image class and then proceed to rendering.
      * To help the users with copying the data from compute
@@ -44,12 +50,16 @@ int main(void)
      */
 	FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, TOT_SIZE));
     kernel(dev_out);
-    fg::copy(img, dev_out);
+
+    // copy the data from compute buffer to graphics buffer
+    copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, img.size());
 
     do {
         wnd.draw(img);
     } while(!wnd.close());
 
+    // destroy GL-CPU Interop buffer
+    releaseGLBuffer(handle);
     FORGE_CUDA_CHECK(cudaFree(dev_out));
     return 0;
 }

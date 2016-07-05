@@ -30,7 +30,7 @@ ENDIF(UNIX)
 ExternalProject_Add(
     glb-ext
     GIT_REPOSITORY https://github.com/cginternals/glbinding.git
-    GIT_TAG v2.0.0
+    GIT_TAG v2.1.1
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -Wno-dev "-G${CMAKE_GENERATOR}" <SOURCE_DIR>
     -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}

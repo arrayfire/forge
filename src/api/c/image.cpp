@@ -122,13 +122,12 @@ fg_err fg_get_image_pbo_size(uint* pOut, const fg_image pImage)
 
 fg_err fg_render_image(const fg_window pWindow,
                        const fg_image pImage,
-                       const int pX, const int pY, const int pWidth, const int pHeight,
-                       const float* pTransform)
+                       const int pX, const int pY, const int pWidth, const int pHeight)
 {
     try {
         getImage(pImage)->render(getWindow(pWindow)->getID(),
                                  pX, pY, pWidth, pHeight,
-                                 glm::make_mat4(pTransform));
+                                 IDENTITY);
     }
     CATCHALL
 

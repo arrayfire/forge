@@ -45,7 +45,6 @@ class histogram_impl : public AbstractRenderable {
          * for rendering resources */
         void bindResources(const int pWindowId);
         void unbindResources() const;
-        void computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput);
 
     public:
         histogram_impl(const uint pNBins, const fg::dtype pDataType);
@@ -53,7 +52,7 @@ class histogram_impl : public AbstractRenderable {
 
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,
-                    const glm::mat4& pTransform);
+                    const glm::mat4 &pView);
 };
 
 }

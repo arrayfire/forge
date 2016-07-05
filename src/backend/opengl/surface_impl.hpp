@@ -57,7 +57,7 @@ class surface_impl : public AbstractRenderable {
          * for rendering resources */
         void bindResources(const int pWindowId);
         void unbindResources() const;
-        void computeTransformMat(glm::mat4& pOut, const glm::mat4 pInput);
+        glm::mat4  computeTransformMat(const glm::mat4& pView);
         virtual void renderGraph(const int pWindowId, const glm::mat4& transform);
 
     public:
@@ -67,7 +67,7 @@ class surface_impl : public AbstractRenderable {
 
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,
-                    const glm::mat4 &pTransform);
+                    const glm::mat4 &pView);
 
         inline void usePerVertexColors(const bool pFlag=true) {
             mIsPVCOn = pFlag;

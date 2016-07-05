@@ -8,7 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 #include <vector>
@@ -74,7 +75,7 @@ int main(void)
     wnd.makeCurrent();
 
     fg::Chart chart(FG_CHART_2D);
-    chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.1f, 1.1f);
+    chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.0f, 1.0f);
 
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
@@ -98,19 +99,36 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plt1.vertices(), plt1.verticesSize(), (const void*)cosData.data());
-    fg::copy(plt2.vertices(), plt2.verticesSize(), (const void*)tanData.data());
+
+    GfxHandle* handles[5];
+
+    // create GL-CPU interop buffers
+    createGLBuffer(&handles[0], plt1.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[1], plt2.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[2], plt2.colors(), FORGE_VBO);
+    createGLBuffer(&handles[3], plt2.alphas(), FORGE_VBO);
+    createGLBuffer(&handles[4], plt2.markers(), FORGE_VBO);
+
+    // copy the data from compute buffer to graphics buffer
+    copyToGLBuffer(handles[0], (ComputeResourceHandle)cosData.data(), plt1.verticesSize());
+    copyToGLBuffer(handles[1], (ComputeResourceHandle)tanData.data(), plt2.verticesSize());
 
     /* update color value for tan graph */
-    fg::copy(plt2.colors(), plt2.colorsSize(), (const void*)colors.data());
+    copyToGLBuffer(handles[2], (ComputeResourceHandle)colors.data(), plt2.colorsSize());
     /* update alpha values for tan graph */
-    fg::copy(plt2.alphas(), plt2.alphasSize(), (const void*)alphas.data());
+    copyToGLBuffer(handles[3], (ComputeResourceHandle)alphas.data(), plt2.alphasSize());
     /* update marker sizes for tan graph markers */
-    fg::copy(plt2.markers(), plt2.markersSize(), (const void*)radii.data());
+    copyToGLBuffer(handles[4], (ComputeResourceHandle)radii.data(), plt2.markersSize());
 
     do {
         wnd.draw(chart);
     } while(!wnd.close());
 
+    // destroy GL-CPU Interop buffer
+    releaseGLBuffer(handles[0]);
+    releaseGLBuffer(handles[1]);
+    releaseGLBuffer(handles[2]);
+    releaseGLBuffer(handles[3]);
+    releaseGLBuffer(handles[4]);
     return 0;
 }

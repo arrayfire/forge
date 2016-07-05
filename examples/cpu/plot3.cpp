@@ -8,7 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 #include <vector>
@@ -28,7 +29,7 @@ using namespace std;
 void generateCurve(float t, float dx, std::vector<float> &vec )
 {
     vec.clear();
-    for (int i=0; i<ZSIZE; ++i) {
+    for (int i=0; i < (int)ZSIZE; ++i) {
         float z = ZMIN + i*dx;
         vec.push_back(cos(z*t+t)/z);
         vec.push_back(sin(z*t+t)/z);
@@ -56,20 +57,26 @@ int main(void)
     std::vector<float> function;
     static float t=0;
     generateCurve(t, DX, function);
+
+    GfxHandle* handle;
+    createGLBuffer(&handle, plot3.vertices(), FORGE_VBO);
+
     /* copy your data into the pixel buffer object exposed by
      * fg::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plot3.vertices(), plot3.verticesSize(), (const void*)function.data());
+    copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), plot3.verticesSize());
 
     do {
         t+=0.01;
         generateCurve(t, DX, function);
-        fg::copy(plot3.vertices(), plot3.verticesSize(), (const void*)function.data());
+        copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), plot3.verticesSize());
         wnd.draw(chart);
     } while(!wnd.close());
+
+    releaseGLBuffer(handle);
 
     return 0;
 }

@@ -49,6 +49,7 @@ typedef void* fg_image;
 typedef void* fg_histogram;
 typedef void* fg_plot;
 typedef void* fg_surface;
+typedef void* fg_vector_field;
 
 typedef unsigned int    uint;
 typedef unsigned short  ushort;

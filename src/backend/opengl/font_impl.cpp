@@ -7,8 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/font.h>
-
 #include <common.hpp>
 #include <err_opengl.hpp>
 #include <font_impl.hpp>

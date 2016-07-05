@@ -9,6 +9,7 @@
 
 #include <common.hpp>
 #include <glfw/window.hpp>
+#include <gl_native_handles.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -17,12 +18,6 @@ using glm::translate;
 using glm::scale;
 
 using namespace gl;
-
-#ifndef OS_WIN
-#include <GL/glx.h>
-#else
-#include <windows.h>
-#endif
 
 #include <iostream>
 
@@ -134,24 +129,12 @@ void Widget::makeContextCurrent() const
 
 long long Widget::getGLContextHandle()
 {
-#ifdef OS_WIN
-    return reinterpret_cast<long long>(wglGetCurrentContext());
-#elif OS_LNX
-    return reinterpret_cast<long long>(glXGetCurrentContext());
-#else
-    return 0;
-#endif
+    return opengl::getCurrentContextHandle();
 }
 
 long long Widget::getDisplayHandle()
 {
-#ifdef OS_WIN
-    return reinterpret_cast<long long>(wglGetCurrentDC());
-#elif OS_LNX
-    return reinterpret_cast<long long>(glXGetCurrentDisplay());
-#else
-    return 0;
-#endif
+    return opengl::getCurrentDisplayHandle();
 }
 
 void Widget::setTitle(const char* pTitle)
@@ -228,7 +211,7 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
 
     int r, c;
     getViewIds(&r, &c);
-    glm::mat4& mvp = mMVPs[r+c*mRows];
+    glm::mat4& mvp = mViewMatrices[r+c*mRows];
 
     if (mButton == GLFW_MOUSE_BUTTON_LEFT) {
         // Translate
@@ -244,6 +227,7 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
             mvp = scale(mvp, glm::vec3(pow(deltaY, SPEED)));
         }
     } else if (mButton == GLFW_MOUSE_BUTTON_RIGHT) {
+        // Rotation
         int width, height;
         glfwGetWindowSize(mWindow, &width, &height);
 
@@ -284,8 +268,7 @@ void Widget::mouseButtonHandler(int pButton, int pAction, int pMods)
     if (pButton == GLFW_MOUSE_BUTTON_MIDDLE && pMods == GLFW_MOD_CONTROL && pAction == GLFW_PRESS) {
         int r, c;
         getViewIds(&r, &c);
-        glm::mat4& mvp = mMVPs[r+c*mRows];
-        mvp = glm::mat4(1.0f);
+        mViewMatrices[r+c*mRows] = glm::mat4(1);
     }
 }
 

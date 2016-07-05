@@ -9,6 +9,5 @@ out vec4 outColor;
 
 void main(void)
 {
-   float a  = isPVAOn ? pervcol.w : 1.0;
    outColor = vec4(isPVCOn ? pervcol.xyz : barColor.xyz, isPVAOn ? pervcol.w : 1.0);
 }

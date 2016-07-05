@@ -9,14 +9,9 @@
 
 #include <common.hpp>
 #include <sdl/window.hpp>
+#include <gl_native_handles.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
-
-#ifndef OS_WIN
-#include <GL/glx.h>
-#else
-#include <windows.h>
-#endif
 #include <iostream>
 
 using glm::rotate;
@@ -108,22 +103,12 @@ void Widget::makeContextCurrent() const
 
 long long Widget::getGLContextHandle()
 {
-#ifdef OS_WIN
-    return reinterpret_cast<long long>(wglGetCurrentContext());
-#endif
-#ifdef OS_LNX
-    return reinterpret_cast<long long>(glXGetCurrentContext());
-#endif
+    return opengl::getCurrentContextHandle();
 }
 
 long long Widget::getDisplayHandle()
 {
-#ifdef OS_WIN
-    return reinterpret_cast<long long>(wglGetCurrentDC());
-#endif
-#ifdef OS_LNX
-    return reinterpret_cast<long long>(glXGetCurrentDisplay());
-#endif
+    return opengl::getCurrentDisplayHandle();
 }
 
 void Widget::setTitle(const char* pTitle)
