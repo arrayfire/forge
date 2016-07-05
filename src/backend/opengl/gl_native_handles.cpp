@@ -24,12 +24,12 @@ ContextHandle getCurrentContextHandle()
 {
     auto id = ContextHandle{0};
 
-#ifdef SYSTEM_WINDOWS
+#if defined(OS_WIN)
     const auto context = wglGetCurrentContext();
-#elif SYSTEM_DARWIN
-    const auto context = CGLGetCurrentContext();
+#elif defined(OS_LNX)
+	const auto context = glXGetCurrentContext();
 #else
-    const auto context = glXGetCurrentContext();
+	const auto context = CGLGetCurrentContext();
 #endif
     id = reinterpret_cast<ContextHandle>(context);
 
@@ -40,7 +40,7 @@ DisplayHandle getCurrentDisplayHandle()
 {
     auto id = DisplayHandle{0};
 
-#if defined(OD_WIN)
+#if defined(OS_WIN)
     const auto display = wglGetCurrentDC();
 #elif defined(OS_LNX)
     const auto display = glXGetCurrentDisplay();
