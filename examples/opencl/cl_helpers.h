@@ -19,14 +19,9 @@
 #pragma GCC diagnostic pop
 
 #include <sstream>
+#include <algorithm>
 
 using namespace cl;
-
-
-static const std::string NVIDIA_PLATFORM = "NVIDIA CUDA";
-static const std::string AMD_PLATFORM = "AMD Accelerated Parallel Processing";
-static const std::string INTEL_PLATFORM = "Intel(R) OpenCL";
-static const std::string APPLE_PLATFORM = "Apple";
 
 #if defined (OS_MAC)
 static const std::string CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
@@ -34,74 +29,124 @@ static const std::string CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 static const std::string CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
-
-Platform getPlatform(std::string pName, cl_int &error)
-{
-    typedef std::vector<Platform>::iterator PlatformIter;
-
-    Platform ret_val;
-    error = 0;
-    try {
-        // Get available platforms
-        std::vector<Platform> platforms;
-        Platform::get(&platforms);
-        int found = -1;
-        for(PlatformIter it=platforms.begin(); it<platforms.end(); ++it) {
-            std::string temp = it->getInfo<CL_PLATFORM_NAME>();
-            if (temp==pName) {
-                found = it - platforms.begin();
-                std::cout<<"Found platform: "<<temp<<std::endl;
-                break;
-            }
-        }
-        if (found==-1) {
-            // Going towards + numbers to avoid conflict with OpenCl error codes
-            error = +1; // requested platform not found
-        } else {
-            ret_val = platforms[found];
-        }
-    } catch(Error err) {
-        std::cout << err.what() << "(" << err.err() << ")" << std::endl;
-        error = err.err();
-    }
-    return ret_val;
-}
-
-Platform getPlatform()
-{
-    cl_int errCode;
-    Platform plat = getPlatform(NVIDIA_PLATFORM, errCode);
-    if (errCode != CL_SUCCESS) {
-        Platform plat = getPlatform(AMD_PLATFORM, errCode);
-        if (errCode != CL_SUCCESS) {
-            Platform plat = getPlatform(INTEL_PLATFORM, errCode);
-            if (errCode != CL_SUCCESS) {
-                Platform plat = getPlatform(APPLE_PLATFORM, errCode);
-                if (errCode != CL_SUCCESS) {
-                    exit(255);
-                } else {
-                    return plat;
-                }
-            } else
-                return plat;
-        } else
-            return plat;
-    }
-    return plat;
-}
-
-bool checkExtnAvailability(const Device &pDevice, std::string pName)
+bool checkGLInterop(const cl::Platform &plat,  const cl::Device &pDevice, const fg::Window &wnd)
 {
     bool ret_val = false;
     // find the extension required
     std::string exts = pDevice.getInfo<CL_DEVICE_EXTENSIONS>();
     std::stringstream ss(exts);
     std::string item;
+
     while (std::getline(ss,item,' ')) {
-        if (item==pName) {
+        if (item == CL_GL_SHARING_EXT) {
             ret_val = true;
             break;
         }
     }
+
+    if (!ret_val) return false;
+
+#if !defined(OS_MAC) // Check on Linux, Windows
+    // Check if current OpenCL device is belongs to the OpenGL context
+    cl_context_properties cps[] = {
+        CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
+        CL_CONTEXT_PLATFORM, (cl_context_properties)plat(),
+        0
+    };
+
+    // Load the extension
+    // If cl_khr_gl_sharing is available, this function should be present
+    // This has been checked earlier, it comes to this point only if it is found
+    auto func = (clGetGLContextInfoKHR_fn)
+        clGetExtensionFunctionAddressForPlatform(plat(), "clGetGLContextInfoKHR");
+
+    if (!func) return false;
+    // Get all devices associated with opengl context
+    std::vector<cl_device_id> devices(16);
+    size_t ret = 0;
+    cl_int err = func(cps,
+                      CL_DEVICES_FOR_GL_CONTEXT_KHR,
+                      devices.size() * sizeof(cl_device_id),
+                      &devices[0],
+                      &ret);
+
+    if (err != CL_SUCCESS) return false;
+
+    int num = ret / sizeof(cl_device_id);
+    devices.resize(num);
+
+    // Check if current device is present in the associated devices
+    cl_device_id current_device = pDevice();
+    auto res = std::find(std::begin(devices),
+                         std::end(devices),
+                         current_device);
+
+    ret_val = res != std::end(devices);
+#endif
     return ret_val;
+}
+
+cl::Context createCLGLContext(const fg::Window &wnd)
+{
+    std::vector<cl::Platform> platforms;
+    Platform::get(&platforms);
+
+    for (auto platform : platforms) {
+        std::vector<cl::Device> devices;
+
+        try {
+            platform.getDevices(CL_DEVICE_TYPE_GPU, &devices);
+        } catch(const cl::Error &err) {
+            if (err.err() != CL_DEVICE_NOT_FOUND) {
+                throw;
+            } else {
+                continue;
+            }
+        }
+
+        for (auto device : devices) {
+            if (!checkGLInterop(platform, device, wnd)) continue;
+#if defined(OS_MAC)
+            CGLContextObj cgl_current_ctx = CGLGetCurrentContext();
+            CGLShareGroupObj cgl_share_group = CGLGetShareGroup(cgl_current_ctx);
+
+            cl_context_properties cps[] = {
+                CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE, (cl_context_properties)cgl_share_group,
+                0
+            };
+#elif defined(OS_LNX)
+            cl_context_properties cps[] = {
+                CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
+                CL_GLX_DISPLAY_KHR, (cl_context_properties)wnd.display(),
+                CL_CONTEXT_PLATFORM, (cl_context_properties)platform(),
+                0
+            };
+#else /* OS_WIN */
+            cl_context_properties cps[] = {
+                CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
+                CL_WGL_HDC_KHR, (cl_context_properties)wnd.display(),
+                CL_CONTEXT_PLATFORM, (cl_context_properties)platform(),
+                0
+            };
+#endif
+            std::cout << "Platform: " << platform.getInfo<CL_PLATFORM_NAME>() << std::endl;
+            std::cout << "Device: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
+            return cl::Context(device, cps);
+        }
+    }
+
+    throw std::runtime_error("No CL-GL sharing contexts found");
+}
+
+cl::CommandQueue queue;
+cl::Context context;
+
+cl_context getContext()
+{
+    return context();
+}
+
+cl_command_queue getCommandQueue()
+{
+    return queue();
 }

@@ -23,19 +23,6 @@ const unsigned DIMX = 512;
 const unsigned DIMY = 512;
 const unsigned IMG_SIZE = DIMX * DIMY * 4;
 
-cl::CommandQueue queue;
-cl::Context context;
-
-cl_context getContext()
-{
-    return context();
-}
-
-cl_command_queue getCommandQueue()
-{
-    return queue();
-}
-
 #define USE_FORGE_OPENCL_COPY_HELPERS
 #include <ComputeCopy.h>
 
@@ -119,6 +106,7 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
 int main(void)
 {
     try {
+
         /*
         * First Forge call should be a window creation call
         * so that necessary OpenGL context is created for any
@@ -132,49 +120,15 @@ int main(void)
         * */
         fg::Image img(DIMX, DIMY, FG_RGBA, fg::u8);
 
-
-        Platform plat = getPlatform();
-        // Select the default platform and create a context using this platform and the GPU
-#if defined(OS_MAC)
-        CGLContextObj cgl_current_ctx = CGLGetCurrentContext();
-        CGLShareGroupObj cgl_share_group = CGLGetShareGroup(cgl_current_ctx);
-
-        cl_context_properties cps[] = {
-            CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE, (cl_context_properties)cgl_share_group,
-            0
-        };
-#elif defined(OS_LNX)
-        cl_context_properties cps[] = {
-            CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
-            CL_GLX_DISPLAY_KHR, (cl_context_properties)wnd.display(),
-            CL_CONTEXT_PLATFORM, (cl_context_properties)plat(),
-            0
-        };
-#else /* OS_WIN */
-        cl_context_properties cps[] = {
-            CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
-            CL_WGL_HDC_KHR, (cl_context_properties)wnd.display(),
-            CL_CONTEXT_PLATFORM, (cl_context_properties)plat(),
-            0
-        };
-#endif
-        std::vector<Device> devs;
-        plat.getDevices(CL_DEVICE_TYPE_GPU, &devs);
-
-        Device device;
-
-        for (auto& d : devs) {
-            if (checkExtnAvailability(d, CL_GL_SHARING_EXT)) {
-                device = d;
-                context = Context(device, cps);
-                try {
-                    queue = CommandQueue(context, device);
-                    break;
-                } catch (cl::Error err) {
-                    continue;
-                }
-            }
-        }
+        /*
+         * Helper function to create a CLGL interop context.
+         * This function checks for if the extension is available
+         * and creates the context on the appropriate device.
+         * Note: context and queue are defined in cl_helpers.h
+         */
+        context = createCLGLContext(wnd);
+        Device device = context.getInfo<CL_CONTEXT_DEVICES>()[0];
+        queue = CommandQueue(context, device);
 
         /* copy your data into the pixel buffer object exposed by
          * fg::Image class and then proceed to rendering.
