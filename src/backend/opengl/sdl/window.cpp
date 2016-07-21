@@ -14,6 +14,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
+using namespace gl;
+
 using glm::rotate;
 using glm::translate;
 using glm::scale;
@@ -202,7 +204,7 @@ void Widget::pollEvents()
             if(evnt.button.button == SDL_BUTTON_MIDDLE && mMod == SDLK_LALT) {
                 int r, c;
                 getViewIds(&r, &c);
-                glm::mat4& mvp = mMVPs[r+c*mRows];
+                glm::mat4& mvp = mViewMatrices[r+c*mRows];
                 mvp = glm::mat4(1.0f);
             }
         }
@@ -213,7 +215,7 @@ void Widget::pollEvents()
 
             int r, c;
             getViewIds(&r, &c);
-            glm::mat4& mvp = mMVPs[r+c*mRows];
+            glm::mat4& mvp = mViewMatrices[r+c*mRows];
 
             if(evnt.motion.state == SDL_BUTTON_LMASK &&
                    (mMod == SDLK_LALT || mMod == SDLK_RALT)) {
