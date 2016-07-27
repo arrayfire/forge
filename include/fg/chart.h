@@ -21,45 +21,178 @@
 extern "C" {
 #endif
 
+/** \addtogroup chart_functions
+ *  @{
+ */
+
+/**
+   Create a Chart object with given dimensional property
+
+   \param[out] pHandle will be set to point to the chart object in memory
+   \param[in] pChartType is chart dimension property
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_create_chart(fg_chart *pHandle,
                              const fg_chart_type pChartType);
 
+/**
+   Destroy the chart object
+
+   \param[in] pHandle is chart handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_destroy_chart(fg_chart pHandle);
 
+/**
+   Set axes titles for the chart
+
+   \param[in] pHandle is chart handle
+   \param[in] pX is x-axis title label
+   \param[in] pY is y-axis title label
+   \param[in] pZ is z-axis title label
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_set_chart_axes_titles(fg_chart pHandle,
                                       const char* pX,
                                       const char* pY,
                                       const char* pZ);
 
+/**
+   Set axes data ranges
+
+   \param[in] pHandle is chart handle
+   \param[in] pXmin is x-axis minimum data value
+   \param[in] pXmax is x-axis maximum data value
+   \param[in] pYmin is y-axis minimum data value
+   \param[in] pYmax is y-axis maximum data value
+   \param[in] pZmin is z-axis minimum data value
+   \param[in] pZmax is z-axis maximum data value
+
+   \ingroup chart_functions
+ */
 FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
                                       const float pXmin, const float pXmax,
                                       const float pYmin, const float pYmax,
                                       const float pZmin, const float pZmax);
 
+/**
+   Set legend position for Chart
+
+   \param[in] pHandle is chart handle
+   \param[in] pX is horizontal position in normalized coordinates
+   \param[in] pY is vertical position in normalized coordinates
+
+   \return \ref fg_err error code
+
+   \note By normalized coordinates, the range of these coordinates is expected to be [0-1].
+   (0,0) is the bottom hand left corner.
+ */
 FGAPI fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const float pY);
 
+/**
+   Create and add an Image object to the current chart
+
+   \param[out] pImage is the handle of the image object created
+   \param[in] pHandle is chart handle to which image object will be added.
+   \param[in] pWidth Width of the image
+   \param[in] pHeight Height of the image
+   \param[in] pFormat Color channel format of image, uses one of the values
+              of \ref fg_channel_format
+   \param[in] pType takes one of the values of \ref fg_dtype that indicates
+              the integral data type of histogram data
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
                                    const uint pWidth, const uint pHeight,
                                    const fg_channel_format pFormat,
                                    const fg_dtype pType);
 
+/**
+   Create and add an Histogram object to the current chart
+
+   \param[out] pHistogram is the handle of the histogram object created
+   \param[in] pHandle is chart handle
+   \param[in] pNBins is number of bins the data is sorted out
+   \param[in] pType takes one of the values of \ref fg_dtype that indicates
+              the integral data type of histogram data
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
                                        const uint pNBins, const fg_dtype pType);
 
+/**
+   Create and add an Plot object to the current chart
+
+   \param[out] pPlot is the handle of the plot object created
+   \param[in] pHandle is chart handle
+   \param[in] pNPoints is number of data points to display
+   \param[in] pType takes one of the values of \ref fg_dtype that indicates
+              the integral data type of plot data
+   \param[in] pPlotType dictates the type of plot/graph,
+              it can take one of the values of \ref fg_plot_type
+   \param[in] pMarkerType indicates which symbol is rendered as marker. It can take one of
+              the values of \ref fg_marker_type.
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
                                   const uint pNPoints, const fg_dtype pType,
                                   const fg_plot_type pPlotType, const fg_marker_type pMarkerType);
 
+/**
+   Create and add an Plot object to the current chart
+
+   \param[out] pSurface is the handle of the surface object created
+   \param[in] pHandle is chart handle
+   \param[in] pXPoints is number of data points along X dimension
+   \param[in] pYPoints is number of data points along Y dimension
+   \param[in] pType takes one of the values of \ref fg_dtype that indicates
+              the integral data type of plot data
+   \param[in] pPlotType is the render type which can be one of \ref fg_plot_type (valid choices
+              are FG_PLOT_SURFACE and FG_PLOT_SCATTER)
+   \param[in] pMarkerType is the type of \ref fg_marker_type to draw for \ref FG_PLOT_SCATTER plot type
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
                                      const uint pXPoints, const uint pYPoints, const fg_dtype pType,
                                      const fg_plot_type pPlotType, const fg_marker_type pMarkerType);
 
+/**
+   Create and add an Vector Field object to the current chart
+
+   \param[out] pField is the handle of the Vector Field object created
+   \param[in] pHandle is chart handle
+   \param[in] pNPoints is number of data points to display
+   \param[in] pType takes one of the values of \ref fg_dtype that indicates the integral data type of vector field data
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
                                           const uint pNPoints, const fg_dtype pType);
 
+/**
+   Render the chart to given window
+
+   \param[in] pWindow is target window to where chart will be rendered
+   \param[in] pChart is chart handle
+   \param[in] pX is x coordinate of origin of viewport in window coordinates
+   \param[in] pY is y coordinate of origin of viewport in window coordinates
+   \param[in] pWidth is the width of the viewport
+   \param[in] pHeight is the height of the viewport
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_render_chart(const fg_window pWindow,
                              const fg_chart pChart,
                              const int pX, const int pY, const int pWidth, const int pHeight);
+
+/** @} */
 
 #ifdef __cplusplus
 }
@@ -77,8 +210,8 @@ namespace fg
    \brief Chart is base canvas where other plottable objects are rendered.
 
    Charts come in two types:
-        - \ref FG_2D - Two dimensional charts
-        - \ref FG_3D - Three dimensional charts
+        - \ref FG_CHART_2D - Two dimensional charts
+        - \ref FG_CHART_3D - Three dimensional charts
  */
 class Chart {
     private:
@@ -210,8 +343,8 @@ class Chart {
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of plot data
            \param[in] pPlotType is the render type which can be one of \ref PlotType (valid choices
-                      are FG_SURFACE and FG_SCATTER)
-           \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_SCATTER plot type
+                      are FG_PLOT_SURFACE and FG_PLOT_SCATTER)
+           \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_PLOT_SCATTER plot type
          */
         FGAPI Surface surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
                               const PlotType pPlotType=FG_PLOT_SURFACE, const MarkerType pMarkerType=FG_MARKER_NONE);
