@@ -381,7 +381,7 @@ chart2d_impl::chart2d_impl()
 
 void chart2d_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4& pView)
+                          const glm::mat4& pView, const glm::mat4& pOrient)
 {
     CheckGL("Begin chart2d_impl::renderChart");
 
@@ -416,7 +416,7 @@ void chart2d_impl::render(const int pWindowId,
     /* render all renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, pView * trans);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, pView * trans, pOrient);
     }
     glDisable(GL_SCISSOR_TEST);
 
@@ -712,7 +712,7 @@ chart3d_impl::chart3d_impl()
 
 void chart3d_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4& pView)
+                          const glm::mat4& pView, const glm::mat4& pOrient)
 {
     /* set uniform attributes of shader
      * for drawing the plot borders */
@@ -742,7 +742,7 @@ void chart3d_impl::render(const int pWindowId,
     /* render all the renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, renderableMat);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, renderableMat, pOrient);
     }
     glDisable(GL_SCISSOR_TEST);
 

@@ -127,7 +127,7 @@ fg_err fg_render_image(const fg_window pWindow,
     try {
         getImage(pImage)->render(getWindow(pWindow)->getID(),
                                  pX, pY, pWidth, pHeight,
-                                 IDENTITY);
+                                 IDENTITY, IDENTITY);
     }
     CATCHALL
 

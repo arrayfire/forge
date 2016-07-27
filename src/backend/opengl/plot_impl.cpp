@@ -61,7 +61,7 @@ void plot_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-glm::mat4 plot_impl::computeTransformMat(const glm::mat4 pView)
+glm::mat4 plot_impl::computeTransformMat(const glm::mat4 pView, const glm::mat4 pOrient)
 {
     static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
                                    glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
@@ -85,7 +85,7 @@ glm::mat4 plot_impl::computeTransformMat(const glm::mat4 pView)
                           -(mRange[4]+mRange[5])/2.0f);
     shiftVector += glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
 
-    return pView * glm::translate(glm::scale(MODEL, scaleVector), shiftVector);
+    return pView * glm::translate(glm::scale(pOrient*MODEL, scaleVector), shiftVector);
 }
 
 void plot_impl::bindDimSpecificUniforms()
@@ -201,7 +201,7 @@ size_t plot_impl::markersSizes() const
 
 void plot_impl::render(const int pWindowId,
                        const int pX, const int pY, const int pVPW, const int pVPH,
-                       const glm::mat4& pView)
+                       const glm::mat4& pView, const glm::mat4& pOrient)
 {
     CheckGL("Begin plot_impl::render");
     if (mIsPVAOn) {
@@ -210,7 +210,7 @@ void plot_impl::render(const int pWindowId,
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    glm::mat4 viewModelMatrix = this->computeTransformMat(pView);
+    glm::mat4 viewModelMatrix = this->computeTransformMat(pView, pOrient);
 
     if (mPlotType == FG_PLOT_LINE) {
         glUseProgram(mPlotProgram);
@@ -254,7 +254,7 @@ void plot_impl::render(const int pWindowId,
     CheckGL("End plot_impl::render");
 }
 
-glm::mat4 plot2d_impl::computeTransformMat(const glm::mat4 pView)
+glm::mat4 plot2d_impl::computeTransformMat(const glm::mat4 pView, const glm::mat4 pOrient)
 {
     float xRange = mRange[1] - mRange[0];
     float yRange = mRange[3] - mRange[2];

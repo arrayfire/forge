@@ -74,8 +74,8 @@ class Chart {
 
         inline void render(const int pWindowId,
                            const int pX, const int pY, const int pVPW, const int pVPH,
-                           const glm::mat4 &pView) const {
-            mChart->render(pWindowId, pX, pY, pVPW, pVPH, pView);
+                           const glm::mat4 &pView, const glm::mat4 &pOrient) const {
+            mChart->render(pWindowId, pX, pY, pVPW, pVPH, pView, pOrient);
         }
 };
 

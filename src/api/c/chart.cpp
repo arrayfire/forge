@@ -185,7 +185,7 @@ fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
     try {
         getChart(pChart)->render(getWindow(pWindow)->getID(),
                                  pX, pY, pWidth, pHeight,
-                                 IDENTITY);
+                                 IDENTITY, IDENTITY);
     }
     CATCHALL
 

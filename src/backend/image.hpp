@@ -52,8 +52,8 @@ class Image {
 
         inline void render(const int pWindowId,
                            const int pX, const int pY, const int pVPW, const int pVPH,
-                           const glm::mat4 &pView) const {
-            mImage->render(pWindowId, pX, pY, pVPW, pVPH, pView);
+                           const glm::mat4 &pView, const glm::mat4 &pOrient) const {
+            mImage->render(pWindowId, pX, pY, pVPW, pVPH, pView, pOrient);
         }
 };
 

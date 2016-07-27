@@ -64,7 +64,7 @@ void vector_field_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-glm::mat4 vector_field_impl::computeModelMatrix()
+glm::mat4 vector_field_impl::computeModelMatrix(const glm::mat4& pOrient)
 {
     float xRange = mRange[1] - mRange[0];
     float yRange = mRange[3] - mRange[2];
@@ -85,7 +85,7 @@ glm::mat4 vector_field_impl::computeModelMatrix()
                           -(mRange[4]+mRange[5])/2.0f);
     shiftVector += glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
 
-    return glm::translate(glm::scale(IDENTITY, scaleVector), shiftVector);
+    return glm::translate(glm::scale(pOrient, scaleVector), shiftVector);
 }
 
 vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDataType, const int pD)
@@ -181,7 +181,7 @@ size_t vector_field_impl::directionsSize() const
 
 void vector_field_impl::render(const int pWindowId,
                        const int pX, const int pY, const int pVPW, const int pVPH,
-                       const glm::mat4& pView)
+                       const glm::mat4& pView, const glm::mat4& pOrient)
 {
     static const glm::mat4 ArrowScaleMat = glm::scale(glm::mat4(1), glm::vec3(0.1,0.1,0.1));
 
@@ -192,7 +192,7 @@ void vector_field_impl::render(const int pWindowId,
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    glm::mat4 model = this->computeModelMatrix();
+    glm::mat4 model = this->computeModelMatrix(pOrient);
 
     glUseProgram(mFieldProgram);
 
@@ -220,7 +220,7 @@ void vector_field_impl::render(const int pWindowId,
     CheckGL("End vector_field_impl::render");
 }
 
-glm::mat4 vector_field2d_impl::computeModelMatrix()
+glm::mat4 vector_field2d_impl::computeModelMatrix(const glm::mat4& pOrient)
 {
     float xRange = mRange[1] - mRange[0];
     float yRange = mRange[3] - mRange[2];

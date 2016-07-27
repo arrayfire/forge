@@ -136,7 +136,7 @@ histogram_impl::~histogram_impl()
 
 void histogram_impl::render(const int pWindowId,
                        const int pX, const int pY, const int pVPW, const int pVPH,
-                       const glm::mat4& pView)
+                       const glm::mat4& pView, const glm::mat4& pOrient)
 {
     CheckGL("Begin histogram_impl::render");
     glDepthMask(GL_FALSE);

@@ -19,6 +19,8 @@ using glm::scale;
 
 using namespace gl;
 
+#include <algorithm>
+#include <cmath>
 #include <iostream>
 
 #define GLFW_THROW_ERROR(msg, err) \
@@ -211,11 +213,11 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
 
     int r, c;
     getViewIds(&r, &c);
-    glm::mat4& mvp = mViewMatrices[r+c*mRows];
+    glm::mat4& viewMat = mViewMatrices[r+c*mRows];
 
     if (mButton == GLFW_MOUSE_BUTTON_LEFT) {
         // Translate
-        mvp = translate(mvp, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
+        viewMat = translate(viewMat, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
 
     } else if (mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_ALT ||
                mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_CONTROL) {
@@ -224,27 +226,27 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
             if(deltaY < 0) {
                 deltaY = 1.0 / (-deltaY);
             }
-            mvp = scale(mvp, glm::vec3(pow(deltaY, SPEED)));
+            viewMat = scale(viewMat, glm::vec3(pow(deltaY, SPEED)));
         }
     } else if (mButton == GLFW_MOUSE_BUTTON_RIGHT) {
+        glm::mat4& orientationMat = mOrientMatrices[r+c*mRows];
         // Rotation
         int width, height;
         glfwGetWindowSize(mWindow, &width, &height);
 
-        glm::vec3 curPos = trackballPoint(pXPos, pYPos, width, height);
-        glm::vec3 delta = mLastPos - curPos;
-        float angle = glm::radians(90.0f * sqrt(delta.x*delta.x + delta.y*delta.y + delta.z*delta.z));
-        glm::vec3 axis(
-                mLastPos.y*curPos.z-mLastPos.z*curPos.y,
-                mLastPos.z*curPos.x-mLastPos.x*curPos.z,
-                mLastPos.x*curPos.y-mLastPos.y*curPos.x
-                );
-        float dMag = sqrt(dot(delta, delta));
-        float aMag = sqrt(dot(axis, axis));
-        if (dMag>0 && aMag>0) {
-            mvp = rotate(mvp, angle, axis);
+        if (mLastXPos != pXPos || mLastYPos != pYPos) {
+            glm::vec3 op1 = trackballPoint(mLastXPos, mLastYPos, width, height);
+            glm::vec3 op2 = trackballPoint(pXPos, pYPos, width, height);
+
+            float angle = std::acos(std::min(1.0f, glm::dot(op1, op2)));
+
+            glm::vec3 axisInCamCoord = glm::cross(op1, op2);
+
+            glm::mat3 camera2object = glm::inverse(glm::mat3(viewMat));
+            glm::vec3 axisInObjCoord = camera2object * axisInCamCoord;
+
+            orientationMat = glm::rotate(orientationMat, glm::degrees(angle), axisInObjCoord);
         }
-        mLastPos  = curPos;
     }
 
     mLastXPos = pXPos;
@@ -253,6 +255,11 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
 
 void Widget::mouseButtonHandler(int pButton, int pAction, int pMods)
 {
+    double x, y;
+    glfwGetCursorPos(mWindow, &x, &y);
+    mLastXPos = x;
+    mLastYPos = y;
+
     mButton = -1;
     if (pAction == GLFW_PRESS) {
         switch(pButton) {
@@ -269,6 +276,7 @@ void Widget::mouseButtonHandler(int pButton, int pAction, int pMods)
         int r, c;
         getViewIds(&r, &c);
         mViewMatrices[r+c*mRows] = glm::mat4(1);
+        mOrientMatrices[r+c*mRows] = glm::mat4(1);
     }
 }
 

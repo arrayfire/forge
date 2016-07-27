@@ -189,23 +189,24 @@ void Widget::pollEvents()
 
         if (evnt.type == SDL_KEYDOWN) {
             switch(evnt.key.keysym.sym) {
-                case SDLK_ESCAPE: mClose = true     ; break;
-                case SDLK_LALT  : mMod   = SDLK_LALT; break;
-                case SDLK_RALT  : mMod   = SDLK_RALT; break;
+                case SDLK_ESCAPE:
+                    mClose = true; break;
+                default:
+                    mMod = evnt.key.keysym.sym;
+                    break;
             }
         } else if (evnt.type == SDL_KEYUP) {
-            switch(evnt.key.keysym.sym) {
-                case SDLK_LALT: mMod = -1; break;
-                case SDLK_RALT: mMod = -1; break;
-            }
+            mMod = -1;
         }
 
+        // reset UI transforms upon mouse middle click
         if(evnt.type == SDL_MOUSEBUTTONUP) {
-            if(evnt.button.button == SDL_BUTTON_MIDDLE && mMod == SDLK_LALT) {
+            if(evnt.button.button == SDL_BUTTON_MIDDLE &&
+                   (mMod == SDLK_LCTRL || mMod==SDLK_RCTRL)) {
                 int r, c;
                 getViewIds(&r, &c);
-                glm::mat4& mvp = mViewMatrices[r+c*mRows];
-                mvp = glm::mat4(1.0f);
+                mViewMatrices[r+c*mRows] = glm::mat4(1);
+                mOrientMatrices[r+c*mRows] = glm::mat4(1);
             }
         }
 
@@ -215,7 +216,7 @@ void Widget::pollEvents()
 
             int r, c;
             getViewIds(&r, &c);
-            glm::mat4& mvp = mViewMatrices[r+c*mRows];
+            glm::mat4& viewMat = mViewMatrices[r+c*mRows];
 
             if(evnt.motion.state == SDL_BUTTON_LMASK &&
                    (mMod == SDLK_LALT || mMod == SDLK_RALT)) {
@@ -224,29 +225,33 @@ void Widget::pollEvents()
                     if(deltaY < 0) {
                         deltaY = 1.0 / (-deltaY);
                     }
-                    mvp = scale(mvp, glm::vec3(pow(deltaY, SPEED)));
+                    viewMat = scale(viewMat, glm::vec3(pow(deltaY, SPEED)));
                 }
             } else if (evnt.motion.state == SDL_BUTTON_LMASK) {
                 // Translate
-                mvp = translate(mvp, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
+                viewMat = translate(viewMat, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
             } else if (evnt.motion.state == SDL_BUTTON_RMASK) {
+                glm::mat4& orientationMat = mOrientMatrices[r+c*mRows];
                 // Rotations
                 int width, height;
                 SDL_GetWindowSize(mWindow, &width, &height);
-                glm::vec3 curPos = trackballPoint(evnt.motion.x, evnt.motion.y, width, height);
-                glm::vec3 delta = mLastPos - curPos;
-                float angle = glm::radians(90.0f * sqrt(delta.x*delta.x + delta.y*delta.y + delta.z*delta.z));
-                glm::vec3 axis(
-                        mLastPos.y*curPos.z-mLastPos.z*curPos.y,
-                        mLastPos.z*curPos.x-mLastPos.x*curPos.z,
-                        mLastPos.x*curPos.y-mLastPos.y*curPos.x
-                        );
-                float dMag = sqrt(dot(delta, delta));
-                float aMag = sqrt(dot(axis, axis));
-                if (dMag>0 && aMag>0) {
-                    mvp = rotate(mvp, angle, axis);
+
+                int xPos = evnt.motion.x;
+                int yPos = evnt.motion.y;
+
+                if (mLastXPos != xPos || mLastYPos != yPos) {
+                    glm::vec3 op1 = trackballPoint(mLastXPos, mLastYPos, width, height);
+                    glm::vec3 op2 = trackballPoint(xPos, yPos, width, height);
+
+                    float angle = std::acos(std::min(1.0f, glm::dot(op1, op2)));
+
+                    glm::vec3 axisInCamCoord = glm::cross(op1, op2);
+
+                    glm::mat3 camera2object = glm::inverse(glm::mat3(viewMat));
+                    glm::vec3 axisInObjCoord = camera2object * axisInCamCoord;
+
+                    orientationMat = glm::rotate(orientationMat, glm::degrees(angle), axisInObjCoord);
                 }
-                mLastPos  = curPos;
             }
 
             mLastXPos = evnt.motion.x;

@@ -134,7 +134,7 @@ uint image_impl::size() const { return (uint)mPBOsize; }
 
 void image_impl::render(const int pWindowId,
                         const int pX, const int pY, const int pVPW, const int pVPH,
-                        const glm::mat4 &pView)
+                        const glm::mat4 &pView, const glm::mat4 &pOrient)
 {
     CheckGL("Begin image_impl::render");
 

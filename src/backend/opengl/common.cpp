@@ -322,12 +322,15 @@ std::ostream& operator<<(std::ostream& pOut, const glm::mat4& pMat)
 glm::vec3 trackballPoint(const float pX, const float pY,
                          const float pWidth, const float pHeight)
 {
-    float d, a;
-    float x, y, z;
-    x = (2*pX - pWidth)/pWidth;
-    y = (pHeight - 2*pY)/pHeight;
-    d = sqrt(x*x+y*y);
-    z = cos((PI/2.0) * ((d < 1.0) ? d : 1.0));
-    a = 1.0f / sqrt(x*x + y*y + z*z);
-    return glm::vec3(x*a,y*a,z*a);
+    glm::vec3 P = glm::vec3(1.0*pX/pWidth*2 - 1.0, 1.0*pY/pHeight*2 - 1.0, 0);
+
+    P.y = -P.y;
+    float OP_squared = P.x * P.x + P.y * P.y;
+    if (OP_squared <= 1*1) {
+        P.z = sqrt(1*1 - OP_squared);
+    } else {
+        P.z = 0;
+        P = glm::normalize(P);
+    }
+    return P;
 }

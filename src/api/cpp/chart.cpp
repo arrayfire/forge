@@ -148,7 +148,7 @@ void Chart::render(const Window& pWindow,
 {
     getChart(mValue)->render(getWindow(pWindow.get())->getID(),
                              pX, pY, pVPW, pVPH,
-                             IDENTITY);
+                             IDENTITY, IDENTITY);
 }
 
 fg_chart Chart::get() const

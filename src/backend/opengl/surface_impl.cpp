@@ -81,7 +81,7 @@ void surface_impl::unbindResources() const
 glBindVertexArray(0);
 }
 
-glm::mat4 surface_impl::computeTransformMat(const glm::mat4& pView)
+glm::mat4 surface_impl::computeTransformMat(const glm::mat4& pView, const glm::mat4& pOrient)
 {
     static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
                                    glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
@@ -99,7 +99,7 @@ glm::mat4 surface_impl::computeTransformMat(const glm::mat4& pView)
     float coor_offset_y = (-mRange[2] * graph_scale_y);
     float coor_offset_z = (-mRange[4] * graph_scale_z);
 
-    glm::mat4 sMat = glm::scale(MODEL,
+    glm::mat4 sMat = glm::scale(MODEL*pOrient,
             glm::vec3(graph_scale_x, -1.0f * graph_scale_y, graph_scale_z));
     glm::mat4 tMat = glm::translate(sMat,
             glm::vec3(-1 + coor_offset_x, -1 + coor_offset_y, -1 + coor_offset_z));
@@ -229,7 +229,7 @@ surface_impl::~surface_impl()
 
 void surface_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4& pView)
+                          const glm::mat4& pView, const glm::mat4& pOrient)
 {
     CheckGL("Begin surface_impl::render");
     // FIXME: even when per vertex alpha is enabled
@@ -241,7 +241,7 @@ void surface_impl::render(const int pWindowId,
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    renderGraph(pWindowId, computeTransformMat(pView));
+    renderGraph(pWindowId, computeTransformMat(pView, pOrient));
 
     if (mIsPVAOn) {
         glDisable(GL_BLEND);

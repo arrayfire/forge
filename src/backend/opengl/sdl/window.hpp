@@ -46,6 +46,7 @@ class Widget {
         int mCellWidth;
         int mCellHeight;
         std::vector<glm::mat4> mViewMatrices;
+        std::vector<glm::mat4> mOrientMatrices;
 
         uint  mFramePBO;
 

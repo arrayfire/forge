@@ -92,22 +92,13 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 {
     if (auto observe = pWindow.lock()) {
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, observe->get(), invisible);
-		///* create glew context so that it will bind itself to windows */
-		//mGLEWContext = observe->glewContext();
     } else {
         /* when windows are not sharing any context, just create
          * a dummy wtk::Widget object and pass it on */
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, nullptr, invisible);
-		///* create glew context so that it will bind itself to windows */
-		//mGLEWContext = new GLEWContext();
-		//if (mGLEWContext == NULL) {
-		//	std::cerr << "Error: Could not create GLEW Context!\n";
-		//	throw fg::Error("window_impl constructor", __LINE__,
-		//		"GLEW context creation failed", FG_ERR_GL_ERROR);
-		//}
-	}
-	/* Set context (before glewInit()) */
-	MakeContextCurrent(this);
+    }
+    /* Set context (before glewInit()) */
+    MakeContextCurrent(this);
 
     glbinding::Binding::useCurrentContext();
     glbinding::Binding::initialize(false); // lazy function pointer evaluation
@@ -123,7 +114,6 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
         mCMap = std::make_shared<colormap_impl>();
     }
 
-
     mWindow->resizePixelBuffers();
 
     /* set the colormap to default */
@@ -132,8 +122,11 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     glEnable(GL_MULTISAMPLE);
 
     std::vector<glm::mat4>& mats = mWindow->mViewMatrices;
+    std::vector<glm::mat4>& omats = mWindow->mOrientMatrices;
     mats.resize(mWindow->mRows*mWindow->mCols);
+    omats.resize(mWindow->mRows*mWindow->mCols);
     std::fill(mats.begin(), mats.end(), glm::mat4(1));
+    std::fill(omats.begin(), omats.end(), glm::mat4(1));
 
     /* setup default window font */
     mFont = std::make_shared<font_impl>();
@@ -264,13 +257,15 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     glViewport(0, 0, mWindow->mWidth, mWindow->mHeight);
 
     const glm::mat4& viewMatrix = mWindow->mViewMatrices[0];
+    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[0];
     // clear color and depth buffers
     glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, 0, 0, mWindow->mWidth, mWindow->mHeight, viewMatrix);
+    pRenderable->render(mID, 0, 0, mWindow->mWidth, mWindow->mHeight,
+                        viewMatrix, orientMatrix);
 
     mWindow->swapBuffers();
     mWindow->pollEvents();
@@ -309,6 +304,7 @@ void window_impl::draw(int pColId, int pRowId,
     int y_off = (mWindow->mRows - 1 - r) * mWindow->mCellHeight;
 
     const glm::mat4& viewMatrix = mWindow->mViewMatrices[r+c*mWindow->mRows];
+    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[r+c*mWindow->mRows];
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
@@ -325,7 +321,8 @@ void window_impl::draw(int pColId, int pRowId,
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight, viewMatrix);
+    pRenderable->render(mID, x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight,
+                        viewMatrix, orientMatrix);
 
     glDisable(GL_SCISSOR_TEST);
     glViewport(x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight);

@@ -81,7 +81,7 @@ void Image::render(const Window& pWindow,
 {
     getImage(mValue)->render(getWindow(pWindow.get())->getID(),
                              pX, pY, pVPW, pVPH,
-                             IDENTITY);
+                             IDENTITY, IDENTITY);
 }
 
 

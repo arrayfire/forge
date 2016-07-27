@@ -55,7 +55,7 @@ class vector_field_impl : public AbstractRenderable {
         void bindResources(const int pWindowId);
         void unbindResources() const;
 
-        virtual glm::mat4 computeModelMatrix();
+        virtual glm::mat4 computeModelMatrix(const glm::mat4& pOrient);
 
     public:
         vector_field_impl(const uint pNumPoints, const fg::dtype pDataType,
@@ -67,12 +67,12 @@ class vector_field_impl : public AbstractRenderable {
 
         virtual void render(const int pWindowId,
                             const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4 &pView);
+                            const glm::mat4 &pView, const glm::mat4 &pOrient);
 };
 
 class vector_field2d_impl : public vector_field_impl {
     protected:
-        glm::mat4 computeModelMatrix() override;
+        glm::mat4 computeModelMatrix(const glm::mat4& pOrient) override;
     public:
         vector_field2d_impl(const uint pNumPoints, const fg::dtype pDataType)
             : vector_field_impl(pNumPoints, pDataType, 2) {}
