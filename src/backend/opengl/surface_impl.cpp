@@ -86,25 +86,24 @@ glm::mat4 surface_impl::computeTransformMat(const glm::mat4& pView, const glm::m
     static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
                                    glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
 
-    float range_x = mRange[1] - mRange[0];
-    float range_y = mRange[3] - mRange[2];
-    float range_z = mRange[5] - mRange[4];
+    float xRange = mRange[1] - mRange[0];
+    float yRange = mRange[3] - mRange[2];
+    float zRange = mRange[5] - mRange[4];
     // set scale to zero if input is constant array
     // otherwise compute scale factor by standard equation
-    float graph_scale_x = std::abs(range_x) < 1.0e-3 ? 1.0f : 2/(range_x);
-    float graph_scale_y = std::abs(range_y) < 1.0e-3 ? 1.0f : 2/(range_y);
-    float graph_scale_z = std::abs(range_z) < 1.0e-3 ? 1.0f : 2/(range_z);
+    float xDataScale = std::abs(xRange) < 1.0e-3 ? 1.0f : 2/(xRange);
+    float yDataScale = std::abs(yRange) < 1.0e-3 ? 1.0f : 2/(yRange);
+    float zDataScale = std::abs(zRange) < 1.0e-3 ? 1.0f : 2/(zRange);
 
-    float coor_offset_x = (-mRange[0] * graph_scale_x);
-    float coor_offset_y = (-mRange[2] * graph_scale_y);
-    float coor_offset_z = (-mRange[4] * graph_scale_z);
+    float xDataOffset = (-mRange[0] * xDataScale);
+    float yDataOffset = (-mRange[2] * yDataScale);
+    float zDataOffset = (-mRange[4] * zDataScale);
 
-    glm::mat4 sMat = glm::scale(MODEL*pOrient,
-            glm::vec3(graph_scale_x, -1.0f * graph_scale_y, graph_scale_z));
-    glm::mat4 tMat = glm::translate(sMat,
-            glm::vec3(-1 + coor_offset_x, -1 + coor_offset_y, -1 + coor_offset_z));
+    glm::vec3 scaleVector(xDataScale, yDataScale, zDataScale);
 
-    return pView * tMat;
+    glm::vec3 shiftVector = glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
+
+    return pView * pOrient * MODEL * glm::scale(glm::translate(IDENTITY, shiftVector), scaleVector);
 }
 
 void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)

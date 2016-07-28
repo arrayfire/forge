@@ -70,22 +70,19 @@ glm::mat4 plot_impl::computeTransformMat(const glm::mat4 pView, const glm::mat4 
     float yRange = mRange[3] - mRange[2];
     float zRange = mRange[5] - mRange[4];
 
-    float xDataScale = std::abs(xRange) < 1.0e-3 ? 0.0f : 2/(xRange);
-    float yDataScale = std::abs(yRange) < 1.0e-3 ? 0.0f : 2/(yRange);
-    float zDataScale = std::abs(zRange) < 1.0e-3 ? 0.0f : 2/(zRange);
+    float xDataScale = std::abs(xRange) < 1.0e-3 ? 1.0f : 2/(xRange);
+    float yDataScale = std::abs(yRange) < 1.0e-3 ? 1.0f : 2/(yRange);
+    float zDataScale = std::abs(zRange) < 1.0e-3 ? 1.0f : 2/(zRange);
 
     float xDataOffset = (-mRange[0] * xDataScale);
     float yDataOffset = (-mRange[2] * yDataScale);
     float zDataOffset = (-mRange[4] * zDataScale);
 
-    glm::vec3 scaleVector(xDataScale, -1.0f * yDataScale, zDataScale);
+    glm::vec3 scaleVector(xDataScale, yDataScale, zDataScale);
 
-    glm::vec3 shiftVector(-(mRange[0]+mRange[1])/2.0f,
-                          -(mRange[2]+mRange[3])/2.0f,
-                          -(mRange[4]+mRange[5])/2.0f);
-    shiftVector += glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
+    glm::vec3 shiftVector = glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
 
-    return pView * glm::translate(glm::scale(pOrient*MODEL, scaleVector), shiftVector);
+    return pView * pOrient * MODEL * glm::scale(glm::translate(IDENTITY, shiftVector), scaleVector);
 }
 
 void plot_impl::bindDimSpecificUniforms()
@@ -262,10 +259,13 @@ glm::mat4 plot2d_impl::computeTransformMat(const glm::mat4 pView, const glm::mat
     float xDataScale = std::abs(xRange) < 1.0e-3 ? 1.0f : 2/(xRange);
     float yDataScale = std::abs(yRange) < 1.0e-3 ? 1.0f : 2/(yRange);
 
-    glm::vec3 shiftVector(-(mRange[0]+mRange[1])/2.0f, -(mRange[2]+mRange[3])/2.0f, 0.0f);
-    glm::vec3 scaleVector(xDataScale, yDataScale, 1);
+    float xDataOffset = (-mRange[0] * xDataScale);
+    float yDataOffset = (-mRange[2] * yDataScale);
 
-    return pView * glm::translate(glm::scale(IDENTITY, scaleVector), shiftVector);
+    glm::vec3 scaleVector(xDataScale, yDataScale, 1);
+    glm::vec3 shiftVector = glm::vec3(-1 + xDataOffset, -1 + yDataOffset, 0);
+
+    return pView * glm::scale(glm::translate(IDENTITY, shiftVector), scaleVector);
 }
 
 void plot2d_impl::bindDimSpecificUniforms()
