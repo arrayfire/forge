@@ -13,6 +13,8 @@
 
 #include <memory>
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -20,10 +22,10 @@ class image_impl : public AbstractRenderable {
     private:
         uint   mWidth;
         uint   mHeight;
-        fg::ChannelFormat mFormat;
+        forge::ChannelFormat mFormat;
         gl::GLenum mGLformat;
         gl::GLenum mGLiformat;
-        fg::dtype mDataType;
+        forge::dtype mDataType;
         gl::GLenum mGLType;
         float  mAlpha;
         bool   mKeepARatio;
@@ -50,7 +52,7 @@ class image_impl : public AbstractRenderable {
 
     public:
         image_impl(const uint pWidth, const uint pHeight,
-                   const fg::ChannelFormat pFormat, const fg::dtype pDataType);
+                   const forge::ChannelFormat pFormat, const forge::dtype pDataType);
         ~image_impl();
 
         void setColorMapUBOParams(const gl::GLuint pUBO, const gl::GLuint pSize);
@@ -59,8 +61,8 @@ class image_impl : public AbstractRenderable {
 
         uint width() const;
         uint height() const;
-        fg::ChannelFormat pixelFormat() const;
-        fg::dtype channelType() const;
+        forge::ChannelFormat pixelFormat() const;
+        forge::dtype channelType() const;
         uint pbo() const;
         uint size() const;
 
@@ -69,4 +71,5 @@ class image_impl : public AbstractRenderable {
                     const glm::mat4 &pView, const glm::mat4 &pOrient);
 };
 
+}
 }

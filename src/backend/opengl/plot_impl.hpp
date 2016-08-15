@@ -19,6 +19,8 @@
 #include <memory>
 #include <map>
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -28,10 +30,10 @@ class plot_impl : public AbstractRenderable {
         gl::GLfloat    mMarkerSize;
         /* plot points characteristics */
         gl::GLuint     mNumPoints;
-        fg::dtype      mDataType;
+        forge::dtype      mDataType;
         gl::GLenum     mGLType;
-        fg::MarkerType mMarkerType;
-        fg::PlotType   mPlotType;
+        forge::MarkerType mMarkerType;
+        forge::PlotType   mPlotType;
         bool           mIsPVROn;
         /* OpenGL Objects */
         ShaderProgram  mPlotProgram;
@@ -72,8 +74,8 @@ class plot_impl : public AbstractRenderable {
         virtual void bindDimSpecificUniforms(); // has to be called only after shaders are bound
 
     public:
-        plot_impl(const uint pNumPoints, const fg::dtype pDataType,
-                  const fg::PlotType pPlotType, const fg::MarkerType pMarkerType,
+        plot_impl(const uint pNumPoints, const forge::dtype pDataType,
+                  const forge::PlotType pPlotType, const forge::MarkerType pMarkerType,
                   const int pDimension=3);
         ~plot_impl();
 
@@ -94,9 +96,10 @@ class plot2d_impl : public plot_impl {
         void bindDimSpecificUniforms() override; // has to be called only after shaders are bound
 
     public:
-        plot2d_impl(const uint pNumPoints, const fg::dtype pDataType,
-                    const fg::PlotType pPlotType, const fg::MarkerType pMarkerType)
+        plot2d_impl(const uint pNumPoints, const forge::dtype pDataType,
+                    const forge::PlotType pPlotType, const forge::MarkerType pMarkerType)
             : plot_impl(pNumPoints, pDataType, pPlotType, pMarkerType, 2) {}
 };
 
+}
 }

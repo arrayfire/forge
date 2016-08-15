@@ -18,6 +18,8 @@
 
 #include <memory>
 
+namespace forge
+{
 namespace common
 {
 
@@ -65,7 +67,7 @@ class Window {
             mWindow->setSize(pWidth, pHeight);
         }
 
-        inline void setColorMap(fg::ColorMap cmap) {
+        inline void setColorMap(forge::ColorMap cmap) {
             mWindow->setColorMap(cmap);
         }
 
@@ -138,4 +140,5 @@ class Window {
         }
 };
 
+}
 }

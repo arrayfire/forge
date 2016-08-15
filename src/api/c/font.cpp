@@ -12,6 +12,8 @@
 #include <handle.hpp>
 #include <font.hpp>
 
+using namespace forge;
+
 fg_err fg_create_font(fg_font* pFont)
 {
     try {

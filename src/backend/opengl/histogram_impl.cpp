@@ -22,6 +22,8 @@
 using namespace gl;
 using namespace std;
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -68,7 +70,7 @@ void histogram_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-histogram_impl::histogram_impl(const uint pNBins, const fg::dtype pDataType)
+histogram_impl::histogram_impl(const uint pNBins, const forge::dtype pDataType)
  :  mDataType(pDataType), mGLType(dtype2gl(mDataType)), mNBins(pNBins),
     mProgram(glsl::histogram_vs.c_str(), glsl::histogram_fs.c_str()),
     mYMaxIndex(-1), mNBinsIndex(-1), mMatIndex(-1), mPointIndex(-1),
@@ -109,7 +111,7 @@ histogram_impl::histogram_impl(const uint pNBins, const fg::dtype pDataType)
         case GL_SHORT          : HIST_CREATE_BUFFERS(short) ; break;
         case GL_UNSIGNED_SHORT : HIST_CREATE_BUFFERS(ushort); break;
         case GL_UNSIGNED_BYTE  : HIST_CREATE_BUFFERS(float) ; break;
-        default: fg::TypeError("histogram_impl::histogram_impl", __LINE__, 1, mDataType);
+        default: forge::TypeError("histogram_impl::histogram_impl", __LINE__, 1, mDataType);
     }
 #undef HIST_CREATE_BUFFERS
 
@@ -157,4 +159,5 @@ void histogram_impl::render(const int pWindowId,
     CheckGL("End histogram_impl::render");
 }
 
+}
 }

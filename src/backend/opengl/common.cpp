@@ -19,7 +19,7 @@
 #include <cmath>
 
 using namespace gl;
-using namespace fg;
+using namespace forge;
 using namespace std;
 
 #define PI 3.14159
@@ -30,7 +30,7 @@ typedef struct {
     GLuint geometry;
 } Shaders;
 
-GLenum dtype2gl(const fg::dtype pValue)
+GLenum dtype2gl(const forge::dtype pValue)
 {
     switch(pValue) {
         case s8:  return GL_BYTE;
@@ -80,7 +80,7 @@ void printShaderInfoLog(GLint pShader)
         glGetShaderInfoLog(pShader, infoLogLen, &charsWritten, infoLog);
         std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;
         delete [] infoLog;
-        throw fg::Error("printShaderInfoLog", __LINE__,
+        throw forge::Error("printShaderInfoLog", __LINE__,
                 "OpenGL Shader compilation failed", FG_ERR_GL_ERROR);
     }
 }
@@ -99,7 +99,7 @@ void printLinkInfoLog(GLint pProgram)
         glGetProgramInfoLog(pProgram, infoLogLen, &charsWritten, infoLog);
         std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;
         delete [] infoLog;
-        throw fg::Error("printLinkInfoLog", __LINE__,
+        throw forge::Error("printLinkInfoLog", __LINE__,
                 "OpenGL Shader linking failed", FG_ERR_GL_ERROR);
     }
 }
@@ -117,7 +117,7 @@ void attachAndLinkProgram(GLuint pProgram, Shaders pShaders)
     glGetProgramiv(pProgram,GL_LINK_STATUS, &linked);
     if (!linked) {
         std::cerr << "Program did not link." << std::endl;
-        throw fg::Error("attachAndLinkProgram", __LINE__,
+        throw forge::Error("attachAndLinkProgram", __LINE__,
                 "OpenGL program linking failed", FG_ERR_GL_ERROR);
     }
     printLinkInfoLog(pProgram);
@@ -170,6 +170,8 @@ Shaders loadShaders(const char* pVertexShaderSrc,
     return out;
 }
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -225,6 +227,7 @@ void ShaderProgram::unbind()
 }
 
 }
+}
 
 float clampTo01(const float pValue)
 {
@@ -251,7 +254,7 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
    StringCchLength(pDir.c_str(), MAX_PATH, &length_of_arg);
 
    if (length_of_arg > (MAX_PATH - 3)) {
-       throw fg::Error("getImageFilePaths", __LINE__,
+       throw forge::Error("getImageFilePaths", __LINE__,
            "WIN API call: Directory path is too long",
            FG_ERR_FILE_NOT_FOUND);
    }
@@ -266,7 +269,7 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
    // Find the first file in the directory.
    hFind = FindFirstFile(szDir, &ffd);
    if (INVALID_HANDLE_VALUE == hFind) {
-       throw fg::Error("getImageFilePaths", __LINE__,
+       throw forge::Error("getImageFilePaths", __LINE__,
            "WIN API call: file fetch in DIR failed",
            FG_ERR_FILE_NOT_FOUND);
    }
@@ -286,7 +289,7 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
 
    dwError = GetLastError();
    if (dwError != ERROR_NO_MORE_FILES) {
-       throw fg::Error("getImageFilePaths", __LINE__,
+       throw forge::Error("getImageFilePaths", __LINE__,
            "WIN API call: files fetch returned no files",
            FG_ERR_FILE_NOT_FOUND);
    }

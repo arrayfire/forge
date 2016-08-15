@@ -16,6 +16,8 @@
 #include <memory>
 #include <map>
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -27,7 +29,7 @@ class surface_impl : public AbstractRenderable {
         gl::GLenum    mDataType;
         bool          mIsPVCOn;
         bool          mIsPVAOn;
-        fg::MarkerType mMarkerType;
+        forge::MarkerType mMarkerType;
         /* OpenGL Objects */
         gl::GLuint    mIBO;
         size_t        mIBOSize;
@@ -62,7 +64,7 @@ class surface_impl : public AbstractRenderable {
 
     public:
         surface_impl(const uint pNumXpoints, const uint pNumYpoints,
-                     const fg::dtype pDataType, const fg::MarkerType pMarkerType);
+                     const forge::dtype pDataType, const forge::MarkerType pMarkerType);
         ~surface_impl();
 
         void render(const int pWindowId,
@@ -84,8 +86,9 @@ class scatter3_impl : public surface_impl {
 
    public:
        scatter3_impl(const uint pNumXPoints, const uint pNumYPoints,
-                     const fg::dtype pDataType, const fg::MarkerType pMarkerType=FG_MARKER_NONE)
+                     const forge::dtype pDataType, const forge::MarkerType pMarkerType=FG_MARKER_NONE)
            : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType) {}
 };
 
+}
 }

@@ -47,21 +47,21 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Vector Field Demo");
+    forge::Window wnd(DIMX, DIMY, "Vector Field Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(FG_CHART_2D);
+    forge::Chart chart(FG_CHART_2D);
     chart.setAxesLimits(MINIMUM-1.0f, MAXIMUM, MINIMUM-1.0f, MAXIMUM);
     chart.setAxesTitles("x-axis", "y-axis");
 
-    fg::Plot divPoints = chart.plot(4, fg::u32, FG_PLOT_SCATTER, FG_MARKER_CIRCLE);
+    forge::Plot divPoints = chart.plot(4, forge::u32, FG_PLOT_SCATTER, FG_MARKER_CIRCLE);
     divPoints.setColor(0.9f, 0.9f, 0.0f, 1.f);
     divPoints.setLegend("Convergence Points");
     divPoints.setMarkerSize(24);
 
-    fg::VectorField field = chart.vectorField(NELEMS*NELEMS, fg::f32);
+    forge::VectorField field = chart.vectorField(NELEMS*NELEMS, forge::f32);
     field.setColor(0.f, 0.6f, 0.3f, 1.f);
 
     std::vector<float> points;

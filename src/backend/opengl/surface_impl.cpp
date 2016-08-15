@@ -44,6 +44,8 @@ for(unsigned short r = 0; r < rows-1; ++r){
 }
 }
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -144,7 +146,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
 
 
 surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
-                           fg::dtype pDataType, fg::MarkerType pMarkerType)
+                           forge::dtype pDataType, forge::MarkerType pMarkerType)
     : mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints), mDataType(dtype2gl(pDataType)),
       mMarkerType(pMarkerType), mIBO(0), mIBOSize(0),
       mMarkerProgram(glsl::plot3_vs.c_str(), glsl::marker_fs.c_str()),
@@ -194,7 +196,7 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
         case GL_SHORT          : SURF_CREATE_BUFFERS(short) ; break;
         case GL_UNSIGNED_SHORT : SURF_CREATE_BUFFERS(ushort); break;
         case GL_UNSIGNED_BYTE  : SURF_CREATE_BUFFERS(float) ; break;
-        default: fg::TypeError("surface_impl::surface_impl", __LINE__, 1, pDataType);
+        default: forge::TypeError("surface_impl::surface_impl", __LINE__, 1, pDataType);
     }
 
 #undef SURF_CREATE_BUFFERS
@@ -262,4 +264,5 @@ void scatter3_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
     }
 }
 
+}
 }

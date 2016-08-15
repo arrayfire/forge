@@ -201,7 +201,7 @@ FGAPI fg_err fg_render_chart(const fg_window pWindow,
 
 #ifdef __cplusplus
 
-namespace fg
+namespace forge
 {
 
 /**

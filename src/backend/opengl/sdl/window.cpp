@@ -21,8 +21,10 @@ using glm::translate;
 using glm::scale;
 
 #define SDL_THROW_ERROR(msg, err) \
-    throw fg::Error("Window constructor", __LINE__, msg, err);
+    throw forge::Error("Window constructor", __LINE__, msg, err);
 
+namespace forge
+{
 namespace wtk
 {
 
@@ -274,4 +276,5 @@ void Widget::resizePixelBuffers()
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
+}
 }

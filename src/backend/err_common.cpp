@@ -15,7 +15,7 @@
 #include <string>
 #include <sstream>
 
-using namespace fg;
+using namespace forge;
 
 using std::string;
 using std::stringstream;

@@ -60,6 +60,8 @@
 
 using namespace gl;
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -110,7 +112,7 @@ FontAtlas::FontAtlas(const size_t pWidth, const size_t pHeight, const size_t pDe
 {
     CheckGL("Begin FontAtlas::FontAtlas");
     if (!((pDepth == 1) || (pDepth == 3) || (pDepth == 4))) {
-        throw fg::Error("Font Atlas", __LINE__, "Invalid depth argument", FG_ERR_INTERNAL);
+        throw forge::Error("Font Atlas", __LINE__, "Invalid depth argument", FG_ERR_INTERNAL);
     }
 
     glGenTextures(1, &mId);
@@ -283,4 +285,5 @@ GLuint FontAtlas::atlasTextureId() const
     return mId;
 }
 
+}
 }

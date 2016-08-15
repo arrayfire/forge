@@ -23,6 +23,8 @@
 
 using namespace gl;
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -37,7 +39,7 @@ void image_impl::unbindResources() const
 }
 
 image_impl::image_impl(const uint pWidth, const uint pHeight,
-                       const fg::ChannelFormat pFormat, const fg::dtype pDataType)
+                       const forge::ChannelFormat pFormat, const forge::dtype pDataType)
     : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat),
       mGLformat(ctype2gl(mFormat)), mGLiformat(ictype2gl(mFormat)),
       mDataType(pDataType), mGLType(dtype2gl(mDataType)), mAlpha(1.0f),
@@ -124,9 +126,9 @@ uint image_impl::width() const { return mWidth; }
 
 uint image_impl::height() const { return mHeight; }
 
-fg::ChannelFormat image_impl::pixelFormat() const { return mFormat; }
+forge::ChannelFormat image_impl::pixelFormat() const { return mFormat; }
 
-fg::dtype image_impl::channelType() const { return mDataType; }
+forge::dtype image_impl::channelType() const { return mDataType; }
 
 uint image_impl::pbo() const { return mPBO; }
 
@@ -198,4 +200,5 @@ void image_impl::render(const int pWindowId,
     CheckGL("End image_impl::render");
 }
 
+}
 }

@@ -274,7 +274,7 @@ FGAPI fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window p
 
 #ifdef __cplusplus
 
-namespace fg
+namespace forge
 {
 
 /**

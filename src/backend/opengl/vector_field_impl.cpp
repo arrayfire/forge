@@ -23,6 +23,8 @@ using namespace std;
 // identity matrix
 static const glm::mat4 I(1.0f);
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -88,7 +90,7 @@ glm::mat4 vector_field_impl::computeModelMatrix(const glm::mat4& pOrient)
     return glm::translate(glm::scale(pOrient, scaleVector), shiftVector);
 }
 
-vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDataType, const int pD)
+vector_field_impl::vector_field_impl(const uint pNumPoints, const forge::dtype pDataType, const int pD)
     : mDimension(pD), mNumPoints(pNumPoints), mDataType(pDataType),
     mGLType(dtype2gl(mDataType)),
     mFieldProgram(pD==2 ? glsl::vector_field2d_vs.c_str() : glsl::vector_field_vs.c_str(),
@@ -144,7 +146,7 @@ vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDat
             case GL_SHORT          : PLOT_CREATE_BUFFERS(short) ; break;
             case GL_UNSIGNED_SHORT : PLOT_CREATE_BUFFERS(ushort); break;
             case GL_UNSIGNED_BYTE  : PLOT_CREATE_BUFFERS(float) ; break;
-            default: fg::TypeError("vector_field_impl::vector_field_impl", __LINE__, 1, mDataType);
+            default: forge::TypeError("vector_field_impl::vector_field_impl", __LINE__, 1, mDataType);
         }
 #undef PLOT_CREATE_BUFFERS
         CheckGL("End vector_field_impl::vector_field_impl");
@@ -226,4 +228,5 @@ glm::mat4 vector_field2d_impl::computeModelMatrix(const glm::mat4& pOrient)
     return glm::translate(glm::scale(IDENTITY, scaleVector), shiftVector);
 }
 
+}
 }

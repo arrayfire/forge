@@ -9,6 +9,8 @@
 
 #pragma once
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -19,4 +21,5 @@ ContextHandle getCurrentContextHandle();
 
 DisplayHandle getCurrentDisplayHandle();
 
+}
 }

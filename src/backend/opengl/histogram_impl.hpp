@@ -14,13 +14,15 @@
 #include <memory>
 #include <map>
 
+namespace forge
+{
 namespace opengl
 {
 
 class histogram_impl : public AbstractRenderable {
     private:
         /* plot points characteristics */
-        fg::dtype mDataType;
+        forge::dtype mDataType;
         gl::GLenum    mGLType;
         gl::GLuint    mNBins;
         /* OpenGL Objects */
@@ -47,7 +49,7 @@ class histogram_impl : public AbstractRenderable {
         void unbindResources() const;
 
     public:
-        histogram_impl(const uint pNBins, const fg::dtype pDataType);
+        histogram_impl(const uint pNBins, const forge::dtype pDataType);
         ~histogram_impl();
 
         void render(const int pWindowId,
@@ -55,4 +57,5 @@ class histogram_impl : public AbstractRenderable {
                     const glm::mat4 &pView, const glm::mat4 &pOrient);
 };
 
+}
 }

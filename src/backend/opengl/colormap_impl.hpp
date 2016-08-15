@@ -12,10 +12,10 @@
 #include <common.hpp>
 #include <memory>
 
+namespace forge
+{
 namespace opengl
 {
-
-using namespace gl;
 
 class colormap_impl {
     private:
@@ -32,42 +32,43 @@ class colormap_impl {
          * the size of array declared in the shaders
          * used by *_impl objects to reflect appropriate
          * size */
-        GLuint mDefaultMapBuffer;
-        GLuint mSpecMapBuffer;
-        GLuint mColorsMapBuffer;
-        GLuint mRedMapBuffer;
-        GLuint mMoodMapBuffer;
-        GLuint mHeatMapBuffer;
-        GLuint mBlueMapBuffer;
+        gl::GLuint mDefaultMapBuffer;
+        gl::GLuint mSpecMapBuffer;
+        gl::GLuint mColorsMapBuffer;
+        gl::GLuint mRedMapBuffer;
+        gl::GLuint mMoodMapBuffer;
+        gl::GLuint mHeatMapBuffer;
+        gl::GLuint mBlueMapBuffer;
         /* Current color map lengths */
-        GLuint mDefMapLen;
-        GLuint mSpecMapLen;
-        GLuint mColsMapLen;
-        GLuint mRedMapLen;
-        GLuint mMoodMapLen;
-        GLuint mHeatMapLen;
-        GLuint mBlueMapLen;
+        gl::GLuint mDefMapLen;
+        gl::GLuint mSpecMapLen;
+        gl::GLuint mColsMapLen;
+        gl::GLuint mRedMapLen;
+        gl::GLuint mMoodMapLen;
+        gl::GLuint mHeatMapLen;
+        gl::GLuint mBlueMapLen;
 
     public:
         /* constructors and destructors */
         colormap_impl();
         ~colormap_impl();
 
-        GLuint defaultMap() const;
-        GLuint spectrum() const;
-        GLuint colors() const;
-        GLuint red() const;
-        GLuint mood() const;
-        GLuint heat() const;
-        GLuint blue() const;
+        gl::GLuint defaultMap() const;
+        gl::GLuint spectrum() const;
+        gl::GLuint colors() const;
+        gl::GLuint red() const;
+        gl::GLuint mood() const;
+        gl::GLuint heat() const;
+        gl::GLuint blue() const;
 
-        GLuint defaultLen() const;
-        GLuint spectrumLen() const;
-        GLuint colorsLen() const;
-        GLuint redLen() const;
-        GLuint moodLen() const;
-        GLuint heatLen() const;
-        GLuint blueLen() const;
+        gl::GLuint defaultLen() const;
+        gl::GLuint spectrumLen() const;
+        gl::GLuint colorsLen() const;
+        gl::GLuint redLen() const;
+        gl::GLuint moodLen() const;
+        gl::GLuint heatLen() const;
+        gl::GLuint blueLen() const;
 };
 
+}
 }

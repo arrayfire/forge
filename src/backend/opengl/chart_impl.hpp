@@ -17,6 +17,8 @@
 #include <vector>
 #include <string>
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -156,4 +158,5 @@ class chart3d_impl : public AbstractChart {
                     const glm::mat4 &pView, const glm::mat4 &pOrient);
 };
 
+}
 }

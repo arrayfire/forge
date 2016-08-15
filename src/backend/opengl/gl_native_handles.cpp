@@ -17,6 +17,8 @@
 #include <GL/glx.h>
 #endif
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -50,4 +52,5 @@ DisplayHandle getCurrentDisplayHandle()
     return id;
 }
 
+}
 }

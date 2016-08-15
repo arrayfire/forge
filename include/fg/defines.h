@@ -183,7 +183,7 @@ typedef enum {
 
 
 #ifdef __cplusplus
-namespace fg
+namespace forge
 {
     typedef fg_err ErrorCode;
     typedef fg_channel_format ChannelFormat;

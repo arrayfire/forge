@@ -13,6 +13,8 @@
 
 #include <memory>
 
+namespace forge
+{
 namespace common
 {
 
@@ -76,4 +78,5 @@ class ChartRenderableBase {
         }
 };
 
+}
 }

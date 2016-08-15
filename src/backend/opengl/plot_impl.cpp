@@ -20,6 +20,8 @@
 using namespace gl;
 using namespace std;
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -90,8 +92,8 @@ void plot_impl::bindDimSpecificUniforms()
     glUniform2fv(mPlotRangeIndex, 3, mRange);
 }
 
-plot_impl::plot_impl(const uint pNumPoints, const fg::dtype pDataType,
-                     const fg::PlotType pPlotType, const fg::MarkerType pMarkerType, const int pD)
+plot_impl::plot_impl(const uint pNumPoints, const forge::dtype pDataType,
+                     const forge::PlotType pPlotType, const forge::MarkerType pMarkerType, const int pD)
     : mDimension(pD), mMarkerSize(12), mNumPoints(pNumPoints), mDataType(pDataType),
     mGLType(dtype2gl(mDataType)), mMarkerType(pMarkerType), mPlotType(pPlotType), mIsPVROn(false),
     mPlotProgram(pD==2 ? glsl::marker2d_vs.c_str() : glsl::plot3_vs.c_str(),
@@ -155,7 +157,7 @@ plot_impl::plot_impl(const uint pNumPoints, const fg::dtype pDataType,
             case GL_SHORT          : PLOT_CREATE_BUFFERS(short) ; break;
             case GL_UNSIGNED_SHORT : PLOT_CREATE_BUFFERS(ushort); break;
             case GL_UNSIGNED_BYTE  : PLOT_CREATE_BUFFERS(float) ; break;
-            default: fg::TypeError("plot_impl::plot_impl", __LINE__, 1, mDataType);
+            default: forge::TypeError("plot_impl::plot_impl", __LINE__, 1, mDataType);
         }
 #undef PLOT_CREATE_BUFFERS
     CheckGL("End plot_impl::plot_impl");
@@ -265,4 +267,5 @@ void plot2d_impl::bindDimSpecificUniforms()
     glUniform4fv(mPlotUColorIndex, 1, mColor);
 }
 
+}
 }

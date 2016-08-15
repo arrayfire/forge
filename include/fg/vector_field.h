@@ -159,7 +159,7 @@ FGAPI fg_err fg_get_vector_field_dbo_size(uint* pOut, const fg_vector_field pFie
 
 #ifdef __cplusplus
 
-namespace fg
+namespace forge
 {
 
 /**
@@ -197,9 +197,9 @@ class VectorField {
         /**
            Set global color for the field lines
 
-           \param[in] pColor takes values of fg::Color to define VectorField color
+           \param[in] pColor takes values of forge::Color to define VectorField color
         */
-        FGAPI void setColor(const fg::Color pColor);
+        FGAPI void setColor(const forge::Color pColor);
 
         /**
            Set global color for the field lines

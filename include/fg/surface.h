@@ -142,7 +142,7 @@ FGAPI fg_err fg_get_surface_abo_size(uint* pOut, const fg_surface pSurface);
 
 #ifdef __cplusplus
 
-namespace fg
+namespace forge
 {
 
 /**
@@ -184,9 +184,9 @@ class Surface {
         /**
            Set the color of line graph(surface)
 
-           \param[in] pColor takes values of fg::Color to define surface color
+           \param[in] pColor takes values of forge::Color to define surface color
         */
-        FGAPI void setColor(const fg::Color pColor);
+        FGAPI void setColor(const forge::Color pColor);
 
         /**
            Set the color of line graph(surface)

@@ -142,7 +142,7 @@ FGAPI fg_err fg_get_histogram_abo_size(uint* pOut, const fg_histogram pHistogram
 
 #ifdef __cplusplus
 
-namespace fg
+namespace forge
 {
 
 /**
@@ -179,7 +179,7 @@ class Histogram {
         /**
            Set the color of bar in the bar graph(histogram)
 
-           \param[in] pColor takes values of type fg::Color to define bar color
+           \param[in] pColor takes values of type forge::Color to define bar color
         **/
         FGAPI void setColor(const Color pColor);
 

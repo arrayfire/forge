@@ -59,7 +59,7 @@ FGAPI fg_err fg_finish();
 #endif
 
 #ifdef __cplusplus
-namespace fg
+namespace forge
 {
 
 /**

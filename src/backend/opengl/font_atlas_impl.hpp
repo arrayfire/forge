@@ -28,10 +28,10 @@
 
 #include <vector>
 
+namespace forge
+{
 namespace opengl
 {
-
-using namespace gl;
 
 class FontAtlas {
     private:
@@ -39,7 +39,7 @@ class FontAtlas {
         size_t mHeight;
         size_t mDepth;
         size_t mUsed;
-        GLuint mId;
+        gl::GLuint mId;
 
         std::vector<uchar> mData;
         std::vector<glm::vec3> nodes;
@@ -64,7 +64,7 @@ class FontAtlas {
         void upload();
         void clear();
 
-        GLuint atlasTextureId() const;
+        gl::GLuint atlasTextureId() const;
 };
 
 struct Glyph {
@@ -87,4 +87,5 @@ struct Glyph {
     size_t mOffset;
 };
 
+}
 }

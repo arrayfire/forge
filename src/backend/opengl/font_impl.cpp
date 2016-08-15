@@ -52,13 +52,15 @@ using namespace gl;
 
 /* freetype library types */
 
+namespace forge
+{
 namespace opengl
 {
 
 #ifdef NDEBUG
 /* Relase Mode */
 #define FT_THROW_ERROR(msg, error) \
-    throw fg::Error("Freetype library", __LINE__, msg, error);
+    throw forge::Error("Freetype library", __LINE__, msg, error);
 
 #else
 /* Debug Mode */
@@ -67,7 +69,7 @@ namespace opengl
         std::ostringstream ss;                                              \
         ss << "FT_Error (0x"<< std::hex << FT_Errors[err].code <<") : "     \
            << FT_Errors[err].message << std::endl;                          \
-        throw fg::Error(ss.str().c_str(), __LINE__, msg, err);              \
+        throw forge::Error(ss.str().c_str(), __LINE__, msg, err);              \
     } while(0);
 
 #endif
@@ -143,7 +145,7 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
         //    FT_Stroker_Done(stroker);
         //    FT_Done_Face(face);
         //    FT_Done_FreeType(library);
-        //    FT_THROW_ERROR("FT_Stroker_New", fg::FG_ERR_FREETYPE_ERROR);
+        //    FT_THROW_ERROR("FT_Stroker_New", forge::FG_ERR_FREETYPE_ERROR);
         //}
 
         //FT_Stroker_Set(stroker, 16, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
@@ -154,7 +156,7 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
         //    FT_Stroker_Done(stroker);
         //    FT_Done_Face(face);
         //    FT_Done_FreeType(library);
-        //    FT_THROW_ERROR("FT_Glyph_Stroke", fg::FG_ERR_FREETYPE_ERROR);
+        //    FT_THROW_ERROR("FT_Glyph_Stroke", forge::FG_ERR_FREETYPE_ERROR);
         //}
         //FT_Stroker_Done(stroker);
 
@@ -354,14 +356,14 @@ void font_impl::loadSystemFont(const char* const pName)
     // use fontconfig to get the file
     FcConfig* config = FcInitLoadConfigAndFonts();
     if (!config) {
-        throw fg::Error("Fontconfig init failed",
+        throw forge::Error("Fontconfig init failed",
                         __LINE__, __PRETTY_FUNCTION__,
                         FG_ERR_FONTCONFIG_ERROR);
     }
     // configure the search pattern,
     FcPattern* pat = FcNameParse((const FcChar8*)(pName));
     if (!pat) {
-        throw fg::Error("Fontconfig name parse failed",
+        throw forge::Error("Fontconfig name parse failed",
                         __LINE__, __PRETTY_FUNCTION__,
                         FG_ERR_FONTCONFIG_ERROR);
     }
@@ -489,4 +491,5 @@ void font_impl::render(int pWindowId,
     CheckGL("End font_impl::render ");
 }
 
+}
 }

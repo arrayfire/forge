@@ -19,6 +19,8 @@
 #include <memory>
 #include <map>
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -27,7 +29,7 @@ class vector_field_impl : public AbstractRenderable {
         gl::GLuint    mDimension;
         /* plot points characteristics */
         gl::GLuint    mNumPoints;
-        fg::dtype mDataType;
+        forge::dtype mDataType;
         gl::GLenum    mGLType;
         /* OpenGL Objects */
         ShaderProgram mFieldProgram;
@@ -58,7 +60,7 @@ class vector_field_impl : public AbstractRenderable {
         virtual glm::mat4 computeModelMatrix(const glm::mat4& pOrient);
 
     public:
-        vector_field_impl(const uint pNumPoints, const fg::dtype pDataType,
+        vector_field_impl(const uint pNumPoints, const forge::dtype pDataType,
                           const int pDimension=3);
         ~vector_field_impl();
 
@@ -74,8 +76,9 @@ class vector_field2d_impl : public vector_field_impl {
     protected:
         glm::mat4 computeModelMatrix(const glm::mat4& pOrient) override;
     public:
-        vector_field2d_impl(const uint pNumPoints, const fg::dtype pDataType)
+        vector_field2d_impl(const uint pNumPoints, const forge::dtype pDataType)
             : vector_field_impl(pNumPoints, pDataType, 2) {}
 };
 
+}
 }

@@ -19,10 +19,10 @@
 static const size_t MIN_FONT_SIZE = 8;
 static const size_t MAX_FONT_SIZE = 36;
 
+namespace forge
+{
 namespace opengl
 {
-
-using namespace gl;
 
 typedef std::vector<Glyph*> GlyphList;
 
@@ -30,13 +30,13 @@ class font_impl {
     private:
         /* VAO map to store a vertex array object
          * for each valid window context */
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, gl::GLuint> mVAOMap;
 
         /* attributes */
         std::string mTTFfile;
         bool        mIsFontLoaded;
         FontAtlas*  mAtlas;
-        GLuint      mVBO;
+        gl::GLuint  mVBO;
         ShaderProgram mProgram;
         int         mOrthoW;
         int         mOrthoH;
@@ -45,10 +45,10 @@ class font_impl {
 
         /* OpenGL Data */
         glm::mat4   mProjMat;
-        GLuint      mPMatIndex;
-        GLuint      mMMatIndex;
-        GLuint      mTexIndex;
-        GLuint      mClrIndex;
+        gl::GLuint  mPMatIndex;
+        gl::GLuint  mMMatIndex;
+        gl::GLuint  mTexIndex;
+        gl::GLuint  mClrIndex;
 
         /* load all glyphs and create character atlas */
         void loadAtlasWithGlyphs(const size_t pFontSize);
@@ -75,4 +75,5 @@ class font_impl {
                     size_t pFontSize, bool pIsVertical = false);
 };
 
+}
 }

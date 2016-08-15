@@ -21,7 +21,7 @@
 #include <FreeImage.h>
 
 using namespace gl;
-using namespace fg;
+using namespace forge;
 
 /* following function is thread safe */
 int getNextUniqueId()
@@ -76,6 +76,8 @@ private:
     FIBITMAP * pBitmap;
 };
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -165,7 +167,7 @@ void window_impl::setSize(unsigned pW, unsigned pH)
     mWindow->setSize(pW, pH);
 }
 
-void window_impl::setColorMap(fg::ColorMap cmap)
+void window_impl::setColorMap(forge::ColorMap cmap)
 {
     switch(cmap) {
         case FG_COLOR_MAP_DEFAULT:
@@ -347,7 +349,7 @@ void window_impl::swapBuffers()
 void window_impl::saveFrameBuffer(const char* pFullPath)
 {
     if (!pFullPath) {
-        throw fg::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
+        throw forge::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
                                 "Empty path string");
     }
 
@@ -364,12 +366,12 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
         format = FreeImage_GetFIFFromFilename(pFullPath);
     }
     if (format == FIF_UNKNOWN) {
-        throw fg::Error("window_impl::saveFrameBuffer", __LINE__,
+        throw forge::Error("window_impl::saveFrameBuffer", __LINE__,
                         "Freeimage: unrecognized image format", FG_ERR_FREEIMAGE_UNKNOWN_FORMAT);
     }
 
     if (!(format==FIF_BMP || format==FIF_PNG)) {
-        throw fg::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
+        throw forge::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
                                 "Supports only bmp and png as of now");
     }
 
@@ -380,7 +382,7 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
 
     FIBITMAP* bmp = FreeImage_Allocate(w, h, d);
     if (!bmp) {
-        throw fg::Error("window_impl::saveFrameBuffer", __LINE__,
+        throw forge::Error("window_impl::saveFrameBuffer", __LINE__,
                         "Freeimage: allocation failed", FG_ERR_FREEIMAGE_BAD_ALLOC);
     }
 
@@ -427,4 +429,5 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
     }
 }
 
+}
 }

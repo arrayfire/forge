@@ -16,6 +16,8 @@
 
 /* the short form wtk stands for
  * Windowing Tool Kit */
+namespace forge
+{
 namespace wtk
 {
 
@@ -92,4 +94,5 @@ class Widget {
         void resizePixelBuffers();
 };
 
+}
 }

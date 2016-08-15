@@ -41,7 +41,7 @@ float clampTo01(const float pValue);
  *
  * @return GL_* typedef for data type
  */
-gl::GLenum dtype2gl(const fg::dtype pValue);
+gl::GLenum dtype2gl(const forge::dtype pValue);
 
 /* Convert forge channel format enum to OpenGL enum to indicate color component layout
  *
@@ -49,7 +49,7 @@ gl::GLenum dtype2gl(const fg::dtype pValue);
  *
  * @return OpenGL enum indicating color component layout
  */
-gl::GLenum ctype2gl(const fg::ChannelFormat pMode);
+gl::GLenum ctype2gl(const forge::ChannelFormat pMode);
 
 /* Convert forge channel format enum to OpenGL enum to indicate color component layout
  *
@@ -60,7 +60,7 @@ gl::GLenum ctype2gl(const fg::ChannelFormat pMode);
  *
  * @return OpenGL enum indicating color component layout
  */
-gl::GLenum ictype2gl(const fg::ChannelFormat pMode);
+gl::GLenum ictype2gl(const forge::ChannelFormat pMode);
 
 /* Create OpenGL buffer object
  *
@@ -124,6 +124,8 @@ std::ostream& operator<<(std::ostream&, const glm::mat4&);
 glm::vec3 trackballPoint(const float pX, const float pY,
                          const float pWidth, const float pHeight);
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -258,4 +260,5 @@ class AbstractRenderable {
                             const glm::mat4 &pView, const glm::mat4 &pOrient) = 0;
 };
 
+}
 }

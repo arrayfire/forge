@@ -151,7 +151,7 @@ FGAPI fg_err fg_render_image(const fg_window pWindow,
 
 #ifdef __cplusplus
 
-namespace fg
+namespace forge
 {
 
 class Window;

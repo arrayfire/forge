@@ -17,7 +17,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace fg
+namespace forge
 {
 
 Image::Image(const uint pWidth, const uint pHeight,
@@ -61,7 +61,7 @@ ChannelFormat Image::pixelFormat() const
     return getImage(mValue)->pixelFormat();
 }
 
-fg::dtype Image::channelType() const
+forge::dtype Image::channelType() const
 {
     return getImage(mValue)->channelType();
 }

@@ -17,7 +17,7 @@
 
 static const int MAX_ERR_STR_LEN = 1024;
 
-namespace fg
+namespace forge
 {
 
 class FGAPI Error : public std::logic_error

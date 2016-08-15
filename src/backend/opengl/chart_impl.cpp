@@ -38,9 +38,9 @@ typedef std::vector<std::string>::const_iterator StringIter;
 
 static const int CHART2D_FONT_SIZE = 16;
 
-const std::shared_ptr<opengl::font_impl>& getChartFont()
+const std::shared_ptr<forge::opengl::font_impl>& getChartFont()
 {
-    static common::Font gChartFont;
+    static forge::common::Font gChartFont;
     static std::once_flag flag;
 
     std::call_once(flag, []() {
@@ -69,6 +69,8 @@ void pushPoint(vector<T> &points, T x, T y, T z)
     points.push_back(z);
 }
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -814,4 +816,5 @@ void chart3d_impl::render(const int pWindowId,
     CheckGL("End chart3d_impl::renderChart");
 }
 
+}
 }

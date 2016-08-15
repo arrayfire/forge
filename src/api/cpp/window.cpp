@@ -12,7 +12,7 @@
 #include <handle.hpp>
 #include <window.hpp>
 
-namespace fg
+namespace forge
 {
 
 Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow, const bool invisible)

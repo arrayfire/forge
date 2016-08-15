@@ -22,7 +22,7 @@
 #include <image.hpp>
 #include <window.hpp>
 
-namespace fg
+namespace forge
 {
 
 Chart::Chart(const ChartType cType)

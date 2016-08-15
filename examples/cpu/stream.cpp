@@ -89,19 +89,19 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "3D Vector Field Demo");
+    forge::Window wnd(DIMX, DIMY, "3D Vector Field Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(FG_CHART_3D);
+    forge::Chart chart(FG_CHART_3D);
     chart.setAxesLimits(MINIMUM-1.0f, MAXIMUM,
                         MINIMUM-1.0f, MAXIMUM,
                         MINIMUM-1.0f, MAXIMUM);
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
     int numElems = NELEMS*NELEMS*NELEMS;
-    fg::VectorField field = chart.vectorField(numElems, fg::f32);
+    forge::VectorField field = chart.vectorField(numElems, forge::f32);
     field.setColor(0.f, 1.f, 0.f, 1.f);
 
     std::vector<float> points;

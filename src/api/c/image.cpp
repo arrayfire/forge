@@ -18,12 +18,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+using namespace forge;
+
 fg_err fg_create_image(fg_image* pImage,
                        const uint pWidth, const uint pHeight,
                        const fg_channel_format pFormat, const fg_dtype pType)
 {
     try {
-        *pImage = getHandle(new common::Image(pWidth, pHeight, pFormat, (fg::dtype)pType));
+        *pImage = getHandle(new common::Image(pWidth, pHeight, pFormat, (forge::dtype)pType));
     }
     CATCHALL
 

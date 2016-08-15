@@ -65,7 +65,7 @@ FGAPI fg_err fg_load_system_font(fg_font pFont, const char* const pFontName);
 
 #ifdef __cplusplus
 
-namespace fg
+namespace forge
 {
 
 /**

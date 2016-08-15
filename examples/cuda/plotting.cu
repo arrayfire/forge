@@ -35,21 +35,21 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Plotting Demo");
+    forge::Window wnd(DIMX, DIMY, "Plotting Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(FG_CHART_2D);
+    forge::Chart chart(FG_CHART_2D);
     chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.0f, 1.0f);
 
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt0 = chart.plot( DATA_SIZE, fg::f32);                                 //create a default plot
-    fg::Plot plt1 = chart.plot( DATA_SIZE, fg::f32, FG_PLOT_LINE, FG_MARKER_NONE);       //or specify a specific plot type
-    fg::Plot plt2 = chart.plot( DATA_SIZE, fg::f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE);   //last parameter specifies marker shape
-    fg::Plot plt3 = chart.plot( DATA_SIZE, fg::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
+    forge::Plot plt0 = chart.plot( DATA_SIZE, forge::f32);                                 //create a default plot
+    forge::Plot plt1 = chart.plot( DATA_SIZE, forge::f32, FG_PLOT_LINE, FG_MARKER_NONE);       //or specify a specific plot type
+    forge::Plot plt2 = chart.plot( DATA_SIZE, forge::f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE);   //last parameter specifies marker shape
+    forge::Plot plt3 = chart.plot( DATA_SIZE, forge::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
 
     /*
      * Set plot colors
@@ -57,7 +57,7 @@ int main(void)
     plt0.setColor(FG_RED);
     plt1.setColor(FG_BLUE);
     plt2.setColor(FG_YELLOW);            //use a forge predefined color
-    plt3.setColor((fg::Color) 0x257973FF);  //or any hex-valued color
+    plt3.setColor((forge::Color) 0x257973FF);  //or any hex-valued color
     /*
      * Set plot legends
      */
@@ -83,7 +83,7 @@ int main(void)
     createGLBuffer(&handles[3], plt3.vertices(), FORGE_VBO);
 
     /* copy your data into the vertex buffer object exposed by
-     * fg::Plot class and then proceed to rendering.
+     * forge::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
