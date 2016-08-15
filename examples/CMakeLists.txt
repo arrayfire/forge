@@ -80,6 +80,10 @@ ELSE(TARGET forge)
     ENDIF(UNIX)
 ENDIF(TARGET forge)
 
+IF(UNIX)
+    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -Wno-unused-function")
+ENDIF()
+
 FILE(GLOB CPU_EXAMPLE_SRC_FILES "cpu/*.cpp")
 FOREACH(FILE ${CPU_EXAMPLE_SRC_FILES})
     GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
@@ -137,9 +141,6 @@ ENDIF()
 IF (BUILD_EXAMPLES_OPENCL)
     FIND_PACKAGE(OpenCL QUIET)
     IF(OpenCL_FOUND)
-        IF(UNIX)
-            SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -Wno-unused-function")
-        ENDIF()
         FILE(GLOB OpenCL_EXAMPLE_SRC_FILES "opencl/*.cpp")
         INCLUDE_DIRECTORIES(
             "${CMAKE_CURRENT_SOURCE_DIR}/opencl"
