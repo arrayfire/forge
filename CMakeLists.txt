@@ -85,7 +85,7 @@ ENDIF(BUILD_DOCUMENTATION)
 #--------------------------------------------------------------------
 INCLUDE(CMakePackageConfigHelpers)
 
-configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/ForgeConfig.cmake.in"
+configure_package_config_file("${CMAKE_MODULE_PATH}/ForgeConfig.cmake.in"
                               "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfig.cmake"
                               INSTALL_DESTINATION ${FG_INSTALL_CMAKE_DIR}
                               PATH_VARS CMAKE_INSTALL_PREFIX
