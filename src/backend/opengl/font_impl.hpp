@@ -37,7 +37,7 @@ class font_impl {
         bool        mIsFontLoaded;
         FontAtlas*  mAtlas;
         GLuint      mVBO;
-        GLuint      mProgram;
+        ShaderProgram mProgram;
         int         mOrthoW;
         int         mOrthoH;
 

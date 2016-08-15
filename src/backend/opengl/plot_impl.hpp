@@ -34,8 +34,8 @@ class plot_impl : public AbstractRenderable {
         fg::PlotType   mPlotType;
         bool           mIsPVROn;
         /* OpenGL Objects */
-        gl::GLuint    mPlotProgram;
-        gl::GLuint    mMarkerProgram;
+        ShaderProgram  mPlotProgram;
+        ShaderProgram  mMarkerProgram;
         gl::GLuint    mRBO;
         size_t        mRBOSize;
         /* shader variable index locations */

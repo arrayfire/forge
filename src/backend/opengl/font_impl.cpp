@@ -257,14 +257,14 @@ void font_impl::destroyGLResources()
 }
 
 font_impl::font_impl()
-    : mTTFfile(""), mIsFontLoaded(false), mAtlas(new FontAtlas(1024, 1024, 1)),
-    mVBO(0), mProgram(0), mOrthoW(1), mOrthoH(1)
+    : mTTFfile(""), mIsFontLoaded(false), mAtlas(new FontAtlas(1024, 1024, 1)), mVBO(0),
+    mProgram(glsl::font_vs.c_str(), glsl::font_fs.c_str()),
+    mOrthoW(1), mOrthoH(1)
 {
-    mProgram   = initShaders(glsl::font_vs.c_str(), glsl::font_fs.c_str());
-    mPMatIndex = glGetUniformLocation(mProgram, "projectionMatrix");
-    mMMatIndex = glGetUniformLocation(mProgram, "modelViewMatrix");
-    mTexIndex  = glGetUniformLocation(mProgram, "tex");
-    mClrIndex  = glGetUniformLocation(mProgram, "textColor");
+    mPMatIndex = mProgram.getUniformLocation("projectionMatrix");
+    mMMatIndex = mProgram.getUniformLocation("modelViewMatrix");
+    mTexIndex  = mProgram.getUniformLocation("tex");
+    mClrIndex  = mProgram.getUniformLocation("textColor");
 
     mGlyphLists.resize(MAX_FONT_SIZE-MIN_FONT_SIZE+1, GlyphList());
 }
@@ -272,7 +272,6 @@ font_impl::font_impl()
 font_impl::~font_impl()
 {
     destroyGLResources();
-    if (mProgram) glDeleteProgram(mProgram);
 }
 
 void font_impl::setOthro2D(int pWidth, int pHeight)
@@ -428,7 +427,7 @@ void font_impl::render(int pWindowId,
     glDepthFunc(GL_ALWAYS);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glUseProgram(mProgram);
+    mProgram.bind();
 
     glUniformMatrix4fv(mPMatIndex, 1, GL_FALSE, (GLfloat*)&mProjMat);
     glUniform4fv(mClrIndex, 1, pColor);
@@ -482,7 +481,7 @@ void font_impl::render(int pWindowId,
 
     unbindResources();
 
-    glUseProgram(0);
+    mProgram.unbind();
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);

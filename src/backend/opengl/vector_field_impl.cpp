@@ -89,28 +89,24 @@ glm::mat4 vector_field_impl::computeModelMatrix(const glm::mat4& pOrient)
 }
 
 vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDataType, const int pD)
-    : mDimension(pD), mNumPoints(pNumPoints), mDataType(pDataType), mGLType(dtype2gl(mDataType)),
-    mFieldProgram(-1), mDBO(-1), mDBOSize(0), mFieldPointIndex(-1),
+    : mDimension(pD), mNumPoints(pNumPoints), mDataType(pDataType),
+    mGLType(dtype2gl(mDataType)),
+    mFieldProgram(pD==2 ? glsl::vector_field2d_vs.c_str() : glsl::vector_field_vs.c_str(),
+                  glsl::histogram_fs.c_str(),
+                  pD==2 ? glsl::vector_field2d_gs.c_str() : glsl::vector_field_gs.c_str()),
+    mDBO(-1), mDBOSize(0), mFieldPointIndex(-1),
     mFieldColorIndex(-1), mFieldAlphaIndex(-1), mFieldDirectionIndex(-1),
     mFieldPVMatIndex(-1), mFieldModelMatIndex(-1), mFieldAScaleMatIndex(-1),
     mFieldPVCOnIndex(-1), mFieldPVAOnIndex(-1), mFieldUColorIndex(-1)
 {
     CheckGL("Begin vector_field_impl::vector_field_impl");
-    mIsPVCOn = false;
-    mIsPVAOn = false;
 
     setColor(0, 1, 0, 1);
-    mLegend  = std::string("");
 
-    // FIXME
     if (mDimension==2) {
-        mFieldProgram = initShaders(glsl::vector_field2d_vs.c_str(), glsl::histogram_fs.c_str(),
-                                    glsl::vector_field2d_gs.c_str());
         mVBOSize = 2*mNumPoints;
         mDBOSize = 2*mNumPoints;
     } else {
-        mFieldProgram     = initShaders(glsl::vector_field_vs.c_str(), glsl::histogram_fs.c_str(),
-                                        glsl::vector_field_gs.c_str());
         mVBOSize = 3*mNumPoints;
         mDBOSize = 3*mNumPoints;
     }
@@ -118,18 +114,18 @@ vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDat
     mCBOSize = 3*mNumPoints;
     mABOSize = mNumPoints;
 
-    mFieldPointIndex  = glGetAttribLocation (mFieldProgram, "point");
-    mFieldColorIndex  = glGetAttribLocation (mFieldProgram, "color");
-    mFieldAlphaIndex  = glGetAttribLocation (mFieldProgram, "alpha");
-    mFieldDirectionIndex  = glGetAttribLocation (mFieldProgram, "direction");
+    mFieldPointIndex  = mFieldProgram.getAttributeLocation("point");
+    mFieldColorIndex  = mFieldProgram.getAttributeLocation("color");
+    mFieldAlphaIndex  = mFieldProgram.getAttributeLocation("alpha");
+    mFieldDirectionIndex  = mFieldProgram.getAttributeLocation("direction");
 
-    mFieldPVMatIndex    = glGetUniformLocation(mFieldProgram, "viewMat");
-    mFieldModelMatIndex    = glGetUniformLocation(mFieldProgram, "modelMat");
-    mFieldAScaleMatIndex    = glGetUniformLocation(mFieldProgram, "arrowScaleMat");
+    mFieldPVMatIndex     = mFieldProgram.getUniformLocation("viewMat");
+    mFieldModelMatIndex  = mFieldProgram.getUniformLocation("modelMat");
+    mFieldAScaleMatIndex = mFieldProgram.getUniformLocation("arrowScaleMat");
 
-    mFieldPVCOnIndex  = glGetUniformLocation(mFieldProgram, "isPVCOn");
-    mFieldPVAOnIndex  = glGetUniformLocation(mFieldProgram, "isPVAOn");
-    mFieldUColorIndex = glGetUniformLocation(mFieldProgram, "barColor");
+    mFieldPVCOnIndex  = mFieldProgram.getUniformLocation("isPVCOn");
+    mFieldPVAOnIndex  = mFieldProgram.getUniformLocation("isPVAOn");
+    mFieldUColorIndex = mFieldProgram.getUniformLocation("barColor");
 
 #define PLOT_CREATE_BUFFERS(type)   \
         mVBO = createBuffer<type>(GL_ARRAY_BUFFER, mVBOSize, NULL, GL_DYNAMIC_DRAW);    \
@@ -161,11 +157,7 @@ vector_field_impl::~vector_field_impl()
         GLuint vao = it->second;
         glDeleteVertexArrays(1, &vao);
     }
-    glDeleteBuffers(1, &mVBO);
-    glDeleteBuffers(1, &mCBO);
-    glDeleteBuffers(1, &mABO);
     glDeleteBuffers(1, &mDBO);
-    glDeleteProgram(mFieldProgram);
     CheckGL("End vector_field_impl::~vector_field_impl");
 }
 
@@ -194,7 +186,7 @@ void vector_field_impl::render(const int pWindowId,
 
     glm::mat4 model = this->computeModelMatrix(pOrient);
 
-    glUseProgram(mFieldProgram);
+    mFieldProgram.bind();
 
     glUniformMatrix4fv(mFieldPVMatIndex, 1, GL_FALSE, glm::value_ptr(pView));
     glUniformMatrix4fv(mFieldModelMatIndex, 1, GL_FALSE, glm::value_ptr(model));
@@ -211,7 +203,7 @@ void vector_field_impl::render(const int pWindowId,
     if (mDimension==3)
         glDisable(GL_CULL_FACE);
 
-    glUseProgram(0);
+    mFieldProgram.unbind();
 
     if (mIsPVAOn) {
         glDisable(GL_BLEND);

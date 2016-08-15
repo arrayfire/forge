@@ -30,7 +30,7 @@ class vector_field_impl : public AbstractRenderable {
         fg::dtype mDataType;
         gl::GLenum    mGLType;
         /* OpenGL Objects */
-        gl::GLuint    mFieldProgram;
+        ShaderProgram mFieldProgram;
         gl::GLuint    mDBO;
         size_t    mDBOSize;
         /* shader variable index locations */

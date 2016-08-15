@@ -32,7 +32,7 @@ class image_impl : public AbstractRenderable {
         size_t mPBOsize;
         gl::GLuint mPBO;
         gl::GLuint mTex;
-        gl::GLuint mProgram;
+        ShaderProgram mProgram;
         gl::GLuint mMatIndex;
         gl::GLuint mTexIndex;
         gl::GLuint mNumCIndex;

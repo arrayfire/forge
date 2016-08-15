@@ -31,8 +31,8 @@ class surface_impl : public AbstractRenderable {
         /* OpenGL Objects */
         gl::GLuint    mIBO;
         size_t        mIBOSize;
-        gl::GLuint    mMarkerProgram;
-        gl::GLuint    mSurfProgram;
+        ShaderProgram mMarkerProgram;
+        ShaderProgram mSurfProgram;
         /* shared variable index locations */
         gl::GLuint    mMarkerMatIndex;
         gl::GLuint    mMarkerPointIndex;

@@ -41,18 +41,19 @@ image_impl::image_impl(const uint pWidth, const uint pHeight,
     : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat),
       mGLformat(ctype2gl(mFormat)), mGLiformat(ictype2gl(mFormat)),
       mDataType(pDataType), mGLType(dtype2gl(mDataType)), mAlpha(1.0f),
-      mKeepARatio(true), mFormatSize(1), mMatIndex(-1), mTexIndex(-1),
-      mNumCIndex(-1), mAlphaIndex(-1), mCMapLenIndex(-1), mCMapIndex(-1)
+      mKeepARatio(true), mFormatSize(1), mPBOsize(1), mPBO(0), mTex(0),
+      mProgram(glsl::image_vs.c_str(), glsl::image_fs.c_str()),
+      mMatIndex(-1), mTexIndex(-1), mNumCIndex(-1),
+      mAlphaIndex(-1), mCMapLenIndex(-1), mCMapIndex(-1)
 {
     CheckGL("Begin image_impl::image_impl");
 
-    mProgram      = initShaders(glsl::image_vs.c_str(), glsl::image_fs.c_str());
-    mMatIndex     = glGetUniformLocation(mProgram, "matrix");
-    mCMapIndex    = glGetUniformBlockIndex(mProgram, "ColorMap");
-    mCMapLenIndex = glGetUniformLocation(mProgram, "cmaplen");
-    mTexIndex     = glGetUniformLocation(mProgram, "tex");
-    mNumCIndex    = glGetUniformLocation(mProgram, "numcomps");
-    mAlphaIndex   = glGetUniformLocation(mProgram, "alpha");
+    mMatIndex     = mProgram.getUniformLocation("matrix");
+    mCMapIndex    = mProgram.getUniformBlockIndex("ColorMap");
+    mCMapLenIndex = mProgram.getUniformLocation("cmaplen");
+    mTexIndex     = mProgram.getUniformLocation("tex");
+    mNumCIndex    = mProgram.getUniformLocation("numcomps");
+    mAlphaIndex   = mProgram.getUniformLocation("alpha");
 
     // Initialize OpenGL Items
     glGenTextures(1, &(mTex));
@@ -100,7 +101,6 @@ image_impl::~image_impl()
     CheckGL("Begin image_impl::~image_impl");
     glDeleteBuffers(1, &mPBO);
     glDeleteTextures(1, &mTex);
-    glDeleteProgram(mProgram);
     CheckGL("End image_impl::~image_impl");
 }
 
@@ -160,7 +160,7 @@ void image_impl::render(const int pWindowId,
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glUseProgram(mProgram);
+    mProgram.bind();
 
     glUniform1i(mNumCIndex, mFormatSize);
     glUniform1f(mAlphaIndex, mAlpha);
@@ -179,7 +179,7 @@ void image_impl::render(const int pWindowId,
 
     glUniform1f(mCMapLenIndex, (GLfloat)mUBOSize);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, mColorMapUBO);
-    glUniformBlockBinding(mProgram, mCMapIndex, 0);
+    glUniformBlockBinding(mProgram.getProgramId(), mCMapIndex, 0);
 
     // Draw to screen
     bindResources(pWindowId);
@@ -190,7 +190,8 @@ void image_impl::render(const int pWindowId,
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
     // ubind the shader program
-    glUseProgram(0);
+    mProgram.unbind();
+
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
 

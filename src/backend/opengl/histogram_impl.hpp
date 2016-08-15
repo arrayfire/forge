@@ -24,7 +24,7 @@ class histogram_impl : public AbstractRenderable {
         gl::GLenum    mGLType;
         gl::GLuint    mNBins;
         /* OpenGL Objects */
-        gl::GLuint    mProgram;
+        ShaderProgram mProgram;
         /* internal shader attributes for mProgram
         * shader program to render histogram bars for each
         * bin*/

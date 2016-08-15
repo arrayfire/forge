@@ -62,16 +62,6 @@ gl::GLenum ctype2gl(const fg::ChannelFormat pMode);
  */
 gl::GLenum ictype2gl(const fg::ChannelFormat pMode);
 
-/* Compile OpenGL GLSL vertex and fragment shader sources
- *
- * @pVertShaderSrc is the vertex shader source code string
- * @pFragShaderSrc is the vertex shader source code string
- * @pGeomShaderSrc is the vertex shader source code string
- *
- * @return GLSL program unique identifier for given shader duo
- */
-gl::GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc, const char* pGeomShaderSrc=NULL);
-
 /* Create OpenGL buffer object
  *
  * @pTarget should be either GL_ARRAY_BUFFER or GL_ELEMENT_ARRAY_BUFFER
@@ -140,6 +130,30 @@ namespace opengl
 typedef unsigned int    uint;
 typedef unsigned short  ushort;
 typedef unsigned char   uchar;
+
+class ShaderProgram {
+    private:
+        gl::GLuint mVertex;
+        gl::GLuint mFragment;
+        gl::GLuint mGeometry;
+        gl::GLuint mProgram;
+
+    public:
+        ShaderProgram(const char* pVertShaderSrc,
+                      const char* pFragShaderSrc,
+                      const char* pGeomShaderSrc=NULL);
+
+        ~ShaderProgram();
+
+        gl::GLuint getProgramId() const;
+
+        gl::GLuint getUniformLocation(const char* pAttributeName);
+        gl::GLuint getUniformBlockIndex(const char* pAttributeName);
+        gl::GLuint getAttributeLocation(const char* pAttributeName);
+
+        void bind();
+        void unbind();
+};
 
 /* Basic renderable class
  *

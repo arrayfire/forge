@@ -170,12 +170,60 @@ Shaders loadShaders(const char* pVertexShaderSrc,
     return out;
 }
 
-GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc, const char* pGeomShaderSrc)
+namespace opengl
+{
+
+ShaderProgram::ShaderProgram(const char* pVertShaderSrc,
+                             const char* pFragShaderSrc,
+                             const char* pGeomShaderSrc)
+    : mVertex(0), mFragment(0), mGeometry(0), mProgram(0)
 {
     Shaders shrds = loadShaders(pVertShaderSrc, pFragShaderSrc, pGeomShaderSrc);
-    GLuint shaderProgram = glCreateProgram();
-    attachAndLinkProgram(shaderProgram, shrds);
-    return shaderProgram;
+    mProgram = glCreateProgram();
+    attachAndLinkProgram(mProgram, shrds);
+    mVertex = shrds.vertex;
+    mFragment = shrds.fragment;
+    mGeometry = shrds.geometry;
+}
+
+ShaderProgram::~ShaderProgram()
+{
+    if (mVertex  ) glDeleteShader ( mVertex  );
+    if (mFragment) glDeleteShader ( mFragment);
+    if (mGeometry) glDeleteShader ( mGeometry);
+    if (mProgram ) glDeleteProgram( mProgram );
+}
+
+gl::GLuint ShaderProgram::getProgramId() const
+{
+    return mProgram;
+}
+
+GLuint ShaderProgram::getUniformLocation(const char* pAttributeName)
+{
+    return gl::glGetUniformLocation(mProgram, pAttributeName);
+}
+
+GLuint ShaderProgram::getUniformBlockIndex(const char* pAttributeName)
+{
+    return gl::glGetUniformBlockIndex(mProgram, pAttributeName);
+}
+
+GLuint ShaderProgram::getAttributeLocation(const char* pAttributeName)
+{
+    return gl::glGetAttribLocation(mProgram, pAttributeName);
+}
+
+void ShaderProgram::bind()
+{
+    glUseProgram(mProgram);
+}
+
+void ShaderProgram::unbind()
+{
+    glUseProgram(0);
+}
+
 }
 
 float clampTo01(const float pValue)

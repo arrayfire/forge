@@ -48,8 +48,8 @@ class AbstractChart : public AbstractRenderable {
         std::string mZTitle;
         /* OpenGL Objects */
         gl::GLuint mDecorVBO;
-        gl::GLuint mBorderProgram;
-        gl::GLuint mSpriteProgram;
+        ShaderProgram mBorderProgram;
+        ShaderProgram mSpriteProgram;
         /* shader uniform variable locations */
         gl::GLuint mBorderAttribPointIndex;
         gl::GLuint mBorderUniformColorIndex;
