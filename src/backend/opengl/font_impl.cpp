@@ -137,29 +137,6 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
             FT_THROW_ERROR("FT_Get_Glyph", FG_ERR_FREETYPE_ERROR);
         }
 
-        ////FIXME Renable when outline strokes are working
-        ///* use stroker to get outline */
-        //FT_Stroker stroker;
-        //bError = FT_Stroker_New(library, &stroker);
-        //if (bError) {
-        //    FT_Stroker_Done(stroker);
-        //    FT_Done_Face(face);
-        //    FT_Done_FreeType(library);
-        //    FT_THROW_ERROR("FT_Stroker_New", forge::FG_ERR_FREETYPE_ERROR);
-        //}
-
-        //FT_Stroker_Set(stroker, 16, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
-
-        ///* stroke the outline to current glyph */
-        //bError = FT_Glyph_Stroke(&currGlyph, stroker, 1);
-        //if (bError) {
-        //    FT_Stroker_Done(stroker);
-        //    FT_Done_Face(face);
-        //    FT_Done_FreeType(library);
-        //    FT_THROW_ERROR("FT_Glyph_Stroke", forge::FG_ERR_FREETYPE_ERROR);
-        //}
-        //FT_Stroker_Done(stroker);
-
         /* fixed channel depth of 1 */
         bError = FT_Glyph_To_Bitmap(&currGlyph, FT_RENDER_MODE_NORMAL, 0, 1);
         if (bError) {
