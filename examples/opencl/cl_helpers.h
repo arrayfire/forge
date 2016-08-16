@@ -29,7 +29,7 @@ static const std::string CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 static const std::string CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
-bool checkGLInterop(const cl::Platform &plat,  const cl::Device &pDevice, const fg::Window &wnd)
+bool checkGLInterop(const cl::Platform &plat,  const cl::Device &pDevice, const forge::Window &wnd)
 {
     bool ret_val = false;
     // find the extension required
@@ -48,11 +48,22 @@ bool checkGLInterop(const cl::Platform &plat,  const cl::Device &pDevice, const 
 
 #if !defined(OS_MAC) // Check on Linux, Windows
     // Check if current OpenCL device is belongs to the OpenGL context
+
+#if defined(OS_LNX)
     cl_context_properties cps[] = {
         CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
+        CL_GLX_DISPLAY_KHR, (cl_context_properties)wnd.display(),
         CL_CONTEXT_PLATFORM, (cl_context_properties)plat(),
         0
     };
+#else /* OS_WIN */
+    cl_context_properties cps[] = {
+        CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
+        CL_WGL_HDC_KHR, (cl_context_properties)wnd.display(),
+        CL_CONTEXT_PLATFORM, (cl_context_properties)plat(),
+        0
+    };
+#endif
 
     // Load the extension
     // If cl_khr_gl_sharing is available, this function should be present
@@ -61,13 +72,14 @@ bool checkGLInterop(const cl::Platform &plat,  const cl::Device &pDevice, const 
         clGetExtensionFunctionAddressForPlatform(plat(), "clGetGLContextInfoKHR");
 
     if (!func) return false;
+
     // Get all devices associated with opengl context
     std::vector<cl_device_id> devices(16);
     size_t ret = 0;
     cl_int err = func(cps,
                       CL_DEVICES_FOR_GL_CONTEXT_KHR,
                       devices.size() * sizeof(cl_device_id),
-                      &devices[0],
+                      devices.data(),
                       &ret);
 
     if (err != CL_SUCCESS) return false;
@@ -77,16 +89,14 @@ bool checkGLInterop(const cl::Platform &plat,  const cl::Device &pDevice, const 
 
     // Check if current device is present in the associated devices
     cl_device_id current_device = pDevice();
-    auto res = std::find(std::begin(devices),
-                         std::end(devices),
-                         current_device);
+    auto res = std::find(std::begin(devices), std::end(devices), current_device);
 
     ret_val = res != std::end(devices);
 #endif
     return ret_val;
 }
 
-cl::Context createCLGLContext(const fg::Window &wnd)
+cl::Context createCLGLContext(const forge::Window &wnd)
 {
     std::vector<cl::Platform> platforms;
     Platform::get(&platforms);
