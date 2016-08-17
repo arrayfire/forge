@@ -110,12 +110,12 @@ int main(void)
 }
 
 __global__
-void simple_sinf(float* out, const size_t DATA_SIZE, int fnCode)
+void simple_sinf(float* out, const size_t DATA_SIZE, int fnCode, const float _frange_start)
 {
     int i = blockIdx.x * blockDim.x  + threadIdx.x;
 
     if (i<DATA_SIZE) {
-        float x  = FRANGE_START + i*dx;
+        float x  = _frange_start + i*dx;
         int idx  = 2*i;
         out[idx] = x;
 
@@ -146,5 +146,5 @@ void kernel(float* dev_out, int functionCode)
     static const dim3 threads(1024);
     dim3 blocks(divup(DATA_SIZE, 1024));
 
-    simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, functionCode);
+    simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, functionCode, FRANGE_START);
 }
