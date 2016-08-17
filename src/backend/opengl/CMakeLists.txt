@@ -1,10 +1,11 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 # Prior to GLM 0.9.7.0, the package is found by the FindGLM.cmake module.
 # This was removed with GLM 0.9.7.0, instead a glm-config.cmake configuration
 # file is provided. Therefore, both FIND_PACKAGE calls are necessary.
 FIND_PACKAGE(GLM QUIET)
 FIND_PACKAGE(glm QUIET)
 
+INCLUDE("${CMAKE_MODULE_PATH}/build_glbinding.cmake")
 INCLUDE("${CMAKE_MODULE_PATH}/GLSLtoH.cmake")
 
 IF((NOT glm_FOUND AND NOT GLM_FOUND) OR (${USE_LOCAL_GLM}))
@@ -71,6 +72,7 @@ INCLUDE_DIRECTORIES(
     ${FREETYPE_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIRS}
     ${WTK_INCLUDE_DIRS}
+    ${GLBINDING_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     "${PROJECT_SOURCE_DIR}/src/api/c"
@@ -184,12 +186,12 @@ TARGET_LINK_LIBRARIES(forge
     PRIVATE ${FREETYPE_LIBRARIES}
     PRIVATE ${WTK_LIBRARIES}
     PRIVATE ${OPENGL_gl_LIBRARY}
-    PRIVATE ${GLEWmx_LIBRARY}
+    PRIVATE ${GLBINDING_LIBRARIES}
     PRIVATE ${FREEIMAGE_LIBRARY}
     PRIVATE ${X11_LIBS}
     )
 
-ADD_DEPENDENCIES(forge ${glsl_shader_targets})
+ADD_DEPENDENCIES(forge ${glsl_shader_targets} glbinding)
 
 INSTALL(TARGETS forge
         EXPORT FORGE

@@ -69,20 +69,20 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Bubble chart with Transparency Demo");
+    forge::Window wnd(DIMX, DIMY, "Bubble chart with Transparency Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(FG_CHART_2D);
+    forge::Chart chart(FG_CHART_2D);
     chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.0f, 1.0f);
 
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    fg::Plot plt1 = chart.plot(cosData.size()/2, fg::f32,
+    forge::Plot plt1 = chart.plot(cosData.size()/2, forge::f32,
                                FG_PLOT_LINE, FG_MARKER_TRIANGLE); //or specify a specific plot type
-    fg::Plot plt2 = chart.plot(tanData.size()/2, fg::f32,
+    forge::Plot plt2 = chart.plot(tanData.size()/2, forge::f32,
                                FG_PLOT_LINE, FG_MARKER_CIRCLE); //last parameter specifies marker shape
 
     /* Set plot colors */
@@ -94,7 +94,7 @@ int main(void)
     /* set plot global marker size */
     plt1.setMarkerSize(20);
     /* copy your data into the opengl buffer object exposed by
-     * fg::Plot class and then proceed to rendering.
+     * forge::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task

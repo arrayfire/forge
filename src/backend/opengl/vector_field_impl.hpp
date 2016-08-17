@@ -19,63 +19,66 @@
 #include <memory>
 #include <map>
 
+namespace forge
+{
 namespace opengl
 {
 
 class vector_field_impl : public AbstractRenderable {
     protected:
-        GLuint    mDimension;
+        gl::GLuint    mDimension;
         /* plot points characteristics */
-        GLuint    mNumPoints;
-        fg::dtype mDataType;
-        GLenum    mGLType;
+        gl::GLuint    mNumPoints;
+        forge::dtype mDataType;
+        gl::GLenum    mGLType;
         /* OpenGL Objects */
-        GLuint    mFieldProgram;
-        GLuint    mDBO;
+        ShaderProgram mFieldProgram;
+        gl::GLuint    mDBO;
         size_t    mDBOSize;
         /* shader variable index locations */
         /* vertex shader */
-        GLuint    mFieldPointIndex;
-        GLuint    mFieldColorIndex;
-        GLuint    mFieldAlphaIndex;
-        GLuint    mFieldDirectionIndex;
+        gl::GLuint    mFieldPointIndex;
+        gl::GLuint    mFieldColorIndex;
+        gl::GLuint    mFieldAlphaIndex;
+        gl::GLuint    mFieldDirectionIndex;
         /* geometry shader */
-        GLuint    mFieldPVMatIndex;
-        GLuint    mFieldModelMatIndex;
-        GLuint    mFieldAScaleMatIndex;
+        gl::GLuint    mFieldPVMatIndex;
+        gl::GLuint    mFieldModelMatIndex;
+        gl::GLuint    mFieldAScaleMatIndex;
         /* fragment shader */
-        GLuint    mFieldPVCOnIndex;
-        GLuint    mFieldPVAOnIndex;
-        GLuint    mFieldUColorIndex;
+        gl::GLuint    mFieldPVCOnIndex;
+        gl::GLuint    mFieldPVAOnIndex;
+        gl::GLuint    mFieldUColorIndex;
 
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, gl::GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
         void bindResources(const int pWindowId);
         void unbindResources() const;
 
-        virtual glm::mat4 computeModelMatrix();
+        virtual glm::mat4 computeModelMatrix(const glm::mat4& pOrient);
 
     public:
-        vector_field_impl(const uint pNumPoints, const fg::dtype pDataType,
+        vector_field_impl(const uint pNumPoints, const forge::dtype pDataType,
                           const int pDimension=3);
         ~vector_field_impl();
 
-        GLuint directions();
+        gl::GLuint directions();
         size_t directionsSize() const;
 
         virtual void render(const int pWindowId,
                             const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4 &pView);
+                            const glm::mat4 &pView, const glm::mat4 &pOrient);
 };
 
 class vector_field2d_impl : public vector_field_impl {
     protected:
-        glm::mat4 computeModelMatrix() override;
+        glm::mat4 computeModelMatrix(const glm::mat4& pOrient) override;
     public:
-        vector_field2d_impl(const uint pNumPoints, const fg::dtype pDataType)
+        vector_field2d_impl(const uint pNumPoints, const forge::dtype pDataType)
             : vector_field_impl(pNumPoints, pDataType, 2) {}
 };
 
+}
 }

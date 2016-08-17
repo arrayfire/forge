@@ -19,84 +19,87 @@
 #include <memory>
 #include <map>
 
+namespace forge
+{
 namespace opengl
 {
 
 class plot_impl : public AbstractRenderable {
     protected:
-        GLuint    mDimension;
-        GLfloat   mMarkerSize;
+        gl::GLuint     mDimension;
+        gl::GLfloat    mMarkerSize;
         /* plot points characteristics */
-        GLuint    mNumPoints;
-        fg::dtype mDataType;
-        GLenum    mGLType;
-        fg::MarkerType mMarkerType;
-        fg::PlotType   mPlotType;
-        bool      mIsPVROn;
+        gl::GLuint     mNumPoints;
+        forge::dtype      mDataType;
+        gl::GLenum     mGLType;
+        forge::MarkerType mMarkerType;
+        forge::PlotType   mPlotType;
+        bool           mIsPVROn;
         /* OpenGL Objects */
-        GLuint    mPlotProgram;
-        GLuint    mMarkerProgram;
-        GLuint    mRBO;
-        size_t    mRBOSize;
+        ShaderProgram  mPlotProgram;
+        ShaderProgram  mMarkerProgram;
+        gl::GLuint    mRBO;
+        size_t        mRBOSize;
         /* shader variable index locations */
-        GLuint    mPlotMatIndex;
-        GLuint    mPlotPVCOnIndex;
-        GLuint    mPlotPVAOnIndex;
-        GLuint    mPlotUColorIndex;
-        GLuint    mPlotRangeIndex;
-        GLuint    mPlotPointIndex;
-        GLuint    mPlotColorIndex;
-        GLuint    mPlotAlphaIndex;
+        gl::GLuint    mPlotMatIndex;
+        gl::GLuint    mPlotPVCOnIndex;
+        gl::GLuint    mPlotPVAOnIndex;
+        gl::GLuint    mPlotUColorIndex;
+        gl::GLuint    mPlotRangeIndex;
+        gl::GLuint    mPlotPointIndex;
+        gl::GLuint    mPlotColorIndex;
+        gl::GLuint    mPlotAlphaIndex;
 
-        GLuint    mMarkerPVCOnIndex;
-        GLuint    mMarkerPVAOnIndex;
-        GLuint    mMarkerPVROnIndex;
-        GLuint    mMarkerTypeIndex;
-        GLuint    mMarkerColIndex;
-        GLuint    mMarkerMatIndex;
-        GLuint    mMarkerPSizeIndex;
-        GLuint    mMarkerPointIndex;
-        GLuint    mMarkerColorIndex;
-        GLuint    mMarkerAlphaIndex;
-        GLuint    mMarkerRadiiIndex;
+        gl::GLuint    mMarkerPVCOnIndex;
+        gl::GLuint    mMarkerPVAOnIndex;
+        gl::GLuint    mMarkerPVROnIndex;
+        gl::GLuint    mMarkerTypeIndex;
+        gl::GLuint    mMarkerColIndex;
+        gl::GLuint    mMarkerMatIndex;
+        gl::GLuint    mMarkerPSizeIndex;
+        gl::GLuint    mMarkerPointIndex;
+        gl::GLuint    mMarkerColorIndex;
+        gl::GLuint    mMarkerAlphaIndex;
+        gl::GLuint    mMarkerRadiiIndex;
 
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, gl::GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
         void bindResources(const int pWindowId);
         void unbindResources() const;
 
-        virtual glm::mat4 computeTransformMat(const glm::mat4 pView);
+        virtual glm::mat4 computeTransformMat(const glm::mat4 pView, const glm::mat4 pOrient);
 
         virtual void bindDimSpecificUniforms(); // has to be called only after shaders are bound
 
     public:
-        plot_impl(const uint pNumPoints, const fg::dtype pDataType,
-                  const fg::PlotType pPlotType, const fg::MarkerType pMarkerType,
+        plot_impl(const uint pNumPoints, const forge::dtype pDataType,
+                  const forge::PlotType pPlotType, const forge::MarkerType pMarkerType,
                   const int pDimension=3);
         ~plot_impl();
 
         void setMarkerSize(const float pMarkerSize);
 
-        GLuint markers();
+        uint markers();
         size_t markersSizes() const;
 
         virtual void render(const int pWindowId,
                             const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4 &pView);
+                            const glm::mat4 &pView, const glm::mat4 &pOrient);
 };
 
 class plot2d_impl : public plot_impl {
     protected:
-        glm::mat4 computeTransformMat(const glm::mat4 pView) override;
+        glm::mat4 computeTransformMat(const glm::mat4 pView, const glm::mat4 pOrient) override;
 
         void bindDimSpecificUniforms() override; // has to be called only after shaders are bound
 
     public:
-        plot2d_impl(const uint pNumPoints, const fg::dtype pDataType,
-                    const fg::PlotType pPlotType, const fg::MarkerType pMarkerType)
+        plot2d_impl(const uint pNumPoints, const forge::dtype pDataType,
+                    const forge::PlotType pPlotType, const forge::MarkerType pMarkerType)
             : plot_impl(pNumPoints, pDataType, pPlotType, pMarkerType, 2) {}
 };
 
+}
 }

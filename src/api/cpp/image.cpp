@@ -17,7 +17,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace fg
+namespace forge
 {
 
 Image::Image(const uint pWidth, const uint pHeight,
@@ -61,12 +61,12 @@ ChannelFormat Image::pixelFormat() const
     return getImage(mValue)->pixelFormat();
 }
 
-fg::dtype Image::channelType() const
+forge::dtype Image::channelType() const
 {
     return getImage(mValue)->channelType();
 }
 
-GLuint Image::pbo() const
+uint Image::pbo() const
 {
     return getImage(mValue)->pbo();
 }
@@ -81,7 +81,7 @@ void Image::render(const Window& pWindow,
 {
     getImage(mValue)->render(getWindow(pWindow.get())->getID(),
                              pX, pY, pVPW, pVPH,
-                             IDENTITY);
+                             IDENTITY, IDENTITY);
 }
 
 

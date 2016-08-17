@@ -9,6 +9,8 @@
 
 #include <handle.hpp>
 
+using namespace forge;
+
 fg_window getHandle(common::Window* pValue)
 {
     return reinterpret_cast<fg_window>(pValue);

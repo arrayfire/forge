@@ -9,27 +9,19 @@
 
 #pragma once
 
-#ifdef OS_WIN
-    #define GLFW_EXPOSE_NATIVE_WIN32
-    #define GLFW_EXPOSE_NATIVE_WGL
-#endif
-
-#ifdef OS_LNX
-    #define GLFW_EXPOSE_NATIVE_X11
-    #define GLFW_EXPOSE_NATIVE_GLX
-#endif
-
+#include <common.hpp>
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#ifndef OS_MAC
-#include <GLFW/glfw3native.h>
-#endif
-
 #include <glm/glm.hpp>
 
 /* the short form wtk stands for
  * Windowing Tool Kit */
+namespace forge
+{
 namespace wtk
 {
+
+using namespace gl;
 
 class Widget {
     private:
@@ -56,6 +48,7 @@ class Widget {
         int mCellWidth;
         int mCellHeight;
         std::vector<glm::mat4> mViewMatrices;
+        std::vector<glm::mat4> mOrientMatrices;
 
         GLuint  mFramePBO;
 
@@ -101,4 +94,5 @@ class Widget {
         void resizePixelBuffers();
 };
 
+}
 }

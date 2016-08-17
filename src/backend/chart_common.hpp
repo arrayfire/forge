@@ -13,6 +13,8 @@
 
 #include <memory>
 
+namespace forge
+{
 namespace common
 {
 
@@ -45,15 +47,15 @@ class ChartRenderableBase {
             mShrdPtr->setLegend(pLegend);
         }
 
-        inline GLuint vbo() const {
+        inline uint vbo() const {
             return mShrdPtr->vbo();
         }
 
-        inline GLuint cbo() const {
+        inline uint cbo() const {
             return mShrdPtr->cbo();
         }
 
-        inline GLuint abo() const {
+        inline uint abo() const {
             return mShrdPtr->abo();
         }
 
@@ -76,4 +78,5 @@ class ChartRenderableBase {
         }
 };
 
+}
 }

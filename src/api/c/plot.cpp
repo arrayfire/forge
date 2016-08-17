@@ -12,6 +12,8 @@
 #include <handle.hpp>
 #include <chart_renderables.hpp>
 
+using namespace forge;
+
 fg_err fg_create_plot(fg_plot *pPlot,
                       const uint pNPoints, const fg_dtype pType,
                       const fg_chart_type pChartType,
@@ -19,7 +21,7 @@ fg_err fg_create_plot(fg_plot *pPlot,
                       const fg_marker_type pMarkerType)
 {
     try {
-        *pPlot = getHandle(new common::Plot(pNPoints, (fg::dtype)pType, pPlotType,
+        *pPlot = getHandle(new common::Plot(pNPoints, (forge::dtype)pType, pPlotType,
                                             pMarkerType, pChartType));
     }
     CATCHALL

@@ -12,7 +12,7 @@
 #include <handle.hpp>
 #include <chart_renderables.hpp>
 
-namespace fg
+namespace forge
 {
 
 VectorField::VectorField(const uint pNumPoints, const dtype pDataType, const ChartType pChartType)

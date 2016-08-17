@@ -11,4 +11,4 @@
 
 #include <common.hpp>
 
-namespace detail = opengl;
+namespace detail = forge::opengl;

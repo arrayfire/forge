@@ -48,15 +48,19 @@ static const struct {
 #define START_CHAR 32
 #define END_CHAR   126
 
+using namespace gl;
+
 /* freetype library types */
 
+namespace forge
+{
 namespace opengl
 {
 
 #ifdef NDEBUG
 /* Relase Mode */
 #define FT_THROW_ERROR(msg, error) \
-    throw fg::Error("Freetype library", __LINE__, msg, error);
+    throw forge::Error("Freetype library", __LINE__, msg, error);
 
 #else
 /* Debug Mode */
@@ -65,7 +69,7 @@ namespace opengl
         std::ostringstream ss;                                              \
         ss << "FT_Error (0x"<< std::hex << FT_Errors[err].code <<") : "     \
            << FT_Errors[err].message << std::endl;                          \
-        throw fg::Error(ss.str().c_str(), __LINE__, msg, err);              \
+        throw forge::Error(ss.str().c_str(), __LINE__, msg, err);              \
     } while(0);
 
 #endif
@@ -132,29 +136,6 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
             FT_Done_FreeType(library);
             FT_THROW_ERROR("FT_Get_Glyph", FG_ERR_FREETYPE_ERROR);
         }
-
-        ////FIXME Renable when outline strokes are working
-        ///* use stroker to get outline */
-        //FT_Stroker stroker;
-        //bError = FT_Stroker_New(library, &stroker);
-        //if (bError) {
-        //    FT_Stroker_Done(stroker);
-        //    FT_Done_Face(face);
-        //    FT_Done_FreeType(library);
-        //    FT_THROW_ERROR("FT_Stroker_New", fg::FG_ERR_FREETYPE_ERROR);
-        //}
-
-        //FT_Stroker_Set(stroker, 16, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
-
-        ///* stroke the outline to current glyph */
-        //bError = FT_Glyph_Stroke(&currGlyph, stroker, 1);
-        //if (bError) {
-        //    FT_Stroker_Done(stroker);
-        //    FT_Done_Face(face);
-        //    FT_Done_FreeType(library);
-        //    FT_THROW_ERROR("FT_Glyph_Stroke", fg::FG_ERR_FREETYPE_ERROR);
-        //}
-        //FT_Stroker_Done(stroker);
 
         /* fixed channel depth of 1 */
         bError = FT_Glyph_To_Bitmap(&currGlyph, FT_RENDER_MODE_NORMAL, 0, 1);
@@ -255,14 +236,14 @@ void font_impl::destroyGLResources()
 }
 
 font_impl::font_impl()
-    : mTTFfile(""), mIsFontLoaded(false), mAtlas(new FontAtlas(1024, 1024, 1)),
-    mVBO(0), mProgram(0), mOrthoW(1), mOrthoH(1)
+    : mTTFfile(""), mIsFontLoaded(false), mAtlas(new FontAtlas(1024, 1024, 1)), mVBO(0),
+    mProgram(glsl::font_vs.c_str(), glsl::font_fs.c_str()),
+    mOrthoW(1), mOrthoH(1)
 {
-    mProgram   = initShaders(glsl::font_vs.c_str(), glsl::font_fs.c_str());
-    mPMatIndex = glGetUniformLocation(mProgram, "projectionMatrix");
-    mMMatIndex = glGetUniformLocation(mProgram, "modelViewMatrix");
-    mTexIndex  = glGetUniformLocation(mProgram, "tex");
-    mClrIndex  = glGetUniformLocation(mProgram, "textColor");
+    mPMatIndex = mProgram.getUniformLocation("projectionMatrix");
+    mMMatIndex = mProgram.getUniformLocation("modelViewMatrix");
+    mTexIndex  = mProgram.getUniformLocation("tex");
+    mClrIndex  = mProgram.getUniformLocation("textColor");
 
     mGlyphLists.resize(MAX_FONT_SIZE-MIN_FONT_SIZE+1, GlyphList());
 }
@@ -270,7 +251,6 @@ font_impl::font_impl()
 font_impl::~font_impl()
 {
     destroyGLResources();
-    if (mProgram) glDeleteProgram(mProgram);
 }
 
 void font_impl::setOthro2D(int pWidth, int pHeight)
@@ -353,14 +333,14 @@ void font_impl::loadSystemFont(const char* const pName)
     // use fontconfig to get the file
     FcConfig* config = FcInitLoadConfigAndFonts();
     if (!config) {
-        throw fg::Error("Fontconfig init failed",
+        throw forge::Error("Fontconfig init failed",
                         __LINE__, __PRETTY_FUNCTION__,
                         FG_ERR_FONTCONFIG_ERROR);
     }
     // configure the search pattern,
     FcPattern* pat = FcNameParse((const FcChar8*)(pName));
     if (!pat) {
-        throw fg::Error("Fontconfig name parse failed",
+        throw forge::Error("Fontconfig name parse failed",
                         __LINE__, __PRETTY_FUNCTION__,
                         FG_ERR_FONTCONFIG_ERROR);
     }
@@ -426,7 +406,7 @@ void font_impl::render(int pWindowId,
     glDepthFunc(GL_ALWAYS);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glUseProgram(mProgram);
+    mProgram.bind();
 
     glUniformMatrix4fv(mPMatIndex, 1, GL_FALSE, (GLfloat*)&mProjMat);
     glUniform4fv(mClrIndex, 1, pColor);
@@ -480,7 +460,7 @@ void font_impl::render(int pWindowId,
 
     unbindResources();
 
-    glUseProgram(0);
+    mProgram.unbind();
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);
@@ -488,4 +468,5 @@ void font_impl::render(int pWindowId,
     CheckGL("End font_impl::render ");
 }
 
+}
 }

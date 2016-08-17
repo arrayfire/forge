@@ -16,34 +16,141 @@
 extern "C" {
 #endif
 
+/** \addtogroup vfield_functions
+ * @{
+ */
+
+/**
+   Create a Vector field object
+
+   \param[out] pField will be set to surface handle upon creating the surface object
+   \param[in] pNPoints is number of data points
+   \param[in] pType takes one of the values of \ref fg_dtype that indicates
+              the integral data type of surface data
+   \param[in] pChartType dictates the dimensionality of the chart
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_create_vector_field(fg_vector_field *pField,
                                     const uint pNPoints,
                                     const fg_dtype pType,
                                     const fg_chart_type pChartType);
 
+/**
+   Destroy vector field object
+
+   \param[in] pField is the surface handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_destroy_vector_field(fg_vector_field pField);
 
+/**
+   Set the color of vector field
+
+   \param[in] pField is the surface handle
+   \param[in] pRed is Red component in range [0, 1]
+   \param[in] pGreen is Green component in range [0, 1]
+   \param[in] pBlue is Blue component in range [0, 1]
+   \param[in] pAlpha is Blue component in range [0, 1]
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_set_vector_field_color(fg_vector_field pField,
                                        const float pRed, const float pGreen,
                                        const float pBlue, const float pAlpha);
 
+/**
+   Set vector field legend
+
+   \param[in] pField is the vector field handle
+   \param[in] pLegend
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_set_vector_field_legend(fg_vector_field pField, const char* pLegend);
 
+/**
+   Get the resource identifier for vertices buffer
+
+   \param[out] pOut will have the buffer identifier after this function is called
+   \param[in] pField is the vector field handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_get_vector_field_vbo(uint* pOut, const fg_vector_field pField);
 
+/**
+   Get the resource identifier for colors buffer
+
+   \param[out] pOut will have the buffer identifier after this function is called
+   \param[in] pField is the vector field handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_get_vector_field_cbo(uint* pOut, const fg_vector_field pField);
 
+/**
+   Get the resource identifier for alpha values buffer
+
+   \param[out] pOut will have the buffer identifier after this function is called
+   \param[in] pField is the vector field handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_get_vector_field_abo(uint* pOut, const fg_vector_field pField);
 
+/**
+   Get the resource identifier for directions buffer
+
+   \param[out] pOut will have the buffer identifier after this function is called
+   \param[in] pField is the vector field handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_get_vector_field_dbo(uint* pOut, const fg_vector_field pField);
 
+/**
+   Get the vertices buffer size in bytes
+
+   \param[out] pOut will have the buffer size in bytes after this function is called
+   \param[in] pField is the vector field handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_get_vector_field_vbo_size(uint* pOut, const fg_vector_field pField);
 
+/**
+   Get the colors buffer size in bytes
+
+   \param[out] pOut will have the buffer size in bytes after this function is called
+   \param[in] pField is the vector field handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_get_vector_field_cbo_size(uint* pOut, const fg_vector_field pField);
 
+/**
+   Get the alpha values buffer size in bytes
+
+   \param[out] pOut will have the buffer size in bytes after this function is called
+   \param[in] pField is the vector field handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_get_vector_field_abo_size(uint* pOut, const fg_vector_field pField);
 
+/**
+   Get the directions buffer size in bytes
+
+   \param[out] pOut will have the buffer size in bytes after this function is called
+   \param[in] pField is the vector field handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_get_vector_field_dbo_size(uint* pOut, const fg_vector_field pField);
+
+/** @} */
 
 #ifdef __cplusplus
 }
@@ -52,7 +159,7 @@ FGAPI fg_err fg_get_vector_field_dbo_size(uint* pOut, const fg_vector_field pFie
 
 #ifdef __cplusplus
 
-namespace fg
+namespace forge
 {
 
 /**
@@ -90,9 +197,9 @@ class VectorField {
         /**
            Set global color for the field lines
 
-           \param[in] pColor takes values of fg::Color to define VectorField color
+           \param[in] pColor takes values of forge::Color to define VectorField color
         */
-        FGAPI void setColor(const fg::Color pColor);
+        FGAPI void setColor(const forge::Color pColor);
 
         /**
            Set global color for the field lines

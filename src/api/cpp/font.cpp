@@ -12,7 +12,7 @@
 #include <handle.hpp>
 #include <font.hpp>
 
-namespace fg
+namespace forge
 {
 
 Font::Font()

@@ -16,58 +16,60 @@
 #include <memory>
 #include <map>
 
+namespace forge
+{
 namespace opengl
 {
 
 class surface_impl : public AbstractRenderable {
     protected:
         /* plot points characteristics */
-        GLuint    mNumXPoints;
-        GLuint    mNumYPoints;
-        GLenum    mDataType;
-        bool      mIsPVCOn;
-        bool      mIsPVAOn;
-        fg::MarkerType mMarkerType;
+        gl::GLuint    mNumXPoints;
+        gl::GLuint    mNumYPoints;
+        gl::GLenum    mDataType;
+        bool          mIsPVCOn;
+        bool          mIsPVAOn;
+        forge::MarkerType mMarkerType;
         /* OpenGL Objects */
-        GLuint    mIBO;
-        size_t    mIBOSize;
-        GLuint    mMarkerProgram;
-        GLuint    mSurfProgram;
+        gl::GLuint    mIBO;
+        size_t        mIBOSize;
+        ShaderProgram mMarkerProgram;
+        ShaderProgram mSurfProgram;
         /* shared variable index locations */
-        GLuint    mMarkerMatIndex;
-        GLuint    mMarkerPointIndex;
-        GLuint    mMarkerColorIndex;
-        GLuint    mMarkerAlphaIndex;
-        GLuint    mMarkerPVCIndex;
-        GLuint    mMarkerPVAIndex;
-        GLuint    mMarkerTypeIndex;
-        GLuint    mMarkerColIndex;
+        gl::GLuint    mMarkerMatIndex;
+        gl::GLuint    mMarkerPointIndex;
+        gl::GLuint    mMarkerColorIndex;
+        gl::GLuint    mMarkerAlphaIndex;
+        gl::GLuint    mMarkerPVCIndex;
+        gl::GLuint    mMarkerPVAIndex;
+        gl::GLuint    mMarkerTypeIndex;
+        gl::GLuint    mMarkerColIndex;
 
-        GLuint    mSurfMatIndex;
-        GLuint    mSurfRangeIndex;
-        GLuint    mSurfPointIndex;
-        GLuint    mSurfColorIndex;
-        GLuint    mSurfAlphaIndex;
-        GLuint    mSurfPVCIndex;
-        GLuint    mSurfPVAIndex;
+        gl::GLuint    mSurfMatIndex;
+        gl::GLuint    mSurfRangeIndex;
+        gl::GLuint    mSurfPointIndex;
+        gl::GLuint    mSurfColorIndex;
+        gl::GLuint    mSurfAlphaIndex;
+        gl::GLuint    mSurfPVCIndex;
+        gl::GLuint    mSurfPVAIndex;
 
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, gl::GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
         void bindResources(const int pWindowId);
         void unbindResources() const;
-        glm::mat4  computeTransformMat(const glm::mat4& pView);
+        glm::mat4  computeTransformMat(const glm::mat4& pView, const glm::mat4& pOrient);
         virtual void renderGraph(const int pWindowId, const glm::mat4& transform);
 
     public:
         surface_impl(const uint pNumXpoints, const uint pNumYpoints,
-                     const fg::dtype pDataType, const fg::MarkerType pMarkerType);
+                     const forge::dtype pDataType, const forge::MarkerType pMarkerType);
         ~surface_impl();
 
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,
-                    const glm::mat4 &pView);
+                    const glm::mat4 &pView, const glm::mat4 &pOrient);
 
         inline void usePerVertexColors(const bool pFlag=true) {
             mIsPVCOn = pFlag;
@@ -84,8 +86,9 @@ class scatter3_impl : public surface_impl {
 
    public:
        scatter3_impl(const uint pNumXPoints, const uint pNumYPoints,
-                     const fg::dtype pDataType, const fg::MarkerType pMarkerType=FG_MARKER_NONE)
+                     const forge::dtype pDataType, const forge::MarkerType pMarkerType=FG_MARKER_NONE)
            : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType) {}
 };
 
+}
 }

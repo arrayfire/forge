@@ -12,13 +12,15 @@
 #include <handle.hpp>
 #include <chart_renderables.hpp>
 
+using namespace forge;
+
 fg_err fg_create_vector_field(fg_vector_field *pField,
                               const uint pNPoints,
                               const fg_dtype pType,
                               const fg_chart_type pChartType)
 {
     try {
-        *pField = getHandle(new common::VectorField(pNPoints, (fg::dtype)pType, pChartType));
+        *pField = getHandle(new common::VectorField(pNPoints, (forge::dtype)pType, pChartType));
     }
     CATCHALL
 

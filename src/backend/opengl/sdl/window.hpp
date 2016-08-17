@@ -15,6 +15,8 @@
 
 /* the short form wtk stands for
  * Windowing Tool Kit */
+namespace forge
+{
 namespace wtk
 {
 
@@ -45,9 +47,10 @@ class Widget {
         int mCols;
         int mCellWidth;
         int mCellHeight;
-        std::vector<glm::mat4> mMVPs;
+        std::vector<glm::mat4> mViewMatrices;
+        std::vector<glm::mat4> mOrientMatrices;
 
-        GLuint  mFramePBO;
+        uint  mFramePBO;
 
         /* Constructors and methods */
         Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible);
@@ -87,4 +90,5 @@ class Widget {
         void resizePixelBuffers();
 };
 
+}
 }

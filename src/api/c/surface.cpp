@@ -12,6 +12,8 @@
 #include <handle.hpp>
 #include <chart_renderables.hpp>
 
+using namespace forge;
+
 fg_err fg_create_surface(fg_surface *pSurface,
                       const uint pXPoints, const uint pYPoints,
                       const fg_dtype pType,
@@ -19,7 +21,7 @@ fg_err fg_create_surface(fg_surface *pSurface,
                       const fg_marker_type pMarkerType)
 {
     try {
-        *pSurface = getHandle(new common::Surface(pXPoints, pYPoints, (fg::dtype)pType,
+        *pSurface = getHandle(new common::Surface(pXPoints, pYPoints, (forge::dtype)pType,
                                                   pPlotType, pMarkerType));
     }
     CATCHALL

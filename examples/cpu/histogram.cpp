@@ -57,9 +57,9 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Histogram Demo");
+    forge::Window wnd(DIMX, DIMY, "Histogram Demo");
     wnd.makeCurrent();
 
     /*
@@ -67,9 +67,9 @@ int main(void)
      */
     wnd.grid(WIN_ROWS, WIN_COLS);
 
-    fg::Image img(IMGW, IMGH, FG_RGBA, fg::u8);
+    forge::Image img(IMGW, IMGH, FG_RGBA, forge::u8);
 
-    fg::Chart chart(FG_CHART_2D);
+    forge::Chart chart(FG_CHART_2D);
     /* set x axis limits to maximum and minimum values of data
      * and y axis limits to range [0, number of pixels ideally]
      * but practically total number of pixels as y range will skew
@@ -80,7 +80,7 @@ int main(void)
     /*
      * Create histogram object specifying number of bins
      */
-    fg::Histogram hist = chart.histogram(NBINS, fg::s32);
+    forge::Histogram hist = chart.histogram(NBINS, forge::s32);
     /*
      * Set histogram colors
      */
@@ -101,10 +101,10 @@ int main(void)
 
         copyToGLBuffer(handles[0], (ComputeResourceHandle)bmp.ptr, img.size());
 
-        //fg::copy(img, (const void*)bmp.ptr);
+        //forge::copy(img, (const void*)bmp.ptr);
 
         /* copy your data into the vertex buffer object exposed by
-         * fg::Histogram class and then proceed to rendering.
+         * forge::Histogram class and then proceed to rendering.
          * To help the users with copying the data from compute
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task

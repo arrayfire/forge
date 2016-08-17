@@ -13,6 +13,9 @@
 #include <fg/exception.h>
 #include <err_common.hpp>
 
+#include <glbinding/gl/gl.h>
+#include <glbinding/Binding.h>
+
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -38,7 +41,7 @@ float clampTo01(const float pValue);
  *
  * @return GL_* typedef for data type
  */
-GLenum dtype2gl(const fg::dtype pValue);
+gl::GLenum dtype2gl(const forge::dtype pValue);
 
 /* Convert forge channel format enum to OpenGL enum to indicate color component layout
  *
@@ -46,7 +49,7 @@ GLenum dtype2gl(const fg::dtype pValue);
  *
  * @return OpenGL enum indicating color component layout
  */
-GLenum ctype2gl(const fg::ChannelFormat pMode);
+gl::GLenum ctype2gl(const forge::ChannelFormat pMode);
 
 /* Convert forge channel format enum to OpenGL enum to indicate color component layout
  *
@@ -57,17 +60,7 @@ GLenum ctype2gl(const fg::ChannelFormat pMode);
  *
  * @return OpenGL enum indicating color component layout
  */
-GLenum ictype2gl(const fg::ChannelFormat pMode);
-
-/* Compile OpenGL GLSL vertex and fragment shader sources
- *
- * @pVertShaderSrc is the vertex shader source code string
- * @pFragShaderSrc is the vertex shader source code string
- * @pGeomShaderSrc is the vertex shader source code string
- *
- * @return GLSL program unique identifier for given shader duo
- */
-GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc, const char* pGeomShaderSrc=NULL);
+gl::GLenum ictype2gl(const forge::ChannelFormat pMode);
 
 /* Create OpenGL buffer object
  *
@@ -79,13 +72,13 @@ GLuint initShaders(const char* pVertShaderSrc, const char* pFragShaderSrc, const
  * @return OpenGL buffer object identifier
  */
 template<typename T>
-GLuint createBuffer(GLenum pTarget, size_t pSize, const T* pPtr, GLenum pUsage)
+gl::GLuint createBuffer(gl::GLenum pTarget, size_t pSize, const T* pPtr, gl::GLenum pUsage)
 {
-    GLuint retVal = 0;
-    glGenBuffers(1, &retVal);
-    glBindBuffer(pTarget, retVal);
-    glBufferData(pTarget, pSize*sizeof(T), pPtr, pUsage);
-    glBindBuffer(pTarget, 0);
+    gl::GLuint retVal = 0;
+    gl::glGenBuffers(1, &retVal);
+    gl::glBindBuffer(pTarget, retVal);
+    gl::glBufferData(pTarget, pSize*sizeof(T), pPtr, pUsage);
+    gl::glBindBuffer(pTarget, 0);
     return retVal;
 }
 
@@ -112,7 +105,7 @@ std::string toString(const float pVal, const int pPrecision = 2);
 
 /* Get a vertex buffer object for quad that spans the screen
  */
-GLuint screenQuadVBO(const int pWindowId);
+gl::GLuint screenQuadVBO(const int pWindowId);
 
 /* Get a vertex array object that uses screenQuadVBO
  *
@@ -122,7 +115,7 @@ GLuint screenQuadVBO(const int pWindowId);
  *
  *     `glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);`
  */
-GLuint screenQuadVAO(const int pWindowId);
+gl::GLuint screenQuadVAO(const int pWindowId);
 
 /* Print glm::mat4 to std::cout stream */
 std::ostream& operator<<(std::ostream&, const glm::mat4&);
@@ -131,12 +124,38 @@ std::ostream& operator<<(std::ostream&, const glm::mat4&);
 glm::vec3 trackballPoint(const float pX, const float pY,
                          const float pWidth, const float pHeight);
 
+namespace forge
+{
 namespace opengl
 {
 
 typedef unsigned int    uint;
 typedef unsigned short  ushort;
 typedef unsigned char   uchar;
+
+class ShaderProgram {
+    private:
+        gl::GLuint mVertex;
+        gl::GLuint mFragment;
+        gl::GLuint mGeometry;
+        gl::GLuint mProgram;
+
+    public:
+        ShaderProgram(const char* pVertShaderSrc,
+                      const char* pFragShaderSrc,
+                      const char* pGeomShaderSrc=NULL);
+
+        ~ShaderProgram();
+
+        gl::GLuint getProgramId() const;
+
+        gl::GLuint getUniformLocation(const char* pAttributeName);
+        gl::GLuint getUniformBlockIndex(const char* pAttributeName);
+        gl::GLuint getAttributeLocation(const char* pAttributeName);
+
+        void bind();
+        void unbind();
+};
 
 /* Basic renderable class
  *
@@ -146,14 +165,14 @@ typedef unsigned char   uchar;
 class AbstractRenderable {
     protected:
         /* OpenGL buffer objects */
-        GLuint      mVBO;
-        GLuint      mCBO;
-        GLuint      mABO;
+        gl::GLuint  mVBO;
+        gl::GLuint  mCBO;
+        gl::GLuint  mABO;
         size_t      mVBOSize;
         size_t      mCBOSize;
         size_t      mABOSize;
-        GLfloat     mColor[4];
-        GLfloat     mRange[6];
+        gl::GLfloat mColor[4];
+        gl::GLfloat mRange[6];
         std::string mLegend;
         bool        mIsPVCOn;
         bool        mIsPVAOn;
@@ -166,9 +185,9 @@ class AbstractRenderable {
          *  cbo is for colors of those vertices
          *  abo is for alpha values for those vertices
          */
-        GLuint vbo() const { return mVBO; }
-        GLuint cbo() { mIsPVCOn = true; return mCBO; }
-        GLuint abo() { mIsPVAOn = true; return mABO; }
+        gl::GLuint vbo() const { return mVBO; }
+        gl::GLuint cbo() { mIsPVCOn = true; return mCBO; }
+        gl::GLuint abo() { mIsPVAOn = true; return mABO; }
         size_t vboSize() const { return mVBOSize; }
         size_t cboSize() const { return mCBOSize; }
         size_t aboSize() const { return mABOSize; }
@@ -219,7 +238,7 @@ class AbstractRenderable {
         /* virtual function to set colormap, a derviced class might
          * use it or ignore it if it doesnt have a need for color maps.
          */
-        virtual void setColorMapUBOParams(const GLuint pUBO, const GLuint pSize) {
+        virtual void setColorMapUBOParams(const gl::GLuint pUBO, const gl::GLuint pSize) {
         }
 
         /* render is a pure virtual function.
@@ -238,7 +257,8 @@ class AbstractRenderable {
          */
         virtual void render(const int pWindowId,
                             const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4 &pView) = 0;
+                            const glm::mat4 &pView, const glm::mat4 &pOrient) = 0;
 };
 
+}
 }

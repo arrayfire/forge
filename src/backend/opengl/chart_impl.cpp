@@ -31,14 +31,16 @@
 #include <sstream>
 #include <algorithm>
 
+using namespace gl;
 using namespace std;
+
 typedef std::vector<std::string>::const_iterator StringIter;
 
 static const int CHART2D_FONT_SIZE = 16;
 
-const std::shared_ptr<opengl::font_impl>& getChartFont()
+const std::shared_ptr<forge::opengl::font_impl>& getChartFont()
 {
-    static common::Font gChartFont;
+    static forge::common::Font gChartFont;
     static std::once_flag flag;
 
     std::call_once(flag, []() {
@@ -67,6 +69,8 @@ void pushPoint(vector<T> &points, T x, T y, T z)
     points.push_back(z);
 }
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -120,8 +124,9 @@ AbstractChart::AbstractChart(const int pLeftMargin, const int pRightMargin,
       mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
       mXMax(1), mXMin(0), mYMax(1), mYMin(0), mZMax(1), mZMin(0),
-      mXTitle("X-Axis"), mYTitle("Y-Axis"), mZTitle("Z-Axis"),
-      mDecorVBO(-1), mBorderProgram(-1), mSpriteProgram(-1),
+      mXTitle("X-Axis"), mYTitle("Y-Axis"), mZTitle("Z-Axis"), mDecorVBO(-1),
+      mBorderProgram(glsl::chart_vs.c_str(), glsl::chart_fs.c_str()),
+      mSpriteProgram(glsl::chart_vs.c_str(), glsl::tick_fs.c_str()),
       mBorderAttribPointIndex(-1), mBorderUniformColorIndex(-1),
       mBorderUniformMatIndex(-1), mSpriteUniformMatIndex(-1),
       mSpriteUniformTickcolorIndex(-1), mSpriteUniformTickaxisIndex(-1),
@@ -135,16 +140,13 @@ AbstractChart::AbstractChart(const int pLeftMargin, const int pRightMargin,
      * are loaded into the shared Font object */
     getChartFont();
 
-    mBorderProgram = initShaders(glsl::chart_vs.c_str(), glsl::chart_fs.c_str());
-    mSpriteProgram = initShaders(glsl::chart_vs.c_str(), glsl::tick_fs.c_str());
+    mBorderAttribPointIndex      = mBorderProgram.getAttributeLocation("point");
+    mBorderUniformColorIndex     = mBorderProgram.getUniformLocation("color");
+    mBorderUniformMatIndex       = mBorderProgram.getUniformLocation("transform");
 
-    mBorderAttribPointIndex      = glGetAttribLocation (mBorderProgram, "point");
-    mBorderUniformColorIndex     = glGetUniformLocation(mBorderProgram, "color");
-    mBorderUniformMatIndex       = glGetUniformLocation(mBorderProgram, "transform");
-
-    mSpriteUniformTickcolorIndex = glGetUniformLocation(mSpriteProgram, "tick_color");
-    mSpriteUniformMatIndex       = glGetUniformLocation(mSpriteProgram, "transform");
-    mSpriteUniformTickaxisIndex  = glGetUniformLocation(mSpriteProgram, "isYAxis");
+    mSpriteUniformTickcolorIndex = mSpriteProgram.getUniformLocation("tick_color");
+    mSpriteUniformMatIndex       = mSpriteProgram.getUniformLocation("transform");
+    mSpriteUniformTickaxisIndex  = mSpriteProgram.getUniformLocation("isYAxis");
 
     CheckGL("End AbstractChart::AbstractChart");
 }
@@ -157,8 +159,6 @@ AbstractChart::~AbstractChart()
         glDeleteVertexArrays(1, &vao);
     }
     glDeleteBuffers(1, &mDecorVBO);
-    glDeleteProgram(mBorderProgram);
-    glDeleteProgram(mSpriteProgram);
     CheckGL("End AbstractChart::~AbstractChart");
 }
 
@@ -328,8 +328,7 @@ void chart2d_impl::generateChartData()
         glDeleteBuffers(1, &mDecorVBO);
 
     /* create vbo that has the border and axis data */
-    mDecorVBO = createBuffer<float>(GL_ARRAY_BUFFER, decorData.size(),
-                                    &(decorData.front()), GL_STATIC_DRAW);
+    mDecorVBO = createBuffer<float>(GL_ARRAY_BUFFER, decorData.size(), &(decorData.front()), GL_STATIC_DRAW);
     CheckGL("End chart2d_impl::generateChartData");
 }
 
@@ -380,7 +379,7 @@ chart2d_impl::chart2d_impl()
 
 void chart2d_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4& pView)
+                          const glm::mat4& pView, const glm::mat4& pOrient)
 {
     CheckGL("Begin chart2d_impl::renderChart");
 
@@ -403,11 +402,11 @@ void chart2d_impl::render(const int pWindowId,
 
     /* Draw grid */
     chart2d_impl::bindResources(pWindowId);
-    glUseProgram(mBorderProgram);
+    mBorderProgram.bind();
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
     glDrawArrays(GL_LINES, 4+2*mTickCount, 4*mTickCount);
-    glUseProgram(0);
+    mBorderProgram.unbind();
     chart2d_impl::unbindResources();
 
     glEnable(GL_SCISSOR_TEST);
@@ -415,23 +414,23 @@ void chart2d_impl::render(const int pWindowId,
     /* render all renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, pView * trans);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, pView * trans, pOrient);
     }
     glDisable(GL_SCISSOR_TEST);
 
     chart2d_impl::bindResources(pWindowId);
 
-    glUseProgram(mBorderProgram);
+    mBorderProgram.bind();
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     /* Draw borders */
     glDrawArrays(GL_LINE_LOOP, 0, 4);
-    glUseProgram(0);
+    mBorderProgram.unbind();
 
     /* bind the sprite shader program to
      * draw ticks on x and y axes */
     glPointSize((GLfloat)mTickSize);
-    glUseProgram(mSpriteProgram);
+    mSpriteProgram.bind();
 
     glUniform4fv(mSpriteUniformTickcolorIndex, 1, BLACK);
     glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
@@ -442,7 +441,7 @@ void chart2d_impl::render(const int pWindowId,
     glUniform1i(mSpriteUniformTickaxisIndex, 0);
     glDrawArrays(GL_POINTS, 4+mTickCount, mTickCount);
 
-    glUseProgram(0);
+    mSpriteProgram.unbind();
     glPointSize(1);
     chart2d_impl::unbindResources();
 
@@ -711,7 +710,7 @@ chart3d_impl::chart3d_impl()
 
 void chart3d_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4& pView)
+                          const glm::mat4& pView, const glm::mat4& pOrient)
 {
     /* set uniform attributes of shader
      * for drawing the plot borders */
@@ -728,11 +727,11 @@ void chart3d_impl::render(const int pWindowId,
 
     /* draw grid */
     chart3d_impl::bindResources(pWindowId);
-    glUseProgram(mBorderProgram);
+    mBorderProgram.bind();
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(PVM));
     glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
     glDrawArrays(GL_LINES, 6+3*mTickCount, 12*mTickCount);
-    glUseProgram(0);
+    mBorderProgram.unbind();
     chart3d_impl::unbindResources();
 
     glEnable(GL_SCISSOR_TEST);
@@ -741,24 +740,24 @@ void chart3d_impl::render(const int pWindowId,
     /* render all the renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, renderableMat);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, renderableMat, pOrient);
     }
     glDisable(GL_SCISSOR_TEST);
 
     /* Draw borders */
     chart3d_impl::bindResources(pWindowId);
 
-    glUseProgram(mBorderProgram);
+    mBorderProgram.bind();
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(PVM));
     glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     glDrawArrays(GL_LINES, 0, 6);
-    glUseProgram(0);
+    mBorderProgram.unbind();
 
     /* bind the sprite shader program to
      * draw ticks on x and y axes */
     glEnable(GL_PROGRAM_POINT_SIZE);
     glPointSize((GLfloat)mTickSize);
-    glUseProgram(mSpriteProgram);
+    mSpriteProgram.bind();
 
     glUniform4fv(mSpriteUniformTickcolorIndex, 1, BLACK);
     glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(PVM));
@@ -772,8 +771,8 @@ void chart3d_impl::render(const int pWindowId,
     glUniform1i(mSpriteUniformTickaxisIndex, 0);
     glDrawArrays(GL_POINTS, 6 + (2*mTickCount), mTickCount);
 
-    glUseProgram(0);
-    glPointSize(1);
+    mSpriteProgram.unbind();
+    glPointSize((GLfloat)1);
     glDisable(GL_PROGRAM_POINT_SIZE);
 
     chart3d_impl::unbindResources();
@@ -817,4 +816,5 @@ void chart3d_impl::render(const int pWindowId,
     CheckGL("End chart3d_impl::renderChart");
 }
 
+}
 }

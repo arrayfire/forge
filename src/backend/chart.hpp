@@ -18,23 +18,25 @@
 
 #include <memory>
 
+namespace forge
+{
 namespace common
 {
 
 class Chart {
     private:
-        fg::ChartType mChartType;
+        forge::ChartType mChartType;
         std::shared_ptr<detail::AbstractChart> mChart;
 
     public:
-        Chart(const fg::ChartType cType)
+        Chart(const forge::ChartType cType)
             : mChartType(cType) {
             if (cType == FG_CHART_2D) {
                 mChart = std::make_shared<detail::chart2d_impl>();
             } else if (cType == FG_CHART_3D) {
                 mChart = std::make_shared<detail::chart3d_impl>();
             } else {
-                throw fg::ArgumentError("Chart::Chart",
+                throw forge::ArgumentError("Chart::Chart",
                                         __LINE__, 0,
                                         "Invalid chart type");
             }
@@ -44,7 +46,7 @@ class Chart {
             mChart = reinterpret_cast<Chart*>(pOther)->impl();
         }
 
-        inline fg::ChartType chartType() const {
+        inline forge::ChartType chartType() const {
             return mChartType;
         }
 
@@ -74,9 +76,10 @@ class Chart {
 
         inline void render(const int pWindowId,
                            const int pX, const int pY, const int pVPW, const int pVPH,
-                           const glm::mat4 &pView) const {
-            mChart->render(pWindowId, pX, pY, pVPW, pVPH, pView);
+                           const glm::mat4 &pView, const glm::mat4 &pOrient) const {
+            mChart->render(pWindowId, pX, pY, pVPW, pVPH, pView, pOrient);
         }
 };
 
+}
 }

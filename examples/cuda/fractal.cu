@@ -16,7 +16,7 @@
 
 const unsigned DIMX = 512;
 const unsigned DIMY = 512;
-const size_t   SIZE = DIMX*DIMY*4;
+const size_t   TOT_SIZE = DIMX*DIMY*4;
 
 void kernel(unsigned char* dev_out);
 
@@ -27,15 +27,15 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Fractal Demo");
+    forge::Window wnd(DIMX, DIMY, "Fractal Demo");
     wnd.makeCurrent();
 
     /* Create an image object which creates the necessary
      * textures and pixel buffer objects to hold the image
      * */
-    fg::Image img(DIMX, DIMY, FG_RGBA, fg::u8);
+    forge::Image img(DIMX, DIMY, FG_RGBA, forge::u8);
 
     GfxHandle* handle = 0;
 
@@ -43,12 +43,12 @@ int main(void)
     createGLBuffer(&handle, img.pbo(), FORGE_PBO);
 
     /* copy your data into the pixel buffer object exposed by
-     * fg::Image class and then proceed to rendering.
+     * forge::Image class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, SIZE));
+	FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, TOT_SIZE));
     kernel(dev_out);
 
     // copy the data from compute buffer to graphics buffer

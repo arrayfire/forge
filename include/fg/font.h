@@ -14,13 +14,49 @@
 extern "C" {
 #endif
 
+/** \addtogroup font_functions
+ *  @{
+ */
+
+/**
+   Create a Font object
+
+   \param[out] pFont will point to the font object created after this function returns
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_create_font(fg_font* pFont);
 
+/**
+   Destroy font object
+
+   \param[in] pFont is the font handle
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_destroy_font(fg_font pFont);
 
+/**
+   Load a given font file
+
+   \param[in] pFont is the font handle
+   \param[in] pFileFullPath True Type Font file path
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_load_font_file(fg_font pFont, const char* const pFileFullPath);
 
+/**
+   Load a system font based on the name
+
+   \param[in] pFont is the font handle
+   \param[in] pFontName True Type Font name
+
+   \return \ref fg_err error code
+ */
 FGAPI fg_err fg_load_system_font(fg_font pFont, const char* const pFontName);
+
+/** @} */
 
 #ifdef __cplusplus
 }
@@ -29,7 +65,7 @@ FGAPI fg_err fg_load_system_font(fg_font pFont, const char* const pFontName);
 
 #ifdef __cplusplus
 
-namespace fg
+namespace forge
 {
 
 /**

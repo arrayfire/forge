@@ -12,7 +12,7 @@
 #include <handle.hpp>
 #include <chart_renderables.hpp>
 
-namespace fg
+namespace forge
 {
 
 Surface::Surface(unsigned pNumXPoints, unsigned pNumYPoints, dtype pDataType, PlotType pPlotType, MarkerType pMarkerType)

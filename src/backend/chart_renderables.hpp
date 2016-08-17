@@ -18,12 +18,14 @@
 
 #include <memory>
 
+namespace forge
+{
 namespace common
 {
 
 class Histogram : public ChartRenderableBase<detail::histogram_impl> {
     public:
-        Histogram(uint pNBins, fg::dtype pDataType)
+        Histogram(uint pNBins, forge::dtype pDataType)
             : ChartRenderableBase<detail::histogram_impl>(
                     std::make_shared<detail::histogram_impl>(pNBins, pDataType)) {
         }
@@ -36,9 +38,9 @@ class Histogram : public ChartRenderableBase<detail::histogram_impl> {
 
 class Plot : public ChartRenderableBase<detail::plot_impl> {
     public:
-        Plot(const uint pNumPoints, const fg::dtype pDataType,
-              const fg::PlotType pPlotType, const fg::MarkerType pMarkerType,
-              const fg::ChartType pChartType) {
+        Plot(const uint pNumPoints, const forge::dtype pDataType,
+              const forge::PlotType pPlotType, const forge::MarkerType pMarkerType,
+              const forge::ChartType pChartType) {
             if (pChartType == FG_CHART_2D) {
                 mShrdPtr = std::make_shared< detail::plot2d_impl >(pNumPoints, pDataType,
                               pPlotType, pMarkerType);
@@ -57,7 +59,7 @@ class Plot : public ChartRenderableBase<detail::plot_impl> {
             mShrdPtr->setMarkerSize(pMarkerSize);
         }
 
-        inline GLuint mbo() const {
+        inline uint mbo() const {
             return mShrdPtr->markers();
         }
 
@@ -69,8 +71,8 @@ class Plot : public ChartRenderableBase<detail::plot_impl> {
 class Surface : public ChartRenderableBase<detail::surface_impl> {
     public:
         Surface(const uint pNumXPoints, const uint pNumYPoints,
-                 const fg::dtype pDataType, const fg::PlotType pPlotType=FG_PLOT_SURFACE,
-                 const fg::MarkerType pMarkerType=FG_MARKER_NONE) {
+                 const forge::dtype pDataType, const forge::PlotType pPlotType=FG_PLOT_SURFACE,
+                 const forge::MarkerType pMarkerType=FG_MARKER_NONE) {
             switch(pPlotType){
                 case(FG_PLOT_SURFACE):
                     mShrdPtr = std::make_shared<detail::surface_impl>(pNumXPoints, pNumYPoints, pDataType, pMarkerType);
@@ -92,8 +94,8 @@ class Surface : public ChartRenderableBase<detail::surface_impl> {
 class VectorField : public ChartRenderableBase<detail::vector_field_impl> {
     public:
         VectorField(const uint pNumPoints,
-                    const fg::dtype pDataType,
-                    const fg::ChartType pChartType) {
+                    const forge::dtype pDataType,
+                    const forge::ChartType pChartType) {
             if (pChartType == FG_CHART_2D) {
                 mShrdPtr = std::make_shared< detail::vector_field2d_impl >(pNumPoints, pDataType);
             } else {
@@ -106,7 +108,7 @@ class VectorField : public ChartRenderableBase<detail::vector_field_impl> {
                     reinterpret_cast<VectorField*>(pOther)->impl()) {
         }
 
-        inline GLuint dbo() const {
+        inline uint dbo() const {
             return mShrdPtr->directions();
         }
 
@@ -115,4 +117,5 @@ class VectorField : public ChartRenderableBase<detail::vector_field_impl> {
         }
 };
 
+}
 }

@@ -18,7 +18,7 @@ using std::string;
 using std::stringstream;
 using std::cerr;
 
-std::string getName(fg::dtype pType)
+std::string getName(forge::dtype pType)
 {
     // TODO
     return std::string("test");
@@ -33,7 +33,7 @@ void stringcopy(char* dest, const char* src, size_t len)
 #endif
 }
 
-namespace fg
+namespace forge
 {
 
 Error::Error(const char * const pFuncName, const int pLine,
@@ -56,7 +56,7 @@ Error::~Error() throw() {}
 
 
 TypeError::TypeError(const char * const pFuncName, const int pLine,
-                     const int pIndex, const fg::dtype pType)
+                     const int pIndex, const forge::dtype pType)
     : Error(pFuncName, pLine, "Invalid data type", FG_ERR_INVALID_TYPE), mArgIndex(pIndex)
 {
     std::string str = getName(pType); /* TODO getName has to be defined */

@@ -12,7 +12,7 @@
 #include <handle.hpp>
 #include <chart_renderables.hpp>
 
-namespace fg
+namespace forge
 {
 
 Histogram::Histogram(const uint pNBins, const dtype pDataType)

@@ -24,6 +24,8 @@ extern "C" {
 #elif defined(USE_FORGE_CUDA_COPY_HELPERS)
 
 #include <stdio.h>
+// gl.h is required by cuda_gl_interop to be included before it
+#include <GL/gl.h>
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
@@ -43,10 +45,10 @@ extern "C" {
 
     - cudaGraphicsResource in CUDA
     - cl_mem in OpenCL
-    - GLuint from standard cpu
+    - unsigned from standard cpu
   */
 #if defined(USE_FORGE_CPU_COPY_HELPERS)
-typedef GLuint GfxResourceHandle;
+typedef unsigned GfxResourceHandle;
 #elif defined(USE_FORGE_CUDA_COPY_HELPERS)
 typedef cudaGraphicsResource* GfxResourceHandle;
 #elif defined(USE_FORGE_OPENCL_COPY_HELPERS)
@@ -99,11 +101,11 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
 {
     GfxHandle* temp = pGLDestination;
 
-    GLenum target = (temp->mTarget==FORGE_PBO ? GL_PIXEL_UNPACK_BUFFER : GL_ARRAY_BUFFER);
-
-    glBindBuffer(target, temp->mId);
-    glBufferSubData(target, 0, pSize, pSource);
-    glBindBuffer(target, 0);
+    if (temp->mTarget==FORGE_PBO) {
+        fg_update_vertex_buffer(temp->mId, pSize, pSource);
+    } else if (temp->mTarget==FORGE_VBO) {
+        fg_update_pixel_buffer(temp->mId, pSize, pSource);
+    }
 }
 #endif
 
@@ -214,7 +216,7 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
     cl_mem src = (cl_mem)pSource;
     cl_mem dst = pGLDestination->mId;
 
-    glFinish();
+    fg_finish();
 
     FORGE_OCL_CHECK(clEnqueueAcquireGLObjects(queue, 1, &dst, 0, NULL, &waitEvent),
                     "Failed in clEnqueueAcquireGLObjects");

@@ -21,6 +21,10 @@
 #include <map>
 #include <mutex>
 
+using namespace gl;
+
+namespace forge
+{
 namespace opengl
 {
 
@@ -35,32 +39,33 @@ void image_impl::unbindResources() const
 }
 
 image_impl::image_impl(const uint pWidth, const uint pHeight,
-                       const fg::ChannelFormat pFormat, const fg::dtype pDataType)
+                       const forge::ChannelFormat pFormat, const forge::dtype pDataType)
     : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat),
       mGLformat(ctype2gl(mFormat)), mGLiformat(ictype2gl(mFormat)),
       mDataType(pDataType), mGLType(dtype2gl(mDataType)), mAlpha(1.0f),
-      mKeepARatio(true), mFormatSize(1), mMatIndex(-1), mTexIndex(-1),
-      mNumCIndex(-1), mAlphaIndex(-1), mCMapLenIndex(-1), mCMapIndex(-1)
+      mKeepARatio(true), mFormatSize(1), mPBOsize(1), mPBO(0), mTex(0),
+      mProgram(glsl::image_vs.c_str(), glsl::image_fs.c_str()),
+      mMatIndex(-1), mTexIndex(-1), mNumCIndex(-1),
+      mAlphaIndex(-1), mCMapLenIndex(-1), mCMapIndex(-1)
 {
     CheckGL("Begin image_impl::image_impl");
 
-    mProgram      = initShaders(glsl::image_vs.c_str(), glsl::image_fs.c_str());
-    mMatIndex     = glGetUniformLocation(mProgram, "matrix");
-    mCMapIndex    = glGetUniformBlockIndex(mProgram, "ColorMap");
-    mCMapLenIndex = glGetUniformLocation(mProgram, "cmaplen");
-    mTexIndex     = glGetUniformLocation(mProgram, "tex");
-    mNumCIndex    = glGetUniformLocation(mProgram, "numcomps");
-    mAlphaIndex   = glGetUniformLocation(mProgram, "alpha");
+    mMatIndex     = mProgram.getUniformLocation("matrix");
+    mCMapIndex    = mProgram.getUniformBlockIndex("ColorMap");
+    mCMapLenIndex = mProgram.getUniformLocation("cmaplen");
+    mTexIndex     = mProgram.getUniformLocation("tex");
+    mNumCIndex    = mProgram.getUniformLocation("numcomps");
+    mAlphaIndex   = mProgram.getUniformLocation("alpha");
 
     // Initialize OpenGL Items
     glGenTextures(1, &(mTex));
     glBindTexture(GL_TEXTURE_2D, mTex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLint>(GL_CLAMP_TO_EDGE));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLint>(GL_CLAMP_TO_EDGE));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(GL_NEAREST));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLint>(GL_NEAREST));
 
-    glTexImage2D(GL_TEXTURE_2D, 0, mGLiformat, mWidth, mHeight, 0, mGLformat, mGLType, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(mGLiformat), mWidth, mHeight, 0, mGLformat, mGLType, NULL);
 
     CheckGL("Before PBO Initialization");
     glGenBuffers(1, &mPBO);
@@ -98,7 +103,6 @@ image_impl::~image_impl()
     CheckGL("Begin image_impl::~image_impl");
     glDeleteBuffers(1, &mPBO);
     glDeleteTextures(1, &mTex);
-    glDeleteProgram(mProgram);
     CheckGL("End image_impl::~image_impl");
 }
 
@@ -122,9 +126,9 @@ uint image_impl::width() const { return mWidth; }
 
 uint image_impl::height() const { return mHeight; }
 
-fg::ChannelFormat image_impl::pixelFormat() const { return mFormat; }
+forge::ChannelFormat image_impl::pixelFormat() const { return mFormat; }
 
-fg::dtype image_impl::channelType() const { return mDataType; }
+forge::dtype image_impl::channelType() const { return mDataType; }
 
 uint image_impl::pbo() const { return mPBO; }
 
@@ -132,7 +136,7 @@ uint image_impl::size() const { return (uint)mPBOsize; }
 
 void image_impl::render(const int pWindowId,
                         const int pX, const int pY, const int pVPW, const int pVPH,
-                        const glm::mat4 &pView)
+                        const glm::mat4 &pView, const glm::mat4 &pOrient)
 {
     CheckGL("Begin image_impl::render");
 
@@ -158,7 +162,7 @@ void image_impl::render(const int pWindowId,
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glUseProgram(mProgram);
+    mProgram.bind();
 
     glUniform1i(mNumCIndex, mFormatSize);
     glUniform1f(mAlphaIndex, mAlpha);
@@ -177,7 +181,7 @@ void image_impl::render(const int pWindowId,
 
     glUniform1f(mCMapLenIndex, (GLfloat)mUBOSize);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, mColorMapUBO);
-    glUniformBlockBinding(mProgram, mCMapIndex, 0);
+    glUniformBlockBinding(mProgram.getProgramId(), mCMapIndex, 0);
 
     // Draw to screen
     bindResources(pWindowId);
@@ -188,11 +192,13 @@ void image_impl::render(const int pWindowId,
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
     // ubind the shader program
-    glUseProgram(0);
+    mProgram.unbind();
+
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
 
     CheckGL("End image_impl::render");
 }
 
+}
 }

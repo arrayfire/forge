@@ -17,11 +17,14 @@
 
 #include <cmath>
 
+using namespace gl;
 using namespace std;
 
 // identity matrix
 static const glm::mat4 I(1.0f);
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -63,7 +66,7 @@ void vector_field_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-glm::mat4 vector_field_impl::computeModelMatrix()
+glm::mat4 vector_field_impl::computeModelMatrix(const glm::mat4& pOrient)
 {
     float xRange = mRange[1] - mRange[0];
     float yRange = mRange[3] - mRange[2];
@@ -84,32 +87,28 @@ glm::mat4 vector_field_impl::computeModelMatrix()
                           -(mRange[4]+mRange[5])/2.0f);
     shiftVector += glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
 
-    return glm::translate(glm::scale(IDENTITY, scaleVector), shiftVector);
+    return glm::translate(glm::scale(pOrient, scaleVector), shiftVector);
 }
 
-vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDataType, const int pD)
-    : mDimension(pD), mNumPoints(pNumPoints), mDataType(pDataType), mGLType(dtype2gl(mDataType)),
-    mFieldProgram(-1), mDBO(-1), mDBOSize(0), mFieldPointIndex(-1),
+vector_field_impl::vector_field_impl(const uint pNumPoints, const forge::dtype pDataType, const int pD)
+    : mDimension(pD), mNumPoints(pNumPoints), mDataType(pDataType),
+    mGLType(dtype2gl(mDataType)),
+    mFieldProgram(pD==2 ? glsl::vector_field2d_vs.c_str() : glsl::vector_field_vs.c_str(),
+                  glsl::histogram_fs.c_str(),
+                  pD==2 ? glsl::vector_field2d_gs.c_str() : glsl::vector_field_gs.c_str()),
+    mDBO(-1), mDBOSize(0), mFieldPointIndex(-1),
     mFieldColorIndex(-1), mFieldAlphaIndex(-1), mFieldDirectionIndex(-1),
     mFieldPVMatIndex(-1), mFieldModelMatIndex(-1), mFieldAScaleMatIndex(-1),
     mFieldPVCOnIndex(-1), mFieldPVAOnIndex(-1), mFieldUColorIndex(-1)
 {
     CheckGL("Begin vector_field_impl::vector_field_impl");
-    mIsPVCOn = false;
-    mIsPVAOn = false;
 
     setColor(0, 1, 0, 1);
-    mLegend  = std::string("");
 
-    // FIXME
     if (mDimension==2) {
-        mFieldProgram = initShaders(glsl::vector_field2d_vs.c_str(), glsl::histogram_fs.c_str(),
-                                    glsl::vector_field2d_gs.c_str());
         mVBOSize = 2*mNumPoints;
         mDBOSize = 2*mNumPoints;
     } else {
-        mFieldProgram     = initShaders(glsl::vector_field_vs.c_str(), glsl::histogram_fs.c_str(),
-                                        glsl::vector_field_gs.c_str());
         mVBOSize = 3*mNumPoints;
         mDBOSize = 3*mNumPoints;
     }
@@ -117,18 +116,18 @@ vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDat
     mCBOSize = 3*mNumPoints;
     mABOSize = mNumPoints;
 
-    mFieldPointIndex  = glGetAttribLocation (mFieldProgram, "point");
-    mFieldColorIndex  = glGetAttribLocation (mFieldProgram, "color");
-    mFieldAlphaIndex  = glGetAttribLocation (mFieldProgram, "alpha");
-    mFieldDirectionIndex  = glGetAttribLocation (mFieldProgram, "direction");
+    mFieldPointIndex  = mFieldProgram.getAttributeLocation("point");
+    mFieldColorIndex  = mFieldProgram.getAttributeLocation("color");
+    mFieldAlphaIndex  = mFieldProgram.getAttributeLocation("alpha");
+    mFieldDirectionIndex  = mFieldProgram.getAttributeLocation("direction");
 
-    mFieldPVMatIndex    = glGetUniformLocation(mFieldProgram, "viewMat");
-    mFieldModelMatIndex    = glGetUniformLocation(mFieldProgram, "modelMat");
-    mFieldAScaleMatIndex    = glGetUniformLocation(mFieldProgram, "arrowScaleMat");
+    mFieldPVMatIndex     = mFieldProgram.getUniformLocation("viewMat");
+    mFieldModelMatIndex  = mFieldProgram.getUniformLocation("modelMat");
+    mFieldAScaleMatIndex = mFieldProgram.getUniformLocation("arrowScaleMat");
 
-    mFieldPVCOnIndex  = glGetUniformLocation(mFieldProgram, "isPVCOn");
-    mFieldPVAOnIndex  = glGetUniformLocation(mFieldProgram, "isPVAOn");
-    mFieldUColorIndex = glGetUniformLocation(mFieldProgram, "barColor");
+    mFieldPVCOnIndex  = mFieldProgram.getUniformLocation("isPVCOn");
+    mFieldPVAOnIndex  = mFieldProgram.getUniformLocation("isPVAOn");
+    mFieldUColorIndex = mFieldProgram.getUniformLocation("barColor");
 
 #define PLOT_CREATE_BUFFERS(type)   \
         mVBO = createBuffer<type>(GL_ARRAY_BUFFER, mVBOSize, NULL, GL_DYNAMIC_DRAW);    \
@@ -147,7 +146,7 @@ vector_field_impl::vector_field_impl(const uint pNumPoints, const fg::dtype pDat
             case GL_SHORT          : PLOT_CREATE_BUFFERS(short) ; break;
             case GL_UNSIGNED_SHORT : PLOT_CREATE_BUFFERS(ushort); break;
             case GL_UNSIGNED_BYTE  : PLOT_CREATE_BUFFERS(float) ; break;
-            default: fg::TypeError("vector_field_impl::vector_field_impl", __LINE__, 1, mDataType);
+            default: forge::TypeError("vector_field_impl::vector_field_impl", __LINE__, 1, mDataType);
         }
 #undef PLOT_CREATE_BUFFERS
         CheckGL("End vector_field_impl::vector_field_impl");
@@ -160,11 +159,7 @@ vector_field_impl::~vector_field_impl()
         GLuint vao = it->second;
         glDeleteVertexArrays(1, &vao);
     }
-    glDeleteBuffers(1, &mVBO);
-    glDeleteBuffers(1, &mCBO);
-    glDeleteBuffers(1, &mABO);
     glDeleteBuffers(1, &mDBO);
-    glDeleteProgram(mFieldProgram);
     CheckGL("End vector_field_impl::~vector_field_impl");
 }
 
@@ -180,7 +175,7 @@ size_t vector_field_impl::directionsSize() const
 
 void vector_field_impl::render(const int pWindowId,
                        const int pX, const int pY, const int pVPW, const int pVPH,
-                       const glm::mat4& pView)
+                       const glm::mat4& pView, const glm::mat4& pOrient)
 {
     static const glm::mat4 ArrowScaleMat = glm::scale(glm::mat4(1), glm::vec3(0.1,0.1,0.1));
 
@@ -191,9 +186,9 @@ void vector_field_impl::render(const int pWindowId,
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    glm::mat4 model = this->computeModelMatrix();
+    glm::mat4 model = this->computeModelMatrix(pOrient);
 
-    glUseProgram(mFieldProgram);
+    mFieldProgram.bind();
 
     glUniformMatrix4fv(mFieldPVMatIndex, 1, GL_FALSE, glm::value_ptr(pView));
     glUniformMatrix4fv(mFieldModelMatIndex, 1, GL_FALSE, glm::value_ptr(model));
@@ -210,7 +205,7 @@ void vector_field_impl::render(const int pWindowId,
     if (mDimension==3)
         glDisable(GL_CULL_FACE);
 
-    glUseProgram(0);
+    mFieldProgram.unbind();
 
     if (mIsPVAOn) {
         glDisable(GL_BLEND);
@@ -219,7 +214,7 @@ void vector_field_impl::render(const int pWindowId,
     CheckGL("End vector_field_impl::render");
 }
 
-glm::mat4 vector_field2d_impl::computeModelMatrix()
+glm::mat4 vector_field2d_impl::computeModelMatrix(const glm::mat4& pOrient)
 {
     float xRange = mRange[1] - mRange[0];
     float yRange = mRange[3] - mRange[2];
@@ -233,4 +228,5 @@ glm::mat4 vector_field2d_impl::computeModelMatrix()
     return glm::translate(glm::scale(IDENTITY, scaleVector), shiftVector);
 }
 
+}
 }

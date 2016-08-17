@@ -33,16 +33,16 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(1024, 768, "3d Surface Demo");
+    forge::Window wnd(1024, 768, "3d Surface Demo");
     wnd.makeCurrent();
 
-    fg::Chart chart(FG_CHART_3D);
+    forge::Chart chart(FG_CHART_3D);
     chart.setAxesLimits(-10.f, 10.f, -10.f, 10.f, -0.5f, 1.f);
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    fg::Surface surf = chart.surface(XSIZE, YSIZE, fg::f32);
+    forge::Surface surf = chart.surface(XSIZE, YSIZE, forge::f32);
     surf.setColor(FG_YELLOW);
 
     FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
@@ -51,7 +51,7 @@ int main(void)
     GfxHandle* handle;
     createGLBuffer(&handle, surf.vertices(), FORGE_VBO);
     /* copy your data into the vertex buffer object exposed by
-     * fg::Plot class and then proceed to rendering.
+     * forge::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task

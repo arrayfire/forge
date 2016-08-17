@@ -16,6 +16,8 @@
 
 #include <memory>
 
+namespace forge
+{
 namespace common
 {
 
@@ -25,7 +27,7 @@ class Image {
 
     public:
         Image(const uint pWidth, const uint pHeight,
-               const fg::ChannelFormat pFormat, const fg::dtype pDataType)
+               const forge::ChannelFormat pFormat, const forge::dtype pDataType)
             : mImage(std::make_shared<detail::image_impl>(pWidth, pHeight, pFormat, pDataType)) {}
 
         Image(const fg_image pOther) {
@@ -42,19 +44,20 @@ class Image {
 
         inline uint height() const { return mImage->height(); }
 
-        inline fg::ChannelFormat pixelFormat() const { return mImage->pixelFormat(); }
+        inline forge::ChannelFormat pixelFormat() const { return mImage->pixelFormat(); }
 
-        inline fg::dtype channelType() const { return mImage->channelType(); }
+        inline forge::dtype channelType() const { return mImage->channelType(); }
 
-        inline GLuint pbo() const { return mImage->pbo(); }
+        inline uint pbo() const { return mImage->pbo(); }
 
         inline size_t size() const { return mImage->size(); }
 
         inline void render(const int pWindowId,
                            const int pX, const int pY, const int pVPW, const int pVPH,
-                           const glm::mat4 &pView) const {
-            mImage->render(pWindowId, pX, pY, pVPW, pVPH, pView);
+                           const glm::mat4 &pView, const glm::mat4 &pOrient) const {
+            mImage->render(pWindowId, pX, pY, pVPW, pVPH, pView, pOrient);
         }
 };
 
+}
 }

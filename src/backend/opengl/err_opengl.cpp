@@ -15,6 +15,8 @@
 #include <sstream>
 #include <iostream>
 
+using namespace gl;
+
 void commonErrorCheck(const char *pMsg, const char* pFile, int pLine)
 {
     GLenum x = glGetError();
@@ -23,7 +25,7 @@ void commonErrorCheck(const char *pMsg, const char* pFile, int pLine)
         std::stringstream ss;
         ss << "GL Error at: "<< pFile << ":"<<pLine
            <<" Message: "<<pMsg<<" Error Code: "<< x << std::endl;
-        throw fg::Error(pFile, pLine, ss.str().c_str(), FG_ERR_GL_ERROR);
+        throw forge::Error(pFile, pLine, ss.str().c_str(), FG_ERR_GL_ERROR);
     }
 }
 

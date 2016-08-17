@@ -24,6 +24,8 @@
 
 #include <memory>
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -33,13 +35,12 @@ class window_impl {
         long long     mDsp;
         int           mID;
         wtk::Widget*  mWindow;
-        GLEWContext*  mGLEWContext;
 
         std::shared_ptr<font_impl>     mFont;
         std::shared_ptr<colormap_impl> mCMap;
 
-        GLuint        mColorMapUBO;
-        GLuint        mUBOSize;
+        gl::GLuint mColorMapUBO;
+        gl::GLuint mUBOSize;
 
     public:
         window_impl(int pWidth, int pHeight, const char* pTitle,
@@ -51,14 +52,13 @@ class window_impl {
         void setTitle(const char* pTitle);
         void setPos(int pX, int pY);
         void setSize(unsigned pWidth, unsigned pHeight);
-        void setColorMap(fg::ColorMap cmap);
+        void setColorMap(forge::ColorMap cmap);
 
         int getID() const;
         long long context() const;
         long long display() const;
         int width() const;
         int height() const;
-        GLEWContext* glewContext() const;
         const wtk::Widget* get() const;
         const std::shared_ptr<colormap_impl>& colorMapPtr() const;
 
@@ -81,4 +81,5 @@ class window_impl {
 
 void MakeContextCurrent(const window_impl* pWindow);
 
+}
 }

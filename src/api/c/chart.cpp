@@ -23,6 +23,8 @@
 #include <image.hpp>
 #include <window.hpp>
 
+using namespace forge;
+
 fg_err fg_create_chart(fg_chart *pHandle,
                        const fg_chart_type pChartType)
 {
@@ -86,7 +88,7 @@ fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
                              const fg_dtype pType)
 {
     try {
-        common::Image* img = new common::Image(pWidth, pHeight, pFormat, (fg::dtype)pType);
+        common::Image* img = new common::Image(pWidth, pHeight, pFormat, (forge::dtype)pType);
         getChart(pHandle)->addRenderable(img->impl());
         *pImage = getHandle(img);
     }
@@ -102,11 +104,11 @@ fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
         common::Chart* chrt = getChart(pHandle);
 
         if (chrt->chartType()== FG_CHART_2D) {
-            common::Histogram* hist = new common::Histogram(pNBins, (fg::dtype)pType);
+            common::Histogram* hist = new common::Histogram(pNBins, (forge::dtype)pType);
             chrt->addRenderable(hist->impl());
             *pHistogram = getHandle(hist);
         } else {
-            throw fg::ArgumentError("Chart::render", __LINE__, 5,
+            throw forge::ArgumentError("Chart::render", __LINE__, 5,
                     "Can add histogram to a 2d chart only");
         }
     }
@@ -121,15 +123,15 @@ fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
 {
     try {
         common::Chart* chrt = getChart(pHandle);
-        fg::ChartType ctype = chrt->chartType();
+        forge::ChartType ctype = chrt->chartType();
 
         if (ctype == FG_CHART_2D) {
-            common::Plot* plt = new common::Plot(pNPoints, (fg::dtype)pType, pPlotType,
+            common::Plot* plt = new common::Plot(pNPoints, (forge::dtype)pType, pPlotType,
                                                  pMarkerType, FG_CHART_2D);
             chrt->addRenderable(plt->impl());
             *pPlot = getHandle(plt);
         } else {
-            common::Plot* plt = new common::Plot(pNPoints, (fg::dtype)pType, pPlotType,
+            common::Plot* plt = new common::Plot(pNPoints, (forge::dtype)pType, pPlotType,
                                                  pMarkerType, FG_CHART_3D);
             chrt->addRenderable(plt->impl());
             *pPlot = getHandle(plt);
@@ -146,15 +148,15 @@ fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
 {
     try {
         common::Chart* chrt = getChart(pHandle);
-        fg::ChartType ctype = chrt->chartType();
+        forge::ChartType ctype = chrt->chartType();
 
         if (ctype == FG_CHART_3D) {
-            common::Surface* surf = new common::Surface(pXPoints, pYPoints, (fg::dtype)pType,
+            common::Surface* surf = new common::Surface(pXPoints, pYPoints, (forge::dtype)pType,
                                                         pPlotType, pMarkerType);
             chrt->addRenderable(surf->impl());
             *pSurface = getHandle(surf);
         } else {
-            throw fg::ArgumentError("Chart::render", __LINE__, 5,
+            throw forge::ArgumentError("Chart::render", __LINE__, 5,
                     "Can add surface plot to a 3d chart only");
         }
     }
@@ -169,7 +171,7 @@ fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
     try {
         common::Chart* chrt = getChart(pHandle);
         common::VectorField* field = new common::VectorField(pNPoints,
-                                                             (fg::dtype)pType,
+                                                             (forge::dtype)pType,
                                                              chrt->chartType());
         chrt->addRenderable(field->impl());
         *pField = getHandle(field);
@@ -185,7 +187,7 @@ fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
     try {
         getChart(pChart)->render(getWindow(pWindow)->getID(),
                                  pX, pY, pWidth, pHeight,
-                                 IDENTITY);
+                                 IDENTITY, IDENTITY);
     }
     CATCHALL
 

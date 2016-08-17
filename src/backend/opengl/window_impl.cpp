@@ -20,14 +20,8 @@
 
 #include <FreeImage.h>
 
-using namespace fg;
-
-static GLEWContext* current = nullptr;
-
-GLEWContext* glewGetContext()
-{
-    return current;
-}
+using namespace gl;
+using namespace forge;
 
 /* following function is thread safe */
 int getNextUniqueId()
@@ -82,6 +76,8 @@ private:
     FIBITMAP * pBitmap;
 };
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -89,7 +85,6 @@ void MakeContextCurrent(const window_impl* pWindow)
 {
     if (pWindow != NULL) {
         pWindow->get()->makeContextCurrent();
-        current = pWindow->glewContext();
     }
 }
 
@@ -99,41 +94,16 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 {
     if (auto observe = pWindow.lock()) {
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, observe->get(), invisible);
-		/* create glew context so that it will bind itself to windows */
-		mGLEWContext = observe->glewContext();
     } else {
         /* when windows are not sharing any context, just create
          * a dummy wtk::Widget object and pass it on */
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, nullptr, invisible);
-		/* create glew context so that it will bind itself to windows */
-		mGLEWContext = new GLEWContext();
-		if (mGLEWContext == NULL) {
-			std::cerr << "Error: Could not create GLEW Context!\n";
-			throw fg::Error("window_impl constructor", __LINE__,
-				"GLEW context creation failed", FG_ERR_GL_ERROR);
-		}
-	}
-	/* Set context (before glewInit()) */
-	MakeContextCurrent(this);
+    }
+    /* Set context (before glewInit()) */
+    MakeContextCurrent(this);
 
-    /* GLEW Initialization - Must be done */
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-    if (err != GLEW_OK) {
-        char buffer[128];
-        sprintf(buffer, "GLEW init failed: Error: %s\n", glewGetErrorString(err));
-        throw fg::Error("window_impl constructor", __LINE__, buffer, FG_ERR_GL_ERROR);
-    }
-    err = glGetError();
-    if (err!=GL_NO_ERROR && err!=GL_INVALID_ENUM) {
-        /* ignore this error, as GLEW is known to
-         * have this issue with 3.2+ core profiles
-         * they are yet to fix this in GLEW
-         */
-        ForceCheckGL("GLEW initilization failed");
-        throw fg::Error("window_impl constructor", __LINE__,
-                "GLEW initilization failed", FG_ERR_GL_ERROR);
-    }
+    glbinding::Binding::useCurrentContext();
+    glbinding::Binding::initialize(false); // lazy function pointer evaluation
 
     mCxt = mWindow->getGLContextHandle();
     mDsp = mWindow->getDisplayHandle();
@@ -146,7 +116,6 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
         mCMap = std::make_shared<colormap_impl>();
     }
 
-
     mWindow->resizePixelBuffers();
 
     /* set the colormap to default */
@@ -155,8 +124,11 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     glEnable(GL_MULTISAMPLE);
 
     std::vector<glm::mat4>& mats = mWindow->mViewMatrices;
+    std::vector<glm::mat4>& omats = mWindow->mOrientMatrices;
     mats.resize(mWindow->mRows*mWindow->mCols);
+    omats.resize(mWindow->mRows*mWindow->mCols);
     std::fill(mats.begin(), mats.end(), glm::mat4(1));
+    std::fill(omats.begin(), omats.end(), glm::mat4(1));
 
     /* setup default window font */
     mFont = std::make_shared<font_impl>();
@@ -195,7 +167,7 @@ void window_impl::setSize(unsigned pW, unsigned pH)
     mWindow->setSize(pW, pH);
 }
 
-void window_impl::setColorMap(fg::ColorMap cmap)
+void window_impl::setColorMap(forge::ColorMap cmap)
 {
     switch(cmap) {
         case FG_COLOR_MAP_DEFAULT:
@@ -254,11 +226,6 @@ int window_impl::height() const
     return mWindow->mHeight;
 }
 
-GLEWContext* window_impl::glewContext() const
-{
-    return mGLEWContext;
-}
-
 const wtk::Widget* window_impl::get() const
 {
     return mWindow;
@@ -292,13 +259,15 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     glViewport(0, 0, mWindow->mWidth, mWindow->mHeight);
 
     const glm::mat4& viewMatrix = mWindow->mViewMatrices[0];
+    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[0];
     // clear color and depth buffers
     glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, 0, 0, mWindow->mWidth, mWindow->mHeight, viewMatrix);
+    pRenderable->render(mID, 0, 0, mWindow->mWidth, mWindow->mHeight,
+                        viewMatrix, orientMatrix);
 
     mWindow->swapBuffers();
     mWindow->pollEvents();
@@ -337,6 +306,7 @@ void window_impl::draw(int pColId, int pRowId,
     int y_off = (mWindow->mRows - 1 - r) * mWindow->mCellHeight;
 
     const glm::mat4& viewMatrix = mWindow->mViewMatrices[r+c*mWindow->mRows];
+    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[r+c*mWindow->mRows];
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
@@ -353,7 +323,8 @@ void window_impl::draw(int pColId, int pRowId,
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight, viewMatrix);
+    pRenderable->render(mID, x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight,
+                        viewMatrix, orientMatrix);
 
     glDisable(GL_SCISSOR_TEST);
     glViewport(x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight);
@@ -378,7 +349,7 @@ void window_impl::swapBuffers()
 void window_impl::saveFrameBuffer(const char* pFullPath)
 {
     if (!pFullPath) {
-        throw fg::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
+        throw forge::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
                                 "Empty path string");
     }
 
@@ -395,12 +366,12 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
         format = FreeImage_GetFIFFromFilename(pFullPath);
     }
     if (format == FIF_UNKNOWN) {
-        throw fg::Error("window_impl::saveFrameBuffer", __LINE__,
+        throw forge::Error("window_impl::saveFrameBuffer", __LINE__,
                         "Freeimage: unrecognized image format", FG_ERR_FREEIMAGE_UNKNOWN_FORMAT);
     }
 
     if (!(format==FIF_BMP || format==FIF_PNG)) {
-        throw fg::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
+        throw forge::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
                                 "Supports only bmp and png as of now");
     }
 
@@ -411,7 +382,7 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
 
     FIBITMAP* bmp = FreeImage_Allocate(w, h, d);
     if (!bmp) {
-        throw fg::Error("window_impl::saveFrameBuffer", __LINE__,
+        throw forge::Error("window_impl::saveFrameBuffer", __LINE__,
                         "Freeimage: allocation failed", FG_ERR_FREEIMAGE_BAD_ALLOC);
     }
 
@@ -458,4 +429,5 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
     }
 }
 
+}
 }

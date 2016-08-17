@@ -13,6 +13,8 @@
 
 #include <memory>
 
+namespace forge
+{
 namespace opengl
 {
 
@@ -20,28 +22,28 @@ class image_impl : public AbstractRenderable {
     private:
         uint   mWidth;
         uint   mHeight;
-        fg::ChannelFormat mFormat;
-        GLenum mGLformat;
-        GLenum mGLiformat;
-        fg::dtype mDataType;
-        GLenum mGLType;
+        forge::ChannelFormat mFormat;
+        gl::GLenum mGLformat;
+        gl::GLenum mGLiformat;
+        forge::dtype mDataType;
+        gl::GLenum mGLType;
         float  mAlpha;
         bool   mKeepARatio;
         size_t mFormatSize;
         /* internal resources for interop */
         size_t mPBOsize;
-        GLuint mPBO;
-        GLuint mTex;
-        GLuint mProgram;
-        GLuint mMatIndex;
-        GLuint mTexIndex;
-        GLuint mNumCIndex;
-        GLuint mAlphaIndex;
-        GLuint mCMapLenIndex;
-        GLuint mCMapIndex;
+        gl::GLuint mPBO;
+        gl::GLuint mTex;
+        ShaderProgram mProgram;
+        gl::GLuint mMatIndex;
+        gl::GLuint mTexIndex;
+        gl::GLuint mNumCIndex;
+        gl::GLuint mAlphaIndex;
+        gl::GLuint mCMapLenIndex;
+        gl::GLuint mCMapIndex;
         /* color map details */
-        GLuint mColorMapUBO;
-        GLuint mUBOSize;
+        gl::GLuint mColorMapUBO;
+        gl::GLuint mUBOSize;
 
         /* helper functions to bind and unbind
          * resources for render quad primitive */
@@ -50,23 +52,24 @@ class image_impl : public AbstractRenderable {
 
     public:
         image_impl(const uint pWidth, const uint pHeight,
-                   const fg::ChannelFormat pFormat, const fg::dtype pDataType);
+                   const forge::ChannelFormat pFormat, const forge::dtype pDataType);
         ~image_impl();
 
-        void setColorMapUBOParams(const GLuint pUBO, const GLuint pSize);
+        void setColorMapUBOParams(const gl::GLuint pUBO, const gl::GLuint pSize);
         void setAlpha(const float pAlpha);
         void keepAspectRatio(const bool pKeep=true);
 
         uint width() const;
         uint height() const;
-        fg::ChannelFormat pixelFormat() const;
-        fg::dtype channelType() const;
+        forge::ChannelFormat pixelFormat() const;
+        forge::dtype channelType() const;
         uint pbo() const;
         uint size() const;
 
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,
-                    const glm::mat4 &pView);
+                    const glm::mat4 &pView, const glm::mat4 &pOrient);
 };
 
+}
 }
