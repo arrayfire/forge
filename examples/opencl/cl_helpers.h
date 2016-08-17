@@ -24,6 +24,7 @@
 using namespace cl;
 
 #if defined (OS_MAC)
+#include <OpenGL/OpenGL.h>
 static const std::string CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 #else
 static const std::string CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
