@@ -24,8 +24,16 @@ extern "C" {
 #elif defined(USE_FORGE_CUDA_COPY_HELPERS)
 
 #include <stdio.h>
+
+#ifndef GL_VERSION
 // gl.h is required by cuda_gl_interop to be included before it
+// And gl.h requires windows.h to be included before it
+#if OS_WIN
+#include <windows.h>
+#endif // OS_WIN
 #include <GL/gl.h>
+#endif // GL_VERSION
+
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
