@@ -11,7 +11,7 @@ A prototype of the OpenGL interop library that can be used with ArrayFire. The g
 | Status   | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-linux)](http://ci.arrayfire.org/view/All/job/forge/job/forge-linux/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrak1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrak1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrax1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrax1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-windows)](http://ci.arrayfire.org/view/All/job/forge/job/forge-windows/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-osx)](http://ci.arrayfire.org/view/All/job/forge/job/forge-osx/) |
 
 ### Dependencies
-* [GLEW](http://glew.sourceforge.net/)
+* [glbinding](https://github.com/cginternals/glbinding)
 * [GLFW](http://www.glfw.org/), optionally you can build with [SDL2](https://www.libsdl.org/) alternative too.
 * [freetype](http://www.freetype.org/)
 * On `Linux` and `OS X`, [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) is required.

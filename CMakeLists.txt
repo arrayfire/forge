@@ -119,6 +119,5 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/examples/"
 
 INSTALL(FILES
         "${CMAKE_MODULE_PATH}/FindOpenCL.cmake"
-        "${CMAKE_MODULE_PATH}/FindGLEWmx.cmake"
         DESTINATION "${FG_INSTALL_EXAMPLE_DIR}/CMakeModules/"
         COMPONENT examples)
