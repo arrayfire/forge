@@ -24,6 +24,8 @@ extern "C" {
 #elif defined(USE_FORGE_CUDA_COPY_HELPERS)
 
 #include <stdio.h>
+// gl.h is required by cuda_gl_interop to be included before it
+#include <GL/gl.h>
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
