@@ -46,6 +46,8 @@ DisplayHandle getCurrentDisplayHandle()
     const auto display = wglGetCurrentDC();
 #elif defined(OS_LNX)
     const auto display = glXGetCurrentDisplay();
+#else
+    const auto display = 0;
 #endif
     id = reinterpret_cast<DisplayHandle>(display);
 
