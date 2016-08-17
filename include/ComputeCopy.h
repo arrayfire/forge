@@ -28,7 +28,7 @@ extern "C" {
 #ifndef GL_VERSION
 // gl.h is required by cuda_gl_interop to be included before it
 // And gl.h requires windows.h to be included before it
-#if OS_WIN
+#if defined(OS_WIN)
 #include <windows.h>
 #endif // OS_WIN
 #include <GL/gl.h>
