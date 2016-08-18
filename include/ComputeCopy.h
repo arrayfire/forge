@@ -110,9 +110,9 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
     GfxHandle* temp = pGLDestination;
 
     if (temp->mTarget==FORGE_PBO) {
-        fg_update_vertex_buffer(temp->mId, pSize, pSource);
-    } else if (temp->mTarget==FORGE_VBO) {
         fg_update_pixel_buffer(temp->mId, pSize, pSource);
+    } else if (temp->mTarget==FORGE_VBO) {
+        fg_update_vertex_buffer(temp->mId, pSize, pSource);
     }
 }
 #endif
