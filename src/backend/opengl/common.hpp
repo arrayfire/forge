@@ -177,6 +177,24 @@ class AbstractRenderable {
         bool        mIsPVCOn;
         bool        mIsPVAOn;
 
+        AbstractRenderable():
+            mVBO(0), mCBO(0), mABO(0),
+            mVBOSize(0), mCBOSize(0), mABOSize(0),
+            mIsPVCOn(0), mIsPVAOn(0)
+        {
+            mColor[0] = 0;
+            mColor[1] = 0;
+            mColor[2] = 0;
+            mColor[3] = 0;
+
+            mRange[0] = 0;
+            mRange[1] = 0;
+            mRange[2] = 0;
+            mRange[3] = 0;
+            mRange[4] = 0;
+            mRange[5] = 0;
+        }
+
     public:
         /* Getter functions for OpenGL buffer objects
          * identifiers and their size in bytes
