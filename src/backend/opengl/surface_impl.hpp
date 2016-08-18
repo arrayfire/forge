@@ -27,8 +27,6 @@ class surface_impl : public AbstractRenderable {
         gl::GLuint    mNumXPoints;
         gl::GLuint    mNumYPoints;
         gl::GLenum    mDataType;
-        bool          mIsPVCOn;
-        bool          mIsPVAOn;
         forge::MarkerType mMarkerType;
         /* OpenGL Objects */
         gl::GLuint    mIBO;
