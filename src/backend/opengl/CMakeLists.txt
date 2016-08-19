@@ -7,6 +7,9 @@ FIND_PACKAGE(glm QUIET)
 
 OPTION(USE_SYSTEM_GLBINDING "Use system glbinding" OFF)
 IF(USE_SYSTEM_GLBINDING)
+    # Point glbinding_DIR (case sensitive) to the location of glbinding-config.cmake
+    # This file is generally at CMAKE_INSTALL_PREFIX/glbinding-config.cmake of
+    # the glbinding project
     FIND_PACKAGE(glbinding REQUIRED)
     MESSAGE("GLB ${GLBINDING_LIBRARY_RELEASE}")
 ELSE(USE_SYSTEM_GLBINDING)
