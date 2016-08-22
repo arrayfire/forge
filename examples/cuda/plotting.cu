@@ -18,7 +18,7 @@
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
-__device__ static const float    dx = 0.1;
+static const float    dx = 0.1;
 static const float    FRANGE_START = 0.f;
 static const float    FRANGE_END = 2 * 3.141592f;
 static const size_t   DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
@@ -110,13 +110,13 @@ int main(void)
 }
 
 __global__
-void simple_sinf(float* out, const size_t DATA_SIZE, int fnCode, const float _frange_start)
+void simple_sinf(float* out, const size_t _data_size, int fnCode, const float _dx, const float _frange_start)
 {
     int i = blockIdx.x * blockDim.x  + threadIdx.x;
 
-    if (i<DATA_SIZE) {
-        float x  = _frange_start + i*dx;
-        int idx  = 2*i;
+    if (i < _data_size) {
+        float x  = _frange_start + i * _dx;
+        int idx  = 2 * i;
         out[idx] = x;
 
         switch(fnCode) {
@@ -146,5 +146,5 @@ void kernel(float* dev_out, int functionCode)
     static const dim3 threads(1024);
     dim3 blocks(divup(DATA_SIZE, 1024));
 
-    simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, functionCode, FRANGE_START);
+    simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, functionCode, dx, FRANGE_START);
 }
