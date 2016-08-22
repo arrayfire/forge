@@ -67,42 +67,23 @@ GLenum ictype2gl(const ChannelFormat pMode)
     return GL_RGBA;
 }
 
-void printShaderInfoLog(GLint pShader)
-{
-    int infoLogLen = 0;
-    int charsWritten = 0;
-    GLchar *infoLog;
-
-    glGetShaderiv(pShader, GL_INFO_LOG_LENGTH, &infoLogLen);
-
-    if (infoLogLen > 1) {
-        infoLog = new GLchar[infoLogLen];
-        glGetShaderInfoLog(pShader, infoLogLen, &charsWritten, infoLog);
-        std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;
-        delete [] infoLog;
-        throw forge::Error("printShaderInfoLog", __LINE__,
-                "OpenGL Shader compilation failed", FG_ERR_GL_ERROR);
-    }
-}
-
-void printLinkInfoLog(GLint pProgram)
-{
-    int infoLogLen = 0;
-    int charsWritten = 0;
-    GLchar *infoLog;
-
-    glGetProgramiv(pProgram, GL_INFO_LOG_LENGTH, &infoLogLen);
-
-    if (infoLogLen > 1) {
-        infoLog = new GLchar[infoLogLen];
-        // error check for fail to allocate memory omitted
-        glGetProgramInfoLog(pProgram, infoLogLen, &charsWritten, infoLog);
-        std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;
-        delete [] infoLog;
-        throw forge::Error("printLinkInfoLog", __LINE__,
-                "OpenGL Shader linking failed", FG_ERR_GL_ERROR);
-    }
-}
+#define FG_COMPILE_LINK_ERROR(pArg, PTYPE)                                              \
+do {                                                                                    \
+    int infoLogLen = 0;                                                                 \
+    int charsWritten = 0;                                                               \
+    GLchar *infoLog;                                                                    \
+                                                                                        \
+    glGet##PTYPE##iv(pArg, GL_INFO_LOG_LENGTH, &infoLogLen);                            \
+                                                                                        \
+    if (infoLogLen > 1) {                                                               \
+        infoLog = new GLchar[infoLogLen];                                               \
+        glGet##PTYPE##InfoLog(pArg, infoLogLen, &charsWritten, infoLog);                \
+        std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;                   \
+        delete [] infoLog;                                                              \
+        throw forge::Error(__PRETTY_FUNCTION__, __LINE__,                               \
+                "OpenGL "#PTYPE" Compilation Failed", FG_ERR_GL_ERROR);                 \
+    }                                                                                   \
+} while(0)
 
 void attachAndLinkProgram(GLuint pProgram, Shaders pShaders)
 {
@@ -117,7 +98,7 @@ void attachAndLinkProgram(GLuint pProgram, Shaders pShaders)
     glGetProgramiv(pProgram,GL_LINK_STATUS, &linked);
     if (!linked) {
         std::cerr << "Program did not link." << std::endl;
-        printLinkInfoLog(pProgram);
+        FG_COMPILE_LINK_ERROR(pProgram, Program);
     }
 }
 
@@ -140,14 +121,14 @@ Shaders loadShaders(const char* pVertexShaderSrc,
     glGetShaderiv(v, GL_COMPILE_STATUS, &compiled);
     if (!compiled) {
         std::cerr << "Vertex shader not compiled." << std::endl;
-        printShaderInfoLog(v);
+        FG_COMPILE_LINK_ERROR(v, Shader);
     }
 
     glCompileShader(f);
     glGetShaderiv(f, GL_COMPILE_STATUS, &compiled);
     if (!compiled) {
         std::cerr << "Fragment shader not compiled." << std::endl;
-        printShaderInfoLog(f);
+        FG_COMPILE_LINK_ERROR(f, Shader);
     }
 
     GLuint g = 0;
@@ -159,7 +140,7 @@ Shaders loadShaders(const char* pVertexShaderSrc,
         glGetShaderiv(g, GL_COMPILE_STATUS, &compiled);
         if (!compiled) {
             std::cerr << "Geometry shader not compiled." << std::endl;
-            printShaderInfoLog(g);
+            FG_COMPILE_LINK_ERROR(g, Shader);
         }
     }
 

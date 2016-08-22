@@ -10,6 +10,7 @@
 #pragma once
 
 #include <fg/defines.h>
+#include <defines.hpp>
 
 #include <stdexcept>
 #include <string>
