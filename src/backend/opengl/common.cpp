@@ -117,10 +117,8 @@ void attachAndLinkProgram(GLuint pProgram, Shaders pShaders)
     glGetProgramiv(pProgram,GL_LINK_STATUS, &linked);
     if (!linked) {
         std::cerr << "Program did not link." << std::endl;
-        throw forge::Error("attachAndLinkProgram", __LINE__,
-                "OpenGL program linking failed", FG_ERR_GL_ERROR);
+        printLinkInfoLog(pProgram);
     }
-    printLinkInfoLog(pProgram);
 }
 
 Shaders loadShaders(const char* pVertexShaderSrc,

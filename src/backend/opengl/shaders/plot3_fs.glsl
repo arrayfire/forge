@@ -4,8 +4,8 @@ uniform vec2 minmaxs[3];
 uniform bool isPVCOn;
 uniform bool isPVAOn;
 
-in vec4 pervcol;
 in vec4 hpoint;
+in vec4 pervcol;
 
 out vec4 outColor;
 
@@ -18,8 +18,9 @@ vec3 hsv2rgb(vec3 c)
 
 void main(void)
 {
-   bool nin_bounds = (hpoint.x > minmaxs[0].y || hpoint.x < minmaxs[0].x ||
-       hpoint.y > minmaxs[1].y || hpoint.y < minmaxs[1].x || hpoint.z < minmaxs[2].x);
+   bool nin_bounds = (hpoint.x > minmaxs[0].y || hpoint.x < minmaxs[0].x
+                   || hpoint.y > minmaxs[1].y || hpoint.y < minmaxs[1].x
+                   || hpoint.z < minmaxs[2].x);
 
    float height = (minmaxs[2].y- hpoint.z)/(minmaxs[2].y-minmaxs[2].x);
 
