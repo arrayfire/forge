@@ -60,7 +60,7 @@ void updateVertexBuffer(const unsigned pBufferId,
 {
     fg_err val = fg_update_vertex_buffer(pBufferId, pBufferSize, pBufferData);
     if (val!=FG_ERR_NONE)
-        throw forge::Error(__PRETTY_FUNCTION__, __LINE__, "Vertex Buffer Object update failed", val);
+        FG_ERROR("Vertex Buffer Object update failed", val);
 }
 
 void updatePixelBuffer(const unsigned pBufferId,
@@ -69,14 +69,14 @@ void updatePixelBuffer(const unsigned pBufferId,
 {
     fg_err val = fg_update_pixel_buffer(pBufferId, pBufferSize, pBufferData);
     if (val!=FG_ERR_NONE)
-        throw forge::Error(__PRETTY_FUNCTION__, __LINE__, "Pixel Buffer Object update failed", val);
+        FG_ERROR("Pixel Buffer Object update failed", val);
 }
 
 void finish()
 {
     fg_err val = fg_finish();
     if (val!=FG_ERR_NONE)
-        throw forge::Error(__PRETTY_FUNCTION__, __LINE__, "glFinish failed", val);
+        FG_ERROR("glFinish failed", val);
 }
 
 }

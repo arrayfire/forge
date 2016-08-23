@@ -18,12 +18,6 @@ using std::string;
 using std::stringstream;
 using std::cerr;
 
-std::string getName(forge::dtype pType)
-{
-    // TODO
-    return std::string("test");
-}
-
 void stringcopy(char* dest, const char* src, size_t len)
 {
 #ifdef OS_WIN
@@ -36,75 +30,47 @@ void stringcopy(char* dest, const char* src, size_t len)
 namespace forge
 {
 
-Error::Error(const char * const pFuncName, const int pLine,
-             const char * const pMessage, ErrorCode pErrCode)
-    : logic_error(pMessage),
-      mLineNumber(pLine), mErrCode(pErrCode)
+Error::Error() : mErrCode(FG_ERR_UNKNOWN)
 {
-    size_t len = std::min(MAX_ERR_STR_LEN - 1, (int)strlen(pFuncName));
-    stringcopy(mFuncName, pFuncName, len);
-    mFuncName[len] = '\0';
+    stringcopy(mMessage, "Unknown Exception", sizeof(mMessage));
 }
 
-const char* Error::functionName() const { return mFuncName; }
+Error::Error(const char * const pMessage)
+    : mErrCode(FG_ERR_UNKNOWN)
+{
+    stringcopy(mMessage, pMessage, sizeof(mMessage));
+    mMessage[sizeof(mMessage) - 1] = '\0';
+}
 
-int Error::line() const { return mLineNumber; }
+Error::Error(const char * const pFileName, int pLine, ErrorCode pErrCode)
+    : mErrCode(pErrCode)
+{
+    snprintf(mMessage, sizeof(mMessage) - 1,
+             "Forge Exception (%s:%d):\nIn %s:%d",
+             fg_err_to_string(pErrCode), (int)pErrCode, pFileName, pLine);
+    mMessage[sizeof(mMessage)-1] = '\0';
+}
 
-ErrorCode Error::err() const { return mErrCode; }
+Error::Error(const char * const pMessage,
+             const char * const pFileName, const int pLine, ErrorCode pErrCode)
+    : mErrCode(pErrCode)
+{
+    snprintf(mMessage, sizeof(mMessage) - 1,
+             "Forge Exception (%s:%d):\n%s\nIn %s:%d",
+             fg_err_to_string(pErrCode), (int)pErrCode, pMessage, pFileName, pLine);
+    mMessage[sizeof(mMessage)-1] = '\0';
+}
+
+Error::Error(const char * const pMessage, const char * const pFuncName,
+             const char * const pFileName, const int pLine, ErrorCode pErrCode)
+    : mErrCode(pErrCode)
+{
+    snprintf(mMessage, sizeof(mMessage) - 1,
+             "Forge Exception (%s:%d):\n%sIn function %s\nIn file %s:%d",
+             fg_err_to_string(pErrCode), (int)pErrCode, pMessage, pFuncName, pFileName, pLine);
+    mMessage[sizeof(mMessage)-1] = '\0';
+}
 
 Error::~Error() throw() {}
-
-
-TypeError::TypeError(const char * const pFuncName, const int pLine,
-                     const int pIndex, const forge::dtype pType)
-    : Error(pFuncName, pLine, "Invalid data type", FG_ERR_INVALID_TYPE), mArgIndex(pIndex)
-{
-    std::string str = getName(pType); /* TODO getName has to be defined */
-    size_t len = std::min(MAX_ERR_STR_LEN - 1, (int)str.length());
-    stringcopy(mErrTypeName, str.c_str(), len);
-    mErrTypeName[len] = '\0';
-}
-
-const char* TypeError::typeName() const { return mErrTypeName; }
-
-int TypeError::argIndex() const { return mArgIndex; }
-
-TypeError::~TypeError() throw() {}
-
-
-ArgumentError::ArgumentError(const char * const pFuncName,
-                             const int pLine,
-                             const int pIndex,
-                             const char * const pExpectString)
-    : Error(pFuncName, pLine, "Invalid argument", FG_ERR_INVALID_ARG), mArgIndex(pIndex)
-{
-    size_t len = std::min(MAX_ERR_STR_LEN - 1, (int)strlen(pExpectString));
-    stringcopy(mExpected, pExpectString, len);
-    mExpected[len] = '\0';
-}
-
-const char* ArgumentError::expectedCondition() const { return mExpected; }
-
-int ArgumentError::argIndex() const { return mArgIndex; }
-
-ArgumentError::~ArgumentError() throw() {}
-
-
-DimensionError::DimensionError(const char * const pFuncName,
-                               const int pLine,
-                               const int pIndex,
-                               const char * const pExpectString)
-    : Error(pFuncName, pLine, "Invalid dimension", FG_ERR_SIZE), mArgIndex(pIndex)
-{
-    size_t len = std::min(MAX_ERR_STR_LEN - 1, (int)strlen(pExpectString));
-    stringcopy(mExpected, pExpectString, len);
-    mExpected[len] = '\0';
-}
-
-const char* DimensionError::expectedCondition() const { return mExpected; }
-
-int DimensionError::argIndex() const { return mArgIndex; }
-
-DimensionError::~DimensionError() throw() {}
 
 }

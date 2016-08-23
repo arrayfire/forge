@@ -196,7 +196,7 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
         case GL_SHORT          : SURF_CREATE_BUFFERS(short) ; break;
         case GL_UNSIGNED_SHORT : SURF_CREATE_BUFFERS(ushort); break;
         case GL_UNSIGNED_BYTE  : SURF_CREATE_BUFFERS(float) ; break;
-        default: forge::TypeError("surface_impl::surface_impl", __LINE__, 1, pDataType);
+        default                : TYPE_ERROR(1, pDataType);
     }
 
 #undef SURF_CREATE_BUFFERS

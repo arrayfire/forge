@@ -15,98 +15,51 @@
 #include <iostream>
 #include <stdexcept>
 
-static const int MAX_ERR_STR_LEN = 1024;
-
 namespace forge
 {
 
-class FGAPI Error : public std::logic_error
+class FGAPI Error : public std::exception
 {
-    char        mFuncName[MAX_ERR_STR_LEN];
-    int         mLineNumber;
+private:
+
+    char        mMessage[1024];
+
     ErrorCode   mErrCode;
+
+public:
+
+    ErrorCode err() const { return mErrCode; }
 
     Error();
 
-public:
+    Error(const char * const pMessage);
 
-    Error(const char * const pFuncName, int pLine, const char * const pMessage, ErrorCode pErrCode);
+    Error(const char * const pFileName, int pLine, ErrorCode pErrCode);
 
-    const char* functionName() const;
+    Error(const char * const pMessage, const char * const pFileName, int pLine, ErrorCode pErrCode);
 
-    int line() const;
-
-    ErrorCode err() const;
+    Error(const char * const pMessage, const char * const pFuncName,
+          const char * const pFileName, int pLine, ErrorCode pErrCode);
 
     virtual ~Error() throw();
 
-    friend inline std::ostream& operator<<(std::ostream &s, const Error &e) {
-        return s << "@" << e.functionName() <<":"<< e.line()<<": "<<e.what()<<"("<<e.err()<<")"<<std::endl;
-    }
+    virtual const char * what() const throw() { return mMessage; }
+
+    friend inline std::ostream& operator<<(std::ostream &s, const Error &e)
+    { return s << e.what(); }
 };
 
-// TODO: Perhaps add a way to return supported types
-class FGAPI TypeError : public Error
-{
-    int   mArgIndex;
-    char* mErrTypeName;
+} // namespace forge
 
-    TypeError();
+#endif
 
-public:
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    TypeError(const char * const pFuncName,
-              const int pLine,
-              const int pIndex,
-              const dtype pType);
+FGAPI void fg_get_last_error(char **msg, int *len);
+FGAPI const char * fg_err_to_string(const fg_err err);
 
-    const char* typeName() const;
-
-    int argIndex() const;
-
-    ~TypeError() throw();
-};
-
-class FGAPI ArgumentError : public Error
-{
-    int   mArgIndex;
-    char* mExpected;
-
-    ArgumentError();
-
-public:
-    ArgumentError(const char * const pFuncName,
-                  const int pLine,
-                  const int pIndex,
-                  const char * const pExpectString);
-
-    const char* expectedCondition() const;
-
-    int argIndex() const;
-
-    ~ArgumentError() throw();
-};
-
-class FGAPI DimensionError : public Error
-{
-    int   mArgIndex;
-    char* mExpected;
-
-    DimensionError();
-
-public:
-    DimensionError(const char * const pFuncName,
-                   const int pLine,
-                   const int pIndex,
-                   const char * const pExpectString);
-
-    const char* expectedCondition() const;
-
-    int argIndex() const;
-
-    ~DimensionError() throw();
-};
-
+#ifdef __cplusplus
 }
-
-#endif // __cplusplus
+#endif

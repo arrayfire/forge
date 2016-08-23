@@ -17,82 +17,112 @@ namespace forge
 
 VectorField::VectorField(const uint pNumPoints, const dtype pDataType, const ChartType pChartType)
 {
-    mValue = getHandle(new common::VectorField(pNumPoints, pDataType, pChartType));
+    try {
+        mValue = getHandle(new common::VectorField(pNumPoints, pDataType, pChartType));
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 VectorField::VectorField(const VectorField& pOther)
 {
-    mValue = getHandle(new common::VectorField(pOther.get()));
+    try {
+        mValue = getHandle(new common::VectorField(pOther.get()));
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 VectorField::~VectorField()
 {
-    delete getVectorField(mValue);
+    try {
+        delete getVectorField(mValue);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void VectorField::setColor(const Color pColor)
 {
-    float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
-    float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
-    float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
-    float a = (((int) pColor       ) & 0xFF ) / 255.f;
-    getVectorField(mValue)->setColor(r, g, b, a);
+    try {
+        float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
+        float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
+        float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
+        float a = (((int) pColor       ) & 0xFF ) / 255.f;
+        getVectorField(mValue)->setColor(r, g, b, a);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void VectorField::setColor(const float pRed, const float pGreen,
                            const float pBlue, const float pAlpha)
 {
-    getVectorField(mValue)->setColor(pRed, pGreen, pBlue, pAlpha);
+    try {
+        getVectorField(mValue)->setColor(pRed, pGreen, pBlue, pAlpha);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void VectorField::setLegend(const char* pLegend)
 {
-    getVectorField(mValue)->setLegend(pLegend);
+    try {
+        getVectorField(mValue)->setLegend(pLegend);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint VectorField::vertices() const
 {
-    return getVectorField(mValue)->vbo();
+    try {
+        return getVectorField(mValue)->vbo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint VectorField::colors() const
 {
-    return getVectorField(mValue)->cbo();
+    try {
+        return getVectorField(mValue)->cbo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint VectorField::alphas() const
 {
-    return getVectorField(mValue)->abo();
+    try {
+        return getVectorField(mValue)->abo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint VectorField::directions() const
 {
-    return getVectorField(mValue)->dbo();
+    try {
+        return getVectorField(mValue)->dbo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint VectorField::verticesSize() const
 {
-    return (uint)getVectorField(mValue)->vboSize();
+    try {
+        return (uint)getVectorField(mValue)->vboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint VectorField::colorsSize() const
 {
-    return (uint)getVectorField(mValue)->cboSize();
+    try {
+        return (uint)getVectorField(mValue)->cboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint VectorField::alphasSize() const
 {
-    return (uint)getVectorField(mValue)->aboSize();
+    try {
+        return (uint)getVectorField(mValue)->aboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint VectorField::directionsSize() const
 {
-    return (uint)getVectorField(mValue)->dboSize();
+    try {
+        return (uint)getVectorField(mValue)->dboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 fg_vector_field VectorField::get() const
 {
-    return mValue;
+    try {
+        return mValue;
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 }

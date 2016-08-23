@@ -21,7 +21,7 @@ using glm::translate;
 using glm::scale;
 
 #define SDL_THROW_ERROR(msg, err) \
-    throw forge::Error("Window constructor", __LINE__, msg, err);
+    FG_ERROR("Window constructor "#msg,err)
 
 namespace forge
 {
@@ -44,7 +44,7 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "ERROR: SDL wasn't able to initalize\n";
-        SDL_THROW_ERROR("SDL initilization failed", FG_ERR_GL_ERROR)
+        SDL_THROW_ERROR("SDL initilization failed", FG_ERR_GL_ERROR);
     }
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -71,13 +71,13 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
                             );
     if (mWindow==NULL) {
         std::cerr<<"Error: Could not Create SDL Window!"<< SDL_GetError() << std::endl;
-        SDL_THROW_ERROR("sdl window creation failed", FG_ERR_GL_ERROR)
+        SDL_THROW_ERROR("SDL window creation failed", FG_ERR_GL_ERROR);
     }
 
     mContext = SDL_GL_CreateContext(mWindow);
     if (mContext==NULL) {
         std::cerr<<"Error: Could not OpenGL context!" << SDL_GetError() << std::endl;
-        SDL_THROW_ERROR("opengl context creation failed", FG_ERR_GL_ERROR)
+        SDL_THROW_ERROR("OpenGL context creation failed", FG_ERR_GL_ERROR);
     }
 
     SDL_GL_SetSwapInterval(1);

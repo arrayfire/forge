@@ -17,32 +17,44 @@ namespace forge
 
 Font::Font()
 {
-    mValue = getHandle(new common::Font());
+    try {
+        mValue = getHandle(new common::Font());
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Font::Font(const Font& other)
 {
-    mValue = getHandle(new common::Font(other.get()));
+    try {
+        mValue = getHandle(new common::Font(other.get()));
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Font::~Font()
 {
-    delete getFont(mValue);
+    try {
+        delete getFont(mValue);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Font::loadFontFile(const char* const pFile)
 {
-    getFont(mValue)->loadFont(pFile);
+    try {
+        getFont(mValue)->loadFont(pFile);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Font::loadSystemFont(const char* const pName)
 {
-    getFont(mValue)->loadSystemFont(pName);
+    try {
+        getFont(mValue)->loadSystemFont(pName);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 fg_font Font::get() const
 {
-    return getFont(mValue);
+    try {
+        return getFont(mValue);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 }

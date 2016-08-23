@@ -17,72 +17,98 @@ namespace forge
 
 Histogram::Histogram(const uint pNBins, const dtype pDataType)
 {
-    mValue = getHandle(new common::Histogram(pNBins, pDataType));
+    try {
+        mValue = getHandle(new common::Histogram(pNBins, pDataType));
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Histogram::Histogram(const Histogram& pOther)
 {
-    mValue = getHandle(new common::Histogram(pOther.get()));
+    try {
+        mValue = getHandle(new common::Histogram(pOther.get()));
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Histogram::~Histogram()
 {
-    delete getHistogram(mValue);
+    try {
+        delete getHistogram(mValue);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Histogram::setColor(const Color pColor)
 {
-    float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
-    float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
-    float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
-    float a = (((int) pColor       ) & 0xFF ) / 255.f;
-    getHistogram(mValue)->setColor(r, g, b, a);
+    try {
+        float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
+        float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
+        float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
+        float a = (((int) pColor       ) & 0xFF ) / 255.f;
+        getHistogram(mValue)->setColor(r, g, b, a);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Histogram::setColor(const float pRed, const float pGreen,
                          const float pBlue, const float pAlpha)
 {
-    getHistogram(mValue)->setColor(pRed, pGreen, pBlue, pAlpha);
+    try {
+        getHistogram(mValue)->setColor(pRed, pGreen, pBlue, pAlpha);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Histogram::setLegend(const char* pLegend)
 {
-    getHistogram(mValue)->setLegend(pLegend);
+    try {
+        getHistogram(mValue)->setLegend(pLegend);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Histogram::vertices() const
 {
-    return getHistogram(mValue)->vbo();
+    try {
+        return getHistogram(mValue)->vbo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Histogram::colors() const
 {
-    return getHistogram(mValue)->cbo();
+    try {
+        return getHistogram(mValue)->cbo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Histogram::alphas() const
 {
-    return getHistogram(mValue)->abo();
+    try {
+        return getHistogram(mValue)->abo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Histogram::verticesSize() const
 {
-    return (uint)getHistogram(mValue)->vboSize();
+    try {
+        return (uint)getHistogram(mValue)->vboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Histogram::colorsSize() const
 {
-    return (uint)getHistogram(mValue)->cboSize();
+    try {
+        return (uint)getHistogram(mValue)->cboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Histogram::alphasSize() const
 {
-    return (uint)getHistogram(mValue)->aboSize();
+    try {
+        return (uint)getHistogram(mValue)->aboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 fg_histogram Histogram::get() const
 {
-    return mValue;
+    try {
+        return mValue;
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 }

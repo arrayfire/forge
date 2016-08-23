@@ -18,87 +18,119 @@ namespace forge
 Plot::Plot(const uint pNumPoints, const dtype pDataType, const ChartType pChartType,
            const PlotType pPlotType, const MarkerType pMarkerType)
 {
-    mValue = getHandle(new common::Plot(pNumPoints, pDataType, pPlotType, pMarkerType, pChartType));
+    try {
+        mValue = getHandle(new common::Plot(pNumPoints, pDataType, pPlotType, pMarkerType, pChartType));
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Plot::Plot(const Plot& pOther)
 {
-    mValue = getHandle(new common::Plot(pOther.get()));
+    try {
+        mValue = getHandle(new common::Plot(pOther.get()));
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Plot::~Plot()
 {
-    delete getPlot(mValue);
+    try {
+        delete getPlot(mValue);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Plot::setColor(const Color pColor)
 {
-    float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
-    float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
-    float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
-    float a = (((int) pColor       ) & 0xFF ) / 255.f;
-    getPlot(mValue)->setColor(r, g, b, a);
+    try {
+        float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
+        float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
+        float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
+        float a = (((int) pColor       ) & 0xFF ) / 255.f;
+        getPlot(mValue)->setColor(r, g, b, a);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Plot::setColor(const float pRed, const float pGreen,
                     const float pBlue, const float pAlpha)
 {
-    getPlot(mValue)->setColor(pRed, pGreen, pBlue, pAlpha);
+    try {
+        getPlot(mValue)->setColor(pRed, pGreen, pBlue, pAlpha);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Plot::setLegend(const char* pLegend)
 {
-    getPlot(mValue)->setLegend(pLegend);
+    try {
+        getPlot(mValue)->setLegend(pLegend);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Plot::setMarkerSize(const float pMarkerSize)
 {
-    getPlot(mValue)->setMarkerSize(pMarkerSize);
+    try {
+        getPlot(mValue)->setMarkerSize(pMarkerSize);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Plot::vertices() const
 {
-    return getPlot(mValue)->vbo();
+    try {
+        return getPlot(mValue)->vbo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Plot::colors() const
 {
-    return getPlot(mValue)->cbo();
+    try {
+        return getPlot(mValue)->cbo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Plot::alphas() const
 {
-    return getPlot(mValue)->abo();
+    try {
+        return getPlot(mValue)->abo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Plot::markers() const
 {
-    return getPlot(mValue)->mbo();
+    try {
+        return getPlot(mValue)->mbo();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Plot::verticesSize() const
 {
-    return (uint)getPlot(mValue)->vboSize();
+    try {
+        return (uint)getPlot(mValue)->vboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Plot::colorsSize() const
 {
-    return (uint)getPlot(mValue)->cboSize();
+    try {
+        return (uint)getPlot(mValue)->cboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Plot::alphasSize() const
 {
-    return (uint)getPlot(mValue)->aboSize();
+    try {
+        return (uint)getPlot(mValue)->aboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 uint Plot::markersSize() const
 {
-    return (uint)getPlot(mValue)->mboSize();
+    try {
+        return (uint)getPlot(mValue)->mboSize();
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 fg_plot Plot::get() const
 {
-    return mValue;
+    try {
+        return mValue;
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 }

@@ -24,7 +24,7 @@ using namespace gl;
 #include <iostream>
 
 #define GLFW_THROW_ERROR(msg, err) \
-    throw forge::Error("Window constructor", __LINE__, msg, err);
+    FG_ERROR("Windows Constructor: "#msg, err)
 
 namespace forge
 {
@@ -47,7 +47,7 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
 
     if (!glfwInit()) {
         std::cerr << "ERROR: GLFW wasn't able to initalize\n";
-        GLFW_THROW_ERROR("glfw initilization failed", FG_ERR_GL_ERROR)
+        GLFW_THROW_ERROR("GLFW initilization failed", FG_ERR_GL_ERROR);
     }
 
     auto wndErrCallback = [](int errCode, const char* pDescription)
@@ -72,7 +72,7 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
 
     if (!mWindow) {
         std::cerr<<"Error: Could not Create GLFW Window!\n";
-        GLFW_THROW_ERROR("glfw window creation failed", FG_ERR_GL_ERROR)
+        GLFW_THROW_ERROR("GLFW window creation failed", FG_ERR_GL_ERROR);
     }
 
     glfwSetWindowUserPointer(mWindow, this);

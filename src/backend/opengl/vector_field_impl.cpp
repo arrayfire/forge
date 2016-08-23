@@ -146,7 +146,7 @@ vector_field_impl::vector_field_impl(const uint pNumPoints, const forge::dtype p
             case GL_SHORT          : PLOT_CREATE_BUFFERS(short) ; break;
             case GL_UNSIGNED_SHORT : PLOT_CREATE_BUFFERS(ushort); break;
             case GL_UNSIGNED_BYTE  : PLOT_CREATE_BUFFERS(float) ; break;
-            default: forge::TypeError("vector_field_impl::vector_field_impl", __LINE__, 1, mDataType);
+            default                : TYPE_ERROR(1, mDataType);
         }
 #undef PLOT_CREATE_BUFFERS
         CheckGL("End vector_field_impl::vector_field_impl");
