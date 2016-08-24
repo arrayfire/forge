@@ -31,9 +31,7 @@ Histogram::Histogram(const Histogram& pOther)
 
 Histogram::~Histogram()
 {
-    try {
-        delete getHistogram(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    delete getHistogram(mValue);
 }
 
 void Histogram::setColor(const Color pColor)

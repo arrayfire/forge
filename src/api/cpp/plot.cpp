@@ -32,9 +32,7 @@ Plot::Plot(const Plot& pOther)
 
 Plot::~Plot()
 {
-    try {
-        delete getPlot(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    delete getPlot(mValue);
 }
 
 void Plot::setColor(const Color pColor)

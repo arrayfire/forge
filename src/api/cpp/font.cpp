@@ -31,9 +31,7 @@ Font::Font(const Font& other)
 
 Font::~Font()
 {
-    try {
-        delete getFont(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    delete getFont(mValue);
 }
 
 void Font::loadFontFile(const char* const pFile)

@@ -37,9 +37,7 @@ Image::Image(const Image& pOther)
 
 Image::~Image()
 {
-    try {
-        delete getImage(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    delete getImage(mValue);
 }
 
 void Image::setAlpha(const float pAlpha)

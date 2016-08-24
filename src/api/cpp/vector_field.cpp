@@ -31,9 +31,7 @@ VectorField::VectorField(const VectorField& pOther)
 
 VectorField::~VectorField()
 {
-    try {
-        delete getVectorField(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    delete getVectorField(mValue);
 }
 
 void VectorField::setColor(const Color pColor)

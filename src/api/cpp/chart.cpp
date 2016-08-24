@@ -41,9 +41,7 @@ Chart::Chart(const Chart& pOther)
 
 Chart::~Chart()
 {
-    try {
-        delete getChart(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    delete getChart(mValue);
 }
 
 void Chart::setAxesTitles(const char* pX,

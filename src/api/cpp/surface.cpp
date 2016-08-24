@@ -31,9 +31,7 @@ Surface::Surface(const Surface& other)
 
 Surface::~Surface()
 {
-    try {
-        delete getSurface(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    delete getSurface(mValue);
 }
 
 void Surface::setColor(const Color pColor)

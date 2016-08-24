@@ -28,9 +28,7 @@ Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindo
 
 Window::~Window()
 {
-    try {
-        delete getWindow(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    delete getWindow(mValue);
 }
 
 Window::Window(const Window& other)
