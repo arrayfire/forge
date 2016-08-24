@@ -134,6 +134,16 @@ SET(glsl_shader_headers
 FILE(GLOB glsl_shaders
     "shaders/*.glsl")
 
+LIST(SORT c_api_headers)
+LIST(SORT c_api_sources)
+LIST(SORT cpp_api_headers)
+LIST(SORT cpp_api_sources)
+LIST(SORT bknd_headers)
+LIST(SORT bknd_sources)
+LIST(SORT gl_headers)
+LIST(SORT gl_sources)
+LIST(SORT glsl_shaders)
+
 SOURCE_GROUP(inc FILES ${api_headers})
 
 SOURCE_GROUP("src\\api\\c\\headers" FILES ${c_api_headers})

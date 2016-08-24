@@ -103,14 +103,12 @@ fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
     try {
         common::Chart* chrt = getChart(pHandle);
 
-        if (chrt->chartType()== FG_CHART_2D) {
-            common::Histogram* hist = new common::Histogram(pNBins, (forge::dtype)pType);
-            chrt->addRenderable(hist->impl());
-            *pHistogram = getHandle(hist);
-        } else {
-            throw forge::ArgumentError("Chart::render", __LINE__, 5,
-                    "Can add histogram to a 2d chart only");
-        }
+        // Histogram is only allowed in FG_CHART_2D
+        ARG_ASSERT(5, chrt->chartType() == FG_CHART_2D);
+
+        common::Histogram* hist = new common::Histogram(pNBins, (forge::dtype)pType);
+        chrt->addRenderable(hist->impl());
+        *pHistogram = getHandle(hist);
     }
     CATCHALL
 
@@ -148,17 +146,14 @@ fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
 {
     try {
         common::Chart* chrt = getChart(pHandle);
-        forge::ChartType ctype = chrt->chartType();
 
-        if (ctype == FG_CHART_3D) {
-            common::Surface* surf = new common::Surface(pXPoints, pYPoints, (forge::dtype)pType,
-                                                        pPlotType, pMarkerType);
-            chrt->addRenderable(surf->impl());
-            *pSurface = getHandle(surf);
-        } else {
-            throw forge::ArgumentError("Chart::render", __LINE__, 5,
-                    "Can add surface plot to a 3d chart only");
-        }
+        // Surface is only allowed in FG_CHART_3D
+        ARG_ASSERT(5, chrt->chartType() == FG_CHART_3D);
+
+        common::Surface* surf = new common::Surface(pXPoints, pYPoints, (forge::dtype)pType,
+                                                    pPlotType, pMarkerType);
+        chrt->addRenderable(surf->impl());
+        *pSurface = getHandle(surf);
     }
     CATCHALL
 

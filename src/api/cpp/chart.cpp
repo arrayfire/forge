@@ -27,133 +27,163 @@ namespace forge
 
 Chart::Chart(const ChartType cType)
 {
-    mValue = getHandle(new common::Chart(cType));
+    try {
+        mValue = getHandle(new common::Chart(cType));
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Chart::Chart(const Chart& pOther)
 {
-    mValue = getHandle(new common::Chart(pOther.get()));
+    try {
+        mValue = getHandle(new common::Chart(pOther.get()));
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Chart::~Chart()
 {
-    delete getChart(mValue);
+    try {
+        delete getChart(mValue);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Chart::setAxesTitles(const char* pX,
                           const char* pY,
                           const char* pZ)
 {
-    getChart(mValue)->setAxesTitles(pX, pY, pZ);
+    try {
+        getChart(mValue)->setAxesTitles(pX, pY, pZ);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Chart::setAxesLimits(const float pXmin, const float pXmax,
                           const float pYmin, const float pYmax,
                           const float pZmin, const float pZmax)
 {
-    getChart(mValue)->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
+    try {
+        getChart(mValue)->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Chart::setLegendPosition(const float pX, const float pY)
 {
-    getChart(mValue)->setLegendPosition(pX, pY);
+    try {
+        getChart(mValue)->setLegendPosition(pX, pY);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Chart::add(const Image& pImage)
 {
-    getChart(mValue)->addRenderable(getImage(pImage.get())->impl());
+    try {
+        getChart(mValue)->addRenderable(getImage(pImage.get())->impl());
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Chart::add(const Histogram& pHistogram)
 {
-    getChart(mValue)->addRenderable(getHistogram(pHistogram.get())->impl());
+    try {
+        getChart(mValue)->addRenderable(getHistogram(pHistogram.get())->impl());
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Chart::add(const Plot& pPlot)
 {
-    getChart(mValue)->addRenderable(getPlot(pPlot.get())->impl());
+    try {
+        getChart(mValue)->addRenderable(getPlot(pPlot.get())->impl());
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Chart::add(const Surface& pSurface)
 {
-    getChart(mValue)->addRenderable(getSurface(pSurface.get())->impl());
+    try {
+        getChart(mValue)->addRenderable(getSurface(pSurface.get())->impl());
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Image Chart::image(const uint pWidth, const uint pHeight,
                    const ChannelFormat pFormat, const dtype pDataType)
 {
-    Image retVal(pWidth, pHeight, pFormat, pDataType);
-    getChart(mValue)->addRenderable(getImage(retVal.get())->impl());
-    return retVal;
+    try {
+        Image retVal = Image(pWidth, pHeight, pFormat, pDataType);
+        getChart(mValue)->addRenderable(getImage(retVal.get())->impl());
+        return retVal;
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Histogram Chart::histogram(const uint pNBins, const dtype pDataType)
 {
-    common::Chart* chrt = getChart(mValue);
-    ChartType ctype = chrt->chartType();
+    try {
+        common::Chart* chrt = getChart(mValue);
+        ChartType ctype = chrt->chartType();
 
-    if (ctype == FG_CHART_2D) {
-        Histogram retVal(pNBins, pDataType);
+        // Histogram is allowed only in FG_CHART_2D
+        ARG_ASSERT(5, ctype == FG_CHART_2D);
+
+        Histogram retVal = Histogram(pNBins, pDataType);
         chrt->addRenderable(getHistogram(retVal.get())->impl());
         return retVal;
-    } else {
-        throw ArgumentError("Chart::render", __LINE__, 5,
-                "Can add histogram to a 2d chart only");
-    }
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Plot Chart::plot(const uint pNumPoints, const dtype pDataType,
                  const PlotType pPlotType, const MarkerType pMarkerType)
 {
-    common::Chart* chrt = getChart(mValue);
-    ChartType ctype = chrt->chartType();
+    try {
+        common::Chart* chrt = getChart(mValue);
+        ChartType ctype = chrt->chartType();
 
-    if (ctype == FG_CHART_2D) {
-        Plot retVal(pNumPoints, pDataType, FG_CHART_2D, pPlotType, pMarkerType);
-        chrt->addRenderable(getPlot(retVal.get())->impl());
-        return retVal;
-    } else {
-        Plot retVal(pNumPoints, pDataType, FG_CHART_3D, pPlotType, pMarkerType);
-        chrt->addRenderable(getPlot(retVal.get())->impl());
-        return retVal;
-    }
+        if (ctype == FG_CHART_2D) {
+            Plot retVal(pNumPoints, pDataType, FG_CHART_2D, pPlotType, pMarkerType);
+            chrt->addRenderable(getPlot(retVal.get())->impl());
+            return retVal;
+        } else {
+            Plot retVal(pNumPoints, pDataType, FG_CHART_3D, pPlotType, pMarkerType);
+            chrt->addRenderable(getPlot(retVal.get())->impl());
+            return retVal;
+        }
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 Surface Chart::surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
                        const PlotType pPlotType, const MarkerType pMarkerType)
 {
-    common::Chart* chrt = getChart(mValue);
-    ChartType ctype = chrt->chartType();
+    try {
+        common::Chart* chrt = getChart(mValue);
+        ChartType ctype = chrt->chartType();
 
-    if (ctype == FG_CHART_3D) {
+        // Surface is allowed only in FG_CHART_3D
+        ARG_ASSERT(5, ctype == FG_CHART_3D);
+
         Surface retVal(pNumXPoints, pNumYPoints, pDataType, pPlotType, pMarkerType);
         getChart(mValue)->addRenderable(getSurface(retVal.get())->impl());
         return retVal;
-    } else {
-        throw ArgumentError("Chart::render", __LINE__, 5,
-                "Can add surface plot to a 3d chart only");
-    }
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 VectorField Chart::vectorField(const uint pNumPoints, const dtype pDataType)
 {
-    common::Chart* chrt = getChart(mValue);
-    VectorField retVal(pNumPoints, pDataType, chrt->chartType());
-    chrt->addRenderable(getVectorField(retVal.get())->impl());
-    return retVal;
+    try {
+        common::Chart* chrt = getChart(mValue);
+        VectorField retVal(pNumPoints, pDataType, chrt->chartType());
+        chrt->addRenderable(getVectorField(retVal.get())->impl());
+        return retVal;
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 void Chart::render(const Window& pWindow,
                    const int pX, const int pY, const int pVPW, const int pVPH) const
 {
-    getChart(mValue)->render(getWindow(pWindow.get())->getID(),
-                             pX, pY, pVPW, pVPH,
-                             IDENTITY, IDENTITY);
+    try {
+        getChart(mValue)->render(getWindow(pWindow.get())->getID(),
+                                 pX, pY, pVPW, pVPH,
+                                 IDENTITY, IDENTITY);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 fg_chart Chart::get() const
 {
-    return getChart(mValue);
+    try {
+        return getChart(mValue);
+    } CATCH_INTERNAL_TO_EXTERNAL
 }
 
 }

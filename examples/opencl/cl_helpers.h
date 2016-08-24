@@ -14,7 +14,6 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
-#pragma GCC diagnostic ignored "-Wignored-attributes"
 #include <CL/cl2.hpp>
 #pragma GCC diagnostic pop
 

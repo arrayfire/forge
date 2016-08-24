@@ -23,15 +23,10 @@
         #define true  1
     #endif
 
-    #define __PRETTY_FUNCTION__ __FUNCSIG__
-    #if _MSC_VER < 1900
-        #define snprintf sprintf_s
-    #endif
     #define FG_STATIC_ static
 #else
     #define FGAPI   __attribute__((visibility("default")))
     #include <stdbool.h>
-    #define __PRETTY_FUNCTION__ __func__
     #define FG_STATIC_
 #endif
 

@@ -31,14 +31,13 @@ class Chart {
     public:
         Chart(const forge::ChartType cType)
             : mChartType(cType) {
+
+            ARG_ASSERT(0, cType == FG_CHART_2D || cType == FG_CHART_3D);
+
             if (cType == FG_CHART_2D) {
                 mChart = std::make_shared<detail::chart2d_impl>();
             } else if (cType == FG_CHART_3D) {
                 mChart = std::make_shared<detail::chart3d_impl>();
-            } else {
-                throw forge::ArgumentError("Chart::Chart",
-                                        __LINE__, 0,
-                                        "Invalid chart type");
             }
         }
 

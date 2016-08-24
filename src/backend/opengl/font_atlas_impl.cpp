@@ -73,8 +73,8 @@ int FontAtlas::fit(const size_t pIndex, const size_t pWidth, const size_t pHeigh
     int widthLeft = pWidth;
     int i = pIndex;
 
-	if ((x + pWidth) > (mWidth-1)) {
-		return -1;
+    if ((x + pWidth) > (mWidth-1)) {
+        return -1;
     }
 
     y = node.y;
@@ -84,7 +84,7 @@ int FontAtlas::fit(const size_t pIndex, const size_t pWidth, const size_t pHeigh
         if (node.y > y) {
             y = node.y;
         }
-		if ((y + pHeight) > (mHeight-1)) {
+        if ((y + pHeight) > (mHeight-1)) {
             return -1;
         }
         widthLeft -= node.z;
@@ -95,15 +95,15 @@ int FontAtlas::fit(const size_t pIndex, const size_t pWidth, const size_t pHeigh
 
 void FontAtlas::merge()
 {
-	for (size_t i=0; i< nodes.size()-1; ++i) {
+    for (size_t i=0; i< nodes.size()-1; ++i) {
         glm::vec3& node = nodes[i];
         auto next = nodes[i+1];
 
-		if (node.y == next.y) {
-			node.z += next.z;
+        if (node.y == next.y) {
+            node.z += next.z;
             nodes.erase(nodes.begin()+(i+1));
-			--i;
-		}
+            --i;
+        }
     }
 }
 
@@ -112,7 +112,7 @@ FontAtlas::FontAtlas(const size_t pWidth, const size_t pHeight, const size_t pDe
 {
     CheckGL("Begin FontAtlas::FontAtlas");
     if (!((pDepth == 1) || (pDepth == 3) || (pDepth == 4))) {
-        throw forge::Error("Font Atlas", __LINE__, "Invalid depth argument", FG_ERR_INTERNAL);
+        FG_ERROR("Font Atlas: Invalid depth argument", FG_ERR_INTERNAL);
     }
 
     glGenTextures(1, &mId);
@@ -164,25 +164,25 @@ glm::vec4 FontAtlas::getRegion(const size_t pWidth, const size_t pHeight)
     size_t best_width = INT_MAX;
     int y;
 
-	for(size_t i=0; i<nodes.size(); ++i)
-	{
+    for(size_t i=0; i<nodes.size(); ++i)
+    {
         y = fit(i, pWidth, pHeight);
 
-		if (y >= 0) {
+        if (y >= 0) {
             auto node = nodes[i];
-			if ( ((y + pHeight) < best_height) ||
+            if ( ((y + pHeight) < best_height) ||
                  (((y + pHeight) == best_height) && (node.z < best_width)) )
             {
-				best_height = y + pHeight;
-				best_index  = i;
-				best_width  = node.z;
-				region.x    = node.x;
-				region.y    = y;
-			}
+                best_height = y + pHeight;
+                best_index  = i;
+                best_width  = node.z;
+                region.x    = node.x;
+                region.y    = y;
+            }
         }
     }
 
-	if (best_index == -1) {
+    if (best_index == -1) {
         region.x = -1;
         region.y = -1;
         region.z = 0;

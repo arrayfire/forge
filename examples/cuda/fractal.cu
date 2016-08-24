@@ -48,7 +48,7 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-	FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, TOT_SIZE));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, TOT_SIZE));
     kernel(dev_out);
 
     // copy the data from compute buffer to graphics buffer

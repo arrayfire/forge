@@ -60,7 +60,7 @@ namespace opengl
 #ifdef NDEBUG
 /* Relase Mode */
 #define FT_THROW_ERROR(msg, error) \
-    throw forge::Error("Freetype library", __LINE__, msg, error);
+    FG_ERROR(msg, error)
 
 #else
 /* Debug Mode */
@@ -68,9 +68,10 @@ namespace opengl
     do {                                                                    \
         std::ostringstream ss;                                              \
         ss << "FT_Error (0x"<< std::hex << FT_Errors[err].code <<") : "     \
-           << FT_Errors[err].message << std::endl;                          \
-        throw forge::Error(ss.str().c_str(), __LINE__, msg, err);              \
-    } while(0);
+           << FT_Errors[err].message << std::endl                           \
+           << msg << std::endl;                                             \
+        FG_ERROR(ss.str().c_str(), err);
+    } while(0)
 
 #endif
 
@@ -333,16 +334,12 @@ void font_impl::loadSystemFont(const char* const pName)
     // use fontconfig to get the file
     FcConfig* config = FcInitLoadConfigAndFonts();
     if (!config) {
-        throw forge::Error("Fontconfig init failed",
-                        __LINE__, __PRETTY_FUNCTION__,
-                        FG_ERR_FONTCONFIG_ERROR);
+        FG_ERROR("Fontconfig init failed", FG_ERR_FONTCONFIG_ERROR);
     }
     // configure the search pattern,
     FcPattern* pat = FcNameParse((const FcChar8*)(pName));
     if (!pat) {
-        throw forge::Error("Fontconfig name parse failed",
-                        __LINE__, __PRETTY_FUNCTION__,
-                        FG_ERR_FONTCONFIG_ERROR);
+        FG_ERROR("Fontconfig name parse failed", FG_ERR_FONTCONFIG_ERROR);
     }
 
     FcConfigSubstitute(config, pat, FcMatchPattern);

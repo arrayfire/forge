@@ -348,10 +348,7 @@ void window_impl::swapBuffers()
 
 void window_impl::saveFrameBuffer(const char* pFullPath)
 {
-    if (!pFullPath) {
-        throw forge::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
-                                "Empty path string");
-    }
+    ARG_ASSERT(0, pFullPath != NULL);
 
     FI_Init();
 
@@ -366,13 +363,11 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
         format = FreeImage_GetFIFFromFilename(pFullPath);
     }
     if (format == FIF_UNKNOWN) {
-        throw forge::Error("window_impl::saveFrameBuffer", __LINE__,
-                        "Freeimage: unrecognized image format", FG_ERR_FREEIMAGE_UNKNOWN_FORMAT);
+        FG_ERROR("Freeimage: unrecognized image format", FG_ERR_FREEIMAGE_UNKNOWN_FORMAT);
     }
 
     if (!(format==FIF_BMP || format==FIF_PNG)) {
-        throw forge::ArgumentError("window_impl::saveFrameBuffer", __LINE__, 1,
-                                "Supports only bmp and png as of now");
+        FG_ERROR("Supports only bmp and png as of now", FG_ERR_FREEIMAGE_SAVE_FAILED);
     }
 
     uint w = mWindow->mWidth;
@@ -382,8 +377,7 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
 
     FIBITMAP* bmp = FreeImage_Allocate(w, h, d);
     if (!bmp) {
-        throw forge::Error("window_impl::saveFrameBuffer", __LINE__,
-                        "Freeimage: allocation failed", FG_ERR_FREEIMAGE_BAD_ALLOC);
+        FG_ERROR("Freeimage: allocation failed", FG_ERR_FREEIMAGE_BAD_ALLOC);
     }
 
     FI_BitmapResource bmpUnloader(bmp);
@@ -426,6 +420,7 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
         flags = flags | JPEG_QUALITYSUPERB;
 
     if (!(FreeImage_Save(format,bmp, pFullPath, flags) == TRUE)) {
+        FG_ERROR("FreeImage Save Failed", FG_ERR_FREEIMAGE_SAVE_FAILED);
     }
 }
 

@@ -157,7 +157,7 @@ plot_impl::plot_impl(const uint pNumPoints, const forge::dtype pDataType,
             case GL_SHORT          : PLOT_CREATE_BUFFERS(short) ; break;
             case GL_UNSIGNED_SHORT : PLOT_CREATE_BUFFERS(ushort); break;
             case GL_UNSIGNED_BYTE  : PLOT_CREATE_BUFFERS(float) ; break;
-            default: forge::TypeError("plot_impl::plot_impl", __LINE__, 1, mDataType);
+            default: TYPE_ERROR(1, mDataType);
         }
 #undef PLOT_CREATE_BUFFERS
     CheckGL("End plot_impl::plot_impl");

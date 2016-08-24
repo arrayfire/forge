@@ -111,7 +111,7 @@ histogram_impl::histogram_impl(const uint pNBins, const forge::dtype pDataType)
         case GL_SHORT          : HIST_CREATE_BUFFERS(short) ; break;
         case GL_UNSIGNED_SHORT : HIST_CREATE_BUFFERS(ushort); break;
         case GL_UNSIGNED_BYTE  : HIST_CREATE_BUFFERS(float) ; break;
-        default: forge::TypeError("histogram_impl::histogram_impl", __LINE__, 1, mDataType);
+        default: TYPE_ERROR(1, mDataType);
     }
 #undef HIST_CREATE_BUFFERS
 
