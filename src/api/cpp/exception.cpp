@@ -8,6 +8,7 @@
  ********************************************************/
 
 #include <fg/exception.h>
+#include <err_common.hpp>
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -21,7 +22,7 @@ using std::cerr;
 void stringcopy(char* dest, const char* src, size_t len)
 {
 #ifdef OS_WIN
-    strncpy_s(dest, MAX_ERR_STR_LEN, src, len);
+    strncpy_s(dest, MAX_ERR_SIZE, src, len);
 #else
     strncpy(dest, src, len);
 #endif

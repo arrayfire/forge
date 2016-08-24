@@ -233,9 +233,7 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
    StringCchLength(pDir.c_str(), MAX_PATH, &length_of_arg);
 
    if (length_of_arg > (MAX_PATH - 3)) {
-       throw forge::Error("getImageFilePaths", __LINE__,
-           "WIN API call: Directory path is too long",
-           FG_ERR_FILE_NOT_FOUND);
+        FG_ERROR("WIN API call: Directory path is too long", FG_ERR_FILE_NOT_FOUND);
    }
 
    //printf("\nTarget directory is %s\n\n", pDir.c_str());
@@ -248,9 +246,7 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
    // Find the first file in the directory.
    hFind = FindFirstFile(szDir, &ffd);
    if (INVALID_HANDLE_VALUE == hFind) {
-       throw forge::Error("getImageFilePaths", __LINE__,
-           "WIN API call: file fetch in DIR failed",
-           FG_ERR_FILE_NOT_FOUND);
+       FG_ERROR("WIN API call: file fetch in DIR failed", FG_ERR_FILE_NOT_FOUND);
    }
 
    // List all the files in the directory with some info about them.
@@ -268,9 +264,7 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
 
    dwError = GetLastError();
    if (dwError != ERROR_NO_MORE_FILES) {
-       throw forge::Error("getImageFilePaths", __LINE__,
-           "WIN API call: files fetch returned no files",
-           FG_ERR_FILE_NOT_FOUND);
+        FG_ERROR("WIN API call: files fetch returned no files", FG_ERR_FILE_NOT_FOUND);
    }
 
    FindClose(hFind);

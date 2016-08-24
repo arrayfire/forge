@@ -12,6 +12,7 @@
 #include <err_common.hpp>
 
 #include <string>
+#include <algorithm>
 
 const char * fg_err_to_string(const fg_err err)
 {

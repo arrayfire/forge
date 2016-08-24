@@ -70,7 +70,7 @@ namespace opengl
         ss << "FT_Error (0x"<< std::hex << FT_Errors[err].code <<") : "     \
            << FT_Errors[err].message << std::endl                           \
            << msg << std::endl;                                             \
-        FG_ERROR(ss.str().c_str(), err);
+        FG_ERROR(ss.str().c_str(), err);                                    \
     } while(0)
 
 #endif
