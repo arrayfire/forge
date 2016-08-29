@@ -45,24 +45,6 @@ void generateColors(std::vector<float>& colors)
     }
 }
 
-void moveColors(std::vector<float>& colors)
-{
-    int end = colors.size()-3;
-    float r = colors[end+2];
-    float g = colors[end+1];
-    float b = colors[end];
-
-    for (int i=0; i<end; i+=3) {
-        colors[i] = r;
-        colors[i+1] = g;
-        colors[i+2] = b;
-
-        r = colors[i+3];
-        g = colors[i+4];
-        b = colors[i+5];
-    }
-}
-
 void generatePoints(std::vector<float> &points, std::vector<float> &dirs)
 {
     points.clear();
@@ -120,8 +102,6 @@ int main(void)
     copyToGLBuffer(handles[2], (ComputeResourceHandle)dirs.data()  , field.directionsSize());
 
     do {
-        moveColors(colors);
-        copyToGLBuffer(handles[1], (ComputeResourceHandle)colors.data(), field.colorsSize());
         wnd.draw(chart);
     } while(!wnd.close());
 
