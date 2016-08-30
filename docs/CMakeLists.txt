@@ -19,6 +19,37 @@ SET(SNIPPETS_DIR "${PROJECT_SOURCE_DIR}/test")
 CONFIGURE_FILE(${FG_DOCS_CONFIG} ${FG_DOCS_CONFIG_OUT})
 CONFIGURE_FILE(${FG_DOCS_LAYOUT} ${FG_DOCS_LAYOUT_OUT})
 
+###########################################################
+## This generates a list of the examples cpp files and
+## creates a dox file under docs/details/examples.dox
+## This is used to generate documentation for examples
+###########################################################
+FILE(GLOB EXAMPLES_CPP
+    "${EXAMPLES_DIR}/cpu/*.cpp"
+    "${EXAMPLES_DIR}/cuda/*.cu"
+    "${EXAMPLES_DIR}/opencl/*.cpp"
+    "${EXAMPLES_DIR}/opencl/*.h"
+    )
+
+# Sort alphabetically
+# Note: example directories will be major sort order
+LIST(SORT EXAMPLES_CPP)
+
+# Get filenames and write to a string
+FOREACH(SRC ${EXAMPLES_CPP})
+    GET_FILENAME_COMPONENT(DIR_PATH ${SRC} DIRECTORY)
+    GET_FILENAME_COMPONENT(DIR_NAME ${DIR_PATH} NAME)
+    GET_FILENAME_COMPONENT(SRC_NAME ${SRC} NAME)
+    SET(EXAMPLES_LIST "${EXAMPLES_LIST}\\example ${DIR_NAME}/${SRC_NAME}\n")
+ENDFOREACH(SRC ${EXAMPLES_CPP})
+
+# Write string containing file names to examples.dox
+CONFIGURE_FILE(
+    ${PROJECT_SOURCE_DIR}/CMakeModules/examples.dox.in
+    ${DOCS_DIR}/details/examples.dox
+)
+###########################################################
+
 ADD_CUSTOM_TARGET(docs
     ALL
     COMMAND ${DOXYGEN_EXECUTABLE} ${FG_DOCS_CONFIG_OUT}
@@ -32,6 +63,7 @@ INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html
     DESTINATION ${FG_INSTALL_DOC_DIR}
     COMPONENT documentation
     PATTERN "*"
+    PATTERN ".git" EXCLUDE
     PATTERN "CMakeFiles" EXCLUDE
     PATTERN "man" EXCLUDE
     )
