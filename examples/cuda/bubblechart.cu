@@ -92,7 +92,7 @@ int main(void)
 
     GfxHandle* handles[5];
 
-    // create GL-CPU interop buffers
+    // create GL-CUDA interop buffers
     createGLBuffer(&handles[0], plt1.vertices(), FORGE_VBO);
     createGLBuffer(&handles[1], plt2.vertices(), FORGE_VBO);
     createGLBuffer(&handles[2], plt2.colors(), FORGE_VBO);
@@ -117,7 +117,7 @@ int main(void)
         wnd.draw(chart);
     } while(!wnd.close());
 
-    // destroy GL-CPU Interop buffer
+    // destroy GL-CUDA Interop buffer
     releaseGLBuffer(handles[0]);
     releaseGLBuffer(handles[1]);
     releaseGLBuffer(handles[2]);
