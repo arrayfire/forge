@@ -134,10 +134,10 @@ int main(void)
 }
 
 __global__
-void mapKernel(float* out, int functionCode)
+void mapKernel(float* out, int functionCode, float frange_start, float dx)
 {
     int id = blockIdx.x * blockDim.x  + threadIdx.x;
-    float x = FRANGE_START + id*DX;
+    float x = frange_start + id*dx;
     float y;
 
     switch(functionCode) {
@@ -173,7 +173,7 @@ void kernel(float* dev_out, int functionCode,
     static const dim3 threads(32);
     dim3 blocks(divup(DATA_SIZE, 32));
 
-    mapKernel<<< blocks, threads >>>(dev_out, functionCode);
+    mapKernel<<< blocks, threads >>>(dev_out, functionCode, FRANGE_START, DX);
 
     if (colors)
         colorsKernel<<< blocks, threads >>>(colors, state);

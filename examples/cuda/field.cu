@@ -90,16 +90,16 @@ int main(void)
 }
 
 __global__
-void pointGenKernel(float* points, float* dirs)
+void pointGenKernel(float* points, float* dirs, int nelems, float minimum, float step)
 {
     int i = blockDim.x * blockIdx.x + threadIdx.x;
     int j = blockDim.y * blockIdx.y + threadIdx.y;
 
-    if (i<NELEMS && j<NELEMS) {
-        int id  = i + j * NELEMS;
+    if (i<nelems && j<nelems) {
+        int id  = i + j * nelems;
 
-        float x = MINIMUM + i*STEP;
-        float y = MINIMUM + j*STEP;
+        float x = minimum + i*step;
+        float y = minimum + j*step;
 
         points[2*id+0] = x;
         points[2*id+1] = y;
@@ -115,5 +115,5 @@ void generatePoints(float* points, float* dirs)
     dim3 blocks(divup(NELEMS, threads.x),
                 divup(NELEMS, threads.y));
 
-    pointGenKernel<<<blocks, threads>>>(points, dirs);
+    pointGenKernel<<<blocks, threads>>>(points, dirs, NELEMS, MINIMUM, STEP);
 }

@@ -84,12 +84,10 @@ int main(void)
 }
 
 __global__
-void genColorsKernel(float* colors)
+void genColorsKernel(float* colors, int nelems)
 {
     const float AF_BLUE[4] = {0.0588f , 0.1137f , 0.2745f , 1.0f};
     const float AF_ORANGE[4] = {0.8588f , 0.6137f , 0.0745f , 1.0f};
-
-    const size_t nelems = NELEMS * NELEMS * NELEMS;
 
     int i = blockDim.x * blockIdx.x + threadIdx.x;
 
@@ -112,22 +110,22 @@ void generateColors(float* colors)
     static const dim3 threads(512);
     dim3 blocks(divup(numElems, threads.x));
 
-    genColorsKernel<<<blocks, threads>>>(colors);
+    genColorsKernel<<<blocks, threads>>>(colors, numElems);
 }
 
 __global__
-void pointGenKernel(float* points, float* dirs, int nBBS0)
+void pointGenKernel(float* points, float* dirs, int nBBS0, int nelems, float minimum, float step)
 {
     int k = blockIdx.x / nBBS0;
     int i = blockDim.x * (blockIdx.x-k*nBBS0) + threadIdx.x;
     int j = blockDim.y * blockIdx.y + threadIdx.y;
 
-    if (i<NELEMS && j<NELEMS && k<NELEMS) {
-        float x = MINIMUM + i*STEP;
-        float y = MINIMUM + j*STEP;
-        float z = MINIMUM + k*STEP;
+    if (i<nelems && j<nelems && k<nelems) {
+        float x = minimum + i*step;
+        float y = minimum + j*step;
+        float z = minimum + k*step;
 
-        int id = i + j * NELEMS + k * NELEMS*NELEMS;
+        int id = i + j * nelems + k * nelems*nelems;
 
         points[3*id+0] = x;
         points[3*id+1] = y;
@@ -148,5 +146,5 @@ void generatePoints(float* points, float* dirs)
 
     dim3 blocks(blk_x*NELEMS, blk_y);
 
-    pointGenKernel<<<blocks, threads>>>(points, dirs, blk_x);
+    pointGenKernel<<<blocks, threads>>>(points, dirs, blk_x, NELEMS, MINIMUM, STEP);
 }
