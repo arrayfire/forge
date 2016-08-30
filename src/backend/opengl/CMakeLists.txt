@@ -11,7 +11,6 @@ IF(USE_SYSTEM_GLBINDING)
     # This file is generally at CMAKE_INSTALL_PREFIX/glbinding-config.cmake of
     # the glbinding project
     FIND_PACKAGE(glbinding REQUIRED)
-    MESSAGE("GLB ${GLBINDING_LIBRARY_RELEASE}")
 ELSE(USE_SYSTEM_GLBINDING)
     INCLUDE(build_glbinding)
 ENDIF(USE_SYSTEM_GLBINDING)
