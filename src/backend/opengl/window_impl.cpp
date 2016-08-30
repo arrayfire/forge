@@ -85,6 +85,7 @@ void MakeContextCurrent(const window_impl* pWindow)
 {
     if (pWindow != NULL) {
         pWindow->get()->makeContextCurrent();
+        glbinding::Binding::useCurrentContext();
     }
 }
 
