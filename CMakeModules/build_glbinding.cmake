@@ -1,6 +1,6 @@
 INCLUDE(ExternalProject)
 
-SET(prefix ${CMAKE_BINARY_DIR}/third_party/glb)
+SET(prefix ${PROJECT_BINARY_DIR}/third_party/glb)
 
 SET(LIB_POSTFIX "")
 IF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")

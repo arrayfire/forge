@@ -34,14 +34,24 @@ SET(FG_COMPILER_STRING "${COMPILER_NAME} ${COMPILER_VERSION}")
 
 EXECUTE_PROCESS(
     COMMAND git log -1 --format=%h
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_COMMIT_HASH
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
+IF(NOT GIT_COMMIT_HASH)
+    MESSAGE(STATUS "No git. Setting hash to default")
+    SET(GIT_COMMIT_HASH "default")
+ENDIF()
+
 CONFIGURE_FILE(
-    ${CMAKE_MODULE_PATH}/version.h.in
-    ${CMAKE_SOURCE_DIR}/include/fg/version.h
+    ${PROJECT_SOURCE_DIR}/CMakeModules/version.h.in
+    ${PROJECT_SOURCE_DIR}/include/fg/version.h
+)
+
+CONFIGURE_FILE(
+    ${PROJECT_SOURCE_DIR}/CMakeModules/version.hpp.in
+    ${PROJECT_SOURCE_DIR}/src/backend/version.hpp
 )
 
 CMAKE_POLICY(POP)
