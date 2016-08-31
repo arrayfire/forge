@@ -83,7 +83,7 @@ fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const floa
 }
 
 fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
-                             const uint pWidth, const uint pHeight,
+                             const unsigned pWidth, const unsigned pHeight,
                              const fg_channel_format pFormat,
                              const fg_dtype pType)
 {
@@ -98,7 +98,7 @@ fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
 }
 
 fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
-                                 const uint pNBins, const fg_dtype pType)
+                                 const unsigned pNBins, const fg_dtype pType)
 {
     try {
         common::Chart* chrt = getChart(pHandle);
@@ -116,7 +116,7 @@ fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
 }
 
 fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
-                            const uint pNPoints, const fg_dtype pType,
+                            const unsigned pNPoints, const fg_dtype pType,
                             const fg_plot_type pPlotType, const fg_marker_type pMarkerType)
 {
     try {
@@ -141,7 +141,7 @@ fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
 }
 
 fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
-                               const uint pXPoints, const uint pYPoints, const fg_dtype pType,
+                               const unsigned pXPoints, const unsigned pYPoints, const fg_dtype pType,
                                const fg_plot_type pPlotType, const fg_marker_type pMarkerType)
 {
     try {
@@ -161,7 +161,7 @@ fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
 }
 
 fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
-                                    const uint pNPoints, const fg_dtype pType)
+                                    const unsigned pNPoints, const fg_dtype pType)
 {
     try {
         common::Chart* chrt = getChart(pHandle);

@@ -15,7 +15,7 @@
 using namespace forge;
 
 fg_err fg_create_histogram(fg_histogram *pHistogram,
-        const uint pNBins, const fg_dtype pType)
+        const unsigned pNBins, const fg_dtype pType)
 {
     try {
         *pHistogram = getHandle(new common::Histogram(pNBins, (forge::dtype)pType));
@@ -57,7 +57,7 @@ fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegend)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_vbo(uint* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_vbo(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = getHistogram(pHistogram)->vbo();
@@ -67,7 +67,7 @@ fg_err fg_get_histogram_vbo(uint* pOut, const fg_histogram pHistogram)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_cbo(uint* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_cbo(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = getHistogram(pHistogram)->cbo();
@@ -77,7 +77,7 @@ fg_err fg_get_histogram_cbo(uint* pOut, const fg_histogram pHistogram)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_abo(uint* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_abo(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = getHistogram(pHistogram)->abo();
@@ -87,30 +87,30 @@ fg_err fg_get_histogram_abo(uint* pOut, const fg_histogram pHistogram)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_vbo_size(uint* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_vbo_size(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
-        *pOut = (uint)getHistogram(pHistogram)->vboSize();
+        *pOut = (unsigned)getHistogram(pHistogram)->vboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_cbo_size(uint* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_cbo_size(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
-        *pOut = (uint)getHistogram(pHistogram)->cboSize();
+        *pOut = (unsigned)getHistogram(pHistogram)->cboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_abo_size(uint* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_abo_size(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
-        *pOut = (uint)getHistogram(pHistogram)->aboSize();
+        *pOut = (unsigned)getHistogram(pHistogram)->aboSize();
     }
     CATCHALL
 

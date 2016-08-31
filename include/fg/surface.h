@@ -35,7 +35,7 @@ extern "C" {
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_create_surface(fg_surface *pSurface,
-                            const uint pXPoints, const uint pYPoints,
+                            const unsigned pXPoints, const unsigned pYPoints,
                             const fg_dtype pType,
                             const fg_plot_type pPlotType,
                             const fg_marker_type pMarkerType);
@@ -82,7 +82,7 @@ FGAPI fg_err fg_set_surface_legend(fg_surface pSurface, const char* pLegend);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_surface_vbo(uint* pOut, const fg_surface pSurface);
+FGAPI fg_err fg_get_surface_vbo(unsigned* pOut, const fg_surface pSurface);
 
 /**
    Get the resource identifier for colors buffer
@@ -92,7 +92,7 @@ FGAPI fg_err fg_get_surface_vbo(uint* pOut, const fg_surface pSurface);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_surface_cbo(uint* pOut, const fg_surface pSurface);
+FGAPI fg_err fg_get_surface_cbo(unsigned* pOut, const fg_surface pSurface);
 
 /**
    Get the resource identifier for alpha values buffer
@@ -102,7 +102,7 @@ FGAPI fg_err fg_get_surface_cbo(uint* pOut, const fg_surface pSurface);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_surface_abo(uint* pOut, const fg_surface pSurface);
+FGAPI fg_err fg_get_surface_abo(unsigned* pOut, const fg_surface pSurface);
 
 /**
    Get the vertices buffer size in bytes
@@ -112,7 +112,7 @@ FGAPI fg_err fg_get_surface_abo(uint* pOut, const fg_surface pSurface);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_surface_vbo_size(uint* pOut, const fg_surface pSurface);
+FGAPI fg_err fg_get_surface_vbo_size(unsigned* pOut, const fg_surface pSurface);
 
 /**
    Get the colors buffer size in bytes
@@ -122,7 +122,7 @@ FGAPI fg_err fg_get_surface_vbo_size(uint* pOut, const fg_surface pSurface);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_surface_cbo_size(uint* pOut, const fg_surface pSurface);
+FGAPI fg_err fg_get_surface_cbo_size(unsigned* pOut, const fg_surface pSurface);
 
 /**
    Get the alpha values buffer size in bytes
@@ -132,7 +132,7 @@ FGAPI fg_err fg_get_surface_cbo_size(uint* pOut, const fg_surface pSurface);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_surface_abo_size(uint* pOut, const fg_surface pSurface);
+FGAPI fg_err fg_get_surface_abo_size(unsigned* pOut, const fg_surface pSurface);
 
 /** @} */
 
@@ -166,7 +166,7 @@ class Surface {
                       are FG_PLOT_SURFACE and FG_PLOT_SCATTER)
            \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_PLOT_SCATTER plot type
          */
-        FGAPI Surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
+        FGAPI Surface(const unsigned pNumXPoints, const unsigned pNumYPoints, const dtype pDataType,
                       const PlotType pPlotType=FG_PLOT_SURFACE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
@@ -211,42 +211,42 @@ class Surface {
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint vertices() const;
+        FGAPI unsigned vertices() const;
 
         /**
            Get the OpenGL buffer object identifier for color values per vertex
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint colors() const;
+        FGAPI unsigned colors() const;
 
         /**
            Get the OpenGL buffer object identifier for alpha values per vertex
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint alphas() const;
+        FGAPI unsigned alphas() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
            \return vertex buffer object size in bytes
          */
-        FGAPI uint verticesSize() const;
+        FGAPI unsigned verticesSize() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
            \return colors buffer object size in bytes
          */
-        FGAPI uint colorsSize() const;
+        FGAPI unsigned colorsSize() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
            \return alpha buffer object size in bytes
          */
-        FGAPI uint alphasSize() const;
+        FGAPI unsigned alphasSize() const;
 
         /**
            Get the handle to internal implementation of surface

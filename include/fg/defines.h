@@ -46,10 +46,6 @@ typedef void* fg_plot;
 typedef void* fg_surface;
 typedef void* fg_vector_field;
 
-typedef unsigned int    uint;
-typedef unsigned short  ushort;
-typedef unsigned char   uchar;
-
 typedef enum {
     FG_ERR_NONE           = 0,              ///< Fuction returned successfully.
     /*

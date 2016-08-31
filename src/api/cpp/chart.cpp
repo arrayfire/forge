@@ -97,7 +97,7 @@ void Chart::add(const Surface& pSurface)
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-Image Chart::image(const uint pWidth, const uint pHeight,
+Image Chart::image(const unsigned pWidth, const unsigned pHeight,
                    const ChannelFormat pFormat, const dtype pDataType)
 {
     try {
@@ -107,7 +107,7 @@ Image Chart::image(const uint pWidth, const uint pHeight,
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-Histogram Chart::histogram(const uint pNBins, const dtype pDataType)
+Histogram Chart::histogram(const unsigned pNBins, const dtype pDataType)
 {
     try {
         common::Chart* chrt = getChart(mValue);
@@ -122,7 +122,7 @@ Histogram Chart::histogram(const uint pNBins, const dtype pDataType)
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-Plot Chart::plot(const uint pNumPoints, const dtype pDataType,
+Plot Chart::plot(const unsigned pNumPoints, const dtype pDataType,
                  const PlotType pPlotType, const MarkerType pMarkerType)
 {
     try {
@@ -141,7 +141,7 @@ Plot Chart::plot(const uint pNumPoints, const dtype pDataType,
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-Surface Chart::surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
+Surface Chart::surface(const unsigned pNumXPoints, const unsigned pNumYPoints, const dtype pDataType,
                        const PlotType pPlotType, const MarkerType pMarkerType)
 {
     try {
@@ -157,7 +157,7 @@ Surface Chart::surface(const uint pNumXPoints, const uint pNumYPoints, const dty
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-VectorField Chart::vectorField(const uint pNumPoints, const dtype pDataType)
+VectorField Chart::vectorField(const unsigned pNumPoints, const dtype pDataType)
 {
     try {
         common::Chart* chrt = getChart(mValue);

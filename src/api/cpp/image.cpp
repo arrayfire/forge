@@ -20,7 +20,7 @@
 namespace forge
 {
 
-Image::Image(const uint pWidth, const uint pHeight,
+Image::Image(const unsigned pWidth, const unsigned pHeight,
              const ChannelFormat pFormat, const dtype pDataType)
 {
     try {
@@ -54,14 +54,14 @@ void Image::keepAspectRatio(const bool pKeep)
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Image::width() const
+unsigned Image::width() const
 {
     try {
         return getImage(mValue)->width();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Image::height() const
+unsigned Image::height() const
 {
     try {
         return getImage(mValue)->height();
@@ -82,17 +82,17 @@ forge::dtype Image::channelType() const
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Image::pbo() const
+unsigned Image::pbo() const
 {
     try {
         return getImage(mValue)->pbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Image::size() const
+unsigned Image::size() const
 {
     try {
-        return (uint)getImage(mValue)->size();
+        return (unsigned)getImage(mValue)->size();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 

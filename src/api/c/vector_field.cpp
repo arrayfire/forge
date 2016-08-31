@@ -15,7 +15,7 @@
 using namespace forge;
 
 fg_err fg_create_vector_field(fg_vector_field *pField,
-                              const uint pNPoints,
+                              const unsigned pNPoints,
                               const fg_dtype pType,
                               const fg_chart_type pChartType)
 {
@@ -59,7 +59,7 @@ fg_err fg_set_vector_field_legend(fg_vector_field pField, const char* pLegend)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_vbo(uint* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_vbo(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = getVectorField(pField)->vbo();
@@ -69,7 +69,7 @@ fg_err fg_get_vector_field_vbo(uint* pOut, const fg_vector_field pField)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_cbo(uint* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_cbo(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = getVectorField(pField)->cbo();
@@ -79,7 +79,7 @@ fg_err fg_get_vector_field_cbo(uint* pOut, const fg_vector_field pField)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_abo(uint* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_abo(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = getVectorField(pField)->abo();
@@ -89,7 +89,7 @@ fg_err fg_get_vector_field_abo(uint* pOut, const fg_vector_field pField)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_dbo(uint* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_dbo(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = getVectorField(pField)->dbo();
@@ -99,40 +99,40 @@ fg_err fg_get_vector_field_dbo(uint* pOut, const fg_vector_field pField)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_vbo_size(uint* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_vbo_size(unsigned* pOut, const fg_vector_field pField)
 {
     try {
-        *pOut = (uint)getVectorField(pField)->vboSize();
+        *pOut = (unsigned)getVectorField(pField)->vboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_cbo_size(uint* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_cbo_size(unsigned* pOut, const fg_vector_field pField)
 {
     try {
-        *pOut = (uint)getVectorField(pField)->cboSize();
+        *pOut = (unsigned)getVectorField(pField)->cboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_abo_size(uint* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_abo_size(unsigned* pOut, const fg_vector_field pField)
 {
     try {
-        *pOut = (uint)getVectorField(pField)->aboSize();
+        *pOut = (unsigned)getVectorField(pField)->aboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_dbo_size(uint* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_dbo_size(unsigned* pOut, const fg_vector_field pField)
 {
     try {
-        *pOut = (uint)getVectorField(pField)->dboSize();
+        *pOut = (unsigned)getVectorField(pField)->dboSize();
     }
     CATCHALL
 

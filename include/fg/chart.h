@@ -107,7 +107,7 @@ FGAPI fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, cons
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
-                                   const uint pWidth, const uint pHeight,
+                                   const unsigned pWidth, const unsigned pHeight,
                                    const fg_channel_format pFormat,
                                    const fg_dtype pType);
 
@@ -123,7 +123,7 @@ FGAPI fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
-                                       const uint pNBins, const fg_dtype pType);
+                                       const unsigned pNBins, const fg_dtype pType);
 
 /**
    Create and add an Plot object to the current chart
@@ -141,7 +141,7 @@ FGAPI fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandl
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
-                                  const uint pNPoints, const fg_dtype pType,
+                                  const unsigned pNPoints, const fg_dtype pType,
                                   const fg_plot_type pPlotType, const fg_marker_type pMarkerType);
 
 /**
@@ -160,7 +160,7 @@ FGAPI fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
-                                     const uint pXPoints, const uint pYPoints, const fg_dtype pType,
+                                     const unsigned pXPoints, const unsigned pYPoints, const fg_dtype pType,
                                      const fg_plot_type pPlotType, const fg_marker_type pMarkerType);
 
 /**
@@ -174,7 +174,7 @@ FGAPI fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
-                                          const uint pNPoints, const fg_dtype pType);
+                                          const unsigned pNPoints, const fg_dtype pType);
 
 /**
    Render the chart to given window
@@ -309,7 +309,7 @@ class Chart {
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Image image(const uint pWidth, const uint pHeight,
+        FGAPI Image image(const unsigned pWidth, const unsigned pHeight,
                           const ChannelFormat pFormat=FG_RGBA, const dtype pDataType=f32);
 
         /**
@@ -319,7 +319,7 @@ class Chart {
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Histogram histogram(const uint pNBins, const dtype pDataType);
+        FGAPI Histogram histogram(const unsigned pNBins, const dtype pDataType);
 
         /**
            Create and add an Plot object to the current chart
@@ -332,7 +332,7 @@ class Chart {
            \param[in] pMarkerType indicates which symbol is rendered as marker. It can take one of
                       the values of \ref MarkerType.
          */
-        FGAPI Plot plot(const uint pNumPoints, const dtype pDataType,
+        FGAPI Plot plot(const unsigned pNumPoints, const dtype pDataType,
                         const PlotType pPlotType=FG_PLOT_LINE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
@@ -346,7 +346,7 @@ class Chart {
                       are FG_PLOT_SURFACE and FG_PLOT_SCATTER)
            \param[in] pMarkerType is the type of \ref MarkerType to draw for \ref FG_PLOT_SCATTER plot type
          */
-        FGAPI Surface surface(const uint pNumXPoints, const uint pNumYPoints, const dtype pDataType,
+        FGAPI Surface surface(const unsigned pNumXPoints, const unsigned pNumYPoints, const dtype pDataType,
                               const PlotType pPlotType=FG_PLOT_SURFACE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
@@ -356,7 +356,7 @@ class Chart {
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of vector field data
          */
-        FGAPI VectorField vectorField(const uint pNumPoints, const dtype pDataType);
+        FGAPI VectorField vectorField(const unsigned pNumPoints, const dtype pDataType);
 
         /**
            Render the chart to given window

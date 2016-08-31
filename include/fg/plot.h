@@ -36,7 +36,7 @@ extern "C" {
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_create_plot(fg_plot *pPlot,
-                            const uint pNPoints, const fg_dtype pType,
+                            const unsigned pNPoints, const fg_dtype pType,
                             const fg_chart_type pChartType,
                             const fg_plot_type pPlotType,
                             const fg_marker_type pMarkerType);
@@ -96,7 +96,7 @@ FGAPI fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_vbo(uint* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_vbo(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the resource identifier for colors buffer
@@ -106,7 +106,7 @@ FGAPI fg_err fg_get_plot_vbo(uint* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_cbo(uint* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_cbo(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the resource identifier for alpha values buffer
@@ -116,7 +116,7 @@ FGAPI fg_err fg_get_plot_cbo(uint* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_abo(uint* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_abo(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the resource identifier for markers sizes buffer
@@ -126,7 +126,7 @@ FGAPI fg_err fg_get_plot_abo(uint* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_mbo(uint* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_mbo(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the vertices buffer size in bytes
@@ -136,7 +136,7 @@ FGAPI fg_err fg_get_plot_mbo(uint* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_vbo_size(uint* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_vbo_size(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the colors buffer size in bytes
@@ -146,7 +146,7 @@ FGAPI fg_err fg_get_plot_vbo_size(uint* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_cbo_size(uint* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_cbo_size(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the alpha values buffer size in bytes
@@ -156,7 +156,7 @@ FGAPI fg_err fg_get_plot_cbo_size(uint* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_abo_size(uint* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_abo_size(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the markers buffer size in bytes
@@ -166,7 +166,7 @@ FGAPI fg_err fg_get_plot_abo_size(uint* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_mbo_size(uint* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_mbo_size(unsigned* pOut, const fg_plot pPlot);
 
 /** @} */
 
@@ -202,7 +202,7 @@ class Plot {
            \param[in] pMarkerType indicates which symbol is rendered as marker. It can take one of
                       the values of \ref MarkerType.
          */
-        FGAPI Plot(const uint pNumPoints, const dtype pDataType, const ChartType pChartType,
+        FGAPI Plot(const unsigned pNumPoints, const dtype pDataType, const ChartType pChartType,
                    const PlotType pPlotType=FG_PLOT_LINE, const MarkerType pMarkerType=FG_MARKER_NONE);
 
         /**
@@ -257,56 +257,56 @@ class Plot {
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint vertices() const;
+        FGAPI unsigned vertices() const;
 
         /**
            Get the OpenGL buffer object identifier for color values per vertex
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint colors() const;
+        FGAPI unsigned colors() const;
 
         /**
            Get the OpenGL buffer object identifier for alpha values per vertex
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint alphas() const;
+        FGAPI unsigned alphas() const;
 
         /**
            Get the OpenGL buffer object identifier for markers sizes, per vertex
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint markers() const;
+        FGAPI unsigned markers() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
            \return vertex buffer object size in bytes
          */
-        FGAPI uint verticesSize() const;
+        FGAPI unsigned verticesSize() const;
 
         /**
            Get the OpenGL colors Buffer Object resource size
 
            \return colors buffer object size in bytes
          */
-        FGAPI uint colorsSize() const;
+        FGAPI unsigned colorsSize() const;
 
         /**
            Get the OpenGL alpha Buffer Object resource size
 
            \return alpha buffer object size in bytes
          */
-        FGAPI uint alphasSize() const;
+        FGAPI unsigned alphasSize() const;
 
         /**
            Get the OpenGL markers Buffer Object resource size
 
            \return alpha buffer object size in bytes
          */
-        FGAPI uint markersSize() const;
+        FGAPI unsigned markersSize() const;
 
         /**
            Get the handle to internal implementation of plot

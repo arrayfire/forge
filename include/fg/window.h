@@ -93,7 +93,7 @@ FGAPI fg_err fg_set_window_position(fg_window pWindow, const int pX, const int p
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_set_window_size(fg_window pWindow, const uint pWidth, const uint pHeight);
+FGAPI fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const unsigned pHeight);
 
 /**
    Set the colormap to be used by the Window Object

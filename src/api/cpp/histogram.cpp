@@ -15,7 +15,7 @@
 namespace forge
 {
 
-Histogram::Histogram(const uint pNBins, const dtype pDataType)
+Histogram::Histogram(const unsigned pNBins, const dtype pDataType)
 {
     try {
         mValue = getHandle(new common::Histogram(pNBins, pDataType));
@@ -60,45 +60,45 @@ void Histogram::setLegend(const char* pLegend)
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Histogram::vertices() const
+unsigned Histogram::vertices() const
 {
     try {
         return getHistogram(mValue)->vbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Histogram::colors() const
+unsigned Histogram::colors() const
 {
     try {
         return getHistogram(mValue)->cbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Histogram::alphas() const
+unsigned Histogram::alphas() const
 {
     try {
         return getHistogram(mValue)->abo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Histogram::verticesSize() const
+unsigned Histogram::verticesSize() const
 {
     try {
-        return (uint)getHistogram(mValue)->vboSize();
+        return (unsigned)getHistogram(mValue)->vboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Histogram::colorsSize() const
+unsigned Histogram::colorsSize() const
 {
     try {
-        return (uint)getHistogram(mValue)->cboSize();
+        return (unsigned)getHistogram(mValue)->cboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Histogram::alphasSize() const
+unsigned Histogram::alphasSize() const
 {
     try {
-        return (uint)getHistogram(mValue)->aboSize();
+        return (unsigned)getHistogram(mValue)->aboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 

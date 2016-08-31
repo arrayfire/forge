@@ -15,7 +15,7 @@
 using namespace forge;
 
 fg_err fg_create_plot(fg_plot *pPlot,
-                      const uint pNPoints, const fg_dtype pType,
+                      const unsigned pNPoints, const fg_dtype pType,
                       const fg_chart_type pChartType,
                       const fg_plot_type pPlotType,
                       const fg_marker_type pMarkerType)
@@ -71,7 +71,7 @@ fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_vbo(uint* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_vbo(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->vbo();
@@ -81,7 +81,7 @@ fg_err fg_get_plot_vbo(uint* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_cbo(uint* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_cbo(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->cbo();
@@ -91,7 +91,7 @@ fg_err fg_get_plot_cbo(uint* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_abo(uint* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_abo(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->abo();
@@ -101,7 +101,7 @@ fg_err fg_get_plot_abo(uint* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_mbo(uint* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_mbo(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->mbo();
@@ -111,40 +111,40 @@ fg_err fg_get_plot_mbo(uint* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_vbo_size(uint* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_vbo_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
-        *pOut = (uint)getPlot(pPlot)->vboSize();
+        *pOut = (unsigned)getPlot(pPlot)->vboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_cbo_size(uint* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_cbo_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
-        *pOut = (uint)getPlot(pPlot)->cboSize();
+        *pOut = (unsigned)getPlot(pPlot)->cboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_abo_size(uint* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_abo_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
-        *pOut = (uint)getPlot(pPlot)->aboSize();
+        *pOut = (unsigned)getPlot(pPlot)->aboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_mbo_size(uint* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_mbo_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
-        *pOut = (uint)getPlot(pPlot)->mboSize();
+        *pOut = (unsigned)getPlot(pPlot)->mboSize();
     }
     CATCHALL
 

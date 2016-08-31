@@ -26,7 +26,7 @@ class Image {
         std::shared_ptr<detail::image_impl> mImage;
 
     public:
-        Image(const uint pWidth, const uint pHeight,
+        Image(const unsigned pWidth, const unsigned pHeight,
                const forge::ChannelFormat pFormat, const forge::dtype pDataType)
             : mImage(std::make_shared<detail::image_impl>(pWidth, pHeight, pFormat, pDataType)) {}
 
@@ -40,15 +40,15 @@ class Image {
 
         inline void keepAspectRatio(const bool pKeep) { mImage->keepAspectRatio(pKeep); }
 
-        inline uint width() const { return mImage->width(); }
+        inline unsigned width() const { return mImage->width(); }
 
-        inline uint height() const { return mImage->height(); }
+        inline unsigned height() const { return mImage->height(); }
 
         inline forge::ChannelFormat pixelFormat() const { return mImage->pixelFormat(); }
 
         inline forge::dtype channelType() const { return mImage->channelType(); }
 
-        inline uint pbo() const { return mImage->pbo(); }
+        inline unsigned pbo() const { return mImage->pbo(); }
 
         inline size_t size() const { return mImage->size(); }
 

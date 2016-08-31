@@ -31,7 +31,7 @@ extern "C" {
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_create_histogram(fg_histogram *pHistogram,
-                                 const uint pNBins, const fg_dtype pDataType);
+                                 const unsigned pNBins, const fg_dtype pDataType);
 
 /**
    Destroy Histogram object
@@ -81,7 +81,7 @@ FGAPI fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegen
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_vbo(uint* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_vbo(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the resource identifier for colors buffer
@@ -91,7 +91,7 @@ FGAPI fg_err fg_get_histogram_vbo(uint* pOut, const fg_histogram pHistogram);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_cbo(uint* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_cbo(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the resource identifier for alpha values buffer
@@ -101,7 +101,7 @@ FGAPI fg_err fg_get_histogram_cbo(uint* pOut, const fg_histogram pHistogram);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_abo(uint* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_abo(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the vertices buffer size in bytes
@@ -111,7 +111,7 @@ FGAPI fg_err fg_get_histogram_abo(uint* pOut, const fg_histogram pHistogram);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_vbo_size(uint* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_vbo_size(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the colors buffer size in bytes
@@ -121,7 +121,7 @@ FGAPI fg_err fg_get_histogram_vbo_size(uint* pOut, const fg_histogram pHistogram
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_cbo_size(uint* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_cbo_size(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the alpha values buffer size in bytes
@@ -131,7 +131,7 @@ FGAPI fg_err fg_get_histogram_cbo_size(uint* pOut, const fg_histogram pHistogram
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_abo_size(uint* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_abo_size(unsigned* pOut, const fg_histogram pHistogram);
 
 /** @} */
 
@@ -162,7 +162,7 @@ class Histogram {
            \param[in] pDataType takes one of the values of \ref fg_dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Histogram(const uint pNBins, const dtype pDataType);
+        FGAPI Histogram(const unsigned pNBins, const dtype pDataType);
 
         /**
            Copy constructor for Histogram
@@ -212,42 +212,42 @@ class Histogram {
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint vertices() const;
+        FGAPI unsigned vertices() const;
 
         /**
            Get the OpenGL buffer object identifier for color values per vertex
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint colors() const;
+        FGAPI unsigned colors() const;
 
         /**
            Get the OpenGL buffer object identifier for alpha values per vertex
 
            \return OpenGL VBO resource id.
          */
-        FGAPI uint alphas() const;
+        FGAPI unsigned alphas() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
            \return vertex buffer object size in bytes
          */
-        FGAPI uint verticesSize() const;
+        FGAPI unsigned verticesSize() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
            \return colors buffer object size in bytes
          */
-        FGAPI uint colorsSize() const;
+        FGAPI unsigned colorsSize() const;
 
         /**
            Get the OpenGL Vertex Buffer Object resource size
 
            \return alpha buffer object size in bytes
          */
-        FGAPI uint alphasSize() const;
+        FGAPI unsigned alphasSize() const;
 
         /**
            Get the handle to internal implementation of Histogram

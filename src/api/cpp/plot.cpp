@@ -15,7 +15,7 @@
 namespace forge
 {
 
-Plot::Plot(const uint pNumPoints, const dtype pDataType, const ChartType pChartType,
+Plot::Plot(const unsigned pNumPoints, const dtype pDataType, const ChartType pChartType,
            const PlotType pPlotType, const MarkerType pMarkerType)
 {
     try {
@@ -68,59 +68,59 @@ void Plot::setMarkerSize(const float pMarkerSize)
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Plot::vertices() const
+unsigned Plot::vertices() const
 {
     try {
         return getPlot(mValue)->vbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Plot::colors() const
+unsigned Plot::colors() const
 {
     try {
         return getPlot(mValue)->cbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Plot::alphas() const
+unsigned Plot::alphas() const
 {
     try {
         return getPlot(mValue)->abo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Plot::markers() const
+unsigned Plot::markers() const
 {
     try {
         return getPlot(mValue)->mbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Plot::verticesSize() const
+unsigned Plot::verticesSize() const
 {
     try {
-        return (uint)getPlot(mValue)->vboSize();
+        return (unsigned)getPlot(mValue)->vboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Plot::colorsSize() const
+unsigned Plot::colorsSize() const
 {
     try {
-        return (uint)getPlot(mValue)->cboSize();
+        return (unsigned)getPlot(mValue)->cboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Plot::alphasSize() const
+unsigned Plot::alphasSize() const
 {
     try {
-        return (uint)getPlot(mValue)->aboSize();
+        return (unsigned)getPlot(mValue)->aboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Plot::markersSize() const
+unsigned Plot::markersSize() const
 {
     try {
-        return (uint)getPlot(mValue)->mboSize();
+        return (unsigned)getPlot(mValue)->mboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 

@@ -34,7 +34,7 @@ extern "C" {
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_create_image(fg_image* pImage,
-                             const uint pWidth, const uint pHeight,
+                             const unsigned pWidth, const unsigned pHeight,
                              const fg_channel_format pFormat, const fg_dtype pType);
 
 /**
@@ -74,7 +74,7 @@ FGAPI fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_image_width(uint *pOut, const fg_image pImage);
+FGAPI fg_err fg_get_image_width(unsigned *pOut, const fg_image pImage);
 
 /**
    Get the height of the image
@@ -84,7 +84,7 @@ FGAPI fg_err fg_get_image_width(uint *pOut, const fg_image pImage);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_image_height(uint *pOut, const fg_image pImage);
+FGAPI fg_err fg_get_image_height(unsigned *pOut, const fg_image pImage);
 
 /**
    Get the channel format of the image
@@ -114,7 +114,7 @@ FGAPI fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_image_pbo(uint* pOut, const fg_image pImage);
+FGAPI fg_err fg_get_image_pbo(unsigned* pOut, const fg_image pImage);
 
 /**
    Get the image buffer size in bytes
@@ -124,7 +124,7 @@ FGAPI fg_err fg_get_image_pbo(uint* pOut, const fg_image pImage);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_image_pbo_size(uint* pOut, const fg_image pImage);
+FGAPI fg_err fg_get_image_pbo_size(unsigned* pOut, const fg_image pImage);
 
 /**
    Render the image to given window
@@ -176,7 +176,7 @@ class Image {
            \param[in] pDataType takes one of the values of \ref dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Image(const uint pWidth, const uint pHeight,
+        FGAPI Image(const unsigned pWidth, const unsigned pHeight,
                     const ChannelFormat pFormat=FG_RGBA, const dtype pDataType=f32);
 
         /**
@@ -209,13 +209,13 @@ class Image {
            Get Image width
            \return image width
          */
-        FGAPI uint width() const;
+        FGAPI unsigned width() const;
 
         /**
            Get Image height
            \return image width
          */
-        FGAPI uint height() const;
+        FGAPI unsigned height() const;
 
         /**
            Get Image's channel format
@@ -234,14 +234,14 @@ class Image {
 
            \return OpenGL PBO resource id.
          */
-        FGAPI uint pbo() const;
+        FGAPI unsigned pbo() const;
 
         /**
            Get the OpenGL Pixel Buffer Object resource size
 
            \return OpenGL PBO resource size.
          */
-        FGAPI uint size() const;
+        FGAPI unsigned size() const;
 
         /**
            Render the image to given window

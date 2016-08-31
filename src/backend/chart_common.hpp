@@ -47,15 +47,15 @@ class ChartRenderableBase {
             mShrdPtr->setLegend(pLegend);
         }
 
-        inline uint vbo() const {
+        inline unsigned vbo() const {
             return mShrdPtr->vbo();
         }
 
-        inline uint cbo() const {
+        inline unsigned cbo() const {
             return mShrdPtr->cbo();
         }
 
-        inline uint abo() const {
+        inline unsigned abo() const {
             return mShrdPtr->abo();
         }
 

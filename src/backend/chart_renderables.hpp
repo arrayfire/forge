@@ -25,7 +25,7 @@ namespace common
 
 class Histogram : public ChartRenderableBase<detail::histogram_impl> {
     public:
-        Histogram(uint pNBins, forge::dtype pDataType)
+        Histogram(unsigned pNBins, forge::dtype pDataType)
             : ChartRenderableBase<detail::histogram_impl>(
                     std::make_shared<detail::histogram_impl>(pNBins, pDataType)) {
         }
@@ -38,7 +38,7 @@ class Histogram : public ChartRenderableBase<detail::histogram_impl> {
 
 class Plot : public ChartRenderableBase<detail::plot_impl> {
     public:
-        Plot(const uint pNumPoints, const forge::dtype pDataType,
+        Plot(const unsigned pNumPoints, const forge::dtype pDataType,
               const forge::PlotType pPlotType, const forge::MarkerType pMarkerType,
               const forge::ChartType pChartType) {
             if (pChartType == FG_CHART_2D) {
@@ -59,7 +59,7 @@ class Plot : public ChartRenderableBase<detail::plot_impl> {
             mShrdPtr->setMarkerSize(pMarkerSize);
         }
 
-        inline uint mbo() const {
+        inline unsigned mbo() const {
             return mShrdPtr->markers();
         }
 
@@ -70,7 +70,7 @@ class Plot : public ChartRenderableBase<detail::plot_impl> {
 
 class Surface : public ChartRenderableBase<detail::surface_impl> {
     public:
-        Surface(const uint pNumXPoints, const uint pNumYPoints,
+        Surface(const unsigned pNumXPoints, const unsigned pNumYPoints,
                  const forge::dtype pDataType, const forge::PlotType pPlotType=FG_PLOT_SURFACE,
                  const forge::MarkerType pMarkerType=FG_MARKER_NONE) {
             switch(pPlotType){
@@ -93,7 +93,7 @@ class Surface : public ChartRenderableBase<detail::surface_impl> {
 
 class VectorField : public ChartRenderableBase<detail::vector_field_impl> {
     public:
-        VectorField(const uint pNumPoints,
+        VectorField(const unsigned pNumPoints,
                     const forge::dtype pDataType,
                     const forge::ChartType pChartType) {
             if (pChartType == FG_CHART_2D) {
@@ -108,7 +108,7 @@ class VectorField : public ChartRenderableBase<detail::vector_field_impl> {
                     reinterpret_cast<VectorField*>(pOther)->impl()) {
         }
 
-        inline uint dbo() const {
+        inline unsigned dbo() const {
             return mShrdPtr->directions();
         }
 

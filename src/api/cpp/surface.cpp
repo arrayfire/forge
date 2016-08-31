@@ -60,45 +60,45 @@ void Surface::setLegend(const char* pLegend)
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Surface::vertices() const
+unsigned Surface::vertices() const
 {
     try {
         return getSurface(mValue)->vbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Surface::colors() const
+unsigned Surface::colors() const
 {
     try {
         return getSurface(mValue)->cbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Surface::alphas() const
+unsigned Surface::alphas() const
 {
     try {
         return getSurface(mValue)->abo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Surface::verticesSize() const
+unsigned Surface::verticesSize() const
 {
     try {
-        return (uint)getSurface(mValue)->vboSize();
+        return (unsigned)getSurface(mValue)->vboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Surface::colorsSize() const
+unsigned Surface::colorsSize() const
 {
     try {
-        return (uint)getSurface(mValue)->cboSize();
+        return (unsigned)getSurface(mValue)->cboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint Surface::alphasSize() const
+unsigned Surface::alphasSize() const
 {
     try {
-        return (uint)getSurface(mValue)->aboSize();
+        return (unsigned)getSurface(mValue)->aboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 

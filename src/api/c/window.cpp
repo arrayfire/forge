@@ -73,7 +73,7 @@ fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY)
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_window_size(fg_window pWindow, const uint pWidth, const uint pHeight)
+fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const unsigned pHeight)
 {
     try {
         getWindow(pWindow)->setSize(pWidth, pHeight);

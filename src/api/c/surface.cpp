@@ -15,7 +15,7 @@
 using namespace forge;
 
 fg_err fg_create_surface(fg_surface *pSurface,
-                      const uint pXPoints, const uint pYPoints,
+                      const unsigned pXPoints, const unsigned pYPoints,
                       const fg_dtype pType,
                       const fg_plot_type pPlotType,
                       const fg_marker_type pMarkerType)
@@ -61,7 +61,7 @@ fg_err fg_set_surface_legend(fg_surface pSurface, const char* pLegend)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_vbo(uint* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_vbo(unsigned* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = getSurface(pSurface)->vbo();
@@ -71,7 +71,7 @@ fg_err fg_get_surface_vbo(uint* pOut, const fg_surface pSurface)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_cbo(uint* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_cbo(unsigned* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = getSurface(pSurface)->cbo();
@@ -81,7 +81,7 @@ fg_err fg_get_surface_cbo(uint* pOut, const fg_surface pSurface)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_abo(uint* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_abo(unsigned* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = getSurface(pSurface)->abo();
@@ -91,30 +91,30 @@ fg_err fg_get_surface_abo(uint* pOut, const fg_surface pSurface)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_vbo_size(uint* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_vbo_size(unsigned* pOut, const fg_surface pSurface)
 {
     try {
-        *pOut = (uint)getSurface(pSurface)->vboSize();
+        *pOut = (unsigned)getSurface(pSurface)->vboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_cbo_size(uint* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_cbo_size(unsigned* pOut, const fg_surface pSurface)
 {
     try {
-        *pOut = (uint)getSurface(pSurface)->cboSize();
+        *pOut = (unsigned)getSurface(pSurface)->cboSize();
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_abo_size(uint* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_abo_size(unsigned* pOut, const fg_surface pSurface)
 {
     try {
-        *pOut = (uint)getSurface(pSurface)->aboSize();
+        *pOut = (unsigned)getSurface(pSurface)->aboSize();
     }
     CATCHALL
 

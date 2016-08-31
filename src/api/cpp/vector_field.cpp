@@ -15,7 +15,7 @@
 namespace forge
 {
 
-VectorField::VectorField(const uint pNumPoints, const dtype pDataType, const ChartType pChartType)
+VectorField::VectorField(const unsigned pNumPoints, const dtype pDataType, const ChartType pChartType)
 {
     try {
         mValue = getHandle(new common::VectorField(pNumPoints, pDataType, pChartType));
@@ -60,59 +60,59 @@ void VectorField::setLegend(const char* pLegend)
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint VectorField::vertices() const
+unsigned VectorField::vertices() const
 {
     try {
         return getVectorField(mValue)->vbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint VectorField::colors() const
+unsigned VectorField::colors() const
 {
     try {
         return getVectorField(mValue)->cbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint VectorField::alphas() const
+unsigned VectorField::alphas() const
 {
     try {
         return getVectorField(mValue)->abo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint VectorField::directions() const
+unsigned VectorField::directions() const
 {
     try {
         return getVectorField(mValue)->dbo();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint VectorField::verticesSize() const
+unsigned VectorField::verticesSize() const
 {
     try {
-        return (uint)getVectorField(mValue)->vboSize();
+        return (unsigned)getVectorField(mValue)->vboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint VectorField::colorsSize() const
+unsigned VectorField::colorsSize() const
 {
     try {
-        return (uint)getVectorField(mValue)->cboSize();
+        return (unsigned)getVectorField(mValue)->cboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint VectorField::alphasSize() const
+unsigned VectorField::alphasSize() const
 {
     try {
-        return (uint)getVectorField(mValue)->aboSize();
+        return (unsigned)getVectorField(mValue)->aboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-uint VectorField::directionsSize() const
+unsigned VectorField::directionsSize() const
 {
     try {
-        return (uint)getVectorField(mValue)->dboSize();
+        return (unsigned)getVectorField(mValue)->dboSize();
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 

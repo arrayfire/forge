@@ -21,7 +21,7 @@
 using namespace forge;
 
 fg_err fg_create_image(fg_image* pImage,
-                       const uint pWidth, const uint pHeight,
+                       const unsigned pWidth, const unsigned pHeight,
                        const fg_channel_format pFormat, const fg_dtype pType)
 {
     try {
@@ -62,7 +62,7 @@ fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_image_width(uint *pOut, const fg_image pImage)
+fg_err fg_get_image_width(unsigned *pOut, const fg_image pImage)
 {
     try {
         *pOut = getImage(pImage)->width();
@@ -72,7 +72,7 @@ fg_err fg_get_image_width(uint *pOut, const fg_image pImage)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_image_height(uint *pOut, const fg_image pImage)
+fg_err fg_get_image_height(unsigned *pOut, const fg_image pImage)
 {
     try {
         *pOut = getImage(pImage)->height();
@@ -102,7 +102,7 @@ fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_image_pbo(uint* pOut, const fg_image pImage)
+fg_err fg_get_image_pbo(unsigned* pOut, const fg_image pImage)
 {
     try {
         *pOut = getImage(pImage)->pbo();
@@ -112,7 +112,7 @@ fg_err fg_get_image_pbo(uint* pOut, const fg_image pImage)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_image_pbo_size(uint* pOut, const fg_image pImage)
+fg_err fg_get_image_pbo_size(unsigned* pOut, const fg_image pImage)
 {
     try {
         *pOut = getImage(pImage)->size();
