@@ -2,3 +2,15 @@ build*/
 *.swp
 *.swn
 *.swo
+**~
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+GTAGS
+GRTAGS
+GPATH
+.dir-locals.el
+include/fg/version.h
+src/backend/version.hpp
+docs/details/examples.dox

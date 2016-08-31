@@ -49,7 +49,7 @@ ELSE(UNIX)
     ADD_DEFINITIONS(-DOS_WIN -DNOMINMAX)
 ENDIF(UNIX)
 
-INCLUDE(${CMAKE_MODULE_PATH}/Version.cmake)
+INCLUDE(Version)
 
 FIND_PACKAGE(FreeImage REQUIRED)
 FIND_PACKAGE(OpenGL REQUIRED)
@@ -67,7 +67,7 @@ IF(APPLE)
     SET(X11_LIBS ${X11_LIBRARIES})
 ENDIF(APPLE)
 
-ADD_EXECUTABLE(glsl2cpp "${CMAKE_MODULE_PATH}/glsl2cpp.cpp")
+ADD_EXECUTABLE(glsl2cpp "${PROJECT_SOURCE_DIR}/CMakeModules/glsl2cpp.cpp")
 
 ADD_SUBDIRECTORY(src/backend/opengl)
 
@@ -85,7 +85,7 @@ ENDIF(BUILD_DOCUMENTATION)
 #--------------------------------------------------------------------
 INCLUDE(CMakePackageConfigHelpers)
 
-configure_package_config_file("${CMAKE_MODULE_PATH}/ForgeConfig.cmake.in"
+configure_package_config_file("${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
                               "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfig.cmake"
                               INSTALL_DESTINATION ${FG_INSTALL_CMAKE_DIR}
                               PATH_VARS CMAKE_INSTALL_PREFIX
@@ -99,7 +99,7 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/ForgeConfigVersion
 # Install files other than the library, examples and docs
 # The library is installed by src/CMakeLists.txt
 #--------------------------------------------------------------------
-INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTALL_INC_DIR}"
+INSTALL(DIRECTORY "${PROJECT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTALL_INC_DIR}"
     FILES_MATCHING
     PATTERN "*.h"
     PATTERN "*.hpp"
@@ -118,6 +118,6 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/examples/"
         COMPONENT examples)
 
 INSTALL(FILES
-        "${CMAKE_MODULE_PATH}/FindOpenCL.cmake"
+        "${PROJECT_SOURCE_DIR}/CMakeModules/FindOpenCL.cmake"
         DESTINATION "${FG_INSTALL_EXAMPLE_DIR}/CMakeModules/"
         COMPONENT examples)
