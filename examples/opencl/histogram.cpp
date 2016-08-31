@@ -121,7 +121,7 @@ void fillImage(global unsigned char* ptr, unsigned width, unsigned height,
 }
 
 kernel
-void memSet(global int* out, uint len)
+void memSet(global int* out, unsigned len)
 {
     if (get_global_id(0)<len)
         out[get_global_id(0)] = 0;
@@ -143,7 +143,7 @@ void histogram(const global unsigned char* perlinNoise, global int* histOut,
 }
 
 kernel
-void setColors(global float* out, uint rseed, uint gseed, uint bseed)
+void setColors(global float* out, unsigned rseed, unsigned gseed, unsigned bseed)
 {
     int i = get_global_id(0);
     out[3*i+0] = (1+rand(rseed * i))/2.0f;

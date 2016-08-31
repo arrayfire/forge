@@ -138,9 +138,9 @@ PerlinNoise::PerlinNoise()
 {
     std::srand(std::time(0));
 
-    for(uint i=0; i < IMGW; i++)
+    for(unsigned i=0; i < IMGW; i++)
     {
-        for(uint j=0; j < IMGH; j++)
+        for(unsigned j=0; j < IMGH; j++)
         {
             base[i][j] = std::rand()/(float)(RAND_MAX);
             perlin[i][j] = 0;
@@ -156,13 +156,13 @@ PerlinNoise::PerlinNoise()
         int period = 1 << octave;
         float freq = 1.0f / period;
 
-        for(uint i=0; i < IMGW; i++)
+        for(unsigned i=0; i < IMGW; i++)
         {
             int si0 = (i/period) * period;
             int si1 = (si0 + period) % IMGW;
             float hblend = (i - si0) * freq;
 
-            for(uint j=0; j < IMGH; j++)
+            for(unsigned j=0; j < IMGH; j++)
             {
                 int sj0 = (j/period) * period;
                 int sj1 = (sj0 + period) % IMGH;
@@ -178,8 +178,8 @@ PerlinNoise::PerlinNoise()
         amp *= persistence;
     }
 
-    for(uint i=0; i < IMGW; i++)
-        for(uint j=0; j < IMGH; j++)
+    for(unsigned i=0; i < IMGW; i++)
+        for(unsigned j=0; j < IMGH; j++)
             perlin[i][j] /= tamp;
 }
 

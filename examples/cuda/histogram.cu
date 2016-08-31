@@ -196,8 +196,8 @@ void perlinInitKernel(float* base, float* perlin, curandState* state)
 __global__
 void perlinComputeKernel(float* perlin, float* base, float amp, int period)
 {
-    uint x = blockIdx.x * blockDim.x  + threadIdx.x;
-    uint y = blockIdx.y * blockDim.y  + threadIdx.y;
+    unsigned x = blockIdx.x * blockDim.x  + threadIdx.x;
+    unsigned y = blockIdx.y * blockDim.y  + threadIdx.y;
 
     if (x<IMGW && y<IMGH) {
         int index  = y*IMGW + x;

@@ -40,7 +40,7 @@ float rand(int x)
 }
 
 kernel
-void randKernel(global float* out, uint seed, float min, float scale, int DATA_SIZE)
+void randKernel(global float* out, unsigned seed, float min, float scale, int DATA_SIZE)
 {
     int id = get_global_id(0);
     if (id<DATA_SIZE)
@@ -48,7 +48,7 @@ void randKernel(global float* out, uint seed, float min, float scale, int DATA_S
 }
 
 kernel
-void colorsKernel(global float* out, uint rseed, uint gseed, uint bseed, int DATA_SIZE)
+void colorsKernel(global float* out, unsigned rseed, unsigned gseed, unsigned bseed, int DATA_SIZE)
 {
     int id = get_global_id(0);
     if (id<DATA_SIZE) {
