@@ -127,6 +127,15 @@ fg_err fg_get_window_height(int *pHeight, const fg_window pWindow)
     return FG_ERR_NONE;
 }
 
+fg_err fg_get_window_grid(int *pRows, int *pCols, const fg_window pWindow)
+{
+    try {
+        getWindow(pWindow)->getGrid(pRows, pCols);
+    }
+    CATCHALL
+    return FG_ERR_NONE;
+}
+
 fg_err fg_make_window_current(const fg_window pWindow)
 {
     try {

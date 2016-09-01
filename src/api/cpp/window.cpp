@@ -101,6 +101,24 @@ int Window::height() const
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
+int Window::gridRows() const
+{
+    try {
+        int rows = 0, cols = 0;
+        getWindow(mValue)->getGrid(&rows, &cols);
+        return rows;
+    } CATCH_INTERNAL_TO_EXTERNAL
+}
+
+int Window::gridCols() const
+{
+    try {
+        int rows = 0, cols = 0;
+        getWindow(mValue)->getGrid(&rows, &cols);
+        return cols;
+    } CATCH_INTERNAL_TO_EXTERNAL
+}
+
 fg_window Window::get() const
 {
     try {

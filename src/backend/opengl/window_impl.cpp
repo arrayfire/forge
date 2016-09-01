@@ -292,6 +292,12 @@ void window_impl::grid(int pRows, int pCols)
     std::fill(mats.begin(), mats.end(), glm::mat4(1));
 }
 
+void window_impl::getGrid(int *pRows, int *pCols)
+{
+    *pRows = mWindow->mRows;
+    *pCols = mWindow->mCols;
+}
+
 void window_impl::draw(int pColId, int pRowId,
                        const std::shared_ptr<AbstractRenderable>& pRenderable,
                        const char* pTitle)
