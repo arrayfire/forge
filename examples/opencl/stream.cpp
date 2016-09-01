@@ -128,10 +128,9 @@ void generatePoints(Buffer& points, Buffer &dirs, Buffer& colors,
     pointGenKernel.setArg(4, MINIMUM);
     pointGenKernel.setArg(5, STEP);
     queue.enqueueNDRangeKernel(pointGenKernel, cl::NullRange, global, local);
-
     const int numElems = NELEMS*NELEMS*NELEMS;
     static const NDRange thrds(64, 1);
-    NDRange glob(local[0] * divup(numElems, local[0]), 1);
+    NDRange glob(thrds[0] * divup(numElems, thrds[0]), thrds[1]);
 
     colorsKernel.setArg(0, colors);
     colorsKernel.setArg(1, NELEMS);
