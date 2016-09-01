@@ -85,7 +85,7 @@ glm::mat4 vector_field_impl::computeModelMatrix(const glm::mat4& pOrient)
     glm::vec3 shiftVector(-(mRange[0]+mRange[1])/2.0f,
                           -(mRange[2]+mRange[3])/2.0f,
                           -(mRange[4]+mRange[5])/2.0f);
-    shiftVector += glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
+    shiftVector += glm::vec3(xDataOffset, yDataOffset, zDataOffset);
 
     return glm::translate(glm::scale(pOrient, scaleVector), shiftVector);
 }
