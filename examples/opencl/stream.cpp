@@ -24,7 +24,7 @@ const unsigned DIMX = 640;
 const unsigned DIMY = 480;
 const float MINIMUM = 1.0f;
 const float MAXIMUM = 20.f;
-const float STEP    = 4.0f;
+const float STEP    = 2.0f;
 const int NELEMS    = (MAXIMUM-MINIMUM+1)/STEP;
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
