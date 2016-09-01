@@ -184,4 +184,11 @@ fg_chart Chart::get() const
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
+ChartType Chart::getChartType() const
+{
+    try {
+        return getChart(mValue)->chartType();
+    } CATCH_INTERNAL_TO_EXTERNAL
+}
+
 }

@@ -188,3 +188,13 @@ fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
 
     return FG_ERR_NONE;
 }
+
+fg_err fg_get_chart_type(fg_chart_type *pChartType, const fg_chart pChart)
+{
+    try {
+        *pChartType = getChart(pChart)->chartType();
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
