@@ -192,6 +192,16 @@ FGAPI fg_err fg_render_chart(const fg_window pWindow,
                              const fg_chart pChart,
                              const int pX, const int pY, const int pWidth, const int pHeight);
 
+/**
+   Render the type of a chart
+
+   \param[out] pChartType return the type of the chart
+   \param[in] pChart is chart handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_get_chart_type(const fg_chart_type *pChartType, const fg_chart pChart);
+
 /** @} */
 
 #ifdef __cplusplus
@@ -374,6 +384,11 @@ class Chart {
            Get the handle to internal implementation of Chart
          */
         FGAPI fg_chart get() const;
+
+        /**
+           Get the type of the chart
+         */
+        FGAPI ChartType getChartType() const;
 };
 
 }

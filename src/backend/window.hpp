@@ -124,6 +124,10 @@ class Window {
             mWindow->grid(pRows, pCols);
         }
 
+        inline void getGrid(int *pRows, int *pCols) {
+            mWindow->getGrid(pRows, pCols);
+        }
+
         template<typename T>
         void draw(int pColId, int pRowId, T* pRenderable, const char* pTitle) {
             mWindow->draw(pColId, pRowId, pRenderable->impl(), pTitle);

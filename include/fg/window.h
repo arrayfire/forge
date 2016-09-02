@@ -155,6 +155,17 @@ FGAPI fg_err fg_get_window_height(int *pHeight, const fg_window pWindow);
 FGAPI fg_err fg_make_window_current(const fg_window pWindow);
 
 /**
+   Get the window's grid size
+
+   \param[out] pRows returns the number of rows in the grid
+   \param[out] pCols returns the number of columns in the grid
+   \param[in] pWindow is Window handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_get_window_grid(int *pRows, int *pCols, const fg_window pWindow);
+
+/**
    Hide the Window
 
    \param[in] pWindow is Window handle
@@ -384,6 +395,16 @@ class Window {
            Make the current window's OpenGL context active context
          */
         FGAPI void makeCurrent();
+
+        /**
+           \return The window grid rows
+         */
+        FGAPI int gridRows() const;
+
+        /**
+           \return The window grid columns
+         */
+        FGAPI int gridCols() const;
 
         /**
            Hide the window

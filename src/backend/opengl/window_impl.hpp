@@ -70,6 +70,8 @@ class window_impl {
 
         void grid(int pRows, int pCols);
 
+        void getGrid(int *pRows, int *pCols);
+
         void draw(int pColId, int pRowId,
                   const std::shared_ptr<AbstractRenderable>& pRenderable,
                   const char* pTitle);
