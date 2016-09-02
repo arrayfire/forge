@@ -121,7 +121,7 @@ void AbstractChart::renderTickLabels(
 AbstractChart::AbstractChart(const int pLeftMargin, const int pRightMargin,
                              const int pTopMargin, const int pBottomMargin)
     : mTickCount(9), mTickSize(10),
-      mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
+      mDefaultLeftMargin(pLeftMargin), mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
       mXMax(1), mXMin(0), mYMax(1), mYMin(0), mZMax(1), mZMin(0),
       mXTitle("X-Axis"), mYTitle("Y-Axis"), mZTitle("Z-Axis"), mDecorVBO(-1),
@@ -362,7 +362,7 @@ void chart2d_impl::generateTickLabels()
         maxYLabelWidth = std::max(maxYLabelWidth, temp.length());
     }
 
-    mLeftMargin = std::max((int)maxYLabelWidth, mLeftMargin)+2*CHART2D_FONT_SIZE;
+    mLeftMargin = std::max((int)maxYLabelWidth, mDefaultLeftMargin)+2*CHART2D_FONT_SIZE;
 
     /* push tick points for x axis */
     mXText.push_back(toString(xmid));

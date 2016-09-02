@@ -34,6 +34,7 @@ class AbstractChart : public AbstractRenderable {
         std::vector<std::string> mZText;
         int   mTickCount;  /* should be an odd number always */
         int   mTickSize;
+        int   mDefaultLeftMargin;
         int   mLeftMargin;
         int   mRightMargin;
         int   mTopMargin;
