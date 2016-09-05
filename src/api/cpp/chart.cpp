@@ -97,6 +97,13 @@ void Chart::add(const Surface& pSurface)
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
+void Chart::add(const VectorField& pVectorField)
+{
+    try {
+        getChart(mValue)->addRenderable(getVectorField(pVectorField.get())->impl());
+    } CATCH_INTERNAL_TO_EXTERNAL
+}
+
 Image Chart::image(const unsigned pWidth, const unsigned pHeight,
                    const ChannelFormat pFormat, const dtype pDataType)
 {

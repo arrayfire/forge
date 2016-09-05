@@ -310,6 +310,13 @@ class Chart {
         FGAPI void add(const Surface& pSurface);
 
         /**
+           Add an existing vector field object to the current chart
+
+           \param[in] pVectorField is the Surface to render on the chart
+         */
+        FGAPI void add(const VectorField& pVectorField);
+
+        /**
            Create and add an Image object to the current chart
 
            \param[in] pWidth Width of the image
