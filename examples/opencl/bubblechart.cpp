@@ -195,11 +195,11 @@ int main(void)
         GfxHandle* handles[5];
 
         // create GL-OpenCL interop buffers
-        createGLBuffer(&handles[0], plt1.vertices(), FORGE_VBO);
-        createGLBuffer(&handles[1], plt2.vertices(), FORGE_VBO);
-        createGLBuffer(&handles[2], plt2.colors(), FORGE_VBO);
-        createGLBuffer(&handles[3], plt2.alphas(), FORGE_VBO);
-        createGLBuffer(&handles[4], plt2.markers(), FORGE_VBO);
+        createGLBuffer(&handles[0], plt1.vertices(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[1], plt2.vertices(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[2], plt2.colors(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[3], plt2.alphas(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[4], plt2.radii(), FORGE_VERTEX_BUFFER);
 
         cl::Buffer cosOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
         cl::Buffer tanOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
@@ -225,7 +225,7 @@ int main(void)
         /* update alpha values for tan graph */
         copyToGLBuffer(handles[3], (ComputeResourceHandle)alphasOut(), plt2.alphasSize());
         /* update marker sizes for tan graph markers */
-        copyToGLBuffer(handles[4], (ComputeResourceHandle)radiiOut(), plt2.markersSize());
+        copyToGLBuffer(handles[4], (ComputeResourceHandle)radiiOut(), plt2.radiiSize());
 
         do {
             wnd.draw(chart);

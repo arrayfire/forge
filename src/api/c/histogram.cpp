@@ -57,7 +57,7 @@ fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegend)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_vbo(unsigned* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_vertex_buffer(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = getHistogram(pHistogram)->vbo();
@@ -67,7 +67,7 @@ fg_err fg_get_histogram_vbo(unsigned* pOut, const fg_histogram pHistogram)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_cbo(unsigned* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_color_buffer(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = getHistogram(pHistogram)->cbo();
@@ -77,7 +77,7 @@ fg_err fg_get_histogram_cbo(unsigned* pOut, const fg_histogram pHistogram)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_abo(unsigned* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_alpha_buffer(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = getHistogram(pHistogram)->abo();
@@ -87,7 +87,7 @@ fg_err fg_get_histogram_abo(unsigned* pOut, const fg_histogram pHistogram)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_vbo_size(unsigned* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_vertex_buffer_size(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = (unsigned)getHistogram(pHistogram)->vboSize();
@@ -97,7 +97,7 @@ fg_err fg_get_histogram_vbo_size(unsigned* pOut, const fg_histogram pHistogram)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_cbo_size(unsigned* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_color_buffer_size(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = (unsigned)getHistogram(pHistogram)->cboSize();
@@ -107,7 +107,7 @@ fg_err fg_get_histogram_cbo_size(unsigned* pOut, const fg_histogram pHistogram)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_histogram_abo_size(unsigned* pOut, const fg_histogram pHistogram)
+fg_err fg_get_histogram_alpha_buffer_size(unsigned* pOut, const fg_histogram pHistogram)
 {
     try {
         *pOut = (unsigned)getHistogram(pHistogram)->aboSize();

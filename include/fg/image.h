@@ -114,7 +114,7 @@ FGAPI fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_image_pbo(unsigned* pOut, const fg_image pImage);
+FGAPI fg_err fg_get_pixel_buffer(unsigned* pOut, const fg_image pImage);
 
 /**
    Get the image buffer size in bytes
@@ -124,7 +124,7 @@ FGAPI fg_err fg_get_image_pbo(unsigned* pOut, const fg_image pImage);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_image_pbo_size(unsigned* pOut, const fg_image pImage);
+FGAPI fg_err fg_get_image_size(unsigned* pOut, const fg_image pImage);
 
 /**
    Render the image to given window
@@ -230,16 +230,16 @@ class Image {
         FGAPI dtype channelType() const;
 
         /**
-           Get the OpenGL Pixel Buffer Object identifier
+           Get the resource id of image buffer
 
-           \return OpenGL PBO resource id.
+           \return image buffer id
          */
-        FGAPI unsigned pbo() const;
+        FGAPI unsigned pixels() const;
 
         /**
-           Get the OpenGL Pixel Buffer Object resource size
+           Get the image data size in bytes
 
-           \return OpenGL PBO resource size.
+           \return image buffer size in bytes
          */
         FGAPI unsigned size() const;
 

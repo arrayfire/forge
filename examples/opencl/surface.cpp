@@ -132,7 +132,7 @@ int main(void)
         kernel(devOut, queue, device);
 
         GfxHandle* handle;
-        createGLBuffer(&handle, surf.vertices(), FORGE_VBO);
+        createGLBuffer(&handle, surf.vertices(), FORGE_VERTEX_BUFFER);
         /* copy your data into the pixel buffer object exposed by
          * forge::Surface class and then proceed to rendering.
          * To help the users with copying the data from compute

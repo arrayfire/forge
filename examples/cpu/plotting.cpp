@@ -79,10 +79,10 @@ int main(void)
     plt3.setLegend("Log base 10");
 
     GfxHandle* handles[4];
-    createGLBuffer(&handles[0], plt0.vertices(), FORGE_VBO);
-    createGLBuffer(&handles[1], plt1.vertices(), FORGE_VBO);
-    createGLBuffer(&handles[2], plt2.vertices(), FORGE_VBO);
-    createGLBuffer(&handles[3], plt3.vertices(), FORGE_VBO);
+    createGLBuffer(&handles[0], plt0.vertices(), FORGE_VERTEX_BUFFER);
+    createGLBuffer(&handles[1], plt1.vertices(), FORGE_VERTEX_BUFFER);
+    createGLBuffer(&handles[2], plt2.vertices(), FORGE_VERTEX_BUFFER);
+    createGLBuffer(&handles[3], plt3.vertices(), FORGE_VERTEX_BUFFER);
 
     /* copy your data into the pixel buffer object exposed by
      * forge::Plot class and then proceed to rendering.

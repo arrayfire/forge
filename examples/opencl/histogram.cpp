@@ -310,9 +310,9 @@ int main(void)
 
         GfxHandle* handles[3];
 
-        createGLBuffer(&handles[0], img.pbo(), FORGE_PBO);
-        createGLBuffer(&handles[1], hist.vertices(), FORGE_VBO);
-        createGLBuffer(&handles[2], hist.colors(), FORGE_VBO);
+        createGLBuffer(&handles[0], img.pixels(), FORGE_IMAGE_BUFFER);
+        createGLBuffer(&handles[1], hist.vertices(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[2], hist.colors(), FORGE_VERTEX_BUFFER);
 
         unsigned frame = 0;
         do {

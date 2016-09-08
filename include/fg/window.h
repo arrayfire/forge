@@ -33,7 +33,7 @@ extern "C" {
    \param[in] pHeight Height of the display window
    \param[in] pTitle window Title
    \param[in] pShareWindow is an already existing window with which the window to
-              be created should share the OpenGL context.
+              be created should share the rendering context.
    \param[in] pInvisible indicates if the window is created in invisible mode.
 
    \return \ref fg_err error code
@@ -307,7 +307,7 @@ class Window {
            \param[in] pHeight Height of the display window
            \param[in] pTitle window Title
            \param[in] pWindow An already existing window with which the window to
-                      be created should share the OpenGL context.
+                      be created should share the rendering context.
            \param[in] invisible window is created in invisible mode.
                       User has to call Window::show() when they decide
                       to actually display the window
@@ -365,8 +365,8 @@ class Window {
         FGAPI void setColorMap(ColorMap cmap);
 
         /**
-           Get OpenGL context handle
-           \return Context handle for the window's OpenGL context
+           Get rendering backend context handle
+           \return Context handle for the window's rendering context
          */
         FGAPI long long context() const;
 
@@ -392,7 +392,7 @@ class Window {
         FGAPI fg_window get() const;
 
         /**
-           Make the current window's OpenGL context active context
+           Make the current window's rendering context active context
          */
         FGAPI void makeCurrent();
 
@@ -432,9 +432,8 @@ class Window {
            \param[in] pKeepAspectRatio when set to true keeps the aspect ratio
                       of the input image constant.
 
-           \note this draw call does a OpenGL swap buffer, so we do not need
-           to call Window::draw() after this function is called upon for rendering
-           an image
+           \note this draw call automatically swaps back buffer
+           with front buffer (double buffering mechanism).
          */
         FGAPI void draw(const Image& pImage, const bool pKeepAspectRatio=true);
 
@@ -443,9 +442,8 @@ class Window {
 
            \param[in] pChart is an chart object
 
-           \note this draw call does a OpenGL swap buffer, so we do not need
-           to call Window::draw() after this function is called upon for rendering
-           a plot
+           \note this draw call automatically swaps back buffer
+           with front buffer (double buffering mechanism).
          */
         FGAPI void draw(const Chart& pChart);
 
@@ -474,7 +472,8 @@ class Window {
            \param[in] pKeepAspectRatio when set to true keeps the aspect ratio
                       of the input image constant.
 
-           \note This draw call doesn't do OpenGL swap buffer since it doesn't have the
+           \note this draw call doesn't automatically swap back buffer
+           with front buffer (double buffering mechanism) since it doesn't have the
            knowledge of which sub-regions already got rendered. We should call
            Window::draw() once all draw calls corresponding to all sub-regions are called
            when in multiview mode.
@@ -493,7 +492,8 @@ class Window {
            \param[in] pTitle is the title that will be displayed for the cell represented
                       by \p pColId and \p pRowId
 
-           \note This draw call doesn't do OpenGL swap buffer since it doesn't have the
+           \note this draw call doesn't automatically swap back buffer
+           with front buffer (double buffering mechanism) since it doesn't have the
            knowledge of which sub-regions already got rendered. We should call
            Window::draw() once all draw calls corresponding to all sub-regions are called
            when in multiview mode.
@@ -501,7 +501,7 @@ class Window {
         FGAPI void draw(int pColId, int pRowId, const Chart& pChart, const char* pTitle = 0);
 
         /**
-           Swaps background OpenGL buffer with front buffer
+           Swaps background buffer with front buffer
 
            This draw call should only be used when the window is displaying
            something in multiview mode
