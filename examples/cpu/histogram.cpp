@@ -117,7 +117,7 @@ int main(void)
         copyToGLBuffer(handles[2], (ComputeResourceHandle)colArray.data(), hist.colorsSize());
 
         wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
-        wnd.draw(1, 0, chart, "Histogram of Noisy Image");
+        wnd.draw(0, 1, chart, "Histogram of Noisy Image");
 
         wnd.swapBuffers();
     } while(!wnd.close());

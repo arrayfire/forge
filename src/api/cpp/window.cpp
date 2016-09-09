@@ -175,17 +175,17 @@ void Window::grid(int pRows, int pCols)
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-void Window::draw(int pColId, int pRowId, const Image& pImage, const char* pTitle, const bool pKeepAspectRatio)
+void Window::draw(int pRowId, int pColId, const Image& pImage, const char* pTitle, const bool pKeepAspectRatio)
 {
     try {
-        getWindow(mValue)->draw(pColId, pRowId, getImage(pImage.get()), pTitle, pKeepAspectRatio);
+        getWindow(mValue)->draw(pRowId, pColId, getImage(pImage.get()), pTitle, pKeepAspectRatio);
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-void Window::draw(int pColId, int pRowId, const Chart& pChart, const char* pTitle)
+void Window::draw(int pRowId, int pColId, const Chart& pChart, const char* pTitle)
 {
     try {
-        getWindow(mValue)->draw(pColId, pRowId, getChart(pChart.get()), pTitle);
+        getWindow(mValue)->draw(pRowId, pColId, getChart(pChart.get()), pTitle);
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 

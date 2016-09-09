@@ -190,7 +190,7 @@ fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart)
     return FG_ERR_NONE;
 }
 
-fg_err fg_setup_window_layout(int pRows, int pCols, fg_window pWindow)
+fg_err fg_setup_window_grid(int pRows, int pCols, fg_window pWindow)
 {
     try {
         getWindow(pWindow)->grid(pRows, pCols);
@@ -199,21 +199,21 @@ fg_err fg_setup_window_layout(int pRows, int pCols, fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_draw_image_to_cell(const fg_window pWindow, int pColId, int pRowId,
+fg_err fg_draw_image_to_cell(const fg_window pWindow, int pRowId, int pColId,
                              const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio)
 {
     try {
-        getWindow(pWindow)->draw(pColId, pRowId, getImage(pImage), pTitle, pKeepAspectRatio);
+        getWindow(pWindow)->draw(pRowId, pColId, getImage(pImage), pTitle, pKeepAspectRatio);
     }
     CATCHALL
     return FG_ERR_NONE;
 }
 
-fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pColId, int pRowId,
+fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pRowId, int pColId,
                              const fg_chart pChart, const char* pTitle)
 {
     try {
-        getWindow(pWindow)->draw(pColId, pRowId, getChart(pChart), pTitle);
+        getWindow(pWindow)->draw(pRowId, pColId, getChart(pChart), pTitle);
     }
     CATCHALL
     return FG_ERR_NONE;

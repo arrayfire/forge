@@ -298,7 +298,7 @@ void window_impl::getGrid(int *pRows, int *pCols)
     *pCols = mWindow->mCols;
 }
 
-void window_impl::draw(int pColId, int pRowId,
+void window_impl::draw(int pRowId, int pColId,
                        const std::shared_ptr<AbstractRenderable>& pRenderable,
                        const char* pTitle)
 {
