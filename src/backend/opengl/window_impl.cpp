@@ -312,8 +312,8 @@ void window_impl::draw(int pRowId, int pColId,
     int x_off = c * mWindow->mCellWidth;
     int y_off = (mWindow->mRows - 1 - r) * mWindow->mCellHeight;
 
-    const glm::mat4& viewMatrix = mWindow->mViewMatrices[r+c*mWindow->mRows];
-    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[r+c*mWindow->mRows];
+    const glm::mat4& viewMatrix = mWindow->mViewMatrices[c+r*mWindow->mCols];
+    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[c+r*mWindow->mCols];
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
