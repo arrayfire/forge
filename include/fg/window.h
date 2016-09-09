@@ -223,7 +223,7 @@ FGAPI fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_setup_window_layout(int pRows, int pCols, fg_window pWindow);
+FGAPI fg_err fg_setup_window_grid(int pRows, int pCols, fg_window pWindow);
 
 /**
    Render given image to Window's particular sub-view
@@ -237,7 +237,7 @@ FGAPI fg_err fg_setup_window_layout(int pRows, int pCols, fg_window pWindow);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, int pColId, int pRowId,
+FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, int pRowId, int pColId,
                                    const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio);
 
 /**
@@ -251,7 +251,7 @@ FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, int pColId, int pRow
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pColId, int pRowId,
+FGAPI fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pRowId, int pColId,
                                    const fg_chart pChart, const char* pTitle);
 
 /**
@@ -479,7 +479,7 @@ class Window {
            Window::draw() once all draw calls corresponding to all sub-regions are called
            when in multiview mode.
          */
-        FGAPI void draw(int pColId, int pRowId, const Image& pImage, const char* pTitle=0, const bool pKeepAspectRatio=true);
+        FGAPI void draw(int pRowId, int pColId, const Image& pImage, const char* pTitle=0, const bool pKeepAspectRatio=true);
 
         /**
            Render the chart to given sub-region of the window in multiview mode
@@ -498,7 +498,7 @@ class Window {
            Window::draw() once all draw calls corresponding to all sub-regions are called
            when in multiview mode.
          */
-        FGAPI void draw(int pColId, int pRowId, const Chart& pChart, const char* pTitle = 0);
+        FGAPI void draw(int pRowId, int pColId, const Chart& pChart, const char* pTitle = 0);
 
         /**
            Swaps background OpenGL buffer with front buffer

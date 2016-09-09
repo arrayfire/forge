@@ -286,10 +286,13 @@ void window_impl::grid(int pRows, int pCols)
     mWindow->mCellWidth  = mWindow->mWidth  / mWindow->mCols;
     mWindow->mCellHeight = mWindow->mHeight / mWindow->mRows;
 
-    // resize viewMatrix array for views to appropriate size
+    // resize viewMatrix/orientation arrays for views to appropriate size
     std::vector<glm::mat4>& mats = mWindow->mViewMatrices;
+    std::vector<glm::mat4>& omats = mWindow->mOrientMatrices;
     mats.resize(mWindow->mRows*mWindow->mCols);
+    omats.resize(mWindow->mRows*mWindow->mCols);
     std::fill(mats.begin(), mats.end(), glm::mat4(1));
+    std::fill(omats.begin(), omats.end(), glm::mat4(1));
 }
 
 void window_impl::getGrid(int *pRows, int *pCols)
@@ -298,11 +301,11 @@ void window_impl::getGrid(int *pRows, int *pCols)
     *pCols = mWindow->mCols;
 }
 
-void window_impl::draw(int pColId, int pRowId,
+void window_impl::draw(int pRowId, int pColId,
                        const std::shared_ptr<AbstractRenderable>& pRenderable,
                        const char* pTitle)
 {
-    CheckGL("Begin draw(column, row)");
+    CheckGL("Begin draw(row, column)");
     MakeContextCurrent(this);
     mWindow->resetCloseFlag();
 
@@ -312,8 +315,8 @@ void window_impl::draw(int pColId, int pRowId,
     int x_off = c * mWindow->mCellWidth;
     int y_off = (mWindow->mRows - 1 - r) * mWindow->mCellHeight;
 
-    const glm::mat4& viewMatrix = mWindow->mViewMatrices[r+c*mWindow->mRows];
-    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[r+c*mWindow->mRows];
+    const glm::mat4& viewMatrix = mWindow->mViewMatrices[c+r*mWindow->mCols];
+    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[c+r*mWindow->mCols];
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
@@ -343,7 +346,7 @@ void window_impl::draw(int pColId, int pRowId,
         mFont->render(mID, pos, AF_BLUE, pTitle, 16);
     }
 
-    CheckGL("End draw(column, row)");
+    CheckGL("End draw(row, column)");
 }
 
 void window_impl::swapBuffers()

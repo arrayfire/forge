@@ -327,7 +327,7 @@ int main(void)
             }
 
             wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
-            wnd.draw(1, 0, chart, "Histogram of Noisy Image");
+            wnd.draw(0, 1, chart, "Histogram of Noisy Image");
 
             wnd.swapBuffers();
             frame++;

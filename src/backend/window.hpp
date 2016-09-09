@@ -129,14 +129,14 @@ class Window {
         }
 
         template<typename T>
-        void draw(int pColId, int pRowId, T* pRenderable, const char* pTitle) {
-            mWindow->draw(pColId, pRowId, pRenderable->impl(), pTitle);
+        void draw(int pRowId, int pColId, T* pRenderable, const char* pTitle) {
+            mWindow->draw(pRowId, pColId, pRenderable->impl(), pTitle);
         }
 
-        void draw(int pColId, int pRowId, Image* pRenderable,
+        void draw(int pRowId, int pColId, Image* pRenderable,
                   const char* pTitle, const bool pKeepAspectRatio) {
             pRenderable->keepAspectRatio(pKeepAspectRatio);
-            mWindow->draw(pColId, pRowId, pRenderable->impl(), pTitle);
+            mWindow->draw(pRowId, pColId, pRenderable->impl(), pTitle);
         }
 
         inline void saveFrameBuffer(const char* pFullPath) {
