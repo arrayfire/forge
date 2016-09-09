@@ -168,8 +168,8 @@ void Widget::pollEvents()
 {
     static const float SPEED = 0.005f;
     SDL_Event evnt;
-    SDL_PollEvent(&evnt);
 
+    while (SDL_PollEvent(&evnt)) {
     /* handle window events that are triggered
        when the window with window id 'mWindowId' is in focus
      */
@@ -259,6 +259,7 @@ void Widget::pollEvents()
             mLastXPos = evnt.motion.x;
             mLastYPos = evnt.motion.y;
         }
+    }
     }
 }
 
