@@ -93,9 +93,9 @@ int main(void)
     generateColors(colors);
 
     GfxHandle* handles[3];
-    createGLBuffer(&handles[0], field.vertices(), FORGE_VBO);
-    createGLBuffer(&handles[1], field.colors(), FORGE_VBO);
-    createGLBuffer(&handles[2], field.directions(), FORGE_VBO);
+    createGLBuffer(&handles[0], field.vertices(), FORGE_VERTEX_BUFFER);
+    createGLBuffer(&handles[1], field.colors(), FORGE_VERTEX_BUFFER);
+    createGLBuffer(&handles[2], field.directions(), FORGE_VERTEX_BUFFER);
 
     copyToGLBuffer(handles[0], (ComputeResourceHandle)points.data(),   field.verticesSize());
     copyToGLBuffer(handles[1], (ComputeResourceHandle)colors.data(),     field.colorsSize());

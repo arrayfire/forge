@@ -82,7 +82,7 @@ forge::dtype Image::channelType() const
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-unsigned Image::pbo() const
+unsigned Image::pixels() const
 {
     try {
         return getImage(mValue)->pbo();

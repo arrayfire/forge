@@ -173,9 +173,9 @@ int main(void)
         cl::Buffer dirs(context, CL_MEM_READ_WRITE, sizeof(float)*3*numElems);
 
         GfxHandle* handles[3];
-        createGLBuffer(&handles[0], field.vertices(), FORGE_VBO);
-        createGLBuffer(&handles[1], field.colors(), FORGE_VBO);
-        createGLBuffer(&handles[2], field.directions(), FORGE_VBO);
+        createGLBuffer(&handles[0], field.vertices(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[1], field.colors(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[2], field.directions(), FORGE_VERTEX_BUFFER);
 
         generatePoints(points, dirs, colors, queue, device);
 

@@ -62,9 +62,9 @@ int main(void)
 
     GfxHandle* handles[3];
 
-    createGLBuffer(&handles[0], divPoints.vertices(), FORGE_VBO);
-    createGLBuffer(&handles[1], field.vertices(), FORGE_VBO);
-    createGLBuffer(&handles[2], field.directions(), FORGE_VBO);
+    createGLBuffer(&handles[0], divPoints.vertices(), FORGE_VERTEX_BUFFER);
+    createGLBuffer(&handles[1], field.vertices(), FORGE_VERTEX_BUFFER);
+    createGLBuffer(&handles[2], field.directions(), FORGE_VERTEX_BUFFER);
 
     FORGE_CUDA_CHECK(cudaMemcpy(dpoints, DPOINTS, 8*sizeof(unsigned), cudaMemcpyHostToDevice));
     generatePoints(points, dirs);

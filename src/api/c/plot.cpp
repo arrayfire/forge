@@ -71,7 +71,7 @@ fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_vbo(unsigned* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_vertex_buffer(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->vbo();
@@ -81,7 +81,7 @@ fg_err fg_get_plot_vbo(unsigned* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_cbo(unsigned* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_color_buffer(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->cbo();
@@ -91,7 +91,7 @@ fg_err fg_get_plot_cbo(unsigned* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_abo(unsigned* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_alpha_buffer(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->abo();
@@ -101,7 +101,7 @@ fg_err fg_get_plot_abo(unsigned* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_mbo(unsigned* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_radii_buffer(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = getPlot(pPlot)->mbo();
@@ -111,7 +111,7 @@ fg_err fg_get_plot_mbo(unsigned* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_vbo_size(unsigned* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_vertex_buffer_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = (unsigned)getPlot(pPlot)->vboSize();
@@ -121,7 +121,7 @@ fg_err fg_get_plot_vbo_size(unsigned* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_cbo_size(unsigned* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_color_buffer_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = (unsigned)getPlot(pPlot)->cboSize();
@@ -131,7 +131,7 @@ fg_err fg_get_plot_cbo_size(unsigned* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_abo_size(unsigned* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_alpha_buffer_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = (unsigned)getPlot(pPlot)->aboSize();
@@ -141,7 +141,7 @@ fg_err fg_get_plot_abo_size(unsigned* pOut, const fg_plot pPlot)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_plot_mbo_size(unsigned* pOut, const fg_plot pPlot)
+fg_err fg_get_plot_radii_buffer_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
         *pOut = (unsigned)getPlot(pPlot)->mboSize();

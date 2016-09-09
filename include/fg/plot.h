@@ -96,7 +96,7 @@ FGAPI fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_vbo(unsigned* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_vertex_buffer(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the resource identifier for colors buffer
@@ -106,7 +106,7 @@ FGAPI fg_err fg_get_plot_vbo(unsigned* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_cbo(unsigned* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_color_buffer(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the resource identifier for alpha values buffer
@@ -116,17 +116,17 @@ FGAPI fg_err fg_get_plot_cbo(unsigned* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_abo(unsigned* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_alpha_buffer(unsigned* pOut, const fg_plot pPlot);
 
 /**
-   Get the resource identifier for markers sizes buffer
+   Get the resource identifier for markers radii buffer
 
    \param[out] pOut will have the buffer identifier after this function is called
    \param[in] pPlot is the plot handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_mbo(unsigned* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_radii_buffer(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the vertices buffer size in bytes
@@ -136,7 +136,7 @@ FGAPI fg_err fg_get_plot_mbo(unsigned* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_vbo_size(unsigned* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_vertex_buffer_size(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the colors buffer size in bytes
@@ -146,7 +146,7 @@ FGAPI fg_err fg_get_plot_vbo_size(unsigned* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_cbo_size(unsigned* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_color_buffer_size(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the alpha values buffer size in bytes
@@ -156,7 +156,7 @@ FGAPI fg_err fg_get_plot_cbo_size(unsigned* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_abo_size(unsigned* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_alpha_buffer_size(unsigned* pOut, const fg_plot pPlot);
 
 /**
    Get the markers buffer size in bytes
@@ -166,7 +166,7 @@ FGAPI fg_err fg_get_plot_abo_size(unsigned* pOut, const fg_plot pPlot);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_plot_mbo_size(unsigned* pOut, const fg_plot pPlot);
+FGAPI fg_err fg_get_plot_radii_buffer_size(unsigned* pOut, const fg_plot pPlot);
 
 /** @} */
 
@@ -253,60 +253,60 @@ class Plot {
         FGAPI void setMarkerSize(const float pMarkerSize);
 
         /**
-           Get the OpenGL buffer object identifier for vertices
+           Get the buffer identifier for vertices
 
-           \return OpenGL VBO resource id.
+           \return vertex buffer resource id.
          */
         FGAPI unsigned vertices() const;
 
         /**
-           Get the OpenGL buffer object identifier for color values per vertex
+           Get the buffer identifier for color values per vertex
 
-           \return OpenGL VBO resource id.
+           \return colors buffer resource id.
          */
         FGAPI unsigned colors() const;
 
         /**
-           Get the OpenGL buffer object identifier for alpha values per vertex
+           Get the buffer identifier for alpha values per vertex
 
-           \return OpenGL VBO resource id.
+           \return alpha values buffer resource id.
          */
         FGAPI unsigned alphas() const;
 
         /**
-           Get the OpenGL buffer object identifier for markers sizes, per vertex
+           Get the buffer identifier for per vertex marker sizes
 
-           \return OpenGL VBO resource id.
+           \return marker sizes buffer resource id.
          */
-        FGAPI unsigned markers() const;
+        FGAPI unsigned radii() const;
 
         /**
-           Get the OpenGL Vertex Buffer Object resource size
+           Get the vertex buffer size in bytes
 
-           \return vertex buffer object size in bytes
+           \return vertex buffer size in bytes
          */
         FGAPI unsigned verticesSize() const;
 
         /**
-           Get the OpenGL colors Buffer Object resource size
+           Get the colors buffer size in bytes
 
-           \return colors buffer object size in bytes
+           \return colors buffer size in bytes
          */
         FGAPI unsigned colorsSize() const;
 
         /**
-           Get the OpenGL alpha Buffer Object resource size
+           Get the alpha values buffer size in bytes
 
-           \return alpha buffer object size in bytes
+           \return alpha buffer size in bytes
          */
         FGAPI unsigned alphasSize() const;
 
         /**
-           Get the OpenGL markers Buffer Object resource size
+           Get the marker sizes buffer size in bytes
 
-           \return alpha buffer object size in bytes
+           \return marker sizes buffer size in bytes
          */
-        FGAPI unsigned markersSize() const;
+        FGAPI unsigned radiiSize() const;
 
         /**
            Get the handle to internal implementation of plot

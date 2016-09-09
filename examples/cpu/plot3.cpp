@@ -59,7 +59,7 @@ int main(void)
     generateCurve(t, DX, function);
 
     GfxHandle* handle;
-    createGLBuffer(&handle, plot3.vertices(), FORGE_VBO);
+    createGLBuffer(&handle, plot3.vertices(), FORGE_VERTEX_BUFFER);
 
     /* copy your data into the pixel buffer object exposed by
      * forge::Plot class and then proceed to rendering.

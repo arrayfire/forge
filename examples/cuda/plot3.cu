@@ -49,7 +49,7 @@ int main(void)
     kernel(t, DX, dev_out);
 
     GfxHandle* handle;
-    createGLBuffer(&handle, plot3.vertices(), FORGE_VBO);
+    createGLBuffer(&handle, plot3.vertices(), FORGE_VERTEX_BUFFER);
 
     /* copy your data into the vertex buffer object exposed by
      * forge::Plot class and then proceed to rendering.

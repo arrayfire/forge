@@ -102,7 +102,7 @@ fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_image_pbo(unsigned* pOut, const fg_image pImage)
+fg_err fg_get_pixel_buffer(unsigned* pOut, const fg_image pImage)
 {
     try {
         *pOut = getImage(pImage)->pbo();
@@ -112,7 +112,7 @@ fg_err fg_get_image_pbo(unsigned* pOut, const fg_image pImage)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_image_pbo_size(unsigned* pOut, const fg_image pImage)
+fg_err fg_get_image_size(unsigned* pOut, const fg_image pImage)
 {
     try {
         *pOut = getImage(pImage)->size();

@@ -62,7 +62,7 @@ int main(void)
     genSurface(DX, function);
 
     GfxHandle* handle;
-    createGLBuffer(&handle, surf.vertices(), FORGE_VBO);
+    createGLBuffer(&handle, surf.vertices(), FORGE_VERTEX_BUFFER);
 
     /* copy your data into the pixel buffer object exposed by
      * forge::Plot class and then proceed to rendering.

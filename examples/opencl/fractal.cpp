@@ -143,7 +143,7 @@ int main(void)
         GfxHandle* handle = 0;
 
         // create GL-CPU interop buffer
-        createGLBuffer(&handle, img.pbo(), FORGE_PBO);
+        createGLBuffer(&handle, img.pixels(), FORGE_IMAGE_BUFFER);
 
         // copy the data from compute buffer to graphics buffer
         copyToGLBuffer(handle, (ComputeResourceHandle)devOut(), img.size());

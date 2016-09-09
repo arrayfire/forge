@@ -81,7 +81,7 @@ FGAPI fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegen
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_vbo(unsigned* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_vertex_buffer(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the resource identifier for colors buffer
@@ -91,7 +91,7 @@ FGAPI fg_err fg_get_histogram_vbo(unsigned* pOut, const fg_histogram pHistogram)
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_cbo(unsigned* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_color_buffer(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the resource identifier for alpha values buffer
@@ -101,7 +101,7 @@ FGAPI fg_err fg_get_histogram_cbo(unsigned* pOut, const fg_histogram pHistogram)
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_abo(unsigned* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_alpha_buffer(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the vertices buffer size in bytes
@@ -111,7 +111,7 @@ FGAPI fg_err fg_get_histogram_abo(unsigned* pOut, const fg_histogram pHistogram)
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_vbo_size(unsigned* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_vertex_buffer_size(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the colors buffer size in bytes
@@ -121,7 +121,7 @@ FGAPI fg_err fg_get_histogram_vbo_size(unsigned* pOut, const fg_histogram pHisto
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_cbo_size(unsigned* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_color_buffer_size(unsigned* pOut, const fg_histogram pHistogram);
 
 /**
    Get the alpha values buffer size in bytes
@@ -131,7 +131,7 @@ FGAPI fg_err fg_get_histogram_cbo_size(unsigned* pOut, const fg_histogram pHisto
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_histogram_abo_size(unsigned* pOut, const fg_histogram pHistogram);
+FGAPI fg_err fg_get_histogram_alpha_buffer_size(unsigned* pOut, const fg_histogram pHistogram);
 
 /** @} */
 
@@ -208,44 +208,44 @@ class Histogram {
         FGAPI void setLegend(const char* pLegend);
 
         /**
-           Get the OpenGL buffer object identifier for vertices
+           Get the buffer identifier for vertices
 
-           \return OpenGL VBO resource id.
+           \return vertex buffer resource id.
          */
         FGAPI unsigned vertices() const;
 
         /**
-           Get the OpenGL buffer object identifier for color values per vertex
+           Get the buffer identifier for color values per vertex
 
-           \return OpenGL VBO resource id.
+           \return colors buffer resource id.
          */
         FGAPI unsigned colors() const;
 
         /**
-           Get the OpenGL buffer object identifier for alpha values per vertex
+           Get the buffer identifier for alpha values per vertex
 
-           \return OpenGL VBO resource id.
+           \return alpha values buffer resource id.
          */
         FGAPI unsigned alphas() const;
 
         /**
-           Get the OpenGL Vertex Buffer Object resource size
+           Get the vertex buffer size in bytes
 
-           \return vertex buffer object size in bytes
+           \return vertex buffer size in bytes
          */
         FGAPI unsigned verticesSize() const;
 
         /**
-           Get the OpenGL Vertex Buffer Object resource size
+           Get the colors buffer size in bytes
 
-           \return colors buffer object size in bytes
+           \return colors buffer size in bytes
          */
         FGAPI unsigned colorsSize() const;
 
         /**
-           Get the OpenGL Vertex Buffer Object resource size
+           Get the alpha values buffer size in bytes
 
-           \return alpha buffer object size in bytes
+           \return alpha buffer size in bytes
          */
         FGAPI unsigned alphasSize() const;
 

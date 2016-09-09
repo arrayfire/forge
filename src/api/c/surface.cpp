@@ -61,7 +61,7 @@ fg_err fg_set_surface_legend(fg_surface pSurface, const char* pLegend)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_vbo(unsigned* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_vertex_buffer(unsigned* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = getSurface(pSurface)->vbo();
@@ -71,7 +71,7 @@ fg_err fg_get_surface_vbo(unsigned* pOut, const fg_surface pSurface)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_cbo(unsigned* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_color_buffer(unsigned* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = getSurface(pSurface)->cbo();
@@ -81,7 +81,7 @@ fg_err fg_get_surface_cbo(unsigned* pOut, const fg_surface pSurface)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_abo(unsigned* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_alpha_buffer(unsigned* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = getSurface(pSurface)->abo();
@@ -91,7 +91,7 @@ fg_err fg_get_surface_abo(unsigned* pOut, const fg_surface pSurface)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_vbo_size(unsigned* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_vertex_buffer_size(unsigned* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = (unsigned)getSurface(pSurface)->vboSize();
@@ -101,7 +101,7 @@ fg_err fg_get_surface_vbo_size(unsigned* pOut, const fg_surface pSurface)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_cbo_size(unsigned* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_color_buffer_size(unsigned* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = (unsigned)getSurface(pSurface)->cboSize();
@@ -111,7 +111,7 @@ fg_err fg_get_surface_cbo_size(unsigned* pOut, const fg_surface pSurface)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_surface_abo_size(unsigned* pOut, const fg_surface pSurface)
+fg_err fg_get_surface_alpha_buffer_size(unsigned* pOut, const fg_surface pSurface)
 {
     try {
         *pOut = (unsigned)getSurface(pSurface)->aboSize();

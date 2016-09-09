@@ -59,7 +59,7 @@ fg_err fg_set_vector_field_legend(fg_vector_field pField, const char* pLegend)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_vbo(unsigned* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_vertex_buffer(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = getVectorField(pField)->vbo();
@@ -69,7 +69,7 @@ fg_err fg_get_vector_field_vbo(unsigned* pOut, const fg_vector_field pField)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_cbo(unsigned* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_color_buffer(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = getVectorField(pField)->cbo();
@@ -79,7 +79,7 @@ fg_err fg_get_vector_field_cbo(unsigned* pOut, const fg_vector_field pField)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_abo(unsigned* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_alpha_buffer(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = getVectorField(pField)->abo();
@@ -89,7 +89,7 @@ fg_err fg_get_vector_field_abo(unsigned* pOut, const fg_vector_field pField)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_dbo(unsigned* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_direction_buffer(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = getVectorField(pField)->dbo();
@@ -99,7 +99,7 @@ fg_err fg_get_vector_field_dbo(unsigned* pOut, const fg_vector_field pField)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_vbo_size(unsigned* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_vertex_buffer_size(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = (unsigned)getVectorField(pField)->vboSize();
@@ -109,7 +109,7 @@ fg_err fg_get_vector_field_vbo_size(unsigned* pOut, const fg_vector_field pField
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_cbo_size(unsigned* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_color_buffer_size(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = (unsigned)getVectorField(pField)->cboSize();
@@ -119,7 +119,7 @@ fg_err fg_get_vector_field_cbo_size(unsigned* pOut, const fg_vector_field pField
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_abo_size(unsigned* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_alpha_buffer_size(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = (unsigned)getVectorField(pField)->aboSize();
@@ -129,7 +129,7 @@ fg_err fg_get_vector_field_abo_size(unsigned* pOut, const fg_vector_field pField
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_vector_field_dbo_size(unsigned* pOut, const fg_vector_field pField)
+fg_err fg_get_vector_field_direction_buffer_size(unsigned* pOut, const fg_vector_field pField)
 {
     try {
         *pOut = (unsigned)getVectorField(pField)->dboSize();

@@ -89,7 +89,7 @@ unsigned Plot::alphas() const
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-unsigned Plot::markers() const
+unsigned Plot::radii() const
 {
     try {
         return getPlot(mValue)->mbo();
@@ -117,7 +117,7 @@ unsigned Plot::alphasSize() const
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-unsigned Plot::markersSize() const
+unsigned Plot::radiiSize() const
 {
     try {
         return (unsigned)getPlot(mValue)->mboSize();

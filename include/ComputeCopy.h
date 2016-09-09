@@ -73,8 +73,8 @@ typedef cl_mem GfxResourceHandle;
 typedef void* ComputeResourceHandle;
 
 typedef enum {
-    FORGE_PBO = 0,     ///< OpenGL Pixel Buffer Object
-    FORGE_VBO = 1      ///< OpenGL Vertex Buffer Object
+    FORGE_IMAGE_BUFFER  = 0,     ///< OpenGL Pixel Buffer Object
+    FORGE_VERTEX_BUFFER = 1      ///< OpenGL Vertex Buffer Object
 } BufferType;
 
 typedef struct {
@@ -109,9 +109,9 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
 {
     GfxHandle* temp = pGLDestination;
 
-    if (temp->mTarget==FORGE_PBO) {
+    if (temp->mTarget==FORGE_IMAGE_BUFFER) {
         fg_update_pixel_buffer(temp->mId, pSize, pSource);
-    } else if (temp->mTarget==FORGE_VBO) {
+    } else if (temp->mTarget==FORGE_VERTEX_BUFFER) {
         fg_update_vertex_buffer(temp->mId, pSize, pSource);
     }
 }
@@ -138,13 +138,13 @@ void createGLBuffer(GfxHandle** pOut, const unsigned pResourceId, const BufferTy
 
     temp->mTarget = pTarget;
 
-    cudaGraphicsResource *cudaPBOResource;
+    cudaGraphicsResource *cudaImageResource;
 
-    FORGE_CUDA_CHECK(cudaGraphicsGLRegisterBuffer(&cudaPBOResource,
+    FORGE_CUDA_CHECK(cudaGraphicsGLRegisterBuffer(&cudaImageResource,
                                                   pResourceId,
                                                   cudaGraphicsMapFlagsWriteDiscard));
 
-    temp->mId = cudaPBOResource;
+    temp->mId = cudaImageResource;
 
     *pOut = temp;
 }

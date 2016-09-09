@@ -78,7 +78,7 @@ FGAPI fg_err fg_set_vector_field_legend(fg_vector_field pField, const char* pLeg
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_vector_field_vbo(unsigned* pOut, const fg_vector_field pField);
+FGAPI fg_err fg_get_vector_field_vertex_buffer(unsigned* pOut, const fg_vector_field pField);
 
 /**
    Get the resource identifier for colors buffer
@@ -88,7 +88,7 @@ FGAPI fg_err fg_get_vector_field_vbo(unsigned* pOut, const fg_vector_field pFiel
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_vector_field_cbo(unsigned* pOut, const fg_vector_field pField);
+FGAPI fg_err fg_get_vector_field_color_buffer(unsigned* pOut, const fg_vector_field pField);
 
 /**
    Get the resource identifier for alpha values buffer
@@ -98,7 +98,7 @@ FGAPI fg_err fg_get_vector_field_cbo(unsigned* pOut, const fg_vector_field pFiel
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_vector_field_abo(unsigned* pOut, const fg_vector_field pField);
+FGAPI fg_err fg_get_vector_field_alpha_buffer(unsigned* pOut, const fg_vector_field pField);
 
 /**
    Get the resource identifier for directions buffer
@@ -108,7 +108,7 @@ FGAPI fg_err fg_get_vector_field_abo(unsigned* pOut, const fg_vector_field pFiel
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_vector_field_dbo(unsigned* pOut, const fg_vector_field pField);
+FGAPI fg_err fg_get_vector_field_direction_buffer(unsigned* pOut, const fg_vector_field pField);
 
 /**
    Get the vertices buffer size in bytes
@@ -118,7 +118,7 @@ FGAPI fg_err fg_get_vector_field_dbo(unsigned* pOut, const fg_vector_field pFiel
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_vector_field_vbo_size(unsigned* pOut, const fg_vector_field pField);
+FGAPI fg_err fg_get_vector_field_vertex_buffer_size(unsigned* pOut, const fg_vector_field pField);
 
 /**
    Get the colors buffer size in bytes
@@ -128,7 +128,7 @@ FGAPI fg_err fg_get_vector_field_vbo_size(unsigned* pOut, const fg_vector_field 
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_vector_field_cbo_size(unsigned* pOut, const fg_vector_field pField);
+FGAPI fg_err fg_get_vector_field_color_buffer_size(unsigned* pOut, const fg_vector_field pField);
 
 /**
    Get the alpha values buffer size in bytes
@@ -138,7 +138,7 @@ FGAPI fg_err fg_get_vector_field_cbo_size(unsigned* pOut, const fg_vector_field 
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_vector_field_abo_size(unsigned* pOut, const fg_vector_field pField);
+FGAPI fg_err fg_get_vector_field_alpha_buffer_size(unsigned* pOut, const fg_vector_field pField);
 
 /**
    Get the directions buffer size in bytes
@@ -148,7 +148,7 @@ FGAPI fg_err fg_get_vector_field_abo_size(unsigned* pOut, const fg_vector_field 
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_vector_field_dbo_size(unsigned* pOut, const fg_vector_field pField);
+FGAPI fg_err fg_get_vector_field_direction_buffer_size(unsigned* pOut, const fg_vector_field pField);
 
 /** @} */
 
@@ -220,58 +220,58 @@ class VectorField {
         FGAPI void setLegend(const char* pLegend);
 
         /**
-           Get the OpenGL buffer object identifier for vertices
+           Get the buffer identifier for vertices
 
-           \return OpenGL VBO resource id.
+           \return vertex buffer resource id.
          */
         FGAPI unsigned vertices() const;
 
         /**
-           Get the OpenGL buffer object identifier for color values per vertex
+           Get the buffer identifier for color values per vertex
 
-           \return OpenGL CBO resource id.
+           \return colors buffer resource id.
          */
         FGAPI unsigned colors() const;
 
         /**
-           Get the OpenGL buffer object identifier for alpha values per vertex
+           Get the buffer identifier for alpha values per vertex
 
-           \return OpenGL ABO resource id.
+           \return alpha values buffer resource id.
          */
         FGAPI unsigned alphas() const;
 
         /**
-           Get the OpenGL buffer object identifier for field direction per vertex
+           Get the buffer identifier for field direction per vertex values
 
-           \return OpenGL DBO resource id.
+           \return directions buffer resource id
          */
         FGAPI unsigned directions() const;
 
         /**
-           Get the OpenGL Vertex Buffer Object resource size
+           Get the vertex buffer size in bytes
 
-           \return vertex buffer object size in bytes
+           \return vertex buffer size in bytes
          */
         FGAPI unsigned verticesSize() const;
 
         /**
-           Get the OpenGL colors Buffer Object resource size
+           Get the colors buffer size in bytes
 
-           \return colors buffer object size in bytes
+           \return colors buffer size in bytes
          */
         FGAPI unsigned colorsSize() const;
 
         /**
-           Get the OpenGL alphas Buffer Object resource size
+           Get the alpha values buffer size in bytes
 
-           \return alphas buffer object size in bytes
+           \return alpha buffer size in bytes
          */
         FGAPI unsigned alphasSize() const;
 
         /**
-           Get the OpenGL directions Buffer Object resource size
+           Get the directions buffer size
 
-           \return direction buffer object size in bytes
+           \return directions buffer size in bytes
          */
         FGAPI unsigned directionsSize() const;
 

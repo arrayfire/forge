@@ -40,7 +40,7 @@ int main(void)
     GfxHandle* handle = 0;
 
     // create GL-CPU interop buffer
-    createGLBuffer(&handle, img.pbo(), FORGE_PBO);
+    createGLBuffer(&handle, img.pixels(), FORGE_IMAGE_BUFFER);
 
     /* copy your data into the pixel buffer object exposed by
      * forge::Image class and then proceed to rendering.
