@@ -1,23 +1,30 @@
+/*******************************************************
+ * Copyright (c) 2015-2019, ArrayFire
+ * All rights reserved.
+ *
+ * This file is distributed under 3-clause BSD license.
+ * The complete license agreement can be obtained at:
+ * http://arrayfire.com/licenses/BSD-3-Clause
+ ********************************************************/
+
 #include <forge.h>
 #include <cuda_runtime.h>
 #include <cuComplex.h>
-#include <CUDACopy.hpp>
+#define USE_FORGE_CUDA_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <cstdio>
 #include <iostream>
 
-const unsigned DIMX = 1000;
-const unsigned DIMY = 800;
+const float XMIN = -8.0f;
+const float XMAX = 8.f;
+const float YMIN = -8.0f;
+const float YMAX = 8.f;
 
-const float XMIN = -1.0f;
-const float XMAX = 2.f;
-const float YMIN = -1.0f;
-const float YMAX = 1.f;
+const float DX = 0.5;
+const size_t XSIZE = (XMAX-XMIN)/DX;
+const size_t YSIZE = (YMAX-YMIN)/DX;
 
-const float DX = 0.01;
-const size_t XSIZE = (XMAX-XMIN)/DX+1;
-const size_t YSIZE = (YMAX-YMIN)/DX+1;
-
-void kernel(float t, float dx, float* dev_out);
+void kernel(float dx, float* dev_out);
 
 int main(void)
 {
@@ -26,69 +33,45 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "3d Surface Demo");
+    forge::Window wnd(1024, 768, "3d Surface Demo");
     wnd.makeCurrent();
-    /* create an font object and load necessary font
-     * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
-#ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
-#else
-    fnt.loadSystemFont("Vera", 32);
-#endif
-    wnd.setFont(&fnt);
 
-    /* Create several plot objects which creates the necessary
-     * vertex buffer objects to hold the different plot types
-     */
-    fg::Surface surf(XSIZE, YSIZE, fg::f32, fg::FG_SURFACE);
+    forge::Chart chart(FG_CHART_3D);
+    chart.setAxesLimits(-10.f, 10.f, -10.f, 10.f, -0.5f, 1.f);
+    chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    /*
-     * Set plot colors
-     */
-    surf.setColor(fg::FG_YELLOW);
+    forge::Surface surf = chart.surface(XSIZE, YSIZE, forge::f32);
+    surf.setColor(FG_YELLOW);
 
-    /*
-     * Set draw limits for plots
-     */
-    surf.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, -5.f);
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
+    kernel(DX, dev_out);
 
-    /*
-    * Set axis titles
-    */
-    surf.setAxesTitles("x-axis", "y-axis", "z-axis");
-
-    static float t=0;
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
-    kernel(t, DX, dev_out);
+    GfxHandle* handle;
+    createGLBuffer(&handle, surf.vertices(), FORGE_VERTEX_BUFFER);
     /* copy your data into the vertex buffer object exposed by
-     * fg::Plot class and then proceed to rendering.
+     * forge::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(surf, dev_out);
+    copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, surf.verticesSize());
 
     do {
-        t+=0.07;
-        kernel(t, DX, dev_out);
-        fg::copy(surf, dev_out);
-        // draw window and poll for events last
-        wnd.draw(surf);
+        wnd.draw(chart);
     } while(!wnd.close());
 
-    CUDA_ERROR_CHECK(cudaFree(dev_out));
+    FORGE_CUDA_CHECK(cudaFree(dev_out));
+    releaseGLBuffer(handle);
     return 0;
 }
 
 
-__global__
-void sincos_surf(float t, float dx, float* out,
-				 const float XMIN, const float YMIN,
-				 const size_t XSIZE, const size_t YSIZE)
+    __global__
+void sincos_surf(float dx, float* out,
+        const float XMIN, const float YMIN,
+        const size_t XSIZE, const size_t YSIZE)
 {
     int i = blockIdx.x * blockDim.x  + threadIdx.x;
     int j = blockIdx.y * blockDim.y  + threadIdx.y;
@@ -99,20 +82,22 @@ void sincos_surf(float t, float dx, float* out,
         int offset = j + i * YSIZE;
         out[ 3 * offset     ] = x;
         out[ 3 * offset + 1 ] = y;
-        out[ 3 * offset + 2 ] = 10*x*-abs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5;
+        float z = sqrt(x*x+y*y) + 2.2204e-16;
+        out[ 3 * offset + 2 ] = sinf(z)/z;
     }
 }
 
-inline int divup(int a, int b)
+    inline
+int divup(int a, int b)
 {
     return (a+b-1)/b;
 }
 
-void kernel(float t, float dx, float* dev_out)
+void kernel(float dx, float* dev_out)
 {
     static const dim3 threads(8, 8);
     dim3 blocks(divup(XSIZE, threads.x),
-                divup(YSIZE, threads.y));
+            divup(YSIZE, threads.y));
 
-    sincos_surf<<< blocks, threads >>>(t, dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
+    sincos_surf<<< blocks, threads >>>(dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
 }

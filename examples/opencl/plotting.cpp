@@ -8,41 +8,53 @@
  ********************************************************/
 
 #include <forge.h>
-#define __CL_ENABLE_EXCEPTIONS
-#include <cl.hpp>
-#include <OpenCLCopy.hpp>
+#include "cl_helpers.h"
 #include <mutex>
 #include <vector>
 #include <sstream>
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include "cl_helpers.h"
 
 using namespace cl;
 using namespace std;
 
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
-const unsigned WIN_ROWS = 2;
-const unsigned WIN_COLS = 2;
 
 const float    dx = 0.1;
 const float    FRANGE_START = 0.f;
 const float    FRANGE_END = 2 * 3.141592f;
 const unsigned DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
 
-static const std::string sinf_ocl_kernel =
-"kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE)\n"
-"{\n"
-"    unsigned x = get_global_id(0);\n"
-"    if(x < DATA_SIZE){\n"
-"        out[2 * x] = x * dx ;\n"
-"        out[2 * x + 1] = sin(x*dx);\n"
-"    }\n"
-"}\n";
+#define USE_FORGE_OPENCL_COPY_HELPERS
+#include <ComputeCopy.h>
 
-void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
+static const std::string sinf_ocl_kernel = R"(
+kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE, int fnCode)
+{
+    unsigned x = get_global_id(0);
+    if(x < DATA_SIZE) {
+        out[2 * x] = x * dx ;
+        switch(fnCode) {
+            case 0:
+                out[ 2 * x + 1 ] = sin(x*dx);
+                break;
+            case 1:
+                out[ 2 * x + 1 ] = cos(x*dx);
+                break;
+            case 2:
+                out[ 2 * x + 1 ] = tan(x*dx);
+                break;
+            case 3:
+                out[ 2 * x + 1 ] = log10(x*dx);
+                break;
+        }
+    }
+}
+)";
+
+void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, int fnCode)
 {
     static std::once_flag   compileFlag;
     static cl::Program      prog;
@@ -59,126 +71,93 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
     kern.setArg(0, devOut);
     kern.setArg(1, dx);
     kern.setArg(2, DATA_SIZE);
+    kern.setArg(3, fnCode);
     queue.enqueueNDRangeKernel(kern, cl::NullRange, global);
 }
 
 int main(void)
 {
     try {
+
         /*
         * First Forge call should be a window creation call
         * so that necessary OpenGL context is created for any
-        * other fg::* object to be created successfully
+        * other forge::* object to be created successfully
         */
-        fg::Window wnd(DIMX, DIMY, "Fractal Demo");
+        forge::Window wnd(DIMX, DIMY, "Plotting Demo");
         wnd.makeCurrent();
-        /* create an font object and load necessary font
-        * and later pass it on to window object so that
-        * it can be used for rendering text */
-        fg::Font fnt;
-#ifdef OS_WIN
-        fnt.loadSystemFont("Calibri", 32);
-#else
-        fnt.loadSystemFont("Vera", 32);
-#endif
-        wnd.setFont(&fnt);
 
-        /*
-         * Split the window into grid regions
-         */
-        wnd.grid(WIN_ROWS, WIN_COLS);
+        forge::Chart chart(FG_CHART_2D);
+        chart.setAxesLimits(FRANGE_START, FRANGE_END, -1.0f, 1.0f);
 
         /* Create several plot objects which creates the necessary
          * vertex buffer objects to hold the different plot types
          */
-        fg::Plot plt0(DATA_SIZE, fg::f32);                                 //create a default plot
-        fg::Plot plt1(DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_NONE);       //or specify a specific plot type
-        fg::Plot plt2(DATA_SIZE, fg::f32, fg::FG_LINE, fg::FG_TRIANGLE);   //last parameter specifies marker shape
-        fg::Plot plt3(DATA_SIZE, fg::f32, fg::FG_SCATTER, fg::FG_POINT);
+        forge::Plot plt0 = chart.plot(DATA_SIZE, forge::f32);                                 //create a default plot
+        forge::Plot plt1 = chart.plot(DATA_SIZE, forge::f32, FG_PLOT_LINE, FG_MARKER_NONE);       //or specify a specific plot type
+        forge::Plot plt2 = chart.plot(DATA_SIZE, forge::f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE);   //last parameter specifies marker shape
+        forge::Plot plt3 = chart.plot(DATA_SIZE, forge::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
 
         /*
          * Set plot colors
          */
-        plt0.setColor(fg::FG_YELLOW);
-        plt1.setColor(fg::FG_BLUE);
-        plt2.setColor(fg::FG_WHITE);                                        //use a forge predefined color
-        plt3.setColor((fg::Color) 0xABFF01FF);                              //or any hex-valued color
+        plt0.setColor(FG_RED);
+        plt1.setColor(FG_BLUE);
+        plt2.setColor(FG_YELLOW);            //use a forge predefined color
+        plt3.setColor((forge::Color) 0x257973FF);  //or any hex-valued color
+        /*
+         * Set plot legends
+         */
+        plt0.setLegend("Sine");
+        plt1.setLegend("Cosine");
+        plt2.setLegend("Tangent");
+        plt3.setLegend("Log base 10");
 
         /*
-         * Set draw limits for plots
+         * Helper function to create a CLGL interop context.
+         * This function checks for if the extension is available
+         * and creates the context on the appropriate device.
+         * Note: context and queue are defined in cl_helpers.h
          */
-        plt0.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-        plt1.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-        plt2.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
-        plt3.setAxesLimits(FRANGE_END, FRANGE_START, 1.1f, -1.1f);
+        context = createCLGLContext(wnd);
+        Device device = context.getInfo<CL_CONTEXT_DEVICES>()[0];
+        queue = CommandQueue(context, device);
 
-        Platform plat = getPlatform();
-        // Select the default platform and create a context using this platform and the GPU
-#if defined(OS_MAC)
-        CGLContextObj cgl_current_ctx = CGLGetCurrentContext();
-        CGLShareGroupObj cgl_share_group = CGLGetShareGroup(cgl_current_ctx);
+        cl::Buffer sinOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer cosOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer tanOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer logOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        kernel(sinOut, queue, 0);
+        kernel(cosOut, queue, 1);
+        kernel(tanOut, queue, 2);
+        kernel(logOut, queue, 3);
 
-        cl_context_properties cps[] = {
-            CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE, (cl_context_properties)cgl_share_group,
-            0
-        };
-#elif defined(OS_LNX)
-        cl_context_properties cps[] = {
-            CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
-            CL_GLX_DISPLAY_KHR, (cl_context_properties)wnd.display(),
-            CL_CONTEXT_PLATFORM, (cl_context_properties)plat(),
-            0
-        };
-#else /* OS_WIN */
-        cl_context_properties cps[] = {
-            CL_GL_CONTEXT_KHR, (cl_context_properties)wnd.context(),
-            CL_WGL_HDC_KHR, (cl_context_properties)wnd.display(),
-            CL_CONTEXT_PLATFORM, (cl_context_properties)plat(),
-            0
-        };
-#endif
-        std::vector<Device> devs;
-        plat.getDevices(CL_DEVICE_TYPE_GPU, &devs);
-
-        Device device;
-        CommandQueue queue;
-        Context context;
-        for (auto& d : devs) {
-            if (checkExtnAvailability(d, CL_GL_SHARING_EXT)) {
-                device = d;
-                context = Context(device, cps);
-                try {
-                    queue = CommandQueue(context, device);
-                    break;
-                } catch (cl::Error err) {
-                    continue;
-                }
-            }
-        }
-
-        cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
-        kernel(devOut, queue);
-
+        GfxHandle* handles[4];
+        createGLBuffer(&handles[0], plt0.vertices(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[1], plt1.vertices(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[2], plt2.vertices(), FORGE_VERTEX_BUFFER);
+        createGLBuffer(&handles[3], plt3.vertices(), FORGE_VERTEX_BUFFER);
         /* copy your data into the vertex buffer object exposed by
-         * fg::Plot class and then proceed to rendering.
+         * forge::Plot class and then proceed to rendering.
          * To help the users with copying the data from compute
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        fg::copy(plt0, devOut, queue);
-        fg::copy(plt1, devOut, queue);
-        fg::copy(plt2, devOut, queue);
-        fg::copy(plt3, devOut, queue);
+        copyToGLBuffer(handles[0], (ComputeResourceHandle)sinOut(), plt0.verticesSize());
+        copyToGLBuffer(handles[1], (ComputeResourceHandle)cosOut(), plt1.verticesSize());
+        copyToGLBuffer(handles[2], (ComputeResourceHandle)tanOut(), plt2.verticesSize());
+        copyToGLBuffer(handles[3], (ComputeResourceHandle)logOut(), plt3.verticesSize());
 
         do {
-            wnd.draw(0, 0, plt0,  NULL                );
-            wnd.draw(0, 1, plt1, "sinf_line_blue"     );
-            wnd.draw(1, 1, plt2, "sinf_line_triangle" );
-            wnd.draw(1, 0, plt3, "sinf_scatter_point" );
-            // draw window and poll for events last
-            wnd.swapBuffers();
+            wnd.draw(chart);
         } while(!wnd.close());
-    }catch (fg::Error err) {
+
+        releaseGLBuffer(handles[0]);
+        releaseGLBuffer(handles[1]);
+        releaseGLBuffer(handles[2]);
+        releaseGLBuffer(handles[3]);
+
+    }catch (forge::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;

@@ -1,12 +1,22 @@
+/*******************************************************
+ * Copyright (c) 2015-2019, ArrayFire
+ * All rights reserved.
+ *
+ * This file is distributed under 3-clause BSD license.
+ * The complete license agreement can be obtained at:
+ * http://arrayfire.com/licenses/BSD-3-Clause
+ ********************************************************/
+
 #include <forge.h>
 #include <cuda_runtime.h>
 #include <cuComplex.h>
-#include <CUDACopy.hpp>
+#define USE_FORGE_CUDA_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <cstdio>
 
 const unsigned DIMX = 512;
 const unsigned DIMY = 512;
-const size_t   SIZE = DIMX*DIMY*4;
+const size_t   TOT_SIZE = DIMX*DIMY*4;
 
 void kernel(unsigned char* dev_out);
 
@@ -17,40 +27,40 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Fractal Demo");
+    forge::Window wnd(DIMX, DIMY, "Fractal Demo");
     wnd.makeCurrent();
-    /* create an font object and load necessary font
-     * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
-#ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
-#else
-    fnt.loadSystemFont("Vera", 32);
-#endif
-    wnd.setFont(&fnt);
 
     /* Create an image object which creates the necessary
      * textures and pixel buffer objects to hold the image
      * */
-    fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
+    forge::Image img(DIMX, DIMY, FG_RGBA, forge::u8);
+
+    GfxHandle* handle = 0;
+
+    // create GL-CPU interop buffer
+    createGLBuffer(&handle, img.pixels(), FORGE_IMAGE_BUFFER);
+
     /* copy your data into the pixel buffer object exposed by
-     * fg::Image class and then proceed to rendering.
+     * forge::Image class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, SIZE));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, TOT_SIZE));
     kernel(dev_out);
-    fg::copy(img, dev_out);
+
+    // copy the data from compute buffer to graphics buffer
+    copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, img.size());
 
     do {
         wnd.draw(img);
     } while(!wnd.close());
 
-    CUDA_ERROR_CHECK(cudaFree(dev_out));
+    // destroy GL-CPU Interop buffer
+    releaseGLBuffer(handle);
+    FORGE_CUDA_CHECK(cudaFree(dev_out));
     return 0;
 }
 
@@ -85,9 +95,9 @@ void julia(unsigned char* out)
         // now calculate the value at that position
         int juliaValue = julia(x, y);
 
-        out[offset*4 + 0] = 255 * juliaValue;
+        out[offset*4 + 2] = 255 * juliaValue;
+        out[offset*4 + 0] = 0;
         out[offset*4 + 1] = 0;
-        out[offset*4 + 2] = 0;
         out[offset*4 + 3] = 255;
     }
 }

@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 PROJECT(FORGE)
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -49,25 +49,15 @@ ELSE(UNIX)
     ADD_DEFINITIONS(-DOS_WIN -DNOMINMAX)
 ENDIF(UNIX)
 
-INCLUDE(${CMAKE_MODULE_PATH}/Version.cmake)
+INCLUDE(Version)
 
+FIND_PACKAGE(FreeImage REQUIRED)
 FIND_PACKAGE(OpenGL REQUIRED)
-FIND_PACKAGE(GLEWmx REQUIRED)
-IF(GLEWmx_FOUND AND OPENGL_FOUND)
-    ADD_DEFINITIONS(-DGLEW_MX)
-ELSE()
-    IF(NOT GLEWmx_FOUND)
-        MESSAGE(FATAL_ERROR "GLEW-MX not found")
-    ENDIF()
-    IF(NOT OPENGL_FOUND)
-        MESSAGE(FATAL_ERROR "OpenGL not found")
-    ENDIF()
-ENDIF()
 
 INCLUDE_DIRECTORIES(
     "${PROJECT_SOURCE_DIR}/include"
     ${OPENGL_INCLUDE_DIR}
-    ${GLEW_INCLUDE_DIR}
+    ${FREEIMAGE_INCLUDE_PATH}
     )
 
 SET(X11_LIBS "")
@@ -77,7 +67,9 @@ IF(APPLE)
     SET(X11_LIBS ${X11_LIBRARIES})
 ENDIF(APPLE)
 
-ADD_SUBDIRECTORY(src)
+ADD_EXECUTABLE(glsl2cpp "${PROJECT_SOURCE_DIR}/CMakeModules/glsl2cpp.cpp")
+
+ADD_SUBDIRECTORY(src/backend/opengl)
 
 IF(BUILD_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
@@ -93,7 +85,7 @@ ENDIF(BUILD_DOCUMENTATION)
 #--------------------------------------------------------------------
 INCLUDE(CMakePackageConfigHelpers)
 
-configure_package_config_file("${CMAKE_MODULE_PATH}/ForgeConfig.cmake.in"
+configure_package_config_file("${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
                               "${CMAKE_CURRENT_BINARY_DIR}/ForgeConfig.cmake"
                               INSTALL_DESTINATION ${FG_INSTALL_CMAKE_DIR}
                               PATH_VARS CMAKE_INSTALL_PREFIX
@@ -107,7 +99,7 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/ForgeConfigVersion
 # Install files other than the library, examples and docs
 # The library is installed by src/CMakeLists.txt
 #--------------------------------------------------------------------
-INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTALL_INC_DIR}"
+INSTALL(DIRECTORY "${PROJECT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTALL_INC_DIR}"
     FILES_MATCHING
     PATTERN "*.h"
     PATTERN "*.hpp"
@@ -126,7 +118,6 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/examples/"
         COMPONENT examples)
 
 INSTALL(FILES
-        "${CMAKE_MODULE_PATH}/FindOpenCL.cmake"
-        "${CMAKE_MODULE_PATH}/FindGLEWmx.cmake"
+        "${PROJECT_SOURCE_DIR}/CMakeModules/FindOpenCL.cmake"
         DESTINATION "${FG_INSTALL_EXAMPLE_DIR}/CMakeModules/"
         COMPONENT examples)

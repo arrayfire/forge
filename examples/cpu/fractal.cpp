@@ -8,7 +8,8 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 
@@ -33,38 +34,51 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Fractal Demo");
+    forge::Window wnd(DIMX, DIMY, "Fractal Demo");
     wnd.makeCurrent();
+
     /* create an font object and load necessary font
      * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
+     * it can be used for rendering text
+     *
+     * NOTE: THIS IS OPTIONAL STEP, BY DEFAULT WINDOW WILL
+     * HAVE FONT ALREADY SETUP*/
+    forge::Font fnt;
 #ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
+    fnt.loadSystemFont("Calibri");
 #else
-    fnt.loadSystemFont("Vera", 32);
+    fnt.loadSystemFont("Vera");
 #endif
     wnd.setFont(&fnt);
 
     /* Create an image object which creates the necessary
      * textures and pixel buffer objects to hold the image
      * */
-    fg::Image img(DIMX, DIMY, fg::FG_RGBA, fg::u8);
+    forge::Image img(DIMX, DIMY, FG_RGBA, forge::u8);
     /* copy your data into the pixel buffer object exposed by
-     * fg::Image class and then proceed to rendering.
+     * forge::Image class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
     kernel(bmp);
-    fg::copy(img, bmp.ptr);
+
+    GfxHandle* handle = 0;
+
+    // create GL-CPU interop buffer
+    createGLBuffer(&handle, img.pixels(), FORGE_IMAGE_BUFFER);
+
+    // copy the data from compute buffer to graphics buffer
+    copyToGLBuffer(handle, (ComputeResourceHandle)bmp.ptr, img.size());
 
     do {
         wnd.draw(img);
     } while(!wnd.close());
 
+    // destroy GL-CPU Interop buffer
+    releaseGLBuffer(handle);
     destroyBitmap(bmp);
     return 0;
 }

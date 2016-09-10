@@ -8,96 +8,75 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 #include <vector>
 #include <iostream>
 
-const unsigned DIMX = 800;
-const unsigned DIMY = 800;
-
-static const float XMIN = -1.0f;
-static const float XMAX = 2.f;
-static const float YMIN = -1.0f;
-static const float YMAX = 1.f;
-
-const float DX = 0.01;
-const size_t XSIZE = (XMAX-XMIN)/DX+1;
-const size_t YSIZE = (YMAX-YMIN)/DX+1;
-
-bool set=false;
 using namespace std;
-void gen_surface(float t, float dx, std::vector<float> &vec ){
+
+static const float XMIN = -8.0f;
+static const float XMAX = 8.f;
+static const float YMIN = -8.0f;
+static const float YMAX = 8.f;
+
+const float DX = 0.5;
+const size_t XSIZE = (XMAX-XMIN)/DX;
+const size_t YSIZE = (YMAX-YMIN)/DX;
+
+void genSurface(float dx, std::vector<float> &vec )
+{
     vec.clear();
     for(float x=XMIN; x < XMAX; x+=dx){
         for(float y=YMIN; y < YMAX; y+=dx){
             vec.push_back(x);
             vec.push_back(y);
-            vec.push_back(10*x*-abs(y) * cos(x*x*(y+t))+sin(y*(x+t))-1.5);
+            float z = sqrt(x*x+y*y) + 2.2204e-16;
+            vec.push_back(sin(z)/z);
         }
     }
 }
 
-int main(void){
+int main(void)
+{
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "3d Surface Demo");
+    forge::Window wnd(1024, 768, "3d Surface Demo");
     wnd.makeCurrent();
-    /* create an font object and load necessary font
-     * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
-#ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
-#else
-    fnt.loadSystemFont("Vera", 32);
-#endif
-    wnd.setFont(&fnt);
 
-    /* Create several plot objects which creates the necessary
-     * vertex buffer objects to hold the different plot types
-     */
-    fg::Surface surf(XSIZE, YSIZE, fg::f32, fg::FG_SURFACE);
+    forge::Chart chart(FG_CHART_3D);
+    chart.setAxesLimits(-10.f, 10.f, -10.f, 10.f, -0.5f, 1.f);
+    chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    /*
-     * Set plot colors
-     */
-    surf.setColor(fg::FG_YELLOW);
-
-    /*
-     * Set draw limits for plots
-     */
-    surf.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, -5.f);
-
-    /*
-    * Set axis titles
-    */
-    surf.setAxesTitles("x-axis", "y-axis", "z-axis");
+    forge::Surface surf = chart.surface(XSIZE, YSIZE, forge::f32);
+    surf.setColor(FG_YELLOW);
 
     //generate a surface
     std::vector<float> function;
-    static float t=0;
-    gen_surface(t, DX, function);
+
+    genSurface(DX, function);
+
+    GfxHandle* handle;
+    createGLBuffer(&handle, surf.vertices(), FORGE_VERTEX_BUFFER);
+
     /* copy your data into the pixel buffer object exposed by
-     * fg::Plot class and then proceed to rendering.
+     * forge::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copy(surf, &function[0]);
+    copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), surf.verticesSize());
 
     do {
-        t+=0.07;
-        gen_surface(t, DX, function);
-        copy(surf, &function[0]);
-        // draw window and poll for events last
-        wnd.draw(surf);
+        wnd.draw(chart);
     } while(!wnd.close());
+
+    releaseGLBuffer(handle);
 
     return 0;
 }
-

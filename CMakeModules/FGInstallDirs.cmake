@@ -48,9 +48,9 @@ endif()
 # This is required for configure_package_config_file in CMakeLists.txt
 
 # CMAKE_INSTALL_PREFIX
-# If this is relative, it is relative to CMAKE_BINARY_DIR
+# If this is relative, it is relative to PROJECT_BINARY_DIR
 if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
     get_filename_component(CMAKE_INSTALL_PREFIX
-                           "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_PREFIX}"
+                          "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_PREFIX}"
                            ABSOLUTE)
 endif()

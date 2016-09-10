@@ -11,39 +11,165 @@
 
 #include <fg/defines.h>
 
-namespace internal
-{
-class _Histogram;
-}
 
-namespace fg
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/** \addtogroup hist_functions
+ *  @{
+ */
+
+/**
+   Creates a Histogram object
+
+   \param[out] pHistogram will point to the histogram object created after this function call
+   \param[in] pNBins is number of bins the data is sorted out
+   \param[in] pDataType takes one of the values of \ref fg_dtype that indicates
+              the integral data type of histogram data
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_create_histogram(fg_histogram *pHistogram,
+                                 const unsigned pNBins, const fg_dtype pDataType);
+
+/**
+   Destroy Histogram object
+
+   \param[in] pHistogram is the histogram handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_destroy_histogram(fg_histogram pHistogram);
+
+/**
+   Set the color of bar in the bar graph(histogram)
+
+   This is global alpha value for the histogram rendering that takes
+   effect if individual bar alphas are not set by calling the following
+   member functions
+       - Histogram::alphas()
+       - Histogram::alphasSize()
+
+   \param[in] pHistogram is the histogram handle
+   \param[in] pRed is Red component in range [0, 1]
+   \param[in] pGreen is Green component in range [0, 1]
+   \param[in] pBlue is Blue component in range [0, 1]
+   \param[in] pAlpha is Alpha component in range [0, 1]
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_set_histogram_color(fg_histogram pHistogram,
+                                    const float pRed, const float pGreen,
+                                    const float pBlue, const float pAlpha);
+
+/**
+   Set legend for histogram plot
+
+   \param[in] pHistogram is the histogram handle
+   \param[in] pLegend
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char* pLegend);
+
+/**
+   Get the resource identifier for vertices buffer
+
+   \param[out] pOut will have the buffer identifier after this function is called
+   \param[in] pHistogram is the histogram handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_get_histogram_vertex_buffer(unsigned* pOut, const fg_histogram pHistogram);
+
+/**
+   Get the resource identifier for colors buffer
+
+   \param[out] pOut will have the buffer identifier after this function is called
+   \param[in] pHistogram is the histogram handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_get_histogram_color_buffer(unsigned* pOut, const fg_histogram pHistogram);
+
+/**
+   Get the resource identifier for alpha values buffer
+
+   \param[out] pOut will have the buffer identifier after this function is called
+   \param[in] pHistogram is the histogram handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_get_histogram_alpha_buffer(unsigned* pOut, const fg_histogram pHistogram);
+
+/**
+   Get the vertices buffer size in bytes
+
+   \param[out] pOut will have the buffer size in bytes after this function is called
+   \param[in] pHistogram is the histogram handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_get_histogram_vertex_buffer_size(unsigned* pOut, const fg_histogram pHistogram);
+
+/**
+   Get the colors buffer size in bytes
+
+   \param[out] pOut will have the buffer size in bytes after this function is called
+   \param[in] pHistogram is the histogram handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_get_histogram_color_buffer_size(unsigned* pOut, const fg_histogram pHistogram);
+
+/**
+   Get the alpha values buffer size in bytes
+
+   \param[out] pOut will have the buffer size in bytes after this function is called
+   \param[in] pHistogram is the histogram handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_get_histogram_alpha_buffer_size(unsigned* pOut, const fg_histogram pHistogram);
+
+/** @} */
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#ifdef __cplusplus
+
+namespace forge
 {
 
 /**
    \class Histogram
 
-   \brief Bar graph to display data frequencey.
+   \brief Histogram is a bar graph to display data frequencey.
  */
 class Histogram {
     private:
-        internal::_Histogram* value;
+        fg_histogram mValue;
 
     public:
         /**
            Creates a Histogram object
 
            \param[in] pNBins is number of bins the data is sorted out
-           \param[in] pDataType takes one of the values of \ref dtype that indicates
+           \param[in] pDataType takes one of the values of \ref fg_dtype that indicates
                       the integral data type of histogram data
          */
-        FGAPI Histogram(unsigned pNBins, dtype pDataType);
+        FGAPI Histogram(const unsigned pNBins, const dtype pDataType);
 
         /**
            Copy constructor for Histogram
 
-           \param[in] other is the Histogram of which we make a copy of.
+           \param[in] pOther is the Histogram of which we make a copy of.
          */
-        FGAPI Histogram(const Histogram& other);
+        FGAPI Histogram(const Histogram& pOther);
 
         /**
            Histogram Destructor
@@ -53,84 +179,82 @@ class Histogram {
         /**
            Set the color of bar in the bar graph(histogram)
 
-           \param[in] col takes values of type fg::Color to define bar color
+           \param[in] pColor takes values of type forge::Color to define bar color
         **/
-        FGAPI void setBarColor(fg::Color col);
-
+        FGAPI void setColor(const Color pColor);
 
         /**
            Set the color of bar in the bar graph(histogram)
 
+           This is global alpha value for the histogram rendering that takes
+           effect if individual bar alphas are not set by calling the following
+           member functions
+               - Histogram::alphas()
+               - Histogram::alphasSize()
+
            \param[in] pRed is Red component in range [0, 1]
            \param[in] pGreen is Green component in range [0, 1]
            \param[in] pBlue is Blue component in range [0, 1]
+           \param[in] pAlpha is Alpha component in range [0, 1]
          */
-        FGAPI void setBarColor(float pRed, float pGreen, float pBlue);
+        FGAPI void setColor(const float pRed, const float pGreen,
+                            const float pBlue, const float pAlpha);
 
         /**
-           Set the chart axes limits
+           Set legend for histogram plot
 
-           \param[in] pXmax is X-Axis maximum value
-           \param[in] pXmin is X-Axis minimum value
-           \param[in] pYmax is Y-Axis maximum value
-           \param[in] pYmin is Y-Axis minimum value
+           \param[in] pLegend
          */
-        FGAPI void setAxesLimits(float pXmax, float pXmin, float pYmax, float pYmin);
+        FGAPI void setLegend(const char* pLegend);
 
         /**
-           Set axes titles in histogram(bar chart)
+           Get the buffer identifier for vertices
 
-           \param[in] pXTitle is X-Axis title
-           \param[in] pYTitle is Y-Axis title
+           \return vertex buffer resource id.
          */
-        FGAPI void setAxesTitles(const char* pXTitle, const char* pYTitle);
+        FGAPI unsigned vertices() const;
 
         /**
-           Get X-Axis maximum value
+           Get the buffer identifier for color values per vertex
 
-           \return Maximum value along X-Axis
+           \return colors buffer resource id.
          */
-        FGAPI float xmax() const;
+        FGAPI unsigned colors() const;
 
         /**
-           Get X-Axis minimum value
+           Get the buffer identifier for alpha values per vertex
 
-           \return Minimum value along X-Axis
+           \return alpha values buffer resource id.
          */
-        FGAPI float xmin() const;
+        FGAPI unsigned alphas() const;
 
         /**
-           Get Y-Axis maximum value
+           Get the vertex buffer size in bytes
 
-           \return Maximum value along Y-Axis
+           \return vertex buffer size in bytes
          */
-        FGAPI float ymax() const;
+        FGAPI unsigned verticesSize() const;
 
         /**
-           Get Y-Axis minimum value
+           Get the colors buffer size in bytes
 
-           \return Minimum value along Y-Axis
+           \return colors buffer size in bytes
          */
-        FGAPI float ymin() const;
+        FGAPI unsigned colorsSize() const;
 
         /**
-           Get the OpenGL Vertex Buffer Object identifier
+           Get the alpha values buffer size in bytes
 
-           \return OpenGL VBO resource id.
+           \return alpha buffer size in bytes
          */
-        FGAPI unsigned vbo() const;
-
-        /**
-           Get the OpenGL Vertex Buffer Object resource size
-
-           \return OpenGL VBO resource size.
-         */
-        FGAPI unsigned size() const;
+        FGAPI unsigned alphasSize() const;
 
         /**
            Get the handle to internal implementation of Histogram
          */
-        FGAPI internal::_Histogram* get() const;
+        FGAPI fg_histogram get() const;
 };
 
 }
+
+#endif

@@ -8,13 +8,14 @@
  ********************************************************/
 
 #include <forge.h>
-#include <CPUCopy.hpp>
+#define USE_FORGE_CPU_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <complex>
 #include <cmath>
 #include <vector>
 #include <iostream>
 
-const unsigned DIMX = 800;
+const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
 static const float ZMIN = 0.1f;
@@ -24,68 +25,58 @@ const float DX = 0.005;
 const size_t ZSIZE = (ZMAX-ZMIN)/DX+1;
 
 using namespace std;
-void gen_curve(float t, float dx, std::vector<float> &vec ) {
+
+void generateCurve(float t, float dx, std::vector<float> &vec )
+{
     vec.clear();
-    for(float z=ZMIN; z < ZMAX; z+=dx){
+    for (int i=0; i < (int)ZSIZE; ++i) {
+        float z = ZMIN + i*dx;
         vec.push_back(cos(z*t+t)/z);
         vec.push_back(sin(z*t+t)/z);
         vec.push_back(z+0.1*sin(t));
     }
 }
 
-int main(void){
+int main(void)
+{
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Plot3d Demo");
+    forge::Window wnd(DIMX, DIMY, "Three dimensional line plot demo");
     wnd.makeCurrent();
-    /* create an font object and load necessary font
-     * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
-#ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
-#else
-    fnt.loadSystemFont("Vera", 32);
-#endif
-    wnd.setFont(&fnt);
 
-    /* Create several plot objects which creates the necessary
-     * vertex buffer objects to hold the different plot types
-     */
-    fg::Plot3 plot3(ZSIZE, fg::f32);
+    forge::Chart chart(FG_CHART_3D);
+    chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
+    chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    /*
-     * Set draw limits for plots
-     */
-    plot3.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, 0.f);
-
-    /*
-    * Set axis titles
-    */
-    plot3.setAxesTitles("x-axis", "y-axis", "z-axis");
+    forge::Plot plot3 = chart.plot(ZSIZE, forge::f32);
 
     //generate a surface
     std::vector<float> function;
     static float t=0;
-    gen_curve(t, DX, function);
+    generateCurve(t, DX, function);
+
+    GfxHandle* handle;
+    createGLBuffer(&handle, plot3.vertices(), FORGE_VERTEX_BUFFER);
+
     /* copy your data into the pixel buffer object exposed by
-     * fg::Plot class and then proceed to rendering.
+     * forge::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copy(plot3, &function[0]);
+    copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), plot3.verticesSize());
 
     do {
         t+=0.01;
-        gen_curve(t, DX, function);
-        copy(plot3, &function[0]);
-        // draw window and poll for events last
-        wnd.draw(plot3);
+        generateCurve(t, DX, function);
+        copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), plot3.verticesSize());
+        wnd.draw(chart);
     } while(!wnd.close());
+
+    releaseGLBuffer(handle);
 
     return 0;
 }

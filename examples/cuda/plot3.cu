@@ -10,7 +10,8 @@
 #include <forge.h>
 #include <cuda_runtime.h>
 #include <cuComplex.h>
-#include <CUDACopy.hpp>
+#define USE_FORGE_CUDA_COPY_HELPERS
+#include <ComputeCopy.h>
 #include <cstdio>
 #include <iostream>
 
@@ -32,68 +33,52 @@ int main(void)
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
-     * other fg::* object to be created successfully
+     * other forge::* object to be created successfully
      */
-    fg::Window wnd(DIMX, DIMY, "Plot 3d Demo");
+    forge::Window wnd(DIMX, DIMY, "Three dimensional line plot demo");
     wnd.makeCurrent();
-    /* create an font object and load necessary font
-     * and later pass it on to window object so that
-     * it can be used for rendering text */
-    fg::Font fnt;
-#ifdef OS_WIN
-    fnt.loadSystemFont("Calibri", 32);
-#else
-    fnt.loadSystemFont("Vera", 32);
-#endif
-    wnd.setFont(&fnt);
 
-    /* Create several plot objects which creates the necessary
-     * vertex buffer objects to hold the different plot types
-     */
-    fg::Plot3 plot3(ZSIZE, fg::f32);
+    forge::Chart chart(FG_CHART_3D);
+    chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
+    chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-    /*
-     * Set draw limits for plots
-     */
-    plot3.setAxesLimits(1.1f, -1.1f, 1.1f, -1.1f, 10.f, 0.f);
-
-    /*
-    * Set axis titles
-    */
-    plot3.setAxesTitles("x-axis", "y-axis", "z-axis");
+    forge::Plot plot3 = chart.plot(ZSIZE, forge::f32);
 
     static float t=0;
-    CUDA_ERROR_CHECK(cudaMalloc((void**)&dev_out, ZSIZE * 3 * sizeof(float) ));
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, ZSIZE * 3 * sizeof(float) ));
     kernel(t, DX, dev_out);
+
+    GfxHandle* handle;
+    createGLBuffer(&handle, plot3.vertices(), FORGE_VERTEX_BUFFER);
+
     /* copy your data into the vertex buffer object exposed by
-     * fg::Plot class and then proceed to rendering.
+     * forge::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    fg::copy(plot3, dev_out);
-
+    copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, plot3.verticesSize());
 
     do {
         t+=0.01;
         kernel(t, DX, dev_out);
-        fg::copy(plot3, dev_out);
-        // draw window and poll for events last
-        wnd.draw(plot3);
+        copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, plot3.verticesSize());
+        wnd.draw(chart);
     } while(!wnd.close());
 
-    CUDA_ERROR_CHECK(cudaFree(dev_out));
+    FORGE_CUDA_CHECK(cudaFree(dev_out));
+    releaseGLBuffer(handle);
     return 0;
 }
 
 
 __global__
-void gen_curve(float t, float dx, float* out, const float ZMIN, const size_t ZSIZE)
+void generateCurve(float t, float dx, float* out, const float ZMIN, const size_t ZSIZE)
 {
     int offset = blockIdx.x * blockDim.x  + threadIdx.x;
 
     float z = ZMIN + offset*dx;
-    if(offset < ZSIZE){
+    if(offset < ZSIZE) {
         out[ 3 * offset     ] = cos(z*t+t)/z;
         out[ 3 * offset + 1 ] = sin(z*t+t)/z;
         out[ 3 * offset + 2 ] = z + 0.1*sin(t);
@@ -110,5 +95,5 @@ void kernel(float t, float dx, float* dev_out)
     static const dim3 threads(1024);
     dim3 blocks(divup(ZSIZE, 1024));
 
-    gen_curve<<< blocks, threads >>>(t, dx, dev_out, ZMIN, ZSIZE);
+    generateCurve<<< blocks, threads >>>(t, dx, dev_out, ZMIN, ZSIZE);
 }
