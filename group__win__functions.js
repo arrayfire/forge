@@ -1,0 +1,26 @@
+var group__win__functions =
+[
+    [ "fg_close_window", "group__win__functions.htm#ga478e108fe8612075467f0c55c57e58cd", null ],
+    [ "fg_create_window", "group__win__functions.htm#ga3e658dbc45e6c0a2e7588014e02a0b53", null ],
+    [ "fg_destroy_window", "group__win__functions.htm#ga8dc4d1db63e02615c636374f12330c72", null ],
+    [ "fg_draw_chart", "group__win__functions.htm#ga61211cc484b0bf8ca217b8b2d02343c7", null ],
+    [ "fg_draw_chart_to_cell", "group__win__functions.htm#gac4707a2077b6ef70baaa5c41606a5432", null ],
+    [ "fg_draw_image", "group__win__functions.htm#gae1f0287666d57005c26c32f1106ed656", null ],
+    [ "fg_draw_image_to_cell", "group__win__functions.htm#ga87e5c8985d81bf4b8fde75dd1751cda1", null ],
+    [ "fg_get_window_context_handle", "group__win__functions.htm#ga805617678f5dc01bafb8bac8da0dc657", null ],
+    [ "fg_get_window_display_handle", "group__win__functions.htm#gab10730dec8a60624e91bb1013f218c93", null ],
+    [ "fg_get_window_grid", "group__win__functions.htm#gae8b21ded3f8004c9af8be41b47990fd7", null ],
+    [ "fg_get_window_height", "group__win__functions.htm#gae791094a195f197551743fb5560d1868", null ],
+    [ "fg_get_window_width", "group__win__functions.htm#ga1d6e1ce37f3e3e30f06c8af46429e447", null ],
+    [ "fg_hide_window", "group__win__functions.htm#gae5297426a910bf775cc695405fac7289", null ],
+    [ "fg_make_window_current", "group__win__functions.htm#ga4c83e16832fabcd1ee98b2c90387a209", null ],
+    [ "fg_save_window_framebuffer", "group__win__functions.htm#ga5bed7d67d5f777aa220c7af87333468d", null ],
+    [ "fg_set_window_colormap", "group__win__functions.htm#ga3f55573ddec8e8981c8de43aafac9374", null ],
+    [ "fg_set_window_font", "group__win__functions.htm#ga6820cb5e4273283e5c0bdd88b0d6db95", null ],
+    [ "fg_set_window_position", "group__win__functions.htm#gad50c051a15e13876956d102537f88760", null ],
+    [ "fg_set_window_size", "group__win__functions.htm#gac3d066b2f5fc7aa19256bc5b047986ea", null ],
+    [ "fg_set_window_title", "group__win__functions.htm#gabe594e9d3dd275b3a80d510a96d72c8b", null ],
+    [ "fg_setup_window_grid", "group__win__functions.htm#ga422863cb37e90798e31535fe40da856f", null ],
+    [ "fg_show_window", "group__win__functions.htm#ga6728e9f4384b93e2d43a789525cb1066", null ],
+    [ "fg_swap_window_buffers", "group__win__functions.htm#gab72f93dadcde7ce021c0d777895f9aa3", null ]
+];

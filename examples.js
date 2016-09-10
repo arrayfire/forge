@@ -1,0 +1,28 @@
+var examples =
+[
+    [ "cpu/bubblechart.cpp", "cpu_2bubblechart_8cpp-example.htm", null ],
+    [ "cpu/field.cpp", "cpu_2field_8cpp-example.htm", null ],
+    [ "cpu/fractal.cpp", "cpu_2fractal_8cpp-example.htm", null ],
+    [ "cpu/histogram.cpp", "cpu_2histogram_8cpp-example.htm", null ],
+    [ "cpu/plot3.cpp", "cpu_2plot3_8cpp-example.htm", null ],
+    [ "cpu/plotting.cpp", "cpu_2plotting_8cpp-example.htm", null ],
+    [ "cpu/stream.cpp", "cpu_2stream_8cpp-example.htm", null ],
+    [ "cpu/surface.cpp", "cpu_2surface_8cpp-example.htm", null ],
+    [ "cuda/bubblechart.cu", "cuda_2bubblechart_8cu-example.htm", null ],
+    [ "cuda/field.cu", "cuda_2field_8cu-example.htm", null ],
+    [ "cuda/fractal.cu", "cuda_2fractal_8cu-example.htm", null ],
+    [ "cuda/histogram.cu", "cuda_2histogram_8cu-example.htm", null ],
+    [ "cuda/plot3.cu", "cuda_2plot3_8cu-example.htm", null ],
+    [ "cuda/plotting.cu", "cuda_2plotting_8cu-example.htm", null ],
+    [ "cuda/stream.cu", "cuda_2stream_8cu-example.htm", null ],
+    [ "cuda/surface.cu", "cuda_2surface_8cu-example.htm", null ],
+    [ "opencl/bubblechart.cpp", "opencl_2bubblechart_8cpp-example.htm", null ],
+    [ "opencl/cl_helpers.h", "opencl_2cl_helpers_8h-example.htm", null ],
+    [ "opencl/field.cpp", "opencl_2field_8cpp-example.htm", null ],
+    [ "opencl/fractal.cpp", "opencl_2fractal_8cpp-example.htm", null ],
+    [ "opencl/histogram.cpp", "opencl_2histogram_8cpp-example.htm", null ],
+    [ "opencl/plot3.cpp", "opencl_2plot3_8cpp-example.htm", null ],
+    [ "opencl/plotting.cpp", "opencl_2plotting_8cpp-example.htm", null ],
+    [ "opencl/stream.cpp", "opencl_2stream_8cpp-example.htm", null ],
+    [ "opencl/surface.cpp", "opencl_2surface_8cpp-example.htm", null ]
+];
