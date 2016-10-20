@@ -99,7 +99,6 @@ void attachAndLinkProgram(GLuint pProgram, Shaders pShaders)
         std::cerr << "Program did not link." << std::endl;
         FG_COMPILE_LINK_ERROR(pProgram, Program);
     }
-    FG_COMPILE_LINK_ERROR(pProgram, Program);
 }
 
 Shaders loadShaders(const char* pVertexShaderSrc,
