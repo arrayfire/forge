@@ -166,9 +166,9 @@ void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,
                                   const float pYmin, const float pYmax,
                                   const float pZmin, const float pZmax)
 {
-    mXMax = pXmax; mXMin = pXmin;
-    mYMax = pYmax; mYMin = pYmin;
-    mZMax = pZmax; mZMin = pZmin;
+    mXMin = pXmin; mXMax = pXmax;
+    mYMin = pYmin; mYMax = pYmax;
+    mZMin = pZmin; mZMax = pZmax;
 
     /*
      * Once the axes ranges are known, we can generate
@@ -177,6 +177,15 @@ void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,
      * derived class
      */
     generateTickLabels();
+}
+
+void AbstractChart::getAxesLimits(float* pXmin, float* pXmax,
+                                  float* pYmin, float* pYmax,
+                                  float* pZmin, float* pZmax)
+{
+    *pXmin = mXMin; *pXmax = mXMax;
+    *pYmin = mYMin; *pYmax = mYMax;
+    *pZmin = mZMin; *pZmax = mZMax;
 }
 
 void AbstractChart::setAxesTitles(const char* pXTitle,
