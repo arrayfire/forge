@@ -123,7 +123,7 @@ AbstractChart::AbstractChart(const int pLeftMargin, const int pRightMargin,
     : mTickCount(9), mTickSize(10),
       mDefaultLeftMargin(pLeftMargin), mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
-      mXMax(1), mXMin(0), mYMax(1), mYMin(0), mZMax(1), mZMin(0),
+      mXMax(0), mXMin(0), mYMax(0), mYMin(0), mZMax(0), mZMin(0),
       mXTitle("X-Axis"), mYTitle("Y-Axis"), mZTitle("Z-Axis"), mDecorVBO(-1),
       mBorderProgram(glsl::chart_vs.c_str(), glsl::chart_fs.c_str()),
       mSpriteProgram(glsl::chart_vs.c_str(), glsl::tick_fs.c_str()),
@@ -384,6 +384,7 @@ void chart2d_impl::generateTickLabels()
 chart2d_impl::chart2d_impl()
     : AbstractChart(64, 8, 8, 44) {
     generateChartData();
+    generateTickLabels();
 }
 
 void chart2d_impl::render(const int pWindowId,
@@ -715,6 +716,7 @@ void chart3d_impl::generateTickLabels()
 chart3d_impl::chart3d_impl()
     :AbstractChart(32, 32, 32, 32) {
     generateChartData();
+    generateTickLabels();
 }
 
 void chart3d_impl::render(const int pWindowId,

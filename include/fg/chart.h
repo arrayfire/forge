@@ -285,7 +285,7 @@ class Chart {
          */
         FGAPI void setAxesLimits(const float pXmin, const float pXmax,
                                  const float pYmin, const float pYmax,
-                                 const float pZmin=-1, const float pZmax=1);
+                                 const float pZmin=0, const float pZmax=0);
 
         /**
            Get axes data ranges
