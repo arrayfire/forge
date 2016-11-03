@@ -72,6 +72,28 @@ fg_err fg_set_chart_axes_limits(fg_chart pHandle,
     return FG_ERR_NONE;
 }
 
+fg_err fg_get_chart_axes_limits(float* pXmin, float* pXmax,
+                                float* pYmin, float* pYmax,
+                                float* pZmin, float* pZmax,
+                                const fg_chart pHandle)
+{
+    try {
+        float xmin, xmax, ymin, ymax, zmin, zmax;
+        getChart(pHandle)->getAxesLimits(&xmin, &xmax, &ymin, &ymax, &zmin, &zmax);
+
+        // Check for NULLs and assign
+        if(pXmin) *pXmin = xmin;
+        if(pXmax) *pXmax = xmax;
+        if(pYmin) *pYmin = ymin;
+        if(pYmax) *pYmax = ymax;
+        if(pZmin) *pZmin = zmin;
+        if(pZmax) *pZmax = zmax;
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
 fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const float pY)
 {
     try {

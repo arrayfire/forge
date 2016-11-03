@@ -79,6 +79,23 @@ FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
                                       const float pZmin, const float pZmax);
 
 /**
+   Get axes data ranges
+
+   \param[out] pXmin is x-axis minimum data value
+   \param[out] pXmax is x-axis maximum data value
+   \param[out] pYmin is y-axis minimum data value
+   \param[out] pYmax is y-axis maximum data value
+   \param[out] pZmin is z-axis minimum data value
+   \param[out] pZmax is z-axis maximum data value
+   \param[in] pHandle is chart handle
+
+   \ingroup chart_functions
+ */
+FGAPI fg_err fg_get_chart_axes_limits(float* pXmin, float* pXmax,
+                                      float* pYmin, float* pYmax,
+                                      float* pZmin, float* pZmax,
+                                      const fg_chart pHandle);
+/**
    Set legend position for Chart
 
    \param[in] pHandle is chart handle
@@ -268,7 +285,21 @@ class Chart {
          */
         FGAPI void setAxesLimits(const float pXmin, const float pXmax,
                                  const float pYmin, const float pYmax,
-                                 const float pZmin=-1, const float pZmax=1);
+                                 const float pZmin=0, const float pZmax=0);
+
+        /**
+           Get axes data ranges
+
+           \param[out] pXmin is x-axis minimum data value
+           \param[out] pXmax is x-axis maximum data value
+           \param[out] pYmin is y-axis minimum data value
+           \param[out] pYmax is y-axis maximum data value
+           \param[out] pZmin is z-axis minimum data value
+           \param[out] pZmax is z-axis maximum data value
+         */
+        FGAPI void getAxesLimits(float* pXmin, float* pXmax,
+                                 float* pYmin, float* pYmax,
+                                 float* pZmin = NULL, float* pZmax = NULL);
 
         /**
            Set legend position for Chart

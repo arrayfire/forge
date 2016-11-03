@@ -62,6 +62,24 @@ void Chart::setAxesLimits(const float pXmin, const float pXmax,
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
+void Chart::getAxesLimits(float* pXmin, float* pXmax,
+                          float* pYmin, float* pYmax,
+                          float* pZmin, float* pZmax)
+{
+    try {
+        float xmin, xmax, ymin, ymax, zmin, zmax;
+        getChart(mValue)->getAxesLimits(&xmin, &xmax, &ymin, &ymax, &zmin, &zmax);
+
+        // Check for NULLs and assign
+        if(pXmin) *pXmin = xmin;
+        if(pXmax) *pXmax = xmax;
+        if(pYmin) *pYmin = ymin;
+        if(pYmax) *pYmax = ymax;
+        if(pZmin) *pZmin = zmin;
+        if(pZmax) *pZmax = zmax;
+    } CATCH_INTERNAL_TO_EXTERNAL
+}
+
 void Chart::setLegendPosition(const float pX, const float pY)
 {
     try {

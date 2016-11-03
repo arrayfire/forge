@@ -105,6 +105,10 @@ class AbstractChart : public AbstractRenderable {
                            const float pYmin, const float pYmax,
                            const float pZmin, const float pZmax);
 
+        void getAxesLimits(float* pXmin, float* pXmax,
+                           float* pYmin, float* pYmax,
+                           float* pZmin, float* pZmax);
+
         void setLegendPosition(const float pX, const float pY);
 
         float xmax() const;

@@ -65,6 +65,12 @@ class Chart {
             mChart->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
         }
 
+        inline void getAxesLimits(float* pXmin, float* pXmax,
+                                  float* pYmin, float* pYmax,
+                                  float* pZmin, float* pZmax) {
+            mChart->getAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
+        }
+
         inline void setLegendPosition(const unsigned pX, const unsigned pY) {
             mChart->setLegendPosition(pX, pY);
         }
