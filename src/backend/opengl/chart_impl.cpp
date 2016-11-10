@@ -99,19 +99,20 @@ void AbstractChart::renderTickLabels(
         pos[0] = pW * (res.x/res.w+1.0f)/2.0f;
         pos[1] = pH * (res.y/res.w+1.0f)/2.0f;
 
+        const float strHalfLen = it->length() / 2.0f;
         /* offset based on text size to align
          * text center with tick mark position */
         if(pCoordsOffset < mTickCount) {
             // offset for y axis labels
-            pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f+mTickSize);
+            pos[0] -= (CHART2D_FONT_SIZE*strHalfLen+mTickSize);
             pos[1] -= (CHART2D_FONT_SIZE*.36);
         } else if(pCoordsOffset >= mTickCount && pCoordsOffset < 2*mTickCount) {
             // offset for x axis labels
-            pos[0] -= (CHART2D_FONT_SIZE*it->length()/4.0f);
+            pos[0] -= (CHART2D_FONT_SIZE*strHalfLen/2.0f);
             pos[1] -= (CHART2D_FONT_SIZE*1.32);
         } else {
             // offsets for 3d chart axes ticks
-            pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f);
+            pos[0] -= (CHART2D_FONT_SIZE*strHalfLen);
             pos[1] -= (CHART2D_FONT_SIZE);
         }
         fonter->render(pWindowId, pos, BLACK, it->c_str(), CHART2D_FONT_SIZE);
