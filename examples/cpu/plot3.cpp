@@ -48,7 +48,14 @@ int main(void)
     wnd.makeCurrent();
 
     forge::Chart chart(FG_CHART_3D);
+
+    /* set the number display format to be either fixed or scientific
+     * true means scientific format
+     * false means fixed format */
+    chart.setAxesLabelFormat(true, true, false);
+
     chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
+
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
     forge::Plot plot3 = chart.plot(ZSIZE, forge::f32);

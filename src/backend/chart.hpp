@@ -65,6 +65,12 @@ class Chart {
             mChart->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
         }
 
+        inline void setAxesLabelFormat(const bool pIsXLabelFixed,
+                                       const bool pIsYLabelFixed,
+                                       const bool pIsZLabelFixed) {
+            mChart->setAxesLabelFormat(pIsXLabelFixed, pIsYLabelFixed, pIsZLabelFixed);
+        }
+
         inline void getAxesLimits(float* pXmin, float* pXmax,
                                   float* pYmin, float* pYmax,
                                   float* pZmin, float* pZmax) {

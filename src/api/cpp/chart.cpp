@@ -62,6 +62,15 @@ void Chart::setAxesLimits(const float pXmin, const float pXmax,
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
+void Chart::setAxesLabelFormat(const bool pIsXLabelFixed,
+                               const bool pIsYLabelFixed,
+                               const bool pIsZLabelFixed)
+{
+    try {
+        getChart(mValue)->setAxesLabelFormat(pIsXLabelFixed, pIsYLabelFixed, pIsZLabelFixed);
+    } CATCH_INTERNAL_TO_EXTERNAL
+}
+
 void Chart::getAxesLimits(float* pXmin, float* pXmax,
                           float* pYmin, float* pYmax,
                           float* pZmin, float* pZmax)

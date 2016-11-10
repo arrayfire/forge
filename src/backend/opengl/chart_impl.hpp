@@ -40,10 +40,13 @@ class AbstractChart : public AbstractRenderable {
         int   mTopMargin;
         int   mBottomMargin;
         /* chart axes ranges and titles */
+        bool  mIsXFixedFormat;
         float mXMax;
         float mXMin;
+        bool  mIsYFixedFormat;
         float mYMax;
         float mYMin;
+        bool  mIsZFixedFormat;
         float mZMax;
         float mZMin;
         std::string mXTitle;
@@ -74,13 +77,33 @@ class AbstractChart : public AbstractRenderable {
             return (maxval-minval)/(mTickCount-1);
         }
 
-        int getNumTicksC2E() const {
+        inline int getNumTicksC2E() const {
             /* Get # of ticks from center(0,0) to edge along axis */
             return (mTickCount-1)/2;
         }
 
+        inline int getLeftMargin() const {
+            return mLeftMargin + (mIsXFixedFormat==false)*mLeftMargin*0.5f;
+        }
+
+        inline int getRightMargin() const {
+            return mRightMargin;
+        }
+
+        inline int getBottomMargin() const {
+            return mBottomMargin;
+        }
+
+        inline int getTopMargin() const {
+            return mTopMargin;
+        }
+
+        inline int getTickSize() const {
+            return mTickSize;
+        }
+
         void renderTickLabels(const int pWindowId, const uint pW, const uint pH,
-                              const std::vector<std::string> &pTexts,
+                              const std::vector<std::string> &pTexts, const int pFontSize,
                               const glm::mat4 &pTransformation, const int pCoordsOffset,
                               const bool pUseZoffset=true) const;
 
@@ -104,6 +127,10 @@ class AbstractChart : public AbstractRenderable {
         void setAxesLimits(const float pXmin, const float pXmax,
                            const float pYmin, const float pYmax,
                            const float pZmin, const float pZmax);
+
+        void setAxesLabelFormat(const bool pIsXLabelFixed,
+                                const bool pIsYLabelFixed,
+                                const bool pIsZLabelFixed);
 
         void getAxesLimits(float* pXmin, float* pXmax,
                            float* pYmin, float* pYmax,

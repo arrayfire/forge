@@ -79,6 +79,18 @@ FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
                                       const float pZmin, const float pZmax);
 
 /**
+   Set the format for display of axes labels in a chart
+
+   \param[in] pIsXLabelFixed sets the display format for numbers of X axis
+   \param[in] pIsYLabelFixed sets the display format for numbers of Y axis
+   \param[in] pIsZLabelFixed sets the display format for numbers of Z axis
+ */
+FGAPI fg_err fg_set_chart_label_format(fg_chart pHandle,
+                                       const bool pIsXLabelFixed,
+                                       const bool pIsYLabelFixed,
+                                       const bool pIsZLabelFixed);
+
+/**
    Get axes data ranges
 
    \param[out] pXmin is x-axis minimum data value
@@ -286,6 +298,17 @@ class Chart {
         FGAPI void setAxesLimits(const float pXmin, const float pXmax,
                                  const float pYmin, const float pYmax,
                                  const float pZmin=0, const float pZmax=0);
+
+        /**
+           Set the format for display of axes labels
+
+           \param[in] pIsXLabelFixed sets the display format for numbers of X axis
+           \param[in] pIsYLabelFixed sets the display format for numbers of Y axis
+           \param[in] pIsZLabelFixed sets the display format for numbers of Z axis
+         */
+        FGAPI void setAxesLabelFormat(const bool pIsXLabelFixed,
+                                      const bool pIsYLabelFixed,
+                                      const bool pIsZLabelFixed = false);
 
         /**
            Get axes data ranges

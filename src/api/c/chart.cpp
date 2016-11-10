@@ -72,6 +72,19 @@ fg_err fg_set_chart_axes_limits(fg_chart pHandle,
     return FG_ERR_NONE;
 }
 
+fg_err fg_set_chart_label_format(fg_chart pHandle,
+                                 const bool pIsXLabelFixed,
+                                 const bool pIsYLabelFixed,
+                                 const bool pIsZLabelFixed)
+{
+    try {
+        getChart(pHandle)->setAxesLabelFormat(pIsXLabelFixed, pIsYLabelFixed, pIsZLabelFixed);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
 fg_err fg_get_chart_axes_limits(float* pXmin, float* pXmax,
                                 float* pYmin, float* pYmax,
                                 float* pZmin, float* pZmax,

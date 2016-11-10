@@ -105,7 +105,7 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
  *
  * @return is the string representation of input float value.
  */
-std::string toString(const float pVal, const int pPrecision = 2);
+std::string toString(const float pVal, const bool pFixed = true, const int pPrecision = 1);
 
 /* Get a vertex buffer object for quad that spans the screen
  */
