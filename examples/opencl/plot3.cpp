@@ -85,10 +85,7 @@ int main(void)
 
         forge::Chart chart(FG_CHART_3D);
 
-        /* set the number display format to be either fixed or scientific
-         * true means scientific format
-         * false means fixed format */
-        chart.setAxesLabelFormat(true, true, false);
+        chart.setAxesLabelFormat(FG_NUMBER_FIXED, FG_NUMBER_FIXED, FG_NUMBER_SCIENTIFIC);
 
         chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
 

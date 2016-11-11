@@ -73,12 +73,12 @@ fg_err fg_set_chart_axes_limits(fg_chart pHandle,
 }
 
 fg_err fg_set_chart_label_format(fg_chart pHandle,
-                                 const bool pIsXLabelFixed,
-                                 const bool pIsYLabelFixed,
-                                 const bool pIsZLabelFixed)
+                                 const fg_display_format pXFormat,
+                                 const fg_display_format pYFormat,
+                                 const fg_display_format pZFormat)
 {
     try {
-        getChart(pHandle)->setAxesLabelFormat(pIsXLabelFixed, pIsYLabelFixed, pIsZLabelFixed);
+        getChart(pHandle)->setAxesLabelFormat(pXFormat, pYFormat, pZFormat);
     }
     CATCHALL
 

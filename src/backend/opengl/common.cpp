@@ -270,10 +270,11 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
 }
 #endif
 
-std::string toString(const float pVal, const bool pFixed, const int pPrecision)
+std::string toString(const float pVal, const DisplayFormat pFormat, const int pPrecision)
 {
     std::ostringstream out;
-    out << (pFixed ? std::fixed : std::scientific) << std::setprecision(pPrecision) << pVal;
+    out << (pFormat == FG_NUMBER_FIXED ? std::fixed : std::scientific)
+        << std::setprecision(pPrecision) << pVal;
     return out.str();
 }
 

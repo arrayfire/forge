@@ -82,10 +82,7 @@ int main(void)
 
     forge::Chart chart(FG_CHART_2D);
 
-    /* set the number display format to be either fixed or scientific
-     * true means scientific format
-     * false means fixed format */
-    chart.setAxesLabelFormat(true, false);
+    chart.setAxesLabelFormat(FG_NUMBER_FIXED, FG_NUMBER_SCIENTIFIC);
 
     /* set x axis limits to maximum and minimum values of data
      * and y axis limits to range [0, number of pixels ideally]

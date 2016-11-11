@@ -81,14 +81,14 @@ FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
 /**
    Set the format for display of axes labels in a chart
 
-   \param[in] pIsXLabelFixed sets the display format for numbers of X axis
-   \param[in] pIsYLabelFixed sets the display format for numbers of Y axis
-   \param[in] pIsZLabelFixed sets the display format for numbers of Z axis
+   \param[in] pXFormat sets the display format for numbers of X axis
+   \param[in] pYFormat sets the display format for numbers of Y axis
+   \param[in] pZFormat sets the display format for numbers of Z axis
  */
 FGAPI fg_err fg_set_chart_label_format(fg_chart pHandle,
-                                       const bool pIsXLabelFixed,
-                                       const bool pIsYLabelFixed,
-                                       const bool pIsZLabelFixed);
+                                       const fg_display_format pXFormat,
+                                       const fg_display_format pYFormat,
+                                       const fg_display_format pZFormat);
 
 /**
    Get axes data ranges
@@ -302,13 +302,13 @@ class Chart {
         /**
            Set the format for display of axes labels
 
-           \param[in] pIsXLabelFixed sets the display format for numbers of X axis
-           \param[in] pIsYLabelFixed sets the display format for numbers of Y axis
-           \param[in] pIsZLabelFixed sets the display format for numbers of Z axis
+           \param[in] pXFormat sets the display format for numbers of X axis
+           \param[in] pYFormat sets the display format for numbers of Y axis
+           \param[in] pZFormat sets the display format for numbers of Z axis
          */
-        FGAPI void setAxesLabelFormat(const bool pIsXLabelFixed,
-                                      const bool pIsYLabelFixed,
-                                      const bool pIsZLabelFixed = false);
+        FGAPI void setAxesLabelFormat(const DisplayFormat pXFormat,
+                                      const DisplayFormat pYFormat,
+                                      const DisplayFormat pZFormat = FG_NUMBER_SCIENTIFIC);
 
         /**
            Get axes data ranges

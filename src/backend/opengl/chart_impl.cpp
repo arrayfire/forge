@@ -124,9 +124,9 @@ AbstractChart::AbstractChart(const int pLeftMargin, const int pRightMargin,
     : mTickCount(9), mTickSize(10),
       mDefaultLeftMargin(pLeftMargin), mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
-      mIsXFixedFormat(true), mXMax(0), mXMin(0),
-      mIsYFixedFormat(true), mYMax(0), mYMin(0),
-      mIsZFixedFormat(true), mZMax(0), mZMin(0),
+      mXLabelFormat(FG_NUMBER_FIXED), mXMax(0), mXMin(0),
+      mYLabelFormat(FG_NUMBER_FIXED), mYMax(0), mYMin(0),
+      mZLabelFormat(FG_NUMBER_FIXED), mZMax(0), mZMin(0),
       mXTitle("X-Axis"), mYTitle("Y-Axis"), mZTitle("Z-Axis"), mDecorVBO(-1),
       mBorderProgram(glsl::chart_vs.c_str(), glsl::chart_fs.c_str()),
       mSpriteProgram(glsl::chart_vs.c_str(), glsl::tick_fs.c_str()),
@@ -182,13 +182,13 @@ void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,
     generateTickLabels();
 }
 
-void AbstractChart::setAxesLabelFormat(const bool pIsXLabelFixed,
-                                       const bool pIsYLabelFixed,
-                                       const bool pIsZLabelFixed)
+void AbstractChart::setAxesLabelFormat(const DisplayFormat pXFormat,
+                                       const DisplayFormat pYFormat,
+                                       const DisplayFormat pZFormat)
 {
-    mIsXFixedFormat = pIsXLabelFixed;
-    mIsYFixedFormat = pIsYLabelFixed;
-    mIsZFixedFormat = pIsZLabelFixed;
+    mXLabelFormat = pXFormat;
+    mYLabelFormat = pYFormat;
+    mZLabelFormat = pZFormat;
 }
 
 void AbstractChart::getAxesLimits(float* pXmin, float* pXmax,
@@ -284,7 +284,7 @@ void chart2d_impl::generateChartData()
      * (0, 1] ticks  */
     pushPoint(decorData, -1.0f, 0.0f);
     pushTicktextCoords(-1.0f, 0.0f);
-    mYText.push_back(toString(0, mIsYFixedFormat));
+    mYText.push_back(toString(0, mYLabelFormat));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* [-1, 0) to [-1, -1] */
@@ -293,7 +293,7 @@ void chart2d_impl::generateChartData()
         /* puch tick marks */
         pushTicktextCoords(-1.0f, neg);
         /* push tick text label */
-        mYText.push_back(toString(neg, mIsYFixedFormat));
+        mYText.push_back(toString(neg, mYLabelFormat));
 
         /* [-1, 0) to [-1, 1] */
         float pos = i*step;
@@ -301,7 +301,7 @@ void chart2d_impl::generateChartData()
         /* puch tick marks */
         pushTicktextCoords(-1.0f, pos);
         /* push tick text label */
-        mYText.push_back(toString(pos, mIsYFixedFormat));
+        mYText.push_back(toString(pos, mYLabelFormat));
     }
 
     /* push tick points for x axis:
@@ -310,20 +310,20 @@ void chart2d_impl::generateChartData()
      * (0, 1] ticks  */
     pushPoint(decorData, 0.0f, -1.0f);
     pushTicktextCoords(0.0f, -1.0f);
-    mXText.push_back(toString(0, mIsXFixedFormat));
+    mXText.push_back(toString(0, mXLabelFormat));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
         float neg = i*-step;
         pushPoint(decorData, neg, -1.0f);
         pushTicktextCoords(neg, -1.0f);
-        mXText.push_back(toString(neg, mIsXFixedFormat));
+        mXText.push_back(toString(neg, mXLabelFormat));
 
         /* (0, -1] to [1, -1] */
         float pos = i*step;
         pushPoint(decorData, pos, -1.0f);
         pushTicktextCoords(pos, -1.0f);
-        mXText.push_back(toString(pos, mIsXFixedFormat));
+        mXText.push_back(toString(pos, mXLabelFormat));
     }
 
     /* push grid lines */
@@ -379,8 +379,11 @@ void chart2d_impl::generateTickLabels()
      * for number of digits based on limits of the
      * axis and switch to scientific format if necessary
      * */
-    mIsXFixedFormat = std::max(getDigitCount(mXMin), getDigitCount(mXMax))<=6;
-    mIsYFixedFormat = std::max(getDigitCount(mYMin), getDigitCount(mYMax))<=6;
+    if (mXLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mXMin), getDigitCount(mXMax))>6)
+        mXLabelFormat = FG_NUMBER_SCIENTIFIC;
+
+    if (mYLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mYMin), getDigitCount(mYMax))>6)
+        mYLabelFormat = FG_NUMBER_SCIENTIFIC;
 
     float xstep = getTickStepSize(mXMin, mXMax);
     float ystep = getTickStepSize(mYMin, mYMax);
@@ -390,14 +393,14 @@ void chart2d_impl::generateTickLabels()
     int ticksLeft = getNumTicksC2E();
 
     /* push tick points for y axis */
-    mYText.push_back(toString(ymid, mIsYFixedFormat));
+    mYText.push_back(toString(ymid, mYLabelFormat));
     size_t maxYLabelWidth = 0;
     for (int i = 1; i <= ticksLeft; i++) {
-        std::string temp = toString(ymid + i*-ystep, mIsYFixedFormat);
+        std::string temp = toString(ymid + i*-ystep, mYLabelFormat);
         mYText.push_back(temp);
         maxYLabelWidth = std::max(maxYLabelWidth, temp.length());
 
-        temp = toString(ymid + i*ystep, mIsYFixedFormat);
+        temp = toString(ymid + i*ystep, mYLabelFormat);
         mYText.push_back(temp);
         maxYLabelWidth = std::max(maxYLabelWidth, temp.length());
     }
@@ -405,10 +408,10 @@ void chart2d_impl::generateTickLabels()
     mLeftMargin = std::max((int)maxYLabelWidth, mDefaultLeftMargin)+2*CHART2D_FONT_SIZE;
 
     /* push tick points for x axis */
-    mXText.push_back(toString(xmid, mIsXFixedFormat));
+    mXText.push_back(toString(xmid, mXLabelFormat));
     for (int i = 1; i <= ticksLeft; i++) {
-        mXText.push_back(toString(xmid + i*-xstep, mIsXFixedFormat));
-        mXText.push_back(toString(xmid + i*xstep, mIsXFixedFormat));
+        mXText.push_back(toString(xmid + i*-xstep, mXLabelFormat));
+        mXText.push_back(toString(xmid + i*xstep, mXLabelFormat));
     }
 }
 
@@ -588,7 +591,7 @@ void chart3d_impl::generateChartData()
      * (0, 1] ticks  */
     pushPoint(decorData, -1.0f, -1.0f, 0.0f);
     pushTicktextCoords(-1.0f, -1.0f, 0.0f);
-    mZText.push_back(toString(0, mIsZFixedFormat));
+    mZText.push_back(toString(0, mZLabelFormat));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
@@ -597,7 +600,7 @@ void chart3d_impl::generateChartData()
         /* push tick marks */
         pushTicktextCoords(-1.0f, -1.0f, neg);
         /* push tick text label */
-        mZText.push_back(toString(neg, mIsZFixedFormat));
+        mZText.push_back(toString(neg, mZLabelFormat));
 
         /* (0, -1] to [1, -1] */
         float pos = i*step;
@@ -605,7 +608,7 @@ void chart3d_impl::generateChartData()
         /* push tick marks */
         pushTicktextCoords(-1.0f, -1.0f, pos);
         /* push tick text label */
-        mZText.push_back(toString(pos, mIsZFixedFormat));
+        mZText.push_back(toString(pos, mZLabelFormat));
     }
     /* push tick points for y axis:
      * push (0,0) first followed by
@@ -613,20 +616,20 @@ void chart3d_impl::generateChartData()
      * (0, 1] ticks  */
     pushPoint(decorData, 1.0f, 0.0f, -1.0f);
     pushTicktextCoords(1.0f, 0.0f, -1.0f);
-    mYText.push_back(toString(0, mIsYFixedFormat));
+    mYText.push_back(toString(0, mYLabelFormat));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* [-1, 0) to [-1, -1] */
         float neg = i*-step;
         pushPoint(decorData, 1.0f, neg, -1.0f);
         pushTicktextCoords(1.0f, neg, -1.0f);
-        mYText.push_back(toString(neg, mIsYFixedFormat));
+        mYText.push_back(toString(neg, mYLabelFormat));
 
         /* [-1, 0) to [-1, 1] */
         float pos = i*step;
         pushPoint(decorData, 1.0f, pos, -1.0f);
         pushTicktextCoords(1.0f, pos, -1.0f);
-        mYText.push_back(toString(pos, mIsYFixedFormat));
+        mYText.push_back(toString(pos, mYLabelFormat));
     }
 
     /* push tick points for x axis:
@@ -635,20 +638,20 @@ void chart3d_impl::generateChartData()
      * (0, 1] ticks  */
     pushPoint(decorData, 0.0f, -1.0f, -1.0f);
     pushTicktextCoords( 0.0f, -1.0f, -1.0f);
-    mXText.push_back(toString(0, mIsXFixedFormat));
+    mXText.push_back(toString(0, mXLabelFormat));
 
     for(int i=1; i<=ticksLeft; ++i) {
         /* (0, -1] to [-1, -1] */
         float neg = i*-step;
         pushPoint(decorData, neg, -1.0f, -1.0f);
         pushTicktextCoords( neg, -1.0f, -1.0f);
-        mXText.push_back(toString(neg, mIsXFixedFormat));
+        mXText.push_back(toString(neg, mXLabelFormat));
 
         /* [-1, 0) to [-1, 1] */
         float pos = i*step;
         pushPoint(decorData, pos, -1.0f, -1.0f);
         pushTicktextCoords( pos, -1.0f, -1.0f);
-        mXText.push_back(toString(pos, mIsXFixedFormat));
+        mXText.push_back(toString(pos, mXLabelFormat));
     }
 
     /* push grid lines */
@@ -722,9 +725,14 @@ void chart3d_impl::generateTickLabels()
      * for number of digits based on limits of the
      * axis and switch to scientific format if necessary
      * */
-    if (mIsXFixedFormat) mIsXFixedFormat = std::max(getDigitCount(mXMin), getDigitCount(mXMax))<=6;
-    if (mIsYFixedFormat) mIsYFixedFormat = std::max(getDigitCount(mYMin), getDigitCount(mYMax))<=6;
-    if (mIsZFixedFormat) mIsZFixedFormat = std::max(getDigitCount(mZMin), getDigitCount(mZMax))<=6;
+    if (mXLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mXMin), getDigitCount(mXMax))>6)
+        mXLabelFormat = FG_NUMBER_SCIENTIFIC;
+
+    if (mYLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mYMin), getDigitCount(mYMax))>6)
+        mYLabelFormat = FG_NUMBER_SCIENTIFIC;
+
+    if (mZLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mZMin), getDigitCount(mZMax))>6)
+        mZLabelFormat = FG_NUMBER_SCIENTIFIC;
 
     float xstep = getTickStepSize(mXMin, mXMax);
     float ystep = getTickStepSize(mYMin, mYMax);
@@ -736,22 +744,22 @@ void chart3d_impl::generateTickLabels()
     int ticksLeft = getNumTicksC2E();
 
     /* push tick points for z axis */
-    mZText.push_back(toString(zmid, mIsZFixedFormat));
+    mZText.push_back(toString(zmid, mZLabelFormat));
     for (int i = 1; i <= ticksLeft; i++) {
-        mZText.push_back(toString(zmid + i*-zstep, mIsZFixedFormat));
-        mZText.push_back(toString(zmid + i*zstep, mIsZFixedFormat));
+        mZText.push_back(toString(zmid + i*-zstep, mZLabelFormat));
+        mZText.push_back(toString(zmid + i*zstep, mZLabelFormat));
     }
     /* push tick points for y axis */
-    mYText.push_back(toString(ymid, mIsYFixedFormat));
+    mYText.push_back(toString(ymid, mYLabelFormat));
     for (int i = 1; i <= ticksLeft; i++) {
-        mYText.push_back(toString(ymid + i*-ystep, mIsYFixedFormat));
-        mYText.push_back(toString(ymid + i*ystep, mIsYFixedFormat));
+        mYText.push_back(toString(ymid + i*-ystep, mYLabelFormat));
+        mYText.push_back(toString(ymid + i*ystep, mYLabelFormat));
     }
     /* push tick points for x axis */
-    mXText.push_back(toString(xmid, mIsXFixedFormat));
+    mXText.push_back(toString(xmid, mXLabelFormat));
     for (int i = 1; i <= ticksLeft; i++) {
-        mXText.push_back(toString(xmid + i*-xstep, mIsXFixedFormat));
-        mXText.push_back(toString(xmid + i*xstep, mIsXFixedFormat));
+        mXText.push_back(toString(xmid + i*-xstep, mXLabelFormat));
+        mXText.push_back(toString(xmid + i*xstep, mXLabelFormat));
     }
 }
 
