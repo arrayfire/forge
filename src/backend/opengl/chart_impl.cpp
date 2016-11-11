@@ -353,6 +353,18 @@ void chart2d_impl::generateChartData()
     CheckGL("End chart2d_impl::generateChartData");
 }
 
+int getDigitCount(int value)
+{
+    int count = 0;
+
+    while (value) {
+        value = value/10;
+        count++;
+    }
+
+    return count;
+}
+
 void chart2d_impl::generateTickLabels()
 {
     /* remove all the tick text markers that were generated
@@ -362,6 +374,13 @@ void chart2d_impl::generateTickLabels()
     mXText.clear();
     mYText.clear();
     mZText.clear();
+
+    /* if current display format is fixed, check
+     * for number of digits based on limits of the
+     * axis and switch to scientific format if necessary
+     * */
+    mIsXFixedFormat = std::max(getDigitCount(mXMin), getDigitCount(mXMax))<=6;
+    mIsYFixedFormat = std::max(getDigitCount(mYMin), getDigitCount(mYMax))<=6;
 
     float xstep = getTickStepSize(mXMin, mXMax);
     float ystep = getTickStepSize(mYMin, mYMax);
@@ -698,6 +717,14 @@ void chart3d_impl::generateTickLabels()
     mXText.clear();
     mYText.clear();
     mZText.clear();
+
+    /* if current display format is fixed, check
+     * for number of digits based on limits of the
+     * axis and switch to scientific format if necessary
+     * */
+    if (mIsXFixedFormat) mIsXFixedFormat = std::max(getDigitCount(mXMin), getDigitCount(mXMax))<=6;
+    if (mIsYFixedFormat) mIsYFixedFormat = std::max(getDigitCount(mYMin), getDigitCount(mYMax))<=6;
+    if (mIsZFixedFormat) mIsZFixedFormat = std::max(getDigitCount(mZMin), getDigitCount(mZMax))<=6;
 
     float xstep = getTickStepSize(mXMin, mXMax);
     float ystep = getTickStepSize(mYMin, mYMax);
