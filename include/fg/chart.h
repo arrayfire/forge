@@ -81,6 +81,7 @@ FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
 /**
    Set the format for display of axes labels in a chart
 
+   \param[in] pHandle is chart handle
    \param[in] pXFormat sets the display format for numbers of X axis
    \param[in] pYFormat sets the display format for numbers of Y axis
    \param[in] pZFormat sets the display format for numbers of Z axis
