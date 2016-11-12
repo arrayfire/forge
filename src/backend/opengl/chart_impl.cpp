@@ -353,13 +353,25 @@ void chart2d_impl::generateChartData()
     CheckGL("End chart2d_impl::generateChartData");
 }
 
-int getDigitCount(int value)
+int getDigitCount(float value)
 {
     int count = 0;
 
-    while (value) {
-        value = value/10;
-        count++;
+    float v = std::abs(value);
+
+    if (v<1.0f) {
+        if (v>FLT_EPSILON) {
+            while(v<1) {
+                v = v * 10.0f;
+                count++;
+            }
+        }
+    } else {
+        int num = value;
+        while (num) {
+            num = num/10;
+            count++;
+        }
     }
 
     return count;
