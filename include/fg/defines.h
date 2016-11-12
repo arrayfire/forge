@@ -175,7 +175,7 @@ typedef enum {
 typedef enum {
     FG_NUMBER_FIXED         = 0,    ///< Fixed format display of numbers
     FG_NUMBER_SCIENTIFIC    = 1     ///< Scientific format display of numbers
-} fg_display_format;
+} fg_axis_label_format;
 
 #ifdef __cplusplus
 namespace forge
@@ -187,7 +187,7 @@ namespace forge
     typedef fg_color Color;
     typedef fg_plot_type PlotType;
     typedef fg_marker_type MarkerType;
-    typedef fg_display_format DisplayFormat;
+    typedef fg_axis_label_format DisplayFormat;
 
     typedef enum {
         s8  = FG_INT8,

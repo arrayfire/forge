@@ -87,9 +87,9 @@ FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
    \param[in] pZFormat sets the display format for numbers of Z axis
  */
 FGAPI fg_err fg_set_chart_label_format(fg_chart pHandle,
-                                       const fg_display_format pXFormat,
-                                       const fg_display_format pYFormat,
-                                       const fg_display_format pZFormat);
+                                       const fg_axis_label_format pXFormat,
+                                       const fg_axis_label_format pYFormat,
+                                       const fg_axis_label_format pZFormat);
 
 /**
    Get axes data ranges
