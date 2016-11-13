@@ -16,8 +16,8 @@
 #include <vector>
 #include <memory>
 
-static const size_t MIN_FONT_SIZE = 8;
-static const size_t MAX_FONT_SIZE = 16;
+static const float MIN_FONT_SIZE = 4.0f;
+static const float MAX_FONT_SIZE = 18.0f;
 
 namespace forge
 {
