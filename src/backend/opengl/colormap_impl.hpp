@@ -25,9 +25,9 @@ class colormap_impl {
          * each of the following buffers will point
          * to the data from floating point arrays
          * defined in cmap.hpp header. Currently,
-         * the largest colormap is 506 colors(1520 floats).
+         * the largest colormap is 259 colors(1036 floats).
          * Hence the shader of internal::image_impl uses
-         * uniform array of floats with size 1536 (512 color triplets).
+         * uniform array of vec4 with size 259.
          * when a new colormap is added, make sure
          * the size of array declared in the shaders
          * used by *_impl objects to reflect appropriate
@@ -39,6 +39,11 @@ class colormap_impl {
         gl::GLuint mMoodMapBuffer;
         gl::GLuint mHeatMapBuffer;
         gl::GLuint mBlueMapBuffer;
+        gl::GLuint mInfernoMapBuffer;
+        gl::GLuint mMagmaMapBuffer;
+        gl::GLuint mPlasmaMapBuffer;
+        gl::GLuint mViridisMapBuffer;
+
         /* Current color map lengths */
         gl::GLuint mDefMapLen;
         gl::GLuint mSpecMapLen;
@@ -47,27 +52,18 @@ class colormap_impl {
         gl::GLuint mMoodMapLen;
         gl::GLuint mHeatMapLen;
         gl::GLuint mBlueMapLen;
+        gl::GLuint mInfernoMapLen;
+        gl::GLuint mMagmaMapLen;
+        gl::GLuint mPlasmaMapLen;
+        gl::GLuint mViridisMapLen;
 
     public:
         /* constructors and destructors */
         colormap_impl();
         ~colormap_impl();
 
-        gl::GLuint defaultMap() const;
-        gl::GLuint spectrum() const;
-        gl::GLuint colors() const;
-        gl::GLuint red() const;
-        gl::GLuint mood() const;
-        gl::GLuint heat() const;
-        gl::GLuint blue() const;
-
-        gl::GLuint defaultLen() const;
-        gl::GLuint spectrumLen() const;
-        gl::GLuint colorsLen() const;
-        gl::GLuint redLen() const;
-        gl::GLuint moodLen() const;
-        gl::GLuint heatLen() const;
-        gl::GLuint blueLen() const;
+        gl::GLuint cmapUniformBufferId(forge::ColorMap cmap) const;
+        gl::GLuint cmapLength(forge::ColorMap cmap) const;
 };
 
 }

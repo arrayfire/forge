@@ -27,13 +27,17 @@ colormap_impl::colormap_impl()
     mBlueMapBuffer(0)
 {
     size_t channel_bytes = sizeof(float)*4; /* 4 is for 4 channels */
-    mDefMapLen  = (GLuint)(sizeof(cmap_default) /channel_bytes);
-    mSpecMapLen = (GLuint)(sizeof(cmap_spectrum)/channel_bytes);
-    mColsMapLen = (GLuint)(sizeof(cmap_colors)  /channel_bytes);
-    mRedMapLen  = (GLuint)(sizeof(cmap_red)     /channel_bytes);
-    mMoodMapLen = (GLuint)(sizeof(cmap_mood)    /channel_bytes);
-    mHeatMapLen = (GLuint)(sizeof(cmap_heat)    /channel_bytes);
-    mBlueMapLen = (GLuint)(sizeof(cmap_blue)    /channel_bytes);
+    mDefMapLen     = (GLuint)(sizeof(cmap_default)  / channel_bytes);
+    mSpecMapLen    = (GLuint)(sizeof(cmap_spectrum) / channel_bytes);
+    mColsMapLen    = (GLuint)(sizeof(cmap_colors)   / channel_bytes);
+    mRedMapLen     = (GLuint)(sizeof(cmap_red)      / channel_bytes);
+    mMoodMapLen    = (GLuint)(sizeof(cmap_mood)     / channel_bytes);
+    mHeatMapLen    = (GLuint)(sizeof(cmap_heat)     / channel_bytes);
+    mBlueMapLen    = (GLuint)(sizeof(cmap_blue)     / channel_bytes);
+    mInfernoMapLen = (GLuint)(sizeof(cmap_inferno)  / channel_bytes);
+    mMagmaMapLen   = (GLuint)(sizeof(cmap_magma)    / channel_bytes);
+    mPlasmaMapLen  = (GLuint)(sizeof(cmap_plasma)   / channel_bytes);
+    mViridisMapLen = (GLuint)(sizeof(cmap_viridis)  / channel_bytes);
 
     mDefaultMapBuffer = CREATE_UNIFORM_BUFFER(cmap_default, mDefMapLen);
     mSpecMapBuffer    = CREATE_UNIFORM_BUFFER(cmap_spectrum, mSpecMapLen);
@@ -42,6 +46,10 @@ colormap_impl::colormap_impl()
     mMoodMapBuffer    = CREATE_UNIFORM_BUFFER(cmap_mood, mMoodMapLen);
     mHeatMapBuffer    = CREATE_UNIFORM_BUFFER(cmap_heat, mHeatMapLen);
     mBlueMapBuffer    = CREATE_UNIFORM_BUFFER(cmap_blue, mBlueMapLen);
+    mInfernoMapBuffer = CREATE_UNIFORM_BUFFER(cmap_inferno, mInfernoMapLen);
+    mMagmaMapBuffer   = CREATE_UNIFORM_BUFFER(cmap_magma, mMagmaMapLen);
+    mPlasmaMapBuffer  = CREATE_UNIFORM_BUFFER(cmap_plasma, mPlasmaMapLen);
+    mViridisMapBuffer = CREATE_UNIFORM_BUFFER(cmap_viridis, mViridisMapLen);
 }
 
 colormap_impl::~colormap_impl()
@@ -53,76 +61,44 @@ colormap_impl::~colormap_impl()
     glDeleteBuffers(1, &mMoodMapBuffer);
     glDeleteBuffers(1, &mHeatMapBuffer);
     glDeleteBuffers(1, &mBlueMapBuffer);
+    glDeleteBuffers(1, &mInfernoMapBuffer);
+    glDeleteBuffers(1, &mMagmaMapBuffer);
+    glDeleteBuffers(1, &mPlasmaMapBuffer);
+    glDeleteBuffers(1, &mViridisMapBuffer);
 }
 
-GLuint colormap_impl::defaultMap() const
+GLuint colormap_impl::cmapUniformBufferId(forge::ColorMap cmap) const
 {
-    return mDefaultMapBuffer;
+    switch(cmap) {
+        case FG_COLOR_MAP_DEFAULT : return mDefaultMapBuffer;
+        case FG_COLOR_MAP_SPECTRUM: return mSpecMapBuffer;
+        case FG_COLOR_MAP_COLORS  : return mColorsMapBuffer;
+        case FG_COLOR_MAP_RED     : return mRedMapBuffer;
+        case FG_COLOR_MAP_MOOD    : return mMoodMapBuffer;
+        case FG_COLOR_MAP_HEAT    : return mHeatMapBuffer;
+        case FG_COLOR_MAP_BLUE    : return mBlueMapBuffer;
+        case FG_COLOR_MAP_INFERNO : return mInfernoMapBuffer;
+        case FG_COLOR_MAP_MAGMA   : return mMagmaMapBuffer;
+        case FG_COLOR_MAP_PLASMA  : return mPlasmaMapBuffer;
+        case FG_COLOR_MAP_VIRIDIS : return mViridisMapBuffer;
+    }
 }
 
-GLuint colormap_impl::spectrum() const
+GLuint colormap_impl::cmapLength(forge::ColorMap cmap) const
 {
-    return mSpecMapBuffer;
-}
-
-GLuint colormap_impl::colors() const
-{
-    return mColorsMapBuffer;
-}
-
-GLuint colormap_impl::red() const
-{
-    return mRedMapBuffer;
-}
-
-GLuint colormap_impl::mood() const
-{
-    return mMoodMapBuffer;
-}
-
-GLuint colormap_impl::heat() const
-{
-    return mHeatMapBuffer;
-}
-
-GLuint colormap_impl::blue() const
-{
-    return mBlueMapBuffer;
-}
-
-GLuint colormap_impl::defaultLen() const
-{
-    return mDefMapLen;
-}
-
-GLuint colormap_impl::spectrumLen() const
-{
-    return mSpecMapLen;
-}
-
-GLuint colormap_impl::colorsLen() const
-{
-    return mColsMapLen;
-}
-
-GLuint colormap_impl::redLen() const
-{
-    return mRedMapLen;
-}
-
-GLuint colormap_impl::moodLen() const
-{
-    return mMoodMapLen;
-}
-
-GLuint colormap_impl::heatLen() const
-{
-    return mHeatMapLen;
-}
-
-GLuint colormap_impl::blueLen() const
-{
-    return mBlueMapLen;
+    switch(cmap) {
+        case FG_COLOR_MAP_DEFAULT : return mDefMapLen;
+        case FG_COLOR_MAP_SPECTRUM: return mSpecMapLen;
+        case FG_COLOR_MAP_COLORS  : return mColsMapLen;
+        case FG_COLOR_MAP_RED     : return mRedMapLen;
+        case FG_COLOR_MAP_MOOD    : return mMoodMapLen;
+        case FG_COLOR_MAP_HEAT    : return mHeatMapLen;
+        case FG_COLOR_MAP_BLUE    : return mBlueMapLen;
+        case FG_COLOR_MAP_INFERNO : return mInfernoMapLen;
+        case FG_COLOR_MAP_MAGMA   : return mMagmaMapLen;
+        case FG_COLOR_MAP_PLASMA  : return mPlasmaMapLen;
+        case FG_COLOR_MAP_VIRIDIS : return mViridisMapLen;
+    }
 }
 
 }
