@@ -121,8 +121,6 @@ typedef enum {
 
 /**
    Color maps
-
-   \image html gfx_palette.png
  */
 typedef enum {
     FG_COLOR_MAP_DEFAULT  =  0,              ///< Default [0-255] grayscale colormap
