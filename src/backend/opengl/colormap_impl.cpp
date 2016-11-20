@@ -70,7 +70,6 @@ colormap_impl::~colormap_impl()
 GLuint colormap_impl::cmapUniformBufferId(forge::ColorMap cmap) const
 {
     switch(cmap) {
-        case FG_COLOR_MAP_DEFAULT : return mDefaultMapBuffer;
         case FG_COLOR_MAP_SPECTRUM: return mSpecMapBuffer;
         case FG_COLOR_MAP_RAINBOW : return mRainbowMapBuffer;
         case FG_COLOR_MAP_RED     : return mRedMapBuffer;
@@ -81,13 +80,13 @@ GLuint colormap_impl::cmapUniformBufferId(forge::ColorMap cmap) const
         case FG_COLOR_MAP_MAGMA   : return mMagmaMapBuffer;
         case FG_COLOR_MAP_PLASMA  : return mPlasmaMapBuffer;
         case FG_COLOR_MAP_VIRIDIS : return mViridisMapBuffer;
+        default: return mDefaultMapBuffer;
     }
 }
 
 GLuint colormap_impl::cmapLength(forge::ColorMap cmap) const
 {
     switch(cmap) {
-        case FG_COLOR_MAP_DEFAULT : return mDefMapLen;
         case FG_COLOR_MAP_SPECTRUM: return mSpecMapLen;
         case FG_COLOR_MAP_RAINBOW : return mRainbowMapLen;
         case FG_COLOR_MAP_RED     : return mRedMapLen;
@@ -98,6 +97,7 @@ GLuint colormap_impl::cmapLength(forge::ColorMap cmap) const
         case FG_COLOR_MAP_MAGMA   : return mMagmaMapLen;
         case FG_COLOR_MAP_PLASMA  : return mPlasmaMapLen;
         case FG_COLOR_MAP_VIRIDIS : return mViridisMapLen;
+        default: return mDefMapLen;
     }
 }
 
