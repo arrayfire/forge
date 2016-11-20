@@ -127,7 +127,7 @@ typedef enum {
 typedef enum {
     FG_COLOR_MAP_DEFAULT  =  0,              ///< Default [0-255] grayscale colormap
     FG_COLOR_MAP_SPECTRUM =  1,              ///< Visual spectrum (390nm-830nm) in sRGB colorspace
-    FG_COLOR_MAP_COLORS   =  2,              ///< Pure Colors
+    FG_COLOR_MAP_RAINBOW  =  2,              ///< Rainbow color map
     FG_COLOR_MAP_RED      =  3,              ///< Red color map
     FG_COLOR_MAP_MOOD     =  4,              ///< Mood color map
     FG_COLOR_MAP_HEAT     =  5,              ///< Heat color map

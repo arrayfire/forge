@@ -22,14 +22,14 @@ namespace opengl
 {
 
 colormap_impl::colormap_impl()
-    :mDefaultMapBuffer(0), mSpecMapBuffer(0), mColorsMapBuffer(0),
+    :mDefaultMapBuffer(0), mSpecMapBuffer(0), mRainbowMapBuffer(0),
     mRedMapBuffer(0), mMoodMapBuffer(0), mHeatMapBuffer(0),
     mBlueMapBuffer(0)
 {
     size_t channel_bytes = sizeof(float)*4; /* 4 is for 4 channels */
     mDefMapLen     = (GLuint)(sizeof(cmap_default)  / channel_bytes);
     mSpecMapLen    = (GLuint)(sizeof(cmap_spectrum) / channel_bytes);
-    mColsMapLen    = (GLuint)(sizeof(cmap_colors)   / channel_bytes);
+    mRainbowMapLen = (GLuint)(sizeof(cmap_rainbow)   / channel_bytes);
     mRedMapLen     = (GLuint)(sizeof(cmap_red)      / channel_bytes);
     mMoodMapLen    = (GLuint)(sizeof(cmap_mood)     / channel_bytes);
     mHeatMapLen    = (GLuint)(sizeof(cmap_heat)     / channel_bytes);
@@ -41,7 +41,7 @@ colormap_impl::colormap_impl()
 
     mDefaultMapBuffer = CREATE_UNIFORM_BUFFER(cmap_default, mDefMapLen);
     mSpecMapBuffer    = CREATE_UNIFORM_BUFFER(cmap_spectrum, mSpecMapLen);
-    mColorsMapBuffer  = CREATE_UNIFORM_BUFFER(cmap_colors, mColsMapLen);
+    mRainbowMapBuffer = CREATE_UNIFORM_BUFFER(cmap_rainbow, mRainbowMapLen);
     mRedMapBuffer     = CREATE_UNIFORM_BUFFER(cmap_red, mRedMapLen);
     mMoodMapBuffer    = CREATE_UNIFORM_BUFFER(cmap_mood, mMoodMapLen);
     mHeatMapBuffer    = CREATE_UNIFORM_BUFFER(cmap_heat, mHeatMapLen);
@@ -56,7 +56,7 @@ colormap_impl::~colormap_impl()
 {
     glDeleteBuffers(1, &mDefaultMapBuffer);
     glDeleteBuffers(1, &mSpecMapBuffer);
-    glDeleteBuffers(1, &mColorsMapBuffer);
+    glDeleteBuffers(1, &mRainbowMapBuffer);
     glDeleteBuffers(1, &mRedMapBuffer);
     glDeleteBuffers(1, &mMoodMapBuffer);
     glDeleteBuffers(1, &mHeatMapBuffer);
@@ -72,7 +72,7 @@ GLuint colormap_impl::cmapUniformBufferId(forge::ColorMap cmap) const
     switch(cmap) {
         case FG_COLOR_MAP_DEFAULT : return mDefaultMapBuffer;
         case FG_COLOR_MAP_SPECTRUM: return mSpecMapBuffer;
-        case FG_COLOR_MAP_COLORS  : return mColorsMapBuffer;
+        case FG_COLOR_MAP_RAINBOW : return mRainbowMapBuffer;
         case FG_COLOR_MAP_RED     : return mRedMapBuffer;
         case FG_COLOR_MAP_MOOD    : return mMoodMapBuffer;
         case FG_COLOR_MAP_HEAT    : return mHeatMapBuffer;
@@ -89,7 +89,7 @@ GLuint colormap_impl::cmapLength(forge::ColorMap cmap) const
     switch(cmap) {
         case FG_COLOR_MAP_DEFAULT : return mDefMapLen;
         case FG_COLOR_MAP_SPECTRUM: return mSpecMapLen;
-        case FG_COLOR_MAP_COLORS  : return mColsMapLen;
+        case FG_COLOR_MAP_RAINBOW : return mRainbowMapLen;
         case FG_COLOR_MAP_RED     : return mRedMapLen;
         case FG_COLOR_MAP_MOOD    : return mMoodMapLen;
         case FG_COLOR_MAP_HEAT    : return mHeatMapLen;

@@ -34,7 +34,7 @@ class colormap_impl {
          * size */
         gl::GLuint mDefaultMapBuffer;
         gl::GLuint mSpecMapBuffer;
-        gl::GLuint mColorsMapBuffer;
+        gl::GLuint mRainbowMapBuffer;
         gl::GLuint mRedMapBuffer;
         gl::GLuint mMoodMapBuffer;
         gl::GLuint mHeatMapBuffer;
@@ -47,7 +47,7 @@ class colormap_impl {
         /* Current color map lengths */
         gl::GLuint mDefMapLen;
         gl::GLuint mSpecMapLen;
-        gl::GLuint mColsMapLen;
+        gl::GLuint mRainbowMapLen;
         gl::GLuint mRedMapLen;
         gl::GLuint mMoodMapLen;
         gl::GLuint mHeatMapLen;
