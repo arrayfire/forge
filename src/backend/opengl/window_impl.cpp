@@ -120,8 +120,8 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     mWindow->resizePixelBuffers();
 
     /* set the colormap to default */
-    mColorMapUBO = mCMap->defaultMap();
-    mUBOSize = mCMap->defaultLen();
+    mColorMapUBO = mCMap->cmapUniformBufferId(FG_COLOR_MAP_DEFAULT);
+    mUBOSize = mCMap->cmapLength(FG_COLOR_MAP_DEFAULT);
     glEnable(GL_MULTISAMPLE);
 
     std::vector<glm::mat4>& mats = mWindow->mViewMatrices;
@@ -170,36 +170,9 @@ void window_impl::setSize(unsigned pW, unsigned pH)
 
 void window_impl::setColorMap(forge::ColorMap cmap)
 {
-    switch(cmap) {
-        case FG_COLOR_MAP_DEFAULT:
-            mColorMapUBO = mCMap->defaultMap();
-            mUBOSize     = mCMap->defaultLen();
-            break;
-        case FG_COLOR_MAP_SPECTRUM:
-            mColorMapUBO = mCMap->spectrum();
-            mUBOSize     = mCMap->spectrumLen();
-            break;
-        case FG_COLOR_MAP_COLORS:
-            mColorMapUBO = mCMap->colors();
-            mUBOSize     = mCMap->colorsLen();
-            break;
-        case FG_COLOR_MAP_RED:
-            mColorMapUBO = mCMap->red();
-            mUBOSize     = mCMap->redLen();
-            break;
-        case FG_COLOR_MAP_MOOD:
-            mColorMapUBO = mCMap->mood();
-            mUBOSize     = mCMap->moodLen();
-            break;
-        case FG_COLOR_MAP_HEAT:
-            mColorMapUBO = mCMap->heat();
-            mUBOSize     = mCMap->heatLen();
-            break;
-        case FG_COLOR_MAP_BLUE:
-            mColorMapUBO = mCMap->blue();
-            mUBOSize     = mCMap->blueLen();
-            break;
-    }
+    mColorMapUBO = mCMap->cmapUniformBufferId(cmap);
+
+    mUBOSize = mCMap->cmapLength(cmap);
 }
 
 int window_impl::getID() const
