@@ -25,23 +25,24 @@ using namespace std;
 
 void generateGridIndices(unsigned short rows, unsigned short cols, unsigned short *indices)
 {
-unsigned short idx = 0;
-for(unsigned short r = 0; r < rows-1; ++r){
-    for(unsigned short c = 0; c < cols*2; ++c){
-        unsigned short i = c + (r * (cols*2));
+    unsigned short idx = 0;
 
-        if(c == cols * 2 - 1) {
-            *indices++ = idx;
-        }else{
-            *indices++ = idx;
-            if(i%2 == 0){
-                idx += cols;
+    for(unsigned short r = 0; r < rows-1; ++r) {
+        for(unsigned short c = 0; c < cols*2; ++c) {
+            unsigned short i = c + (r * (cols*2));
+
+            if (c == cols * 2 - 1) {
+                *indices++ = idx;
             } else {
-                idx -= (r%2 == 0) ? (cols-1) : (cols+1);
+                *indices++ = idx;
+                if (i%2 == 0) {
+                    idx += cols;
+                } else {
+                    idx -= (r%2 == 0) ? (cols-1) : (cols+1);
+                }
             }
         }
     }
-}
 }
 
 namespace forge
@@ -51,36 +52,36 @@ namespace opengl
 
 void surface_impl::bindResources(const int pWindowId)
 {
-if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
-    GLuint vao = 0;
-    /* create a vertex array object
-     * with appropriate bindings */
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    // attach plot vertices
-    glEnableVertexAttribArray(mSurfPointIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(mSurfPointIndex, 3, mDataType, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(mSurfColorIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, mCBO);
-    glVertexAttribPointer(mSurfColorIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(mSurfAlphaIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, mABO);
-    glVertexAttribPointer(mSurfAlphaIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
-    //attach indices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-    glBindVertexArray(0);
-    /* store the vertex array object corresponding to
-     * the window instance in the map */
-    mVAOMap[pWindowId] = vao;
-}
+    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
+        GLuint vao = 0;
+        /* create a vertex array object
+         * with appropriate bindings */
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        // attach plot vertices
+        glEnableVertexAttribArray(mSurfPointIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+        glVertexAttribPointer(mSurfPointIndex, 3, mDataType, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(mSurfColorIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mCBO);
+        glVertexAttribPointer(mSurfColorIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(mSurfAlphaIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mABO);
+        glVertexAttribPointer(mSurfAlphaIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
+        //attach indices
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+        glBindVertexArray(0);
+        /* store the vertex array object corresponding to
+         * the window instance in the map */
+        mVAOMap[pWindowId] = vao;
+    }
 
-glBindVertexArray(mVAOMap[pWindowId]);
+    glBindVertexArray(mVAOMap[pWindowId]);
 }
 
 void surface_impl::unbindResources() const
 {
-glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 glm::mat4 surface_impl::computeTransformMat(const glm::mat4& pView, const glm::mat4& pOrient)
