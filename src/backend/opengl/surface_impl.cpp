@@ -23,24 +23,24 @@
 using namespace gl;
 using namespace std;
 
-void generateGridIndices(unsigned short rows, unsigned short cols, unsigned short *indices)
+void generateGridIndices(unsigned short rows, unsigned short cols,
+                         std::vector<unsigned short>& indices)
 {
-    unsigned short idx = 0;
+    for (unsigned short r = 0; r < (rows-1); ++r) {
+        if (r > 0) {
+            // repeat first vertex for degenerate triangle
+            indices.push_back(r*rows);
+        }
 
-    for(unsigned short r = 0; r < rows-1; ++r) {
-        for(unsigned short c = 0; c < cols*2; ++c) {
-            unsigned short i = c + (r * (cols*2));
+        for (unsigned short c = 0; c < cols; ++c) {
+            // One part of the strip
+            indices.push_back(r*rows + c);
+            indices.push_back((r+1)*rows + c);
+        }
 
-            if (c == cols * 2 - 1) {
-                *indices++ = idx;
-            } else {
-                *indices++ = idx;
-                if (i%2 == 0) {
-                    idx += cols;
-                } else {
-                    idx -= (r%2 == 0) ? (cols-1) : (cols+1);
-                }
-            }
+        if (r < (rows-2)) {
+            // repeat last vertex for degenerate triangle
+            indices.push_back(((r + 1) * rows) + (cols - 1));
         }
     }
 }
@@ -202,9 +202,12 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
 
 #undef SURF_CREATE_BUFFERS
 
-    mIBOSize = (2 * mNumYPoints) * (mNumXPoints - 1);
-    std::vector<ushort> indices(mIBOSize);
-    generateGridIndices(mNumXPoints, mNumYPoints, indices.data());
+    std::vector<ushort> indices;
+
+    generateGridIndices(mNumXPoints, mNumYPoints, indices);
+
+    mIBOSize = indices.size();
+
     mIBO = createBuffer<ushort>(GL_ELEMENT_ARRAY_BUFFER, mIBOSize, indices.data(), GL_STATIC_DRAW);
 
     CheckGL("End surface_impl::surface_impl");
