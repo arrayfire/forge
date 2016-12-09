@@ -40,13 +40,13 @@ class AbstractChart : public AbstractRenderable {
         int   mTopMargin;
         int   mBottomMargin;
         /* chart axes ranges and titles */
-        DisplayFormat  mXLabelFormat;
+        std::string  mXLabelFormat;
         float mXMax;
         float mXMin;
-        DisplayFormat  mYLabelFormat;
+        std::string  mYLabelFormat;
         float mYMax;
         float mYMin;
-        DisplayFormat  mZLabelFormat;
+        std::string  mZLabelFormat;
         float mZMax;
         float mZMin;
         std::string mXTitle;
@@ -83,7 +83,8 @@ class AbstractChart : public AbstractRenderable {
         }
 
         inline int getLeftMargin() const {
-            return mLeftMargin + (mXLabelFormat==FG_NUMBER_SCIENTIFIC)*mLeftMargin*0.75f;
+            //return mLeftMargin + (mXLabelFormat==FG_NUMBER_SCIENTIFIC)*mLeftMargin*0.75f;
+            return mLeftMargin;
         }
 
         inline int getRightMargin() const {
@@ -128,9 +129,7 @@ class AbstractChart : public AbstractRenderable {
                            const float pYmin, const float pYmax,
                            const float pZmin, const float pZmax);
 
-        void setAxesLabelFormat(const DisplayFormat pXFormat,
-                                const DisplayFormat pYFormat,
-                                const DisplayFormat pZFormat);
+        void setAxesLabelFormat(const char* pXFormat, const char* pYFormat, const char* pZFormat);
 
         void getAxesLimits(float* pXmin, float* pXmax,
                            float* pYmin, float* pYmax,

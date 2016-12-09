@@ -72,10 +72,8 @@ fg_err fg_set_chart_axes_limits(fg_chart pHandle,
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_chart_label_format(fg_chart pHandle,
-                                 const fg_axis_label_format pXFormat,
-                                 const fg_axis_label_format pYFormat,
-                                 const fg_axis_label_format pZFormat)
+fg_err fg_set_chart_label_format(fg_chart pHandle, const char* pXFormat,
+                                 const char* pYFormat, const char* pZFormat)
 {
     try {
         getChart(pHandle)->setAxesLabelFormat(pXFormat, pYFormat, pZFormat);

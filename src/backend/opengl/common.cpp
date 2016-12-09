@@ -270,12 +270,13 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
 }
 #endif
 
-std::string toString(const float pVal, const DisplayFormat pFormat, const int pPrecision)
+std::string toString(const float pVal, const std::string pFormat)
 {
-    std::ostringstream out;
-    out << (pFormat == FG_NUMBER_FIXED ? std::fixed : std::scientific)
-        << std::setprecision(pPrecision) << pVal;
-    return out.str();
+    char label[7];
+
+    sprintf(label, pFormat.c_str(), pVal);
+
+    return std::string(label);
 }
 
 GLuint screenQuadVBO(const int pWindowId)

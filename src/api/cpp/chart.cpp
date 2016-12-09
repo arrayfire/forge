@@ -62,9 +62,7 @@ void Chart::setAxesLimits(const float pXmin, const float pXmax,
     } CATCH_INTERNAL_TO_EXTERNAL
 }
 
-void Chart::setAxesLabelFormat(const DisplayFormat pXFormat,
-                               const DisplayFormat pYFormat,
-                               const DisplayFormat pZFormat)
+void Chart::setAxesLabelFormat(const char* pXFormat, const char* pYFormat, const char* pZFormat)
 {
     try {
         getChart(mValue)->setAxesLabelFormat(pXFormat, pYFormat, pZFormat);

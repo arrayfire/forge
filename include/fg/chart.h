@@ -85,11 +85,11 @@ FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
    \param[in] pXFormat sets the display format for numbers of X axis
    \param[in] pYFormat sets the display format for numbers of Y axis
    \param[in] pZFormat sets the display format for numbers of Z axis
+
+   Display format string follows printf style formating for numbers
  */
-FGAPI fg_err fg_set_chart_label_format(fg_chart pHandle,
-                                       const fg_axis_label_format pXFormat,
-                                       const fg_axis_label_format pYFormat,
-                                       const fg_axis_label_format pZFormat);
+FGAPI fg_err fg_set_chart_label_format(fg_chart pHandle, const char* pXFormat,
+                                       const char* pYFormat, const char* pZFormat);
 
 /**
    Get axes data ranges
@@ -306,10 +306,12 @@ class Chart {
            \param[in] pXFormat sets the display format for numbers of X axis
            \param[in] pYFormat sets the display format for numbers of Y axis
            \param[in] pZFormat sets the display format for numbers of Z axis
+
+           Display format string follows printf style formating for numbers
          */
-        FGAPI void setAxesLabelFormat(const DisplayFormat pXFormat,
-                                      const DisplayFormat pYFormat,
-                                      const DisplayFormat pZFormat = FG_NUMBER_SCIENTIFIC);
+        FGAPI void setAxesLabelFormat(const char* pXFormat,
+                                      const char* pYFormat = "%4.1f",
+                                      const char* pZFormat = "%4.1f");
 
         /**
            Get axes data ranges

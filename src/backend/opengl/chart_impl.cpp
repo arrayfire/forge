@@ -146,9 +146,9 @@ AbstractChart::AbstractChart(const int pLeftMargin, const int pRightMargin,
     : mTickCount(9), mTickSize(10),
       mDefaultLeftMargin(pLeftMargin), mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
-      mXLabelFormat(FG_NUMBER_FIXED), mXMax(0), mXMin(0),
-      mYLabelFormat(FG_NUMBER_FIXED), mYMax(0), mYMin(0),
-      mZLabelFormat(FG_NUMBER_FIXED), mZMax(0), mZMin(0),
+      mXLabelFormat("%4.1f"), mXMax(0), mXMin(0),
+      mYLabelFormat("%4.1f"), mYMax(0), mYMin(0),
+      mZLabelFormat("%4.1f"), mZMax(0), mZMin(0),
       mXTitle("X-Axis"), mYTitle("Y-Axis"), mZTitle("Z-Axis"), mDecorVBO(-1),
       mBorderProgram(glsl::chart_vs.c_str(), glsl::chart_fs.c_str()),
       mSpriteProgram(glsl::chart_vs.c_str(), glsl::tick_fs.c_str()),
@@ -204,13 +204,11 @@ void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,
     generateTickLabels();
 }
 
-void AbstractChart::setAxesLabelFormat(const DisplayFormat pXFormat,
-                                       const DisplayFormat pYFormat,
-                                       const DisplayFormat pZFormat)
+void AbstractChart::setAxesLabelFormat(const char* pXFormat, const char* pYFormat, const char* pZFormat)
 {
-    mXLabelFormat = pXFormat;
-    mYLabelFormat = pYFormat;
-    mZLabelFormat = pZFormat;
+    mXLabelFormat = std::string(pXFormat);
+    mYLabelFormat = std::string(pYFormat);
+    mZLabelFormat = std::string(pZFormat);
 }
 
 void AbstractChart::getAxesLimits(float* pXmin, float* pXmax,
@@ -409,16 +407,6 @@ void chart2d_impl::generateTickLabels()
     mYText.clear();
     mZText.clear();
 
-    /* if current display format is fixed, check
-     * for number of digits based on limits of the
-     * axis and switch to scientific format if necessary
-     * */
-    if (mXLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mXMin), getDigitCount(mXMax))>6)
-        mXLabelFormat = FG_NUMBER_SCIENTIFIC;
-
-    if (mYLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mYMin), getDigitCount(mYMax))>6)
-        mYLabelFormat = FG_NUMBER_SCIENTIFIC;
-
     float xstep = getTickStepSize(mXMin, mXMax);
     float ystep = getTickStepSize(mYMin, mYMax);
     float xmid  = (mXMax+mXMin)/2.0f;
@@ -541,7 +529,8 @@ void chart2d_impl::render(const int pWindowId,
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
 
-        pos[0] -= ((mYLabelFormat==FG_NUMBER_FIXED ? 5.0f : 5.5f)*trgtFntSize);
+        pos[0] -= (5.0f*trgtFntSize);
+        pos[1] += (trgtFntSize);
 
         fonter->render(pWindowId, pos, BLACK, mYTitle.c_str(), trgtFntSize, true);
     }
@@ -764,19 +753,6 @@ void chart3d_impl::generateTickLabels()
     mYText.clear();
     mZText.clear();
 
-    /* if current display format is fixed, check
-     * for number of digits based on limits of the
-     * axis and switch to scientific format if necessary
-     * */
-    if (mXLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mXMin), getDigitCount(mXMax))>6)
-        mXLabelFormat = FG_NUMBER_SCIENTIFIC;
-
-    if (mYLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mYMin), getDigitCount(mYMax))>6)
-        mYLabelFormat = FG_NUMBER_SCIENTIFIC;
-
-    if (mZLabelFormat==FG_NUMBER_FIXED && std::max(getDigitCount(mZMin), getDigitCount(mZMax))>6)
-        mZLabelFormat = FG_NUMBER_SCIENTIFIC;
-
     float xstep = getTickStepSize(mXMin, mXMax);
     float ystep = getTickStepSize(mYMin, mYMax);
     float zstep = getTickStepSize(mZMin, mZMax);
@@ -926,7 +902,7 @@ void chart3d_impl::render(const int pWindowId,
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
 
-        pos[0] -= ((mZLabelFormat==FG_NUMBER_FIXED ? 5.0f : 5.5f)*trgtFntSize);
+        pos[0] -= (5.0f*trgtFntSize);
 
         fonter->render(pWindowId, pos, BLACK, mZTitle.c_str(), trgtFntSize, true);
     }

@@ -40,7 +40,7 @@ int main(void)
 
     forge::Chart chart(FG_CHART_3D);
 
-    chart.setAxesLabelFormat(FG_NUMBER_FIXED, FG_NUMBER_FIXED, FG_NUMBER_SCIENTIFIC);
+    chart.setAxesLabelFormat("%3.1f", "%3.1f", "%.2e");
 
     chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
 
