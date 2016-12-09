@@ -24,15 +24,15 @@ using namespace gl;
 using namespace std;
 
 void generateGridIndices(unsigned short rows, unsigned short cols,
-                         std::vector<unsigned short>& indices)
+                         std::vector<unsigned int>& indices)
 {
-    for (unsigned short r = 0; r < (rows-1); ++r) {
+    for (int r = 0; r < (rows-1); ++r) {
         if (r > 0) {
             // repeat first vertex for degenerate triangle
             indices.push_back(r*rows);
         }
 
-        for (unsigned short c = 0; c < cols; ++c) {
+        for (int c = 0; c < cols; ++c) {
             // One part of the strip
             indices.push_back(r*rows + c);
             indices.push_back((r+1)*rows + c);
@@ -121,11 +121,11 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
     glUniform1i(mSurfPVAIndex, mIsPVAOn);
 
     bindResources(pWindowId);
-    glDrawElements(GL_TRIANGLE_STRIP, mIBOSize, GL_UNSIGNED_SHORT, (void*)0 );
+    glDrawElements(GL_TRIANGLE_STRIP, mIBOSize, GL_UNSIGNED_INT, (void*)0);
     unbindResources();
     mSurfProgram.unbind();
 
-    if(mMarkerType != FG_MARKER_NONE) {
+    if (mMarkerType != FG_MARKER_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
         mMarkerProgram.bind();
 
@@ -136,7 +136,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUniform4fv(mMarkerColIndex, 1, mColor);
 
         bindResources(pWindowId);
-        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_SHORT, (void*)0);
+        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_INT, (void*)0);
         unbindResources();
 
         mMarkerProgram.unbind();
@@ -202,13 +202,13 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
 
 #undef SURF_CREATE_BUFFERS
 
-    std::vector<ushort> indices;
+    std::vector<unsigned int> indices;
 
     generateGridIndices(mNumXPoints, mNumYPoints, indices);
 
     mIBOSize = indices.size();
 
-    mIBO = createBuffer<ushort>(GL_ELEMENT_ARRAY_BUFFER, mIBOSize, indices.data(), GL_STATIC_DRAW);
+    mIBO = createBuffer<uint>(GL_ELEMENT_ARRAY_BUFFER, mIBOSize, indices.data(), GL_STATIC_DRAW);
 
     CheckGL("End surface_impl::surface_impl");
 }
@@ -260,7 +260,7 @@ void scatter3_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUniform4fv(mMarkerColIndex, 1, mColor);
 
         bindResources(pWindowId);
-        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_SHORT, (void*)0);
+        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_INT, (void*)0);
         unbindResources();
 
         mMarkerProgram.unbind();
