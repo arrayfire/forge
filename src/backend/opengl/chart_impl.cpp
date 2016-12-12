@@ -899,10 +899,8 @@ void chart3d_impl::render(const int pWindowId,
     if (!mZTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
 
-        pos[0] = w*(res.x/res.w+1.0f)/2.0f;
+        pos[0] = trgtFntSize;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
-
-        pos[0] -= (5.0f*trgtFntSize);
 
         fonter->render(pWindowId, pos, BLACK, mZTitle.c_str(), trgtFntSize, true);
     }
