@@ -129,7 +129,9 @@ class AbstractChart : public AbstractRenderable {
                            const float pYmin, const float pYmax,
                            const float pZmin, const float pZmax);
 
-        void setAxesLabelFormat(const char* pXFormat, const char* pYFormat, const char* pZFormat);
+        void setAxesLabelFormat(const std::string& pXFormat,
+                                const std::string& pYFormat,
+                                const std::string& pZFormat);
 
         void getAxesLimits(float* pXmin, float* pXmax,
                            float* pYmin, float* pYmax,

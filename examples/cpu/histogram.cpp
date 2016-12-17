@@ -71,8 +71,6 @@ int main(void)
 
     forge::Chart chart(FG_CHART_2D);
 
-    chart.setAxesLabelFormat("%3.1f", "%.2e");
-
     /* set x axis limits to maximum and minimum values of data
      * and y axis limits to range [0, number of pixels ideally]
      * but practically total number of pixels as y range will skew

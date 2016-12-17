@@ -28,6 +28,7 @@
 
 #include <cmath>
 #include <mutex>
+#include <regex>
 #include <sstream>
 #include <algorithm>
 
@@ -37,6 +38,7 @@ using namespace std;
 typedef std::vector<std::string>::const_iterator StringIter;
 
 static const int CHART2D_FONT_SIZE = 16;
+static const std::regex PRINTF_FIXED_FLOAT_RE("%[0-9]*.[0-9]*f");
 
 const std::shared_ptr<forge::opengl::font_impl>& getChartFont()
 {
@@ -204,7 +206,9 @@ void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,
     generateTickLabels();
 }
 
-void AbstractChart::setAxesLabelFormat(const char* pXFormat, const char* pYFormat, const char* pZFormat)
+void AbstractChart::setAxesLabelFormat(const std::string& pXFormat,
+                                       const std::string& pYFormat,
+                                       const std::string& pZFormat)
 {
     mXLabelFormat = std::string(pXFormat);
     mYLabelFormat = std::string(pYFormat);
@@ -406,6 +410,22 @@ void chart2d_impl::generateTickLabels()
     mXText.clear();
     mYText.clear();
     mZText.clear();
+
+    //By default chart's axes labels show numbers in
+    //fixed floating point format, unless the users requests
+    //for any other format explicitly. However, if the string
+    //representation of the range of data of given axis exceeds
+    //certain length, the numbers are converted to scientific notation.
+    //Y Axis label format
+    if (toString(std::fabs(mYMax-mYMin), mYLabelFormat).length()>5 &&
+            std::regex_search(mYLabelFormat, PRINTF_FIXED_FLOAT_RE)) {
+        mYLabelFormat = std::string("%.2e");
+    }
+    //X Axis label format
+    if (toString(std::fabs(mXMax-mXMin), mXLabelFormat).length()>5 &&
+            std::regex_search(mXLabelFormat, PRINTF_FIXED_FLOAT_RE)) {
+        mXLabelFormat = std::string("%.2e");
+    }
 
     float xstep = getTickStepSize(mXMin, mXMax);
     float ystep = getTickStepSize(mYMin, mYMax);
@@ -752,6 +772,27 @@ void chart3d_impl::generateTickLabels()
     mXText.clear();
     mYText.clear();
     mZText.clear();
+
+    //By default chart's axes labels show numbers in
+    //fixed floating point format, unless the users requests
+    //for any other format explicitly. However, if the string
+    //representation of the range of data of given axis exceeds
+    //certain length, the numbers are converted to scientific notation.
+    //Z Axis label format
+    if (toString(std::fabs(mZMax-mZMin), mZLabelFormat).length()>5 &&
+            std::regex_search(mZLabelFormat, PRINTF_FIXED_FLOAT_RE)) {
+        mZLabelFormat = std::string("%.2e");
+    }
+    //Y Axis label format
+    if (toString(std::fabs(mYMax-mYMin), mYLabelFormat).length()>5 &&
+            std::regex_search(mYLabelFormat, PRINTF_FIXED_FLOAT_RE)) {
+        mYLabelFormat = std::string("%.2e");
+    }
+    //X Axis label format
+    if (toString(std::fabs(mXMax-mXMin), mXLabelFormat).length()>5 &&
+            std::regex_search(mXLabelFormat, PRINTF_FIXED_FLOAT_RE)) {
+        mXLabelFormat = std::string("%.2e");
+    }
 
     float xstep = getTickStepSize(mXMin, mXMax);
     float ystep = getTickStepSize(mYMin, mYMax);

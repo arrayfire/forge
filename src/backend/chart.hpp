@@ -65,9 +65,9 @@ class Chart {
             mChart->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
         }
 
-        inline void setAxesLabelFormat(const char* pXFormat,
-                                       const char* pYFormat,
-                                       const char* pZFormat) {
+        inline void setAxesLabelFormat(const std::string& pXFormat,
+                                       const std::string& pYFormat,
+                                       const std::string& pZFormat) {
             mChart->setAxesLabelFormat(pXFormat, pYFormat, pZFormat);
         }
 
