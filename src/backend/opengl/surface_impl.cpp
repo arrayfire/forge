@@ -26,6 +26,12 @@ using namespace std;
 void generateGridIndices(unsigned short rows, unsigned short cols,
                          std::vector<unsigned int>& indices)
 {
+    const int numDegens = 2 * (rows - 2);
+    const int verticesPerStrip = 2 * cols;
+
+    //reserve the size of vector
+    indices.reserve(verticesPerStrip + numDegens);
+
     for (int r = 0; r < (rows-1); ++r) {
         if (r > 0) {
             // repeat first vertex for degenerate triangle
