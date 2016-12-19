@@ -7,7 +7,9 @@ OPTION(BUILD_EXAMPLES_CUDA "Turn off/on building cuda examples" ON)
 OPTION(BUILD_EXAMPLES_OPENCL "Turn off/on building opencl examples" ON)
 OPTION(USE_SYSTEM_CL2HPP "Use cl2.hpp header installed on the system" OFF)
 
-INCLUDE(build_cl2hpp)
+IF(NOT USE_SYSTEM_CL2HPP)
+    INCLUDE(build_cl2hpp)
+ENDIF()
 
 MACRO(BUILD_EXAMPLE EX_NAME EX_SRC COMPUTE_NAME FG_LIBS COMPUTE_LIBS)
     IF(${COMPUTE_NAME} STREQUAL "cuda")
@@ -22,7 +24,9 @@ MACRO(BUILD_EXAMPLE EX_NAME EX_SRC COMPUTE_NAME FG_LIBS COMPUTE_LIBS)
         RUNTIME_OUTPUT_DIRECTORY ${DIR_NAME}
         FOLDER "Examples/${COMPUTE_NAME}")
     IF(${COMPUTE_NAME} STREQUAL "opencl")
-        ADD_DEPENDENCIES(example_${EX_NAME}_${COMPUTE_NAME} cl2hpp)
+        IF(NOT USE_SYSTEM_CL2HPP)
+            ADD_DEPENDENCIES(example_${EX_NAME}_${COMPUTE_NAME} cl2hpp)
+        ENDIF()
     ENDIF()
 ENDMACRO()
 

@@ -99,19 +99,20 @@ void AbstractChart::renderTickLabels(
         pos[0] = pW * (res.x/res.w+1.0f)/2.0f;
         pos[1] = pH * (res.y/res.w+1.0f)/2.0f;
 
+        const float strHalfLen = it->length() / 2.0f;
         /* offset based on text size to align
          * text center with tick mark position */
         if(pCoordsOffset < mTickCount) {
             // offset for y axis labels
-            pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f+mTickSize);
+            pos[0] -= (CHART2D_FONT_SIZE*strHalfLen+mTickSize);
             pos[1] -= (CHART2D_FONT_SIZE*.36);
         } else if(pCoordsOffset >= mTickCount && pCoordsOffset < 2*mTickCount) {
             // offset for x axis labels
-            pos[0] -= (CHART2D_FONT_SIZE*it->length()/4.0f);
+            pos[0] -= (CHART2D_FONT_SIZE*strHalfLen/2.0f);
             pos[1] -= (CHART2D_FONT_SIZE*1.32);
         } else {
             // offsets for 3d chart axes ticks
-            pos[0] -= (CHART2D_FONT_SIZE*it->length()/2.0f);
+            pos[0] -= (CHART2D_FONT_SIZE*strHalfLen);
             pos[1] -= (CHART2D_FONT_SIZE);
         }
         fonter->render(pWindowId, pos, BLACK, it->c_str(), CHART2D_FONT_SIZE);
@@ -123,7 +124,7 @@ AbstractChart::AbstractChart(const int pLeftMargin, const int pRightMargin,
     : mTickCount(9), mTickSize(10),
       mDefaultLeftMargin(pLeftMargin), mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
-      mXMax(1), mXMin(0), mYMax(1), mYMin(0), mZMax(1), mZMin(0),
+      mXMax(0), mXMin(0), mYMax(0), mYMin(0), mZMax(0), mZMin(0),
       mXTitle("X-Axis"), mYTitle("Y-Axis"), mZTitle("Z-Axis"), mDecorVBO(-1),
       mBorderProgram(glsl::chart_vs.c_str(), glsl::chart_fs.c_str()),
       mSpriteProgram(glsl::chart_vs.c_str(), glsl::tick_fs.c_str()),
@@ -166,9 +167,9 @@ void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,
                                   const float pYmin, const float pYmax,
                                   const float pZmin, const float pZmax)
 {
-    mXMax = pXmax; mXMin = pXmin;
-    mYMax = pYmax; mYMin = pYmin;
-    mZMax = pZmax; mZMin = pZmin;
+    mXMin = pXmin; mXMax = pXmax;
+    mYMin = pYmin; mYMax = pYmax;
+    mZMin = pZmin; mZMax = pZmax;
 
     /*
      * Once the axes ranges are known, we can generate
@@ -177,6 +178,15 @@ void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,
      * derived class
      */
     generateTickLabels();
+}
+
+void AbstractChart::getAxesLimits(float* pXmin, float* pXmax,
+                                  float* pYmin, float* pYmax,
+                                  float* pZmin, float* pZmax)
+{
+    *pXmin = mXMin; *pXmax = mXMax;
+    *pYmin = mYMin; *pYmax = mYMax;
+    *pZmin = mZMin; *pZmax = mZMax;
 }
 
 void AbstractChart::setAxesTitles(const char* pXTitle,
@@ -375,6 +385,7 @@ void chart2d_impl::generateTickLabels()
 chart2d_impl::chart2d_impl()
     : AbstractChart(64, 8, 8, 44) {
     generateChartData();
+    generateTickLabels();
 }
 
 void chart2d_impl::render(const int pWindowId,
@@ -706,6 +717,7 @@ void chart3d_impl::generateTickLabels()
 chart3d_impl::chart3d_impl()
     :AbstractChart(32, 32, 32, 32) {
     generateChartData();
+    generateTickLabels();
 }
 
 void chart3d_impl::render(const int pWindowId,

@@ -71,8 +71,8 @@ struct Glyph {
     size_t mWidth;
     size_t mHeight;
 
-    size_t mBearingX;
-    size_t mBearingY;
+    int mBearingX;
+    int mBearingY;
 
     float  mAdvanceX;
     float  mAdvanceY;

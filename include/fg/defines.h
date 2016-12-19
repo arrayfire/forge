@@ -121,17 +121,19 @@ typedef enum {
 
 /**
    Color maps
-
-   \image html gfx_palette.png
  */
 typedef enum {
-    FG_COLOR_MAP_DEFAULT  = 0,              ///< Default [0-255] grayscale colormap
-    FG_COLOR_MAP_SPECTRUM = 1,              ///< Spectrum color
-    FG_COLOR_MAP_COLORS   = 2,              ///< Pure Colors
-    FG_COLOR_MAP_RED      = 3,              ///< Red color map
-    FG_COLOR_MAP_MOOD     = 4,              ///< Mood color map
-    FG_COLOR_MAP_HEAT     = 5,              ///< Heat color map
-    FG_COLOR_MAP_BLUE     = 6               ///< Blue color map
+    FG_COLOR_MAP_DEFAULT  =  0,              ///< Default [0-255] grayscale colormap
+    FG_COLOR_MAP_SPECTRUM =  1,              ///< Visual spectrum (390nm-830nm) in sRGB colorspace
+    FG_COLOR_MAP_RAINBOW  =  2,              ///< Rainbow color map
+    FG_COLOR_MAP_RED      =  3,              ///< Red color map
+    FG_COLOR_MAP_MOOD     =  4,              ///< Mood color map
+    FG_COLOR_MAP_HEAT     =  5,              ///< Heat color map
+    FG_COLOR_MAP_BLUE     =  6,              ///< Blue color map
+    FG_COLOR_MAP_INFERNO  =  7,              ///< perceptually uniform shades of black-red-yellow
+    FG_COLOR_MAP_MAGMA    =  8,              ///< perceptually uniform shades of black-red-white
+    FG_COLOR_MAP_PLASMA   =  9,              ///< perceptually uniform shades of blue-red-yellow
+    FG_COLOR_MAP_VIRIDIS  = 10,              ///< perceptually uniform shades of blue-green-yellow
 } fg_color_map;
 
 typedef enum {
