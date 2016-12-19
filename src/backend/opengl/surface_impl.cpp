@@ -23,25 +23,32 @@
 using namespace gl;
 using namespace std;
 
-void generateGridIndices(unsigned short rows, unsigned short cols, unsigned short *indices)
+void generateGridIndices(std::vector<unsigned int>& indices,
+                         unsigned short rows, unsigned short cols)
 {
-unsigned short idx = 0;
-for(unsigned short r = 0; r < rows-1; ++r){
-    for(unsigned short c = 0; c < cols*2; ++c){
-        unsigned short i = c + (r * (cols*2));
+    const int numDegens = 2 * (rows - 2);
+    const int verticesPerStrip = 2 * cols;
 
-        if(c == cols * 2 - 1) {
-            *indices++ = idx;
-        }else{
-            *indices++ = idx;
-            if(i%2 == 0){
-                idx += cols;
-            } else {
-                idx -= (r%2 == 0) ? (cols-1) : (cols+1);
-            }
+    //reserve the size of vector
+    indices.reserve(verticesPerStrip + numDegens);
+
+    for (int r = 0; r < (rows-1); ++r) {
+        if (r > 0) {
+            // repeat first vertex for degenerate triangle
+            indices.push_back(r*rows);
+        }
+
+        for (int c = 0; c < cols; ++c) {
+            // One part of the strip
+            indices.push_back(r*rows + c);
+            indices.push_back((r+1)*rows + c);
+        }
+
+        if (r < (rows-2)) {
+            // repeat last vertex for degenerate triangle
+            indices.push_back(((r + 1) * rows) + (cols - 1));
         }
     }
-}
 }
 
 namespace forge
@@ -51,36 +58,36 @@ namespace opengl
 
 void surface_impl::bindResources(const int pWindowId)
 {
-if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
-    GLuint vao = 0;
-    /* create a vertex array object
-     * with appropriate bindings */
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    // attach plot vertices
-    glEnableVertexAttribArray(mSurfPointIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(mSurfPointIndex, 3, mDataType, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(mSurfColorIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, mCBO);
-    glVertexAttribPointer(mSurfColorIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(mSurfAlphaIndex);
-    glBindBuffer(GL_ARRAY_BUFFER, mABO);
-    glVertexAttribPointer(mSurfAlphaIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
-    //attach indices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-    glBindVertexArray(0);
-    /* store the vertex array object corresponding to
-     * the window instance in the map */
-    mVAOMap[pWindowId] = vao;
-}
+    if (mVAOMap.find(pWindowId) == mVAOMap.end()) {
+        GLuint vao = 0;
+        /* create a vertex array object
+         * with appropriate bindings */
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        // attach plot vertices
+        glEnableVertexAttribArray(mSurfPointIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+        glVertexAttribPointer(mSurfPointIndex, 3, mDataType, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(mSurfColorIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mCBO);
+        glVertexAttribPointer(mSurfColorIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(mSurfAlphaIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, mABO);
+        glVertexAttribPointer(mSurfAlphaIndex, 1, GL_FLOAT, GL_FALSE, 0, 0);
+        //attach indices
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+        glBindVertexArray(0);
+        /* store the vertex array object corresponding to
+         * the window instance in the map */
+        mVAOMap[pWindowId] = vao;
+    }
 
-glBindVertexArray(mVAOMap[pWindowId]);
+    glBindVertexArray(mVAOMap[pWindowId]);
 }
 
 void surface_impl::unbindResources() const
 {
-glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 glm::mat4 surface_impl::computeTransformMat(const glm::mat4& pView, const glm::mat4& pOrient)
@@ -120,11 +127,11 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
     glUniform1i(mSurfPVAIndex, mIsPVAOn);
 
     bindResources(pWindowId);
-    glDrawElements(GL_TRIANGLE_STRIP, mIBOSize, GL_UNSIGNED_SHORT, (void*)0 );
+    glDrawElements(GL_TRIANGLE_STRIP, mIBOSize, GL_UNSIGNED_INT, (void*)0);
     unbindResources();
     mSurfProgram.unbind();
 
-    if(mMarkerType != FG_MARKER_NONE) {
+    if (mMarkerType != FG_MARKER_NONE) {
         glEnable(GL_PROGRAM_POINT_SIZE);
         mMarkerProgram.bind();
 
@@ -135,7 +142,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUniform4fv(mMarkerColIndex, 1, mColor);
 
         bindResources(pWindowId);
-        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_SHORT, (void*)0);
+        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_INT, (void*)0);
         unbindResources();
 
         mMarkerProgram.unbind();
@@ -201,10 +208,13 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
 
 #undef SURF_CREATE_BUFFERS
 
-    mIBOSize = (2 * mNumYPoints) * (mNumXPoints - 1);
-    std::vector<ushort> indices(mIBOSize);
-    generateGridIndices(mNumXPoints, mNumYPoints, indices.data());
-    mIBO = createBuffer<ushort>(GL_ELEMENT_ARRAY_BUFFER, mIBOSize, indices.data(), GL_STATIC_DRAW);
+    std::vector<unsigned int> indices;
+
+    generateGridIndices(indices, mNumXPoints, mNumYPoints);
+
+    mIBOSize = indices.size();
+
+    mIBO = createBuffer<uint>(GL_ELEMENT_ARRAY_BUFFER, mIBOSize, indices.data(), GL_STATIC_DRAW);
 
     CheckGL("End surface_impl::surface_impl");
 }
@@ -256,7 +266,7 @@ void scatter3_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUniform4fv(mMarkerColIndex, 1, mColor);
 
         bindResources(pWindowId);
-        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_SHORT, (void*)0);
+        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_INT, (void*)0);
         unbindResources();
 
         mMarkerProgram.unbind();
