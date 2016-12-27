@@ -458,7 +458,7 @@ void chart2d_impl::generateTickLabels()
 }
 
 chart2d_impl::chart2d_impl()
-    : AbstractChart(96, 16, 12, 44) {
+    : AbstractChart(96, 16, 12, 64) {
     generateChartData();
     generateTickLabels();
 }
