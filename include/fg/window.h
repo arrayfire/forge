@@ -45,13 +45,25 @@ FGAPI fg_err fg_create_window(fg_window *pWindow,
                               const bool pInvisible);
 
 /**
+   Increment the internal reference count for Window
+
+   \param[out] pOut is the new window handle pointing to existing window
+   \param[in] pWindow is the original window handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_retain_window(fg_window *pOut, fg_window pWindow);
+
+/**
    Destroy Window Object
+
+   Decrements the reference count to the shared window object.
 
    \param[in] pWindow is Window handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_destroy_window(fg_window pWindow);
+FGAPI fg_err fg_release_window(fg_window pWindow);
 
 /**
    Set font object to be used by Window Object
@@ -223,7 +235,7 @@ FGAPI fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_setup_window_grid(int pRows, int pCols, fg_window pWindow);
+FGAPI fg_err fg_setup_window_grid(fg_window pWindow, int pRows, int pCols);
 
 /**
    Render given image to Window's particular sub-view
@@ -324,6 +336,8 @@ class Window {
 
         /**
            Window Destructor
+
+           Decrements the reference count to the shared window object.
          */
         FGAPI ~Window();
 

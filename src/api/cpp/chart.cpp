@@ -15,212 +15,144 @@
 #include <fg/surface.h>
 #include <fg/window.h>
 
-#include <handle.hpp>
-#include <chart.hpp>
-#include <chart_renderables.hpp>
-#include <font.hpp>
-#include <image.hpp>
-#include <window.hpp>
+#include <error.hpp>
+
+#include <utility>
 
 namespace forge
 {
 
 Chart::Chart(const ChartType cType)
 {
-    try {
-        mValue = getHandle(new common::Chart(cType));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_chart temp = 0;
+    FG_THROW(fg_create_chart(&temp, (fg_chart_type)cType));
+    std::swap(mValue, temp);
 }
 
 Chart::Chart(const Chart& pOther)
 {
-    try {
-        mValue = getHandle(new common::Chart(pOther.get()));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_chart temp = 0;
+    FG_THROW(fg_retain_chart(&temp, pOther.get()));
+    std::swap(mValue, temp);
 }
 
 Chart::~Chart()
 {
-    delete getChart(mValue);
+    FG_THROW(fg_release_chart(get()));
 }
 
 void Chart::setAxesTitles(const char* pX,
                           const char* pY,
                           const char* pZ)
 {
-    try {
-        getChart(mValue)->setAxesTitles(pX, pY, pZ);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_chart_axes_titles(get(), pX, pY, pZ));
 }
 
 void Chart::setAxesLimits(const float pXmin, const float pXmax,
                           const float pYmin, const float pYmax,
                           const float pZmin, const float pZmax)
 {
-    try {
-        getChart(mValue)->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_chart_axes_limits(get(), pXmin, pXmax, pYmin, pYmax, pZmin, pZmax));
 }
 
 void Chart::setAxesLabelFormat(const char* pXFormat, const char* pYFormat, const char* pZFormat)
 {
-    try {
-        getChart(mValue)->setAxesLabelFormat(pXFormat, pYFormat, pZFormat);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_chart_label_format(get(), pXFormat, pYFormat, pZFormat));
 }
 
 void Chart::getAxesLimits(float* pXmin, float* pXmax,
                           float* pYmin, float* pYmax,
                           float* pZmin, float* pZmax)
 {
-    try {
-        float xmin, xmax, ymin, ymax, zmin, zmax;
-        getChart(mValue)->getAxesLimits(&xmin, &xmax, &ymin, &ymax, &zmin, &zmax);
-
-        // Check for NULLs and assign
-        if(pXmin) *pXmin = xmin;
-        if(pXmax) *pXmax = xmax;
-        if(pYmin) *pYmin = ymin;
-        if(pYmax) *pYmax = ymax;
-        if(pZmin) *pZmin = zmin;
-        if(pZmax) *pZmax = zmax;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_get_chart_axes_limits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax, get()));
 }
 
 void Chart::setLegendPosition(const float pX, const float pY)
 {
-    try {
-        getChart(mValue)->setLegendPosition(pX, pY);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_chart_legend_position(get(), pX, pY));
 }
 
 void Chart::add(const Image& pImage)
 {
-    try {
-        getChart(mValue)->addRenderable(getImage(pImage.get())->impl());
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_append_image_to_chart(get(), pImage.get()));
 }
 
 void Chart::add(const Histogram& pHistogram)
 {
-    try {
-        getChart(mValue)->addRenderable(getHistogram(pHistogram.get())->impl());
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_append_histogram_to_chart(get(), pHistogram.get()));
 }
 
 void Chart::add(const Plot& pPlot)
 {
-    try {
-        getChart(mValue)->addRenderable(getPlot(pPlot.get())->impl());
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_append_plot_to_chart(get(), pPlot.get()));
 }
 
 void Chart::add(const Surface& pSurface)
 {
-    try {
-        getChart(mValue)->addRenderable(getSurface(pSurface.get())->impl());
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_append_surface_to_chart(get(), pSurface.get()));
 }
 
 void Chart::add(const VectorField& pVectorField)
 {
-    try {
-        getChart(mValue)->addRenderable(getVectorField(pVectorField.get())->impl());
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_append_vector_field_to_chart(get(), pVectorField.get()));
 }
 
 Image Chart::image(const unsigned pWidth, const unsigned pHeight,
                    const ChannelFormat pFormat, const dtype pDataType)
 {
-    try {
-        Image retVal = Image(pWidth, pHeight, pFormat, pDataType);
-        getChart(mValue)->addRenderable(getImage(retVal.get())->impl());
-        return retVal;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_image temp = 0;
+    FG_THROW(fg_add_image_to_chart(&temp, get(), pWidth, pHeight, (fg_channel_format)pFormat, (fg_dtype)pDataType));
+    return Image(temp);
 }
 
 Histogram Chart::histogram(const unsigned pNBins, const dtype pDataType)
 {
-    try {
-        common::Chart* chrt = getChart(mValue);
-        ChartType ctype = chrt->chartType();
-
-        // Histogram is allowed only in FG_CHART_2D
-        ARG_ASSERT(5, ctype == FG_CHART_2D);
-
-        Histogram retVal = Histogram(pNBins, pDataType);
-        chrt->addRenderable(getHistogram(retVal.get())->impl());
-        return retVal;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_histogram temp = 0;
+    FG_THROW(fg_add_histogram_to_chart(&temp, get(), pNBins, (fg_dtype)pDataType));
+    return Histogram(temp);
 }
 
 Plot Chart::plot(const unsigned pNumPoints, const dtype pDataType,
                  const PlotType pPlotType, const MarkerType pMarkerType)
 {
-    try {
-        common::Chart* chrt = getChart(mValue);
-        ChartType ctype = chrt->chartType();
-
-        if (ctype == FG_CHART_2D) {
-            Plot retVal(pNumPoints, pDataType, FG_CHART_2D, pPlotType, pMarkerType);
-            chrt->addRenderable(getPlot(retVal.get())->impl());
-            return retVal;
-        } else {
-            Plot retVal(pNumPoints, pDataType, FG_CHART_3D, pPlotType, pMarkerType);
-            chrt->addRenderable(getPlot(retVal.get())->impl());
-            return retVal;
-        }
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_plot temp = 0;
+    FG_THROW(fg_add_plot_to_chart(&temp, get(), pNumPoints, (fg_dtype)pDataType,
+                                  pPlotType, pMarkerType));
+    return Plot(temp);
 }
 
 Surface Chart::surface(const unsigned pNumXPoints, const unsigned pNumYPoints, const dtype pDataType,
                        const PlotType pPlotType, const MarkerType pMarkerType)
 {
-    try {
-        common::Chart* chrt = getChart(mValue);
-        ChartType ctype = chrt->chartType();
-
-        // Surface is allowed only in FG_CHART_3D
-        ARG_ASSERT(5, ctype == FG_CHART_3D);
-
-        Surface retVal(pNumXPoints, pNumYPoints, pDataType, pPlotType, pMarkerType);
-        getChart(mValue)->addRenderable(getSurface(retVal.get())->impl());
-        return retVal;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_surface temp = 0;
+    FG_THROW(fg_add_surface_to_chart(&temp, get(), pNumXPoints, pNumYPoints, (fg_dtype)pDataType,
+                                     pPlotType, pMarkerType));
+    return Surface(temp);
 }
 
 VectorField Chart::vectorField(const unsigned pNumPoints, const dtype pDataType)
 {
-    try {
-        common::Chart* chrt = getChart(mValue);
-        VectorField retVal(pNumPoints, pDataType, chrt->chartType());
-        chrt->addRenderable(getVectorField(retVal.get())->impl());
-        return retVal;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_vector_field temp = 0;
+    FG_THROW(fg_add_vector_field_to_chart(&temp, get(), pNumPoints, (fg_dtype)pDataType));
+    return VectorField(temp);
 }
 
 void Chart::render(const Window& pWindow,
                    const int pX, const int pY, const int pVPW, const int pVPH) const
 {
-    try {
-        getChart(mValue)->render(getWindow(pWindow.get())->getID(),
-                                 pX, pY, pVPW, pVPH,
-                                 IDENTITY, IDENTITY);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_render_chart(pWindow.get(), get(), pX, pY, pVPW, pVPH));
 }
 
 fg_chart Chart::get() const
 {
-    try {
-        return getChart(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    return mValue;
 }
 
 ChartType Chart::getChartType() const
 {
-    try {
-        return getChart(mValue)->chartType();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_chart_type retVal = (fg_chart_type)0;
+    FG_THROW(fg_get_chart_type(&retVal, get()));
+    return retVal;
 }
 
 }

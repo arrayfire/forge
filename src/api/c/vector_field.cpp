@@ -27,7 +27,18 @@ fg_err fg_create_vector_field(fg_vector_field *pField,
     return FG_ERR_NONE;
 }
 
-fg_err fg_destroy_vector_field(fg_vector_field pField)
+fg_err fg_retain_vector_field(fg_vector_field *pOut, fg_vector_field pIn)
+{
+    try {
+        common::VectorField* temp = new common::VectorField(getVectorField(pIn));
+        *pOut = getHandle(temp);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_release_vector_field(fg_vector_field pField)
 {
     try {
         delete getVectorField(pField);

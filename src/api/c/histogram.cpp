@@ -25,7 +25,18 @@ fg_err fg_create_histogram(fg_histogram *pHistogram,
     return FG_ERR_NONE;
 }
 
-fg_err fg_destroy_histogram(fg_histogram pHistogram)
+fg_err fg_retain_histogram(fg_histogram* pOut, fg_histogram pIn)
+{
+    try {
+        common::Histogram* temp = new common::Histogram(getHistogram(pIn));
+        *pOut = getHandle(temp);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_release_histogram(fg_histogram pHistogram)
 {
     try {
         delete getHistogram(pHistogram);

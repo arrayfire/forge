@@ -29,7 +29,18 @@ fg_err fg_create_surface(fg_surface *pSurface,
     return FG_ERR_NONE;
 }
 
-fg_err fg_destroy_surface(fg_surface pSurface)
+fg_err fg_retain_surface(fg_surface *pOut, fg_surface pIn)
+{
+    try {
+        common::Surface* temp = new common::Surface(getSurface(pIn));
+        *pOut = getHandle(temp);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_release_surface(fg_surface pSurface)
 {
     try {
         delete getSurface(pSurface);

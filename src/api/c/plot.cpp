@@ -29,7 +29,18 @@ fg_err fg_create_plot(fg_plot *pPlot,
     return FG_ERR_NONE;
 }
 
-fg_err fg_destroy_plot(fg_plot pPlot)
+fg_err fg_retain_plot(fg_plot* pOut, fg_plot pIn)
+{
+    try {
+        common::Plot* temp = new common::Plot(getPlot(pIn));
+        *pOut = getHandle(temp);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_release_plot(fg_plot pPlot)
 {
     try {
         delete getPlot(pPlot);

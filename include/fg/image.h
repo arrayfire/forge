@@ -38,13 +38,23 @@ FGAPI fg_err fg_create_image(fg_image* pImage,
                              const fg_channel_format pFormat, const fg_dtype pType);
 
 /**
+   Increment the internal reference counter for image resource
+
+   \param[out] pOut is new reference to existing image resource
+   \param[in] pImage is the input image resource handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_retain_image(fg_image* pOut, fg_image pImage);
+
+/**
    Destroy image object
 
    \param[in] pImage is the image handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_destroy_image(fg_image pImage);
+FGAPI fg_err fg_release_image(fg_image pImage);
 
 /**
    Set a global alpha value for rendering the image
@@ -185,6 +195,16 @@ class Image {
            \param[in] pOther is the Image of which we make a copy of.
          */
         FGAPI Image(const Image& pOther);
+
+        /**
+          Construct Image ojbect from fg_image resource handle
+
+          \param[in] pHandle is the input fg_image resource handle
+
+          \note This kind of construction assumes ownership of the resource handle
+          is released during the Image object's destruction.
+         */
+        FGAPI explicit Image(const fg_image pHandle);
 
         /**
            Image Destructor

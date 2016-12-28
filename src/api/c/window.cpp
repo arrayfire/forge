@@ -9,8 +9,8 @@
 
 #include <fg/window.h>
 
-#include <handle.hpp>
 #include <err_common.hpp>
+#include <handle.hpp>
 #include <window.hpp>
 
 using namespace forge;
@@ -36,7 +36,18 @@ fg_err fg_create_window(fg_window *pWindow,
     return FG_ERR_NONE;
 }
 
-fg_err fg_destroy_window(fg_window pWindow)
+fg_err fg_retain_window(fg_window *pOut, fg_window pWindow)
+{
+    try {
+        common::Window* temp = new common::Window(pWindow);
+        *pOut = getHandle(temp);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_release_window(fg_window pWindow)
 {
     try {
         delete getWindow(pWindow);
@@ -190,7 +201,7 @@ fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart)
     return FG_ERR_NONE;
 }
 
-fg_err fg_setup_window_grid(int pRows, int pCols, fg_window pWindow)
+fg_err fg_setup_window_grid(fg_window pWindow, int pRows, int pCols)
 {
     try {
         getWindow(pWindow)->grid(pRows, pCols);

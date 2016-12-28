@@ -10,13 +10,10 @@
 #include <fg/image.h>
 #include <fg/window.h>
 
-#include <handle.hpp>
 #include <err_common.hpp>
+#include <handle.hpp>
 #include <image.hpp>
 #include <window.hpp>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 using namespace forge;
 
@@ -32,7 +29,18 @@ fg_err fg_create_image(fg_image* pImage,
     return FG_ERR_NONE;
 }
 
-fg_err fg_destroy_image(fg_image pImage)
+fg_err fg_retain_image(fg_image* pOut, fg_image pImage)
+{
+    try {
+        common::Image* temp = new common::Image(pImage);
+        *pOut = getHandle(temp);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_release_image(fg_image pImage)
 {
     try {
         delete getImage(pImage);

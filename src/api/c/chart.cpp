@@ -36,7 +36,18 @@ fg_err fg_create_chart(fg_chart *pHandle,
     return FG_ERR_NONE;
 }
 
-fg_err fg_destroy_chart(fg_chart pHandle)
+fg_err fg_retain_chart(fg_chart* pOut, fg_chart pChart)
+{
+    try {
+        common::Chart* temp = new common::Chart(pChart);
+        *pOut = getHandle(temp);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_release_chart(fg_chart pHandle)
 {
     try {
         delete getChart(pHandle);
@@ -109,6 +120,56 @@ fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const floa
 {
     try {
         getChart(pHandle)->setLegendPosition(pX, pY);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_append_image_to_chart(fg_chart pChart, fg_image pImage)
+{
+    try {
+        getChart(pChart)->addRenderable(getImage(pImage)->impl());
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_append_histogram_to_chart(fg_chart pChart, fg_histogram pHistogram)
+{
+    try {
+        getChart(pChart)->addRenderable(getHistogram(pHistogram)->impl());
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_append_plot_to_chart(fg_chart pChart, fg_plot pPlot)
+{
+    try {
+        getChart(pChart)->addRenderable(getPlot(pPlot)->impl());
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_append_surface_to_chart(fg_chart pChart, fg_surface pSurface)
+{
+    try {
+        getChart(pChart)->addRenderable(getSurface(pSurface)->impl());
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_append_vector_field_to_chart(fg_chart pChart, fg_vector_field pField)
+{
+    try {
+        getChart(pChart)->addRenderable(getVectorField(pField)->impl());
     }
     CATCHALL
 
