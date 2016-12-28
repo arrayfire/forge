@@ -25,11 +25,11 @@
 
 using namespace forge;
 
-fg_err fg_create_chart(fg_chart *pHandle,
+fg_err fg_create_chart(fg_chart *pChart,
                        const fg_chart_type pChartType)
 {
     try {
-        *pHandle = getHandle(new common::Chart(pChartType));
+        *pChart = getHandle(new common::Chart(pChartType));
     }
     CATCHALL
 
@@ -39,6 +39,8 @@ fg_err fg_create_chart(fg_chart *pHandle,
 fg_err fg_retain_chart(fg_chart* pOut, fg_chart pChart)
 {
     try {
+        ARG_ASSERT(1, (pChart!=0));
+
         common::Chart* temp = new common::Chart(pChart);
         *pOut = getHandle(temp);
     }
@@ -47,47 +49,61 @@ fg_err fg_retain_chart(fg_chart* pOut, fg_chart pChart)
     return FG_ERR_NONE;
 }
 
-fg_err fg_release_chart(fg_chart pHandle)
+fg_err fg_release_chart(fg_chart pChart)
 {
     try {
-        delete getChart(pHandle);
+        ARG_ASSERT(0, (pChart!=0));
+
+        delete getChart(pChart);
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_chart_axes_titles(fg_chart pHandle,
+fg_err fg_set_chart_axes_titles(fg_chart pChart,
                                 const char* pX,
                                 const char* pY,
                                 const char* pZ)
 {
     try {
-        getChart(pHandle)->setAxesTitles(pX, pY, pZ);
+        ARG_ASSERT(0, (pChart!=0));
+        ARG_ASSERT(1, (pX!=0));
+        ARG_ASSERT(2, (pY!=0));
+        ARG_ASSERT(3, (pZ!=0));
+
+        getChart(pChart)->setAxesTitles(pX, pY, pZ);
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_chart_axes_limits(fg_chart pHandle,
+fg_err fg_set_chart_axes_limits(fg_chart pChart,
                                 const float pXmin, const float pXmax,
                                 const float pYmin, const float pYmax,
                                 const float pZmin, const float pZmax)
 {
     try {
-        getChart(pHandle)->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
+        ARG_ASSERT(0, (pChart!=0));
+
+        getChart(pChart)->setAxesLimits(pXmin, pXmax, pYmin, pYmax, pZmin, pZmax);
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_chart_label_format(fg_chart pHandle, const char* pXFormat,
+fg_err fg_set_chart_label_format(fg_chart pChart, const char* pXFormat,
                                  const char* pYFormat, const char* pZFormat)
 {
     try {
-        getChart(pHandle)->setAxesLabelFormat(pXFormat, pYFormat, pZFormat);
+        ARG_ASSERT(0, (pChart!=0));
+        ARG_ASSERT(1, (pXFormat!=0));
+        ARG_ASSERT(2, (pYFormat!=0));
+        ARG_ASSERT(3, (pZFormat!=0));
+
+        getChart(pChart)->setAxesLabelFormat(pXFormat, pYFormat, pZFormat);
     }
     CATCHALL
 
@@ -97,11 +113,13 @@ fg_err fg_set_chart_label_format(fg_chart pHandle, const char* pXFormat,
 fg_err fg_get_chart_axes_limits(float* pXmin, float* pXmax,
                                 float* pYmin, float* pYmax,
                                 float* pZmin, float* pZmax,
-                                const fg_chart pHandle)
+                                const fg_chart pChart)
 {
     try {
+        ARG_ASSERT(6, (pChart!=0));
+
         float xmin, xmax, ymin, ymax, zmin, zmax;
-        getChart(pHandle)->getAxesLimits(&xmin, &xmax, &ymin, &ymax, &zmin, &zmax);
+        getChart(pChart)->getAxesLimits(&xmin, &xmax, &ymin, &ymax, &zmin, &zmax);
 
         // Check for NULLs and assign
         if(pXmin) *pXmin = xmin;
@@ -116,10 +134,14 @@ fg_err fg_get_chart_axes_limits(float* pXmin, float* pXmax,
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const float pY)
+fg_err fg_set_chart_legend_position(fg_chart pChart, const float pX, const float pY)
 {
     try {
-        getChart(pHandle)->setLegendPosition(pX, pY);
+        ARG_ASSERT(0, (pChart!=0));
+        ARG_ASSERT(0, (pX>=0));
+        ARG_ASSERT(0, (pY>=0));
+
+        getChart(pChart)->setLegendPosition(pX, pY);
     }
     CATCHALL
 
@@ -129,6 +151,9 @@ fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const floa
 fg_err fg_append_image_to_chart(fg_chart pChart, fg_image pImage)
 {
     try {
+        ARG_ASSERT(0, (pChart!=0));
+        ARG_ASSERT(1, (pImage!=0));
+
         getChart(pChart)->addRenderable(getImage(pImage)->impl());
     }
     CATCHALL
@@ -139,6 +164,9 @@ fg_err fg_append_image_to_chart(fg_chart pChart, fg_image pImage)
 fg_err fg_append_histogram_to_chart(fg_chart pChart, fg_histogram pHistogram)
 {
     try {
+        ARG_ASSERT(0, (pChart!=0));
+        ARG_ASSERT(1, (pHistogram!=0));
+
         getChart(pChart)->addRenderable(getHistogram(pHistogram)->impl());
     }
     CATCHALL
@@ -149,6 +177,9 @@ fg_err fg_append_histogram_to_chart(fg_chart pChart, fg_histogram pHistogram)
 fg_err fg_append_plot_to_chart(fg_chart pChart, fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(0, (pChart!=0));
+        ARG_ASSERT(1, (pPlot!=0));
+
         getChart(pChart)->addRenderable(getPlot(pPlot)->impl());
     }
     CATCHALL
@@ -159,6 +190,9 @@ fg_err fg_append_plot_to_chart(fg_chart pChart, fg_plot pPlot)
 fg_err fg_append_surface_to_chart(fg_chart pChart, fg_surface pSurface)
 {
     try {
+        ARG_ASSERT(0, (pChart!=0));
+        ARG_ASSERT(1, (pSurface!=0));
+
         getChart(pChart)->addRenderable(getSurface(pSurface)->impl());
     }
     CATCHALL
@@ -169,6 +203,9 @@ fg_err fg_append_surface_to_chart(fg_chart pChart, fg_surface pSurface)
 fg_err fg_append_vector_field_to_chart(fg_chart pChart, fg_vector_field pField)
 {
     try {
+        ARG_ASSERT(0, (pChart!=0));
+        ARG_ASSERT(1, (pField!=0));
+
         getChart(pChart)->addRenderable(getVectorField(pField)->impl());
     }
     CATCHALL
@@ -176,14 +213,18 @@ fg_err fg_append_vector_field_to_chart(fg_chart pChart, fg_vector_field pField)
     return FG_ERR_NONE;
 }
 
-fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
+fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pChart,
                              const unsigned pWidth, const unsigned pHeight,
                              const fg_channel_format pFormat,
                              const fg_dtype pType)
 {
     try {
+        ARG_ASSERT(1, (pChart!=0));
+        ARG_ASSERT(2, (pWidth>0));
+        ARG_ASSERT(3, (pHeight>0));
+
         common::Image* img = new common::Image(pWidth, pHeight, pFormat, (forge::dtype)pType);
-        getChart(pHandle)->addRenderable(img->impl());
+        getChart(pChart)->addRenderable(img->impl());
         *pImage = getHandle(img);
     }
     CATCHALL
@@ -191,11 +232,14 @@ fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
     return FG_ERR_NONE;
 }
 
-fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
+fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pChart,
                                  const unsigned pNBins, const fg_dtype pType)
 {
     try {
-        common::Chart* chrt = getChart(pHandle);
+        ARG_ASSERT(1, (pChart!=0));
+        ARG_ASSERT(2, (pNBins>0));
+
+        common::Chart* chrt = getChart(pChart);
 
         // Histogram is only allowed in FG_CHART_2D
         ARG_ASSERT(5, chrt->chartType() == FG_CHART_2D);
@@ -209,12 +253,15 @@ fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
     return FG_ERR_NONE;
 }
 
-fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
+fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pChart,
                             const unsigned pNPoints, const fg_dtype pType,
                             const fg_plot_type pPlotType, const fg_marker_type pMarkerType)
 {
     try {
-        common::Chart* chrt = getChart(pHandle);
+        ARG_ASSERT(1, (pChart!=0));
+        ARG_ASSERT(2, (pNPoints>0));
+
+        common::Chart* chrt = getChart(pChart);
         forge::ChartType ctype = chrt->chartType();
 
         if (ctype == FG_CHART_2D) {
@@ -234,12 +281,16 @@ fg_err fg_add_plot_to_chart(fg_plot* pPlot, fg_chart pHandle,
     return FG_ERR_NONE;
 }
 
-fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
+fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pChart,
                                const unsigned pXPoints, const unsigned pYPoints, const fg_dtype pType,
                                const fg_plot_type pPlotType, const fg_marker_type pMarkerType)
 {
     try {
-        common::Chart* chrt = getChart(pHandle);
+        ARG_ASSERT(1, (pChart!=0));
+        ARG_ASSERT(2, (pXPoints>0));
+        ARG_ASSERT(3, (pYPoints>0));
+
+        common::Chart* chrt = getChart(pChart);
 
         // Surface is only allowed in FG_CHART_3D
         ARG_ASSERT(5, chrt->chartType() == FG_CHART_3D);
@@ -254,11 +305,14 @@ fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
     return FG_ERR_NONE;
 }
 
-fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
+fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pChart,
                                     const unsigned pNPoints, const fg_dtype pType)
 {
     try {
-        common::Chart* chrt = getChart(pHandle);
+        ARG_ASSERT(1, (pChart!=0));
+        ARG_ASSERT(2, (pNPoints>0));
+
+        common::Chart* chrt = getChart(pChart);
         common::VectorField* field = new common::VectorField(pNPoints,
                                                              (forge::dtype)pType,
                                                              chrt->chartType());
@@ -274,6 +328,13 @@ fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
                        const int pX, const int pY, const int pWidth, const int pHeight)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pChart!=0));
+        ARG_ASSERT(2, (pX>=0));
+        ARG_ASSERT(3, (pY>=0));
+        ARG_ASSERT(4, (pWidth>0));
+        ARG_ASSERT(5, (pHeight>0));
+
         getChart(pChart)->render(getWindow(pWindow)->getID(),
                                  pX, pY, pWidth, pHeight,
                                  IDENTITY, IDENTITY);
@@ -286,6 +347,8 @@ fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
 fg_err fg_get_chart_type(fg_chart_type *pChartType, const fg_chart pChart)
 {
     try {
+        ARG_ASSERT(1, (pChart!=0));
+
         *pChartType = getChart(pChart)->chartType();
     }
     CATCHALL

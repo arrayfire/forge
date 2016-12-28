@@ -21,6 +21,8 @@ fg_err fg_create_plot(fg_plot *pPlot,
                       const fg_marker_type pMarkerType)
 {
     try {
+        ARG_ASSERT(1, (pNPoints>0));
+
         *pPlot = getHandle(new common::Plot(pNPoints, (forge::dtype)pType, pPlotType,
                                             pMarkerType, pChartType));
     }
@@ -32,6 +34,8 @@ fg_err fg_create_plot(fg_plot *pPlot,
 fg_err fg_retain_plot(fg_plot* pOut, fg_plot pIn)
 {
     try {
+        ARG_ASSERT(1, (pIn!=0));
+
         common::Plot* temp = new common::Plot(getPlot(pIn));
         *pOut = getHandle(temp);
     }
@@ -43,6 +47,8 @@ fg_err fg_retain_plot(fg_plot* pOut, fg_plot pIn)
 fg_err fg_release_plot(fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(0, (pPlot!=0));
+
         delete getPlot(pPlot);
     }
     CATCHALL
@@ -55,6 +61,8 @@ fg_err fg_set_plot_color(fg_plot pPlot,
                          const float pBlue, const float pAlpha)
 {
     try {
+        ARG_ASSERT(0, (pPlot!=0));
+
         getPlot(pPlot)->setColor(pRed, pGreen, pBlue, pAlpha);
     }
     CATCHALL
@@ -65,6 +73,9 @@ fg_err fg_set_plot_color(fg_plot pPlot,
 fg_err fg_set_plot_legend(fg_plot pPlot, const char* pLegend)
 {
     try {
+        ARG_ASSERT(0, (pPlot!=0));
+        ARG_ASSERT(1, (pLegend!=0));
+
         getPlot(pPlot)->setLegend(pLegend);
     }
     CATCHALL
@@ -75,6 +86,8 @@ fg_err fg_set_plot_legend(fg_plot pPlot, const char* pLegend)
 fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize)
 {
     try {
+        ARG_ASSERT(1, (pPlot!=0));
+
         getPlot(pPlot)->setMarkerSize(pMarkerSize);
     }
     CATCHALL
@@ -85,6 +98,8 @@ fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize)
 fg_err fg_get_plot_vertex_buffer(unsigned* pOut, const fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(1, (pPlot!=0));
+
         *pOut = getPlot(pPlot)->vbo();
     }
     CATCHALL
@@ -95,6 +110,8 @@ fg_err fg_get_plot_vertex_buffer(unsigned* pOut, const fg_plot pPlot)
 fg_err fg_get_plot_color_buffer(unsigned* pOut, const fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(1, (pPlot!=0));
+
         *pOut = getPlot(pPlot)->cbo();
     }
     CATCHALL
@@ -105,6 +122,8 @@ fg_err fg_get_plot_color_buffer(unsigned* pOut, const fg_plot pPlot)
 fg_err fg_get_plot_alpha_buffer(unsigned* pOut, const fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(1, (pPlot!=0));
+
         *pOut = getPlot(pPlot)->abo();
     }
     CATCHALL
@@ -115,6 +134,8 @@ fg_err fg_get_plot_alpha_buffer(unsigned* pOut, const fg_plot pPlot)
 fg_err fg_get_plot_radii_buffer(unsigned* pOut, const fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(1, (pPlot!=0));
+
         *pOut = getPlot(pPlot)->mbo();
     }
     CATCHALL
@@ -125,6 +146,8 @@ fg_err fg_get_plot_radii_buffer(unsigned* pOut, const fg_plot pPlot)
 fg_err fg_get_plot_vertex_buffer_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(1, (pPlot!=0));
+
         *pOut = (unsigned)getPlot(pPlot)->vboSize();
     }
     CATCHALL
@@ -135,6 +158,8 @@ fg_err fg_get_plot_vertex_buffer_size(unsigned* pOut, const fg_plot pPlot)
 fg_err fg_get_plot_color_buffer_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(1, (pPlot!=0));
+
         *pOut = (unsigned)getPlot(pPlot)->cboSize();
     }
     CATCHALL
@@ -145,6 +170,8 @@ fg_err fg_get_plot_color_buffer_size(unsigned* pOut, const fg_plot pPlot)
 fg_err fg_get_plot_alpha_buffer_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(1, (pPlot!=0));
+
         *pOut = (unsigned)getPlot(pPlot)->aboSize();
     }
     CATCHALL
@@ -155,6 +182,8 @@ fg_err fg_get_plot_alpha_buffer_size(unsigned* pOut, const fg_plot pPlot)
 fg_err fg_get_plot_radii_buffer_size(unsigned* pOut, const fg_plot pPlot)
 {
     try {
+        ARG_ASSERT(1, (pPlot!=0));
+
         *pOut = (unsigned)getPlot(pPlot)->mboSize();
     }
     CATCHALL

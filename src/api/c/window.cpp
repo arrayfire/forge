@@ -22,6 +22,10 @@ fg_err fg_create_window(fg_window *pWindow,
                         const bool pInvisible)
 {
     try {
+        ARG_ASSERT(1, (pWidth>0));
+        ARG_ASSERT(2, (pHeight>0));
+        ARG_ASSERT(3, (pTitle!=NULL));
+
         common::Window* shrdWnd = getWindow(pShareWindow);
         common::Window* temp = nullptr;
         if (shrdWnd == nullptr) {
@@ -39,6 +43,8 @@ fg_err fg_create_window(fg_window *pWindow,
 fg_err fg_retain_window(fg_window *pOut, fg_window pWindow)
 {
     try {
+        ARG_ASSERT(1, (pWindow!=0));
+
         common::Window* temp = new common::Window(pWindow);
         *pOut = getHandle(temp);
     }
@@ -50,6 +56,8 @@ fg_err fg_retain_window(fg_window *pOut, fg_window pWindow)
 fg_err fg_release_window(fg_window pWindow)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+
         delete getWindow(pWindow);
     }
     CATCHALL
@@ -60,6 +68,9 @@ fg_err fg_release_window(fg_window pWindow)
 fg_err fg_set_window_font(fg_window pWindow, fg_font pFont)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pFont!=0));
+
         getWindow(pWindow)->setFont(getFont(pFont));
     }
     CATCHALL
@@ -69,6 +80,9 @@ fg_err fg_set_window_font(fg_window pWindow, fg_font pFont)
 fg_err fg_set_window_title(fg_window pWindow, const char* pTitle)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pTitle!=0));
+
         getWindow(pWindow)->setTitle(pTitle);
     }
     CATCHALL
@@ -78,6 +92,10 @@ fg_err fg_set_window_title(fg_window pWindow, const char* pTitle)
 fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pX>=0));
+        ARG_ASSERT(2, (pY>=0));
+
         getWindow(pWindow)->setPos(pX, pY);
     }
     CATCHALL
@@ -87,6 +105,10 @@ fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY)
 fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const unsigned pHeight)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pWidth>0));
+        ARG_ASSERT(2, (pHeight>0));
+
         getWindow(pWindow)->setSize(pWidth, pHeight);
     }
     CATCHALL
@@ -96,6 +118,8 @@ fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const unsign
 fg_err fg_set_window_colormap(fg_window pWindow, const fg_color_map pColorMap)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+
         getWindow(pWindow)->setColorMap(pColorMap);
     }
     CATCHALL
@@ -105,6 +129,8 @@ fg_err fg_set_window_colormap(fg_window pWindow, const fg_color_map pColorMap)
 fg_err fg_get_window_context_handle(long long *pContext, const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(1, (pWindow!=0));
+
         *pContext = getWindow(pWindow)->context();
     }
     CATCHALL
@@ -114,6 +140,8 @@ fg_err fg_get_window_context_handle(long long *pContext, const fg_window pWindow
 fg_err fg_get_window_display_handle(long long *pDisplay, const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(1, (pWindow!=0));
+
         *pDisplay = getWindow(pWindow)->display();
     }
     CATCHALL
@@ -123,6 +151,8 @@ fg_err fg_get_window_display_handle(long long *pDisplay, const fg_window pWindow
 fg_err fg_get_window_width(int *pWidth, const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(1, (pWindow!=0));
+
         *pWidth = getWindow(pWindow)->width();
     }
     CATCHALL
@@ -132,6 +162,8 @@ fg_err fg_get_window_width(int *pWidth, const fg_window pWindow)
 fg_err fg_get_window_height(int *pHeight, const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(1, (pWindow!=0));
+
         *pHeight = getWindow(pWindow)->height();
     }
     CATCHALL
@@ -141,6 +173,8 @@ fg_err fg_get_window_height(int *pHeight, const fg_window pWindow)
 fg_err fg_get_window_grid(int *pRows, int *pCols, const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(2, (pWindow!=0));
+
         getWindow(pWindow)->getGrid(pRows, pCols);
     }
     CATCHALL
@@ -150,6 +184,8 @@ fg_err fg_get_window_grid(int *pRows, int *pCols, const fg_window pWindow)
 fg_err fg_make_window_current(const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+
         getWindow(pWindow)->makeCurrent();
     }
     CATCHALL
@@ -159,6 +195,8 @@ fg_err fg_make_window_current(const fg_window pWindow)
 fg_err fg_hide_window(const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+
         getWindow(pWindow)->hide();
     }
     CATCHALL
@@ -168,6 +206,8 @@ fg_err fg_hide_window(const fg_window pWindow)
 fg_err fg_show_window(const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+
         getWindow(pWindow)->show();
     }
     CATCHALL
@@ -177,6 +217,8 @@ fg_err fg_show_window(const fg_window pWindow)
 fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(1, (pWindow!=0));
+
         *pIsClosed = getWindow(pWindow)->close();
     }
     CATCHALL
@@ -186,6 +228,9 @@ fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow)
 fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage, const bool pKeepAspectRatio)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pImage!=0));
+
         getWindow(pWindow)->draw(getImage(pImage), pKeepAspectRatio);
     }
     CATCHALL
@@ -195,6 +240,9 @@ fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage, const bool 
 fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pChart!=0));
+
         getWindow(pWindow)->draw(getChart(pChart));
     }
     CATCHALL
@@ -204,6 +252,10 @@ fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart)
 fg_err fg_setup_window_grid(fg_window pWindow, int pRows, int pCols)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pRows>0));
+        ARG_ASSERT(2, (pCols>0));
+
         getWindow(pWindow)->grid(pRows, pCols);
     }
     CATCHALL
@@ -214,6 +266,12 @@ fg_err fg_draw_image_to_cell(const fg_window pWindow, int pRowId, int pColId,
                              const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pRowId>=0));
+        ARG_ASSERT(2, (pColId>=0));
+        ARG_ASSERT(3, (pImage!=0));
+        ARG_ASSERT(4, (pTitle!=0));
+
         getWindow(pWindow)->draw(pRowId, pColId, getImage(pImage), pTitle, pKeepAspectRatio);
     }
     CATCHALL
@@ -224,6 +282,12 @@ fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pRowId, int pColId,
                              const fg_chart pChart, const char* pTitle)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pRowId>=0));
+        ARG_ASSERT(2, (pColId>=0));
+        ARG_ASSERT(3, (pChart!=0));
+        ARG_ASSERT(4, (pTitle!=0));
+
         getWindow(pWindow)->draw(pRowId, pColId, getChart(pChart), pTitle);
     }
     CATCHALL
@@ -233,6 +297,8 @@ fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pRowId, int pColId,
 fg_err fg_swap_window_buffers(const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+
         getWindow(pWindow)->swapBuffers();
     }
     CATCHALL
@@ -243,6 +309,8 @@ fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window pWindow
 {
     try {
         ARG_ASSERT(0, pFullPath != NULL);
+        ARG_ASSERT(1, (pWindow!=0));
+
         getWindow(pWindow)->saveFrameBuffer(pFullPath);
     }
     CATCHALL
