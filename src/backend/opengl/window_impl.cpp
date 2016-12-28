@@ -331,8 +331,6 @@ void window_impl::swapBuffers()
 
 void window_impl::saveFrameBuffer(const char* pFullPath)
 {
-    ARG_ASSERT(0, pFullPath != NULL);
-
     FI_Init();
 
     auto FIErrorHandler = [](FREE_IMAGE_FORMAT pOutputFIFormat, const char* pMessage) {

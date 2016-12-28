@@ -28,13 +28,23 @@ extern "C" {
 FGAPI fg_err fg_create_font(fg_font* pFont);
 
 /**
+   Increase reference count of the resource
+
+   \param[out] pOut is the new handle to existing resource
+   \param[in] pIn is the existing resource handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_retain_font(fg_font *pOut, fg_font pIn);
+
+/**
    Destroy font object
 
    \param[in] pFont is the font handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_destroy_font(fg_font pFont);
+FGAPI fg_err fg_release_font(fg_font pFont);
 
 /**
    Load a given font file

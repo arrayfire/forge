@@ -242,6 +242,7 @@ fg_err fg_swap_window_buffers(const fg_window pWindow)
 fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window pWindow)
 {
     try {
+        ARG_ASSERT(0, pFullPath != NULL);
         getWindow(pWindow)->saveFrameBuffer(pFullPath);
     }
     CATCHALL

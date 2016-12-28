@@ -63,16 +63,6 @@ ArgumentError::ArgumentError(const char * const pFuncName,
       mExpected(pExpectString)
 {}
 
-DimensionError::DimensionError(const char * const pFuncName,
-                               const char * const pFileName,
-                               const int pLineNumber,
-                               const int pIndex,
-                               const char * const pExpectString)
-    : FgError(pFuncName, pFileName, pLineNumber, "Invalid size", FG_ERR_SIZE),
-      mArgIndex(pIndex),
-      mExpected(pExpectString)
-{}
-
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions
 ////////////////////////////////////////////////////////////////////////////////
@@ -116,14 +106,6 @@ fg_err processException()
 
         print_error(ss.str());
         err = FG_ERR_INVALID_ARG;
-    } catch (const DimensionError &ex) {
-        ss << "In function " << ex.getFunctionName() << "\n"
-           << "In file " << ex.getFileName() << ":" << ex.getLineNumber() << "\n"
-           << "Invalid dimension at index " << ex.getArgIndex() << "\n"
-           << "Expected : "<< ex.getExpectedCondition() << "\n";
-
-        print_error(ss.str());
-        err = FG_ERR_SIZE;
     } catch (const FgError &ex) {
         ss << "In function " << ex.getFunctionName() << "\n"
            << "In file " << ex.getFileName() << ":" << ex.getLineNumber() << "\n"
