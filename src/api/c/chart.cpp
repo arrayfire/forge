@@ -68,9 +68,6 @@ fg_err fg_set_chart_axes_titles(fg_chart pChart,
 {
     try {
         ARG_ASSERT(0, (pChart!=0));
-        ARG_ASSERT(1, (pX!=0));
-        ARG_ASSERT(2, (pY!=0));
-        ARG_ASSERT(3, (pZ!=0));
 
         getChart(pChart)->setAxesTitles(pX, pY, pZ);
     }

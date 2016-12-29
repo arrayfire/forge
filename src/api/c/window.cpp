@@ -24,7 +24,6 @@ fg_err fg_create_window(fg_window *pWindow,
     try {
         ARG_ASSERT(1, (pWidth>0));
         ARG_ASSERT(2, (pHeight>0));
-        ARG_ASSERT(3, (pTitle!=NULL));
 
         common::Window* shrdWnd = getWindow(pShareWindow);
         common::Window* temp = nullptr;
@@ -270,7 +269,6 @@ fg_err fg_draw_image_to_cell(const fg_window pWindow, int pRowId, int pColId,
         ARG_ASSERT(1, (pRowId>=0));
         ARG_ASSERT(2, (pColId>=0));
         ARG_ASSERT(3, (pImage!=0));
-        ARG_ASSERT(4, (pTitle!=0));
 
         getWindow(pWindow)->draw(pRowId, pColId, getImage(pImage), pTitle, pKeepAspectRatio);
     }
@@ -286,7 +284,6 @@ fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pRowId, int pColId,
         ARG_ASSERT(1, (pRowId>=0));
         ARG_ASSERT(2, (pColId>=0));
         ARG_ASSERT(3, (pChart!=0));
-        ARG_ASSERT(4, (pTitle!=0));
 
         getWindow(pWindow)->draw(pRowId, pColId, getChart(pChart), pTitle);
     }

@@ -228,10 +228,9 @@ void AbstractChart::setAxesTitles(const char* pXTitle,
                                   const char* pYTitle,
                                   const char* pZTitle)
 {
-    mXTitle = std::string(pXTitle);
-    mYTitle = std::string(pYTitle);
-    if (pZTitle)
-        mZTitle = std::string(pZTitle);
+    mXTitle = (pXTitle ? std::string(pXTitle) : std::string("X-Axis"));
+    mYTitle = (pYTitle ? std::string(pYTitle) : std::string("Y-Axis"));
+    mZTitle = (pZTitle ? std::string(pZTitle) : std::string("Z-Axis"));
 }
 
 void AbstractChart::setLegendPosition(const float pX, const float pY)

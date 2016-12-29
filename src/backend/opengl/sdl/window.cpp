@@ -62,7 +62,7 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
     }
 
     mWindow = SDL_CreateWindow(
-                            pTitle,
+                            (pTitle!=nullptr ? pTitle : "Forge-Demo"),
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
                             pWidth, pHeight,
@@ -117,7 +117,7 @@ long long Widget::getDisplayHandle()
 
 void Widget::setTitle(const char* pTitle)
 {
-    SDL_SetWindowTitle(mWindow, pTitle);
+    SDL_SetWindowTitle(mWindow, (pTitle!=nullptr ? pTitle : "Forge-Demo"));
 }
 
 void Widget::setPos(int pX, int pY)

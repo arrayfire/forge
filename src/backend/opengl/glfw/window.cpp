@@ -67,7 +67,8 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
         glfwWindowHint(GLFW_VISIBLE, static_cast<GLint>(GL_TRUE));
 
     glfwWindowHint(GLFW_SAMPLES, 4);
-    mWindow = glfwCreateWindow(pWidth, pHeight, pTitle, nullptr,
+    mWindow = glfwCreateWindow(pWidth, pHeight,
+                               (pTitle!=nullptr ? pTitle : "Forge-Demo"), nullptr,
                                (pWindow!=nullptr ? pWindow->getNativeHandle(): nullptr));
 
     if (!mWindow) {
@@ -143,7 +144,7 @@ long long Widget::getDisplayHandle()
 
 void Widget::setTitle(const char* pTitle)
 {
-    glfwSetWindowTitle(mWindow, pTitle);
+    glfwSetWindowTitle(mWindow, (pTitle!=nullptr ? pTitle : "Forge-Demo"));
 }
 
 void Widget::setPos(int pX, int pY)
