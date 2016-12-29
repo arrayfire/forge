@@ -1,30 +1,21 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
-####################### BEGIN - Backend agnostic upstream dependencies #######################
-# Prior to GLM 0.9.7.0, the package is found by the FindGLM.cmake module.
-# This was removed with GLM 0.9.7.0, instead a glm-config.cmake configuration
-# file is provided. Therefore, both FIND_PACKAGE calls are necessary.
-FIND_PACKAGE(GLM QUIET)
-FIND_PACKAGE(glm QUIET)
+####################### BEGIN - Backend agnostic upstream dependencies #####################
 
-IF((NOT glm_FOUND AND NOT GLM_FOUND) OR (${USE_LOCAL_GLM}))
-  SET(USE_LOCAL_GLM ON)
-  MESSAGE(STATUS "Downloading GLM headers.")
-  INCLUDE(build_glm)
+OPTION(USE_SYSTEM_GLM "Use the system GLM library" OFF)
+IF(USE_SYSTEM_GLM)
+  FIND_PACKAGE(glm REQUIRED)
 ELSE()
-  MESSAGE(STATUS "Using System GLM")
+  INCLUDE(build_glm)
 ENDIF()
 
 INCLUDE_DIRECTORIES(${GLM_INCLUDE_DIRS})
 
-FIND_PACKAGE(Freetype QUIET)
-
-IF(NOT FREETYPE_FOUND OR ${USE_LOCAL_FREETYPE})
-  SET(USE_LOCAL_FREETYPE ON)
-  MESSAGE(STATUS "Downloading and building Freetype libraries.")
-  INCLUDE(build_freetype)
+OPTION(USE_SYSTEM_FREETYPE "Use the system Freetype library" OFF)
+IF(USE_SYSTEM_FREETYPE)
+  FIND_PACKAGE(Freetype REQUIRED)
 ELSE()
-  MESSAGE(STATUS "Using System FreeType2")
+  INCLUDE(build_freetype)
 ENDIF()
 
 INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
