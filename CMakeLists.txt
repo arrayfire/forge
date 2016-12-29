@@ -8,9 +8,6 @@ INCLUDE(Version)
 
 
 ############################## BEGIN - CMAKE OPTIONS ##########################
-SET(USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
-SET_PROPERTY(CACHE USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
-
 OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
 OPTION(BUILD_EXAMPLES "Build Examples" ON)
 
