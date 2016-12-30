@@ -21,6 +21,9 @@ namespace forge
 namespace wtk
 {
 
+void initWindowToolkit();
+void destroyWindowToolkit();
+
 using namespace gl;
 
 class Widget {

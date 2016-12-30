@@ -20,6 +20,9 @@ namespace forge
 namespace wtk
 {
 
+void initWindowToolkit();
+void destroyWindowToolkit();
+
 class Widget {
     private:
         SDL_Window*   mWindow;

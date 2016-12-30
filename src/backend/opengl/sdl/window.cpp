@@ -28,6 +28,19 @@ namespace forge
 namespace wtk
 {
 
+void initWindowToolkit()
+{
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cerr << "ERROR: SDL wasn't able to initalize\n";
+        SDL_THROW_ERROR("SDL initilization failed", FG_ERR_GL_ERROR);
+    }
+}
+
+void destroyWindowToolkit()
+{
+    SDL_Quit();
+}
+
 Widget::Widget()
     : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
     mWidth(512), mHeight(512), mRows(1), mCols(1)
@@ -41,11 +54,6 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
     : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mRows(1), mCols(1)
 {
     mFramePBO   = 0;
-
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "ERROR: SDL wasn't able to initalize\n";
-        SDL_THROW_ERROR("SDL initilization failed", FG_ERR_GL_ERROR);
-    }
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);

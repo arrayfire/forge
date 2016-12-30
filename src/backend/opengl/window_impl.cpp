@@ -23,16 +23,6 @@
 using namespace gl;
 using namespace forge;
 
-/* following function is thread safe */
-int getNextUniqueId()
-{
-    static int wndUnqIdTracker = 0;
-    static std::mutex wndUnqIdMutex;
-
-    std::lock_guard<std::mutex> lock(wndUnqIdMutex);
-    return wndUnqIdTracker++;
-}
-
 class FI_Manager
 {
     public:
@@ -78,6 +68,40 @@ private:
 
 namespace forge
 {
+
+/* following function is thread safe */
+int getNextUniqueId()
+{
+    static int wndUnqIdTracker = 0;
+    static std::mutex wndUnqIdMutex;
+
+    std::lock_guard<std::mutex> lock(wndUnqIdMutex);
+    return wndUnqIdTracker++;
+}
+
+static std::mutex initMutex;
+static int initCallCount = -1;
+
+void initWtkIfNotDone()
+{
+    std::lock_guard<std::mutex> lock(initMutex);
+
+    initCallCount++;
+
+    if (initCallCount==0)
+        forge::wtk::initWindowToolkit();
+}
+
+void destroyWtkIfDone()
+{
+    std::lock_guard<std::mutex> lock(initMutex);
+
+    initCallCount--;
+
+    if (initCallCount==-1)
+        forge::wtk::destroyWindowToolkit();
+}
+
 namespace opengl
 {
 
@@ -93,6 +117,8 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                         std::weak_ptr<window_impl> pWindow, const bool invisible)
     : mID(getNextUniqueId())
 {
+    initWtkIfNotDone();
+
     if (auto observe = pWindow.lock()) {
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, observe->get(), invisible);
     } else {
@@ -146,6 +172,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 window_impl::~window_impl()
 {
     delete mWindow;
+    destroyWtkIfDone();
 }
 
 void window_impl::setFont(const std::shared_ptr<font_impl>& pFont)
