@@ -226,6 +226,12 @@ void font_impl::unbindResources() const
 
 void font_impl::destroyGLResources()
 {
+    for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
+        GLuint vao = it->second;
+        glDeleteVertexArrays(1, &vao);
+    }
+    mVAOMap.clear();
+
     if (mVBO)
         glDeleteBuffers(1, &mVBO);
     /* remove all glyph structures from heap */
@@ -256,6 +262,8 @@ font_impl::font_impl()
 font_impl::~font_impl()
 {
     destroyGLResources();
+    /* clean glyph texture atlas */
+    delete mAtlas;
 }
 
 void font_impl::setOthro2D(int pWidth, int pHeight)
@@ -364,6 +372,8 @@ void font_impl::loadSystemFont(const char* const pName)
     }
     // destroy fontconfig pattern object
     FcPatternDestroy(pat);
+    // destroy Fc config object
+    FcConfigDestroy(config);
 #else
     char buf[512];
     GetWindowsDirectory(buf, 512);
