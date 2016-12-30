@@ -37,7 +37,7 @@ using namespace std;
 
 typedef std::vector<std::string>::const_iterator StringIter;
 
-static const int CHART2D_FONT_SIZE = 16;
+static const int CHART2D_FONT_SIZE = 12;
 static const std::regex PRINTF_FIXED_FLOAT_RE("%[0-9]*.[0-9]*f");
 
 const std::shared_ptr<forge::opengl::font_impl>& getChartFont()
@@ -71,14 +71,9 @@ void pushPoint(vector<T> &points, T x, T y, T z)
     points.push_back(z);
 }
 
-int calcTrgtFntSize(const float w)
+int calcTrgtFntSize(const float w, const float h)
 {
-    static const float MIN_WIDTH = 16.0f;
-    static const float MAX_WIDTH = 512.0f;
-
-    float f = w>MAX_WIDTH ? 1.0f : (std::max(w, MIN_WIDTH)-MIN_WIDTH)/(MAX_WIDTH-MIN_WIDTH);
-
-    return int(MIN_FONT_SIZE * (1.0f-f) + MAX_FONT_SIZE * f);
+    return CHART2D_FONT_SIZE;
 }
 
 namespace forge
@@ -530,7 +525,7 @@ void chart2d_impl::render(const int pWindowId,
     glPointSize(1);
     chart2d_impl::unbindResources();
 
-    const int trgtFntSize = calcTrgtFntSize(w);
+    const int trgtFntSize = calcTrgtFntSize(w, h);
 
     renderTickLabels(pWindowId, int(w), int(h), mYText, trgtFntSize, trans, 0, false);
     renderTickLabels(pWindowId, int(w), int(h), mXText, trgtFntSize, trans, mTickCount, false);
@@ -924,7 +919,7 @@ void chart3d_impl::render(const int pWindowId,
 
     chart3d_impl::unbindResources();
 
-    const int trgtFntSize = calcTrgtFntSize(w);
+    const int trgtFntSize = calcTrgtFntSize(w, h);
 
     renderTickLabels(pWindowId, w, h, mZText, trgtFntSize, trans, 0);
     renderTickLabels(pWindowId, w, h, mYText, trgtFntSize, trans, mTickCount);
