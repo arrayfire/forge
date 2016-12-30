@@ -138,10 +138,10 @@ void AbstractChart::renderTickLabels(
     }
 }
 
-AbstractChart::AbstractChart(const int pLeftMargin, const int pRightMargin,
-                             const int pTopMargin, const int pBottomMargin)
+AbstractChart::AbstractChart(const float pLeftMargin, const float pRightMargin,
+                             const float pTopMargin, const float pBottomMargin)
     : mTickCount(9), mTickSize(10),
-      mDefaultLeftMargin(pLeftMargin), mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
+      mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
       mXLabelFormat("%4.1f"), mXMax(0), mXMin(0),
       mYLabelFormat("%4.1f"), mYMax(0), mYMin(0),
@@ -441,8 +441,6 @@ void chart2d_impl::generateTickLabels()
         maxYLabelWidth = std::max(maxYLabelWidth, temp.length());
     }
 
-    mLeftMargin = std::max((int)maxYLabelWidth, mDefaultLeftMargin)+2*CHART2D_FONT_SIZE;
-
     /* push tick points for x axis */
     mXText.push_back(toString(xmid, mXLabelFormat));
     for (int i = 1; i <= ticksLeft; i++) {
@@ -452,7 +450,7 @@ void chart2d_impl::generateTickLabels()
 }
 
 chart2d_impl::chart2d_impl()
-    : AbstractChart(96, 16, 12, 64) {
+    : AbstractChart(0.13139f, 0.1008f, 0.0755f, 0.1077f) {
     generateChartData();
     generateTickLabels();
 }
@@ -463,14 +461,14 @@ void chart2d_impl::render(const int pWindowId,
 {
     CheckGL("Begin chart2d_impl::renderChart");
 
-    float lgap     = getLeftMargin() + getTickSize()/2;
-    float bgap     = getBottomMargin() + getTickSize()/2;
+    float lgap     = getLeftMargin(pVPW) + getTickSize()/2.0f;
+    float bgap     = getBottomMargin(pVPH) + getTickSize()/2.0f;
 
-    float offset_x = (lgap-getRightMargin()) / pVPW;
-    float offset_y = (bgap-mTopMargin) / pVPH;
+    float offset_x = (lgap-getRightMargin(pVPW)) / pVPW;
+    float offset_y = (bgap-getTopMargin(pVPH)) / pVPH;
 
-    float w        = pVPW - (lgap + getRightMargin());
-    float h        = pVPH - (bgap + mTopMargin);
+    float w        = pVPW - (lgap + getRightMargin(pVPW));
+    float h        = pVPH - (bgap + getTopMargin(pVPH));
     float scale_x  = w / pVPW;
     float scale_y  = h / pVPH;
 
@@ -810,8 +808,6 @@ void chart3d_impl::generateTickLabels()
         maxZLabelWidth = std::max(maxZLabelWidth, temp.length());
     }
 
-    mLeftMargin = std::max((int)maxZLabelWidth, mDefaultLeftMargin)+2*CHART2D_FONT_SIZE;
-
     /* push tick points for y axis */
     mYText.push_back(toString(ymid, mYLabelFormat));
     for (int i = 1; i <= ticksLeft; i++) {
@@ -828,7 +824,7 @@ void chart3d_impl::generateTickLabels()
 }
 
 chart3d_impl::chart3d_impl()
-    :AbstractChart(64, 32, 32, 32) {
+    :AbstractChart(0.0933f, 0.03701f, 0.1077f, 0.0085f) {
     generateChartData();
     generateTickLabels();
 }
@@ -848,13 +844,13 @@ void chart3d_impl::render(const int pWindowId,
 
     CheckGL("Being chart3d_impl::renderChart");
 
-    float lgap = getLeftMargin() + getTickSize()/2;
-    float bgap = getBottomMargin() + getTickSize()/2;
-    float w    = pVPW - (lgap + getRightMargin());
-    float h    = pVPH - (bgap + getTopMargin());
+    float lgap = getLeftMargin(pVPW) + getTickSize()/2.0f;
+    float bgap = getBottomMargin(pVPH) + getTickSize()/2.0f;
+    float w    = pVPW - (lgap + getRightMargin(pVPW));
+    float h    = pVPH - (bgap + getTopMargin(pVPH));
 
-    float offset_x = getLeftMargin() / pVPW;
-    float offset_y = getBottomMargin() / pVPH;
+    float offset_x = getLeftMargin(pVPW) / pVPW;
+    float offset_y = getBottomMargin(pVPH) / pVPH;
     float scale_x  = w / pVPW;
     float scale_y  = h / pVPH;
 

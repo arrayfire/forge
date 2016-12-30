@@ -34,11 +34,12 @@ class AbstractChart : public AbstractRenderable {
         std::vector<std::string> mZText;
         int   mTickCount;  /* should be an odd number always */
         int   mTickSize;
-        int   mDefaultLeftMargin;
-        int   mLeftMargin;
-        int   mRightMargin;
-        int   mTopMargin;
-        int   mBottomMargin;
+        /* margin variables represent the % of current dimensions
+         * and not the exact units of length */
+        float mLeftMargin;
+        float mRightMargin;
+        float mTopMargin;
+        float mBottomMargin;
         /* chart axes ranges and titles */
         std::string  mXLabelFormat;
         float mXMax;
@@ -82,24 +83,23 @@ class AbstractChart : public AbstractRenderable {
             return (mTickCount-1)/2;
         }
 
-        inline int getLeftMargin() const {
-            //return mLeftMargin + (mXLabelFormat==FG_NUMBER_SCIENTIFIC)*mLeftMargin*0.75f;
-            return mLeftMargin;
+        inline float getLeftMargin(int pWidth) const {
+            return pWidth*mLeftMargin;
         }
 
-        inline int getRightMargin() const {
-            return mRightMargin;
+        inline float getRightMargin(int pWidth) const {
+            return pWidth*mRightMargin;
         }
 
-        inline int getBottomMargin() const {
-            return mBottomMargin;
+        inline float getBottomMargin(int pHeight) const {
+            return pHeight*mBottomMargin;
         }
 
-        inline int getTopMargin() const {
-            return mTopMargin;
+        inline float getTopMargin(int pHeight) const {
+            return pHeight*mTopMargin;
         }
 
-        inline int getTickSize() const {
+        inline float getTickSize() const {
             return mTickSize;
         }
 
@@ -117,8 +117,8 @@ class AbstractChart : public AbstractRenderable {
         virtual void generateTickLabels() = 0;
 
     public:
-        AbstractChart(const int pLeftMargin, const int pRightMargin,
-                      const int pTopMargin, const int pBottomMargin);
+        AbstractChart(const float pLeftMargin, const float pRightMargin,
+                      const float pTopMargin, const float pBottomMargin);
         virtual ~AbstractChart();
 
         void setAxesTitles(const char* pXTitle,

@@ -285,38 +285,40 @@ void window_impl::draw(int pRowId, int pColId,
     float pos[2] = {0.0, 0.0};
     int c     = pColId;
     int r     = pRowId;
-    int x_off = c * mWindow->mCellWidth;
-    int y_off = (mWindow->mRows - 1 - r) * mWindow->mCellHeight;
+    int xOff = c * mWindow->mCellWidth;
+    int yOff = (mWindow->mRows - 1 - r) * mWindow->mCellHeight;
 
     const glm::mat4& viewMatrix = mWindow->mViewMatrices[c+r*mWindow->mCols];
     const glm::mat4& orientMatrix = mWindow->mOrientMatrices[c+r*mWindow->mCols];
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
-    int top_margin = int(0.06f*mWindow->mCellHeight);
-    int bot_margin = int(0.02f*mWindow->mCellHeight);
-    int lef_margin = int(0.02f*mWindow->mCellWidth);
-    int rig_margin = int(0.02f*mWindow->mCellWidth);
-    // set viewport to render sub image
-    glViewport(x_off + lef_margin, y_off + bot_margin,
-            mWindow->mCellWidth - 2 * rig_margin, mWindow->mCellHeight - 2 * top_margin);
-    glScissor(x_off + lef_margin, y_off + bot_margin,
-            mWindow->mCellWidth - 2 * rig_margin, mWindow->mCellHeight - 2 * top_margin);
+    int topCushionGap    = int(0.06f*mWindow->mCellHeight);
+    int bottomCushionGap = int(0.02f*mWindow->mCellHeight);
+    int leftCushionGap   = int(0.02f*mWindow->mCellWidth);
+    int rightCushionGap  = int(0.02f*mWindow->mCellWidth);
+    /* current view port */
+    int x = xOff + leftCushionGap;
+    int y = yOff + bottomCushionGap;
+    int w = mWindow->mCellWidth  - leftCushionGap - rightCushionGap;
+    int h = mWindow->mCellHeight - bottomCushionGap - topCushionGap;
+    /* set viewport to render sub image */
+    glViewport(x, y, w, h);
+    glScissor(x, y, w, h);
     glEnable(GL_SCISSOR_TEST);
 
-    // set colormap call is equivalent to noop for non-image renderables
+    /* set colormap call is equivalent to noop for non-image renderables */
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight,
-                        viewMatrix, orientMatrix);
+    pRenderable->render(mID, x, y, w, h, viewMatrix, orientMatrix);
 
     glDisable(GL_SCISSOR_TEST);
-    glViewport(x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight);
+    glViewport(x, y, mWindow->mCellWidth, mWindow->mCellHeight);
 
     if (pTitle!=NULL) {
         mFont->setOthro2D(mWindow->mCellWidth, mWindow->mCellHeight);
         pos[0] = mWindow->mCellWidth / 3.0f;
-        pos[1] = mWindow->mCellHeight*0.92f;
-        mFont->render(mID, pos, AF_BLUE, pTitle, 16);
+        pos[1] = mWindow->mCellHeight*0.94f;
+        mFont->render(mID, pos, AF_BLUE, pTitle, 18);
     }
 
     CheckGL("End draw(row, column)");
