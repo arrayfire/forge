@@ -45,6 +45,12 @@ static const struct {
 #include <regex>
 #endif
 
+//// ASCII printable characters (character code 32-127)
+////
+//// Codes 32-127 are common for all the different variations of the ASCII table,
+//// they are called printable characters, represent letters, digits, punctuation
+//// marks, and a few miscellaneous symbols. You will find almost every character
+//// on your keyboard. Character 127 represents the command DEL.
 #define START_CHAR 32
 #define END_CHAR   126
 
@@ -109,11 +115,9 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
     /* retrieve the list of current font size */
     auto& currList = mGlyphLists[pFontSize-MIN_FONT_SIZE];
 
-    for (size_t i=0; i<(END_CHAR-START_CHAR+1); ++i)
+    for (int i=START_CHAR; i<=END_CHAR; ++i)
     {
-        FT_ULong ccode = (FT_ULong)(START_CHAR + i);
-
-        FT_UInt glyphIndex = FT_Get_Char_Index(face, ccode);
+        FT_UInt glyphIndex = FT_Get_Char_Index(face, (FT_ULong)i);
 
         FT_Int32 flags = 0;
 
@@ -237,7 +241,7 @@ void font_impl::destroyGLResources()
 }
 
 font_impl::font_impl()
-    : mTTFfile(""), mIsFontLoaded(false), mAtlas(new FontAtlas(1024, 1024, 1)), mVBO(0),
+    : mTTFfile(""), mIsFontLoaded(false), mAtlas(new FontAtlas(512, 512, 1)), mVBO(0),
     mProgram(glsl::font_vs.c_str(), glsl::font_fs.c_str()),
     mOrthoW(1), mOrthoH(1)
 {
