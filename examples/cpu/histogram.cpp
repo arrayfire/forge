@@ -21,8 +21,6 @@ const unsigned IMGW      = 256;
 const unsigned IMGH      = 256;
 const unsigned DIMX      = 1000;
 const unsigned DIMY      = 800;
-const unsigned WIN_ROWS  = 1;
-const unsigned WIN_COLS  = 2;
 const unsigned NBINS     = 256;
 
 using namespace std;
@@ -61,11 +59,6 @@ int main(void)
      */
     forge::Window wnd(DIMX, DIMY, "Histogram Demo");
     wnd.makeCurrent();
-
-    /*
-     * Split the window into grid regions
-     */
-    wnd.grid(WIN_ROWS, WIN_COLS);
 
     forge::Image img(IMGW, IMGH, FG_RGBA, forge::u8);
 
@@ -117,8 +110,17 @@ int main(void)
         copyToGLBuffer(handles[1], (ComputeResourceHandle)histArray.data(), hist.verticesSize());
         copyToGLBuffer(handles[2], (ComputeResourceHandle)colArray.data(), hist.colorsSize());
 
-        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
-        wnd.draw(0, 1, chart, "Histogram of Noisy Image");
+        /*
+         * Split the window into grid regions
+         */
+        //wnd.draw(2, 2, 0, img,  "Dynamic Perlin Noise" );
+        //wnd.draw(2, 2, 1, img,  "Dynamic Perlin Noise" );
+        //wnd.draw(2, 1, 1, chart, "Histogram of Noisy Image");
+        wnd.draw(2, 3, 0, img,  "Dynamic Perlin Noise" );
+        wnd.draw(2, 3, 1, img,  "Dynamic Perlin Noise" );
+        wnd.draw(2, 3, 2, img,  "Dynamic Perlin Noise" );
+        wnd.draw(2, 2, 2, chart, "Histogram of Noisy Image");
+        wnd.draw(2, 2, 3, chart, "Histogram of Noisy Image");
 
         wnd.swapBuffers();
     } while(!wnd.close());

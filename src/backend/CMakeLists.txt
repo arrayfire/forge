@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 ####################### BEGIN - Backend agnostic upstream dependencies #####################
 
+FIND_PACKAGE(Boost REQUIRED)
+
 OPTION(USE_SYSTEM_GLM "Use the system GLM library" OFF)
 IF(USE_SYSTEM_GLM)
   FIND_PACKAGE(glm REQUIRED)

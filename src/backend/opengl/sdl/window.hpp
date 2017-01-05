@@ -9,8 +9,8 @@
 
 #pragma once
 
+#include <common.hpp>
 #include <SDL.h>
-
 #include <glm/glm.hpp>
 
 /* the short form wtk stands for
@@ -35,23 +35,27 @@ class Widget {
         SDL_Keycode   mMod;
         glm::vec3     mLastPos;
 
+        MatrixHashMap mViewMatrices;
+        MatrixHashMap mOrientMatrices;
+
         Widget();
 
-        inline void getViewIds(int* pRow, int* pCol) {
-            *pRow = mLastXPos/mCellWidth;
-            *pCol = mLastYPos/mCellHeight;
-        }
+        const glm::mat4 findTransform(const MatrixHashMap& pMap, const float pX, const float pY);
+
+        const glm::mat4 getCellViewMatrix(const float pXPos, const float pYPos);
+
+        const glm::mat4 getCellOrientationMatrix(const float pXPos, const float pYPos);
+
+        void setTransform(MatrixHashMap& pMap, const float pX, const float pY, const glm::mat4 &pMat);
+
+        void setCellViewMatrix(const float pXPos, const float pYPos, const glm::mat4& pMatrix);
+
+        void setCellOrientationMatrix(const float pXPos, const float pYPos, const glm::mat4& pMatrix);
 
     public:
         /* public variables */
         int mWidth;     // Framebuffer width
         int mHeight;    // Framebuffer height
-        int mRows;
-        int mCols;
-        int mCellWidth;
-        int mCellHeight;
-        std::vector<glm::mat4> mViewMatrices;
-        std::vector<glm::mat4> mOrientMatrices;
 
         uint  mFramePBO;
 
@@ -91,6 +95,14 @@ class Widget {
         void pollEvents();
 
         void resizePixelBuffers();
+
+        const glm::mat4 getViewMatrix(const CellIndex& pIndex);
+
+        const glm::mat4 getOrientationMatrix(const CellIndex& pIndex);
+
+        void resetViewMatrices();
+
+        void resetOrientationMatrices();
 };
 
 }

@@ -64,7 +64,7 @@ fg_err fg_release_window(fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_window_font(fg_window pWindow, fg_font pFont)
+fg_err fg_set_window_font(fg_window pWindow, const fg_font pFont)
 {
     try {
         ARG_ASSERT(0, (pWindow!=0));
@@ -169,17 +169,6 @@ fg_err fg_get_window_height(int *pHeight, const fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_window_grid(int *pRows, int *pCols, const fg_window pWindow)
-{
-    try {
-        ARG_ASSERT(2, (pWindow!=0));
-
-        getWindow(pWindow)->getGrid(pRows, pCols);
-    }
-    CATCHALL
-    return FG_ERR_NONE;
-}
-
 fg_err fg_make_window_current(const fg_window pWindow)
 {
     try {
@@ -248,44 +237,33 @@ fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart)
     return FG_ERR_NONE;
 }
 
-fg_err fg_setup_window_grid(fg_window pWindow, int pRows, int pCols)
+fg_err fg_draw_image_to_cell(const fg_window pWindow, const int pRows, const int pCols, const int pIndex,
+                             const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio)
 {
     try {
         ARG_ASSERT(0, (pWindow!=0));
         ARG_ASSERT(1, (pRows>0));
         ARG_ASSERT(2, (pCols>0));
+        ARG_ASSERT(3, (pIndex>=0));
+        ARG_ASSERT(4, (pImage!=0));
 
-        getWindow(pWindow)->grid(pRows, pCols);
+        getWindow(pWindow)->draw(pRows, pCols, pIndex, getImage(pImage), pTitle, pKeepAspectRatio);
     }
     CATCHALL
     return FG_ERR_NONE;
 }
 
-fg_err fg_draw_image_to_cell(const fg_window pWindow, int pRowId, int pColId,
-                             const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio)
-{
-    try {
-        ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pRowId>=0));
-        ARG_ASSERT(2, (pColId>=0));
-        ARG_ASSERT(3, (pImage!=0));
-
-        getWindow(pWindow)->draw(pRowId, pColId, getImage(pImage), pTitle, pKeepAspectRatio);
-    }
-    CATCHALL
-    return FG_ERR_NONE;
-}
-
-fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pRowId, int pColId,
+fg_err fg_draw_chart_to_cell(const fg_window pWindow, const int pRows, const int pCols, const int pIndex,
                              const fg_chart pChart, const char* pTitle)
 {
     try {
         ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pRowId>=0));
-        ARG_ASSERT(2, (pColId>=0));
-        ARG_ASSERT(3, (pChart!=0));
+        ARG_ASSERT(1, (pRows>0));
+        ARG_ASSERT(2, (pCols>0));
+        ARG_ASSERT(3, (pIndex>=0));
+        ARG_ASSERT(4, (pChart!=0));
 
-        getWindow(pWindow)->draw(pRowId, pColId, getChart(pChart), pTitle);
+        getWindow(pWindow)->draw(pRows, pCols, pIndex, getChart(pChart), pTitle);
     }
     CATCHALL
     return FG_ERR_NONE;

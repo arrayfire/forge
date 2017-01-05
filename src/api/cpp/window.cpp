@@ -16,7 +16,8 @@
 namespace forge
 {
 
-Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow, const bool invisible)
+Window::Window(const int pWidth, const int pHeight, const char* pTitle,
+               const Window* pWindow, const bool invisible)
     : mValue(0)
 {
     fg_window temp = 0;
@@ -50,17 +51,17 @@ void Window::setTitle(const char* pTitle)
     FG_THROW(fg_set_window_title(get(), pTitle));
 }
 
-void Window::setPos(int pX, int pY)
+void Window::setPos(const int pX, const int pY)
 {
     FG_THROW(fg_set_window_position(get(), pX, pY));
 }
 
-void Window::setSize(unsigned pW, unsigned pH)
+void Window::setSize(const unsigned pW, const unsigned pH)
 {
     FG_THROW(fg_set_window_size(get(), pW, pH));
 }
 
-void Window::setColorMap(ColorMap cmap)
+void Window::setColorMap(const ColorMap cmap)
 {
     FG_THROW(fg_set_window_colormap(get(), cmap));
 }
@@ -91,20 +92,6 @@ int Window::height() const
     int retVal = 0;
     FG_THROW(fg_get_window_height(&retVal, get()));
     return retVal;
-}
-
-int Window::gridRows() const
-{
-    int rows = 0, cols = 0;
-    FG_THROW(fg_get_window_grid(&rows, &cols, get()));
-    return rows;
-}
-
-int Window::gridCols() const
-{
-    int rows = 0, cols = 0;
-    FG_THROW(fg_get_window_grid(&rows, &cols, get()));
-    return cols;
 }
 
 fg_window Window::get() const
@@ -144,19 +131,16 @@ void Window::draw(const Chart& pChart)
     FG_THROW(fg_draw_chart(get(), pChart.get()));
 }
 
-void Window::grid(int pRows, int pCols)
+void Window::draw(const int pRows, const int pCols, const int pIndex,
+                  const Image& pImage, const char* pTitle, const bool pKeepAspectRatio)
 {
-    FG_THROW(fg_setup_window_grid(get(), pRows, pCols));
+    FG_THROW(fg_draw_image_to_cell(get(), pRows, pCols, pIndex, pImage.get(), pTitle, pKeepAspectRatio));
 }
 
-void Window::draw(int pRowId, int pColId, const Image& pImage, const char* pTitle, const bool pKeepAspectRatio)
+void Window::draw(const int pRows, const int pCols, const int pIndex,
+                  const Chart& pChart, const char* pTitle)
 {
-    FG_THROW(fg_draw_image_to_cell(get(), pRowId, pColId, pImage.get(), pTitle, pKeepAspectRatio));
-}
-
-void Window::draw(int pRowId, int pColId, const Chart& pChart, const char* pTitle)
-{
-    FG_THROW(fg_draw_chart_to_cell(get(), pRowId, pColId, pChart.get(), pTitle));
+    FG_THROW(fg_draw_chart_to_cell(get(), pRows, pCols, pIndex, pChart.get(), pTitle));
 }
 
 void Window::swapBuffers()

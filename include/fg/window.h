@@ -73,7 +73,7 @@ FGAPI fg_err fg_release_window(fg_window pWindow);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_set_window_font(fg_window pWindow, fg_font pFont);
+FGAPI fg_err fg_set_window_font(fg_window pWindow, const fg_font pFont);
 
 /**
    Set the title of Window Object
@@ -167,17 +167,6 @@ FGAPI fg_err fg_get_window_height(int *pHeight, const fg_window pWindow);
 FGAPI fg_err fg_make_window_current(const fg_window pWindow);
 
 /**
-   Get the window's grid size
-
-   \param[out] pRows returns the number of rows in the grid
-   \param[out] pCols returns the number of columns in the grid
-   \param[in] pWindow is Window handle
-
-   \return \ref fg_err error code
- */
-FGAPI fg_err fg_get_window_grid(int *pRows, int *pCols, const fg_window pWindow);
-
-/**
    Hide the Window
 
    \param[in] pWindow is Window handle
@@ -227,43 +216,46 @@ FGAPI fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage, const
 FGAPI fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart);
 
 /**
-   Setup grid layout for multiple view rendering on Window
-
-   \param[in] pRows is the number of rows in multiview mode
-   \param[in] pCols is the number of columns in multiview mode
-   \param[in] pWindow is Window handle
-
-   \return \ref fg_err error code
- */
-FGAPI fg_err fg_setup_window_grid(fg_window pWindow, int pRows, int pCols);
-
-/**
    Render given image to Window's particular sub-view
 
    \param[in] pWindow is Window handle
-   \param[in] pColId is the column identifier of sub-view where image is to be rendered
-   \param[in] pRowId is the row identifier of sub-view where image is to be rendered
+   \param[in] pRows indicates the number of rows in grid layout
+   \param[in] pCols indicates the number of columns in grid layout
+   \param[in] pIndex indicates the index of cell in the layout represented by \p pRows and \p pCols
    \param[in] pImage is image handle
    \param[in] pTitle is the title of the sub-view
    \param[in] pKeepAspectRatio is boolean indicating if the image aspect ratio has to be maintained while rendering the image
 
    \return \ref fg_err error code
+
+   \note this draw call doesn't automatically swap back buffer
+   with front buffer (double buffering mechanism) since it doesn't have the
+   knowledge of which sub-regions already got rendered. We should call
+   fg_swap_window_buffers once all draw calls corresponding to all sub-regions are called
+   when in multiview mode.
  */
-FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, int pRowId, int pColId,
+FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, const int pRows, const int pCols, const int pIndex,
                                    const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio);
 
 /**
    Render given chart to Window's particular sub-view
 
    \param[in] pWindow is Window handle
-   \param[in] pColId is the column identifier of sub-view where image is to be rendered
-   \param[in] pRowId is the row identifier of sub-view where image is to be rendered
+   \param[in] pRows indicates the number of rows in grid layout
+   \param[in] pCols indicates the number of columns in grid layout
+   \param[in] pIndex indicates the index of cell in the layout represented by \p pRows and \p pCols
    \param[in] pChart is chart handle
    \param[in] pTitle is the title of the sub-view
 
    \return \ref fg_err error code
+
+   \note this draw call doesn't automatically swap back buffer
+   with front buffer (double buffering mechanism) since it doesn't have the
+   knowledge of which sub-regions already got rendered. We should call
+   fg_swap_window_buffers once all draw calls corresponding to all sub-regions are called
+   when in multiview mode.
  */
-FGAPI fg_err fg_draw_chart_to_cell(const fg_window pWindow, int pRowId, int pColId,
+FGAPI fg_err fg_draw_chart_to_cell(const fg_window pWindow, const int pRows, const int pCols, const int pIndex,
                                    const fg_chart pChart, const char* pTitle);
 
 /**
@@ -324,7 +316,7 @@ class Window {
                       User has to call Window::show() when they decide
                       to actually display the window
          */
-        FGAPI Window(int pWidth, int pHeight, const char* pTitle,
+        FGAPI Window(const int pWidth, const int pHeight, const char* pTitle,
                     const Window* pWindow=0, const bool invisible = false);
 
         /**
@@ -361,7 +353,7 @@ class Window {
            \param[in] pX is horizontal coordinate
            \param[in] pY is vertical coordinate
          */
-        FGAPI void setPos(int pX, int pY);
+        FGAPI void setPos(const int pX, const int pY);
 
         /**
            Set the size of the window programmatically
@@ -369,14 +361,14 @@ class Window {
            \param[in] pWidth target width
            \param[in] pHeight target height
          */
-        FGAPI void setSize(unsigned pWidth, unsigned pHeight);
+        FGAPI void setSize(const unsigned pWidth, const unsigned pHeight);
 
         /**
            Set the colormap to be used for subsequent rendering calls
 
            \param[in] cmap should be one of the enum values from \ref ColorMap
          */
-        FGAPI void setColorMap(ColorMap cmap);
+        FGAPI void setColorMap(const ColorMap cmap);
 
         /**
            Get rendering backend context handle
@@ -409,16 +401,6 @@ class Window {
            Make the current window's rendering context active context
          */
         FGAPI void makeCurrent();
-
-        /**
-           \return The window grid rows
-         */
-        FGAPI int gridRows() const;
-
-        /**
-           \return The window grid columns
-         */
-        FGAPI int gridCols() const;
 
         /**
            Hide the window
@@ -462,24 +444,11 @@ class Window {
         FGAPI void draw(const Chart& pChart);
 
         /**
-           Setup grid layout for multivew mode
-
-           Multiview mode is where you can render different objects
-           to different sub-regions of a given window
-
-           \param[in] pRows is number of rows in grid layout
-           \param[in] pCols is number of coloumns in grid layout
-         */
-        FGAPI void grid(int pRows, int pCols);
-
-        /**
            Render Image to given sub-region of the window in multiview mode
 
-           Window::grid should have been already called before any of the draw calls
-           that accept coloum index and row index is used to render an object.
-
-           \param[in] pColId is coloumn index
-           \param[in] pRowId is row index
+           \param[in] pRows indicates the number of rows in grid layout
+           \param[in] pCols indicates the number of columns in grid layout
+           \param[in] pIndex indicates the index of cell in the layout represented by \p pRows and \p pCols
            \param[in] pImage is an object of class Image
            \param[in] pTitle is the title that will be displayed for the cell represented
                       by \p pColId and \p pRowId
@@ -492,16 +461,15 @@ class Window {
            Window::draw() once all draw calls corresponding to all sub-regions are called
            when in multiview mode.
          */
-        FGAPI void draw(int pRowId, int pColId, const Image& pImage, const char* pTitle=0, const bool pKeepAspectRatio=true);
+        FGAPI void draw(const int pRows, const int pCols, const int pIndex,
+                        const Image& pImage, const char* pTitle=0, const bool pKeepAspectRatio=true);
 
         /**
            Render the chart to given sub-region of the window in multiview mode
 
-           Window::grid should have been already called before any of the draw calls
-           that accept coloum index and row index is used to render an object.
-
-           \param[in] pColId is coloumn index
-           \param[in] pRowId is row index
+           \param[in] pRows indicates the number of rows in grid layout
+           \param[in] pCols indicates the number of columns in grid layout
+           \param[in] pIndex indicates the index of cell in the layout represented by \p pRows and \p pCols
            \param[in] pChart is a Chart with one or more plottable renderables
            \param[in] pTitle is the title that will be displayed for the cell represented
                       by \p pColId and \p pRowId
@@ -512,7 +480,8 @@ class Window {
            Window::draw() once all draw calls corresponding to all sub-regions are called
            when in multiview mode.
          */
-        FGAPI void draw(int pRowId, int pColId, const Chart& pChart, const char* pTitle = 0);
+        FGAPI void draw(const int pRows, const int pCols, const int pIndex,
+                        const Chart& pChart, const char* pTitle = 0);
 
         /**
            Swaps background buffer with front buffer

@@ -20,8 +20,6 @@ const unsigned IMGW = 256;
 const unsigned IMGH = 256;
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
-const unsigned WIN_ROWS = 1;
-const unsigned WIN_COLS = 2;
 const unsigned NBINS = 256;
 
 curandState_t* state;
@@ -73,11 +71,6 @@ int main(void)
     forge::Window wnd(DIMX, DIMY, "Histogram Demo");
     wnd.makeCurrent();
 
-    /*
-     * Split the window into grid regions
-     */
-    wnd.grid(WIN_ROWS, WIN_COLS);
-
     forge::Image img(IMGW, IMGH, FG_RGBA, forge::u8);
 
     forge::Chart chart(FG_CHART_2D);
@@ -127,8 +120,11 @@ int main(void)
             frame = 0;
         }
 
-        wnd.draw(0, 0, img,  "Dynamic Perlin Noise" );
-        wnd.draw(0, 1, chart, "Histogram of Noisy Image");
+        /*
+         * Split the window into grid regions
+         */
+        wnd.draw(1, 2, 1, img,  "Dynamic Perlin Noise" );
+        wnd.draw(1, 2, 2, chart, "Histogram of Noisy Image");
 
         wnd.swapBuffers();
         frame++;
