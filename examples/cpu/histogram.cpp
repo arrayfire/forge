@@ -70,6 +70,7 @@ int main(void)
     forge::Image img(IMGW, IMGH, FG_RGBA, forge::u8);
 
     forge::Chart chart(FG_CHART_2D);
+
     /* set x axis limits to maximum and minimum values of data
      * and y axis limits to range [0, number of pixels ideally]
      * but practically total number of pixels as y range will skew

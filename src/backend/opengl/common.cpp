@@ -12,11 +12,13 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include <cmath>
+#include <fstream>
 #include <iostream>
 #include <iomanip>
-#include <fstream>
+#include <memory>
 #include <sstream>
-#include <cmath>
+#include <string>
 
 using namespace gl;
 using namespace forge;
@@ -270,11 +272,13 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
 }
 #endif
 
-std::string toString(const float pVal, const int pPrecision)
+std::string toString(const float pVal, const std::string pFormat)
 {
-    std::ostringstream out;
-    out << std::fixed << std::setprecision(pPrecision) << pVal;
-    return out.str();
+    std::unique_ptr<char> label(new char[std::to_string(pVal).length()+1]);
+
+    sprintf(label.get(), pFormat.c_str(), pVal);
+
+    return std::string(label.get());
 }
 
 GLuint screenQuadVBO(const int pWindowId)

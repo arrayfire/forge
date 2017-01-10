@@ -1,5 +1,9 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
+FIND_PACKAGE(OpenGL REQUIRED)
+
+INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
+
 OPTION(USE_SYSTEM_GLBINDING "Use system glbinding" OFF)
 IF(USE_SYSTEM_GLBINDING)
     # Point glbinding_DIR (case sensitive) to the location of glbinding-config.cmake
@@ -10,78 +14,18 @@ ELSE(USE_SYSTEM_GLBINDING)
     INCLUDE(build_glbinding)
 ENDIF(USE_SYSTEM_GLBINDING)
 
-INCLUDE(GLSLtoH)
-
-OPTION(USE_SYSTEM_GLM "Use the system GLM library" OFF)
-IF(USE_SYSTEM_GLM)
-  FIND_PACKAGE(glm REQUIRED)
-ELSE()
-  INCLUDE(build_glm)
-ENDIF()
-
-OPTION(USE_SYSTEM_FREETYPE "Use the system Freetype library" OFF)
-IF(USE_SYSTEM_FREETYPE)
-  FIND_PACKAGE(Freetype REQUIRED)
-ELSE()
-  INCLUDE(build_freetype)
-ENDIF()
-
-IF(UNIX)
-    FIND_PACKAGE(FontConfig REQUIRED)
-ENDIF(UNIX)
-
-IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
-    FIND_PACKAGE(GLFW REQUIRED)
-    IF(GLFW_FOUND)
-        SET(WTK_INCLUDE_DIRS ${GLFW_INCLUDE_DIR})
-        SET(WTK_LIBRARIES ${GLFW_LIBRARY})
-        ADD_DEFINITIONS(-DUSE_GLFW)
-    ELSE(GLFW_FOUND)
-        MESSAGE(FATAL_ERROR "GLFW not found")
-    ENDIF(GLFW_FOUND)
-ENDIF()
-
-IF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
-    FIND_PACKAGE(SDL2 REQUIRED)
-    IF(SDL2_FOUND)
-        SET(WTK_INCLUDE_DIRS ${SDL2_INCLUDE_DIR})
-        SET(WTK_LIBRARIES ${SDL2_LIBRARY})
-        ADD_DEFINITIONS(-DUSE_SDL)
-    ELSE(SDL2_FOUND)
-        MESSAGE(FATAL_ERROR "SDL2 not found")
-    ENDIF(SDL2_FOUND)
-ENDIF()
-
-
 IF(WIN32)
     ADD_DEFINITIONS(-DFGDLL)
 ENDIF(WIN32)
 
-# OS Definitions
-IF(UNIX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-ELSE(UNIX) #Windows
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-ENDIF(UNIX)
-
-# DON'T REMOVE CURRENT BINARY DIRECTORY FROM
-# INCLUDE_DIRECTORIES, IT IS USED TO FIND
-# AUTO-GENERATED GLSL HEADERS
 INCLUDE_DIRECTORIES(
     ${CMAKE_INCLUDE_PATH}
-    ${FREETYPE_INCLUDE_DIRS}
-    ${GLM_INCLUDE_DIRS}
     ${WTK_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
     "${PROJECT_SOURCE_DIR}/src/api/c"
     "${PROJECT_SOURCE_DIR}/src/api/cpp"
     "${PROJECT_SOURCE_DIR}/src/backend"
     )
-
-IF(UNIX)
-    INCLUDE_DIRECTORIES("${FONTCONFIG_INCLUDE_DIR}")
-ENDIF(UNIX)
 
 FILE(GLOB api_headers
     "${PROJECT_SOURCE_DIR}/include/*.h"
@@ -119,11 +63,6 @@ FILE(GLOB gl_sources
     "*.cpp"
     )
 
-SET(glsl_shader_headers
-    "shader_headers")
-FILE(GLOB glsl_shaders
-    "shaders/*.glsl")
-
 LIST(SORT c_api_headers)
 LIST(SORT c_api_sources)
 LIST(SORT cpp_api_headers)
@@ -132,7 +71,6 @@ LIST(SORT bknd_headers)
 LIST(SORT bknd_sources)
 LIST(SORT gl_headers)
 LIST(SORT gl_sources)
-LIST(SORT glsl_shaders)
 
 SOURCE_GROUP(inc FILES ${api_headers})
 
@@ -163,18 +101,6 @@ ELSEIF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
     SOURCE_GROUP("src\\backend\\opengl\\sdl\\headers" FILES ${wtk_headers})
     SOURCE_GROUP("src\\backend\\opengl\\sdl\\sources" FILES ${wtk_sources})
 ENDIF()
-
-SOURCE_GROUP("src\\backend\\opengl\\glsl" FILES ${glsl_shaders})
-
-GLSL_TO_H(
-    SOURCES ${glsl_shaders}
-    VARNAME  shader_files
-    EXTENSION "hpp"
-    OUTPUT_DIR ${glsl_shader_headers}
-    TARGETS glsl_shader_targets
-    NAMESPACE "glsl"
-    EOD "0"
-    )
 
 ADD_LIBRARY(forge SHARED
     ${api_headers}

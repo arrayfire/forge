@@ -31,6 +31,19 @@ namespace forge
 namespace wtk
 {
 
+void initWindowToolkit()
+{
+    if (!glfwInit()) {
+        std::cerr << "ERROR: GLFW wasn't able to initalize\n";
+        GLFW_THROW_ERROR("GLFW initilization failed", FG_ERR_GL_ERROR);
+    }
+}
+
+void destroyWindowToolkit()
+{
+    glfwTerminate();
+}
+
 Widget::Widget()
     : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
    mWidth(512), mHeight(512), mRows(1), mCols(1)
@@ -44,11 +57,6 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
     : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mRows(1), mCols(1)
 {
     mFramePBO   = 0;
-
-    if (!glfwInit()) {
-        std::cerr << "ERROR: GLFW wasn't able to initalize\n";
-        GLFW_THROW_ERROR("GLFW initilization failed", FG_ERR_GL_ERROR);
-    }
 
     auto wndErrCallback = [](int errCode, const char* pDescription)
     {
@@ -67,7 +75,8 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
         glfwWindowHint(GLFW_VISIBLE, static_cast<GLint>(GL_TRUE));
 
     glfwWindowHint(GLFW_SAMPLES, 4);
-    mWindow = glfwCreateWindow(pWidth, pHeight, pTitle, nullptr,
+    mWindow = glfwCreateWindow(pWidth, pHeight,
+                               (pTitle!=nullptr ? pTitle : "Forge-Demo"), nullptr,
                                (pWindow!=nullptr ? pWindow->getNativeHandle(): nullptr));
 
     if (!mWindow) {
@@ -143,7 +152,7 @@ long long Widget::getDisplayHandle()
 
 void Widget::setTitle(const char* pTitle)
 {
-    glfwSetWindowTitle(mWindow, pTitle);
+    glfwSetWindowTitle(mWindow, (pTitle!=nullptr ? pTitle : "Forge-Demo"));
 }
 
 void Widget::setPos(int pX, int pY)

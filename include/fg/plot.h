@@ -42,13 +42,23 @@ FGAPI fg_err fg_create_plot(fg_plot *pPlot,
                             const fg_marker_type pMarkerType);
 
 /**
+   Increase reference count of the resource
+
+   \param[out] pOut is the new handle to existing resource
+   \param[in] pIn is the existing resource handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_retain_plot(fg_plot *pOut, fg_plot pIn);
+
+/**
    Destroy plot object
 
    \param[in] pPlot is the plot handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_destroy_plot(fg_plot pPlot);
+FGAPI fg_err fg_release_plot(fg_plot pPlot);
 
 /**
    Set the color of line graph(plot)
@@ -211,6 +221,16 @@ class Plot {
            \param[in] pOther is the Plot of which we make a copy of.
          */
         FGAPI Plot(const Plot& pOther);
+
+        /**
+          Construct Plot ojbect from fg_plot resource handle
+
+          \param[in] pHandle is the input fg_plot resource handle
+
+          \note This kind of construction assumes ownership of the resource handle
+          is released during the Plot object's destruction.
+         */
+        FGAPI explicit Plot(const fg_plot pHandle);
 
         /**
            Plot Destructor

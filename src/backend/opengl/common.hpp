@@ -101,11 +101,11 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
 /* Convert float value to string with given precision
  *
  * @pVal is the float value whose string representation is requested.
- * @pPrecision is the precision of the float used while converting to string.
+ * @pFormat is the c-style printf format for floats
  *
  * @return is the string representation of input float value.
  */
-std::string toString(const float pVal, const int pPrecision = 2);
+std::string toString(const float pVal, const std::string pFormat);
 
 /* Get a vertex buffer object for quad that spans the screen
  */

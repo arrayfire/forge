@@ -37,13 +37,23 @@ FGAPI fg_err fg_create_chart(fg_chart *pHandle,
                              const fg_chart_type pChartType);
 
 /**
+   Increase reference count for the chart resource
+
+   \param[out] pOut is new reference to existing resource
+   \param[in] pChart is the existing chart resource handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_retain_chart(fg_chart* pOut, fg_chart pChart);
+
+/**
    Destroy the chart object
 
    \param[in] pHandle is chart handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_destroy_chart(fg_chart pHandle);
+FGAPI fg_err fg_release_chart(fg_chart pHandle);
 
 /**
    Set axes titles for the chart
@@ -79,6 +89,19 @@ FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
                                       const float pZmin, const float pZmax);
 
 /**
+   Set the format for display of axes labels in a chart
+
+   \param[in] pHandle is chart handle
+   \param[in] pXFormat sets the display format for numbers of X axis
+   \param[in] pYFormat sets the display format for numbers of Y axis
+   \param[in] pZFormat sets the display format for numbers of Z axis
+
+   Display format string follows printf style formating for numbers
+ */
+FGAPI fg_err fg_set_chart_label_format(fg_chart pHandle, const char* pXFormat,
+                                       const char* pYFormat, const char* pZFormat);
+
+/**
    Get axes data ranges
 
    \param[out] pXmin is x-axis minimum data value
@@ -108,6 +131,56 @@ FGAPI fg_err fg_get_chart_axes_limits(float* pXmin, float* pXmax,
    (0,0) is the bottom hand left corner.
  */
 FGAPI fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const float pY);
+
+/**
+   Add an existing image object to chart
+
+   \param[in] pChart is the chart to which image has to be added
+   \param[in] pImage is the image to be added to the chart
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_append_image_to_chart(fg_chart pChart, fg_image pImage);
+
+/**
+   Add an existing histogram object to chart
+
+   \param[in] pChart is the chart to which histogram has to be added
+   \param[in] pHistogram is the histogram to be added to the chart
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_append_histogram_to_chart(fg_chart pChart, fg_histogram pHistogram);
+
+/**
+   Add an existing plot object to chart
+
+   \param[in] pChart is the chart to which plot has to be added
+   \param[in] pPlot is the plot to be added to the chart
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_append_plot_to_chart(fg_chart pChart, fg_plot pPlot);
+
+/**
+   Add an existing surface object to chart
+
+   \param[in] pChart is the chart to which surface has to be added
+   \param[in] pSurface is the surface to be added to the chart
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_append_surface_to_chart(fg_chart pChart, fg_surface pSurface);
+
+/**
+   Add an existing vector field object to chart
+
+   \param[in] pChart is the chart to which vector field has to be added
+   \param[in] pField is the vector field to be added to the chart
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_append_vector_field_to_chart(fg_chart pChart, fg_vector_field pField);
 
 /**
    Create and add an Image object to the current chart
@@ -217,7 +290,7 @@ FGAPI fg_err fg_render_chart(const fg_window pWindow,
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_chart_type(const fg_chart_type *pChartType, const fg_chart pChart);
+FGAPI fg_err fg_get_chart_type(fg_chart_type *pChartType, const fg_chart pChart);
 
 /** @} */
 
@@ -286,6 +359,19 @@ class Chart {
         FGAPI void setAxesLimits(const float pXmin, const float pXmax,
                                  const float pYmin, const float pYmax,
                                  const float pZmin=0, const float pZmax=0);
+
+        /**
+           Set the format for display of axes labels
+
+           \param[in] pXFormat sets the display format for numbers of X axis
+           \param[in] pYFormat sets the display format for numbers of Y axis
+           \param[in] pZFormat sets the display format for numbers of Z axis
+
+           Display format string follows printf style formating for numbers
+         */
+        FGAPI void setAxesLabelFormat(const char* pXFormat,
+                                      const char* pYFormat = "%4.1f",
+                                      const char* pZFormat = "%4.1f");
 
         /**
            Get axes data ranges

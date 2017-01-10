@@ -37,13 +37,23 @@ FGAPI fg_err fg_create_vector_field(fg_vector_field *pField,
                                     const fg_chart_type pChartType);
 
 /**
+   Increase reference count of the resource
+
+   \param[out] pOut is the new handle to existing resource
+   \param[in] pIn is the existing resource handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_retain_vector_field(fg_vector_field *pOut, fg_vector_field pIn);
+
+/**
    Destroy vector field object
 
    \param[in] pField is the surface handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_destroy_vector_field(fg_vector_field pField);
+FGAPI fg_err fg_release_vector_field(fg_vector_field pField);
 
 /**
    Set the color of vector field
@@ -188,6 +198,16 @@ class VectorField {
            \param[in] pOther is the VectorField of which we make a copy of.
          */
         FGAPI VectorField(const VectorField& pOther);
+
+        /**
+          Construct VectorField ojbect from fg_vector_field resource handle
+
+          \param[in] pHandle is the input fg_vector_field resource handle
+
+          \note This kind of construction assumes ownership of the resource handle
+          is released during the VectorField object's destruction.
+         */
+        FGAPI explicit VectorField(const fg_vector_field pHandle);
 
         /**
            VectorField Destructor

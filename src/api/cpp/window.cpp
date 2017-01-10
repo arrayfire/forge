@@ -9,198 +9,164 @@
 
 #include <fg/window.h>
 
-#include <handle.hpp>
-#include <window.hpp>
+#include <error.hpp>
+
+#include <utility>
 
 namespace forge
 {
 
 Window::Window(int pWidth, int pHeight, const char* pTitle, const Window* pWindow, const bool invisible)
+    : mValue(0)
 {
-    try{
-        if (pWindow == nullptr) {
-            mValue = getHandle(new common::Window(pWidth, pHeight, pTitle, nullptr, invisible));
-        } else {
-            mValue = getHandle(new common::Window(pWidth, pHeight, pTitle, getWindow(pWindow->get()), invisible));
-        }
-    } CATCH_INTERNAL_TO_EXTERNAL
-}
+    fg_window temp = 0;
+    fg_window shrd = (pWindow ? pWindow->get() : 0);
+    FG_THROW(fg_create_window(&temp, pWidth, pHeight, pTitle, shrd, invisible));
 
-Window::~Window()
-{
-    delete getWindow(mValue);
+    std::swap(mValue, temp);
 }
 
 Window::Window(const Window& other)
 {
-    try {
-        mValue = getHandle(new common::Window(other.get()));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_window temp = 0;
+
+    FG_THROW(fg_retain_window(&temp, other.get()));
+
+    std::swap(mValue, temp);
+}
+
+Window::~Window()
+{
+    FG_THROW(fg_release_window(get()));
 }
 
 void Window::setFont(Font* pFont)
 {
-    try {
-        getWindow(mValue)->setFont(getFont(pFont->get()));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_window_font(get(), pFont->get()));
 }
 
 void Window::setTitle(const char* pTitle)
 {
-    try {
-        getWindow(mValue)->setTitle(pTitle);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_window_title(get(), pTitle));
 }
 
 void Window::setPos(int pX, int pY)
 {
-    try {
-        getWindow(mValue)->setPos(pX, pY);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_window_position(get(), pX, pY));
 }
 
 void Window::setSize(unsigned pW, unsigned pH)
 {
-    try {
-        getWindow(mValue)->setSize(pW, pH);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_window_size(get(), pW, pH));
 }
 
 void Window::setColorMap(ColorMap cmap)
 {
-    try {
-        getWindow(mValue)->setColorMap(cmap);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_window_colormap(get(), cmap));
 }
 
 long long Window::context() const
 {
-    try {
-        return getWindow(mValue)->context();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    long long contextHandle = 0;
+    FG_THROW(fg_get_window_context_handle(&contextHandle, get()));
+    return contextHandle;
 }
 
 long long Window::display() const
 {
-    try {
-        return getWindow(mValue)->display();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    long long displayHandle = 0;
+    FG_THROW(fg_get_window_display_handle(&displayHandle, get()));
+    return displayHandle;
 }
 
 int Window::width() const
 {
-    try {
-        return getWindow(mValue)->width();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    int retVal = 0;
+    FG_THROW(fg_get_window_width(&retVal, get()));
+    return retVal;
 }
 
 int Window::height() const
 {
-    try {
-        return getWindow(mValue)->height();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    int retVal = 0;
+    FG_THROW(fg_get_window_height(&retVal, get()));
+    return retVal;
 }
 
 int Window::gridRows() const
 {
-    try {
-        int rows = 0, cols = 0;
-        getWindow(mValue)->getGrid(&rows, &cols);
-        return rows;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    int rows = 0, cols = 0;
+    FG_THROW(fg_get_window_grid(&rows, &cols, get()));
+    return rows;
 }
 
 int Window::gridCols() const
 {
-    try {
-        int rows = 0, cols = 0;
-        getWindow(mValue)->getGrid(&rows, &cols);
-        return cols;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    int rows = 0, cols = 0;
+    FG_THROW(fg_get_window_grid(&rows, &cols, get()));
+    return cols;
 }
 
 fg_window Window::get() const
 {
-    try {
-        return getWindow(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
-}
-
-void Window::hide()
-{
-    try {
-        getWindow(mValue)->hide();
-    } CATCH_INTERNAL_TO_EXTERNAL
-}
-
-void Window::show()
-{
-    try {
-        getWindow(mValue)->show();
-    } CATCH_INTERNAL_TO_EXTERNAL
-}
-
-bool Window::close()
-{
-    try {
-        return getWindow(mValue)->close();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    return mValue;
 }
 
 void Window::makeCurrent()
 {
-    try {
-        getWindow(mValue)->makeCurrent();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_make_window_current(get()));
+}
+
+void Window::hide()
+{
+    FG_THROW(fg_hide_window(get()));
+}
+
+void Window::show()
+{
+    FG_THROW(fg_show_window(get()));
+}
+
+bool Window::close()
+{
+    bool isClosed = false;
+    FG_THROW(fg_close_window(&isClosed, get()));
+    return isClosed;
 }
 
 void Window::draw(const Image& pImage, const bool pKeepAspectRatio)
 {
-    try {
-        getWindow(mValue)->draw(getImage(pImage.get()), pKeepAspectRatio);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_draw_image(get(), pImage.get(), pKeepAspectRatio));
 }
 
 void Window::draw(const Chart& pChart)
 {
-    try {
-        getWindow(mValue)->draw(getChart(pChart.get()));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_draw_chart(get(), pChart.get()));
 }
 
 void Window::grid(int pRows, int pCols)
 {
-    try {
-        getWindow(mValue)->grid(pRows, pCols);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_setup_window_grid(get(), pRows, pCols));
 }
 
 void Window::draw(int pRowId, int pColId, const Image& pImage, const char* pTitle, const bool pKeepAspectRatio)
 {
-    try {
-        getWindow(mValue)->draw(pRowId, pColId, getImage(pImage.get()), pTitle, pKeepAspectRatio);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_draw_image_to_cell(get(), pRowId, pColId, pImage.get(), pTitle, pKeepAspectRatio));
 }
 
 void Window::draw(int pRowId, int pColId, const Chart& pChart, const char* pTitle)
 {
-    try {
-        getWindow(mValue)->draw(pRowId, pColId, getChart(pChart.get()), pTitle);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_draw_chart_to_cell(get(), pRowId, pColId, pChart.get(), pTitle));
 }
 
 void Window::swapBuffers()
 {
-    try {
-        getWindow(mValue)->swapBuffers();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_swap_window_buffers(get()));
 }
 
 void Window::saveFrameBuffer(const char* pFullPath)
 {
-    try {
-        getWindow(mValue)->saveFrameBuffer(pFullPath);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_save_window_framebuffer(pFullPath, get()));
 }
 
 }

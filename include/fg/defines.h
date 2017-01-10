@@ -174,7 +174,6 @@ typedef enum {
     FG_MARKER_STAR         = 7                     ///< Star symbol marker
 } fg_marker_type;
 
-
 #ifdef __cplusplus
 namespace forge
 {

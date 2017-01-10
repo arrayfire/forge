@@ -9,50 +9,45 @@
 
 #include <fg/font.h>
 
-#include <handle.hpp>
-#include <font.hpp>
+#include <error.hpp>
+
+#include <utility>
 
 namespace forge
 {
 
 Font::Font()
 {
-    try {
-        mValue = getHandle(new common::Font());
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_font temp = 0;
+    FG_THROW(fg_create_font(&temp));
+    std::swap(mValue, temp);
 }
 
 Font::Font(const Font& other)
 {
-    try {
-        mValue = getHandle(new common::Font(other.get()));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_font temp = 0;
+    FG_THROW(fg_retain_font(&temp, other.get()));
+    std::swap(mValue, temp);
 }
 
 Font::~Font()
 {
-    delete getFont(mValue);
+    FG_THROW(fg_release_font(get()));
 }
 
 void Font::loadFontFile(const char* const pFile)
 {
-    try {
-        getFont(mValue)->loadFont(pFile);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_load_font_file(get(), pFile));
 }
 
 void Font::loadSystemFont(const char* const pName)
 {
-    try {
-        getFont(mValue)->loadSystemFont(pName);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_load_system_font(get(), pName));
 }
 
 fg_font Font::get() const
 {
-    try {
-        return getFont(mValue);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    return mValue;
 }
 
 }
