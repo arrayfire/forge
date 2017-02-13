@@ -123,8 +123,8 @@ int main(void)
         /*
          * Split the window into grid regions
          */
-        wnd.draw(1, 2, 1, img,  "Dynamic Perlin Noise" );
-        wnd.draw(1, 2, 2, chart, "Histogram of Noisy Image");
+        wnd.draw(1, 2, 0, img,  "Dynamic Perlin Noise" );
+        wnd.draw(1, 2, 1, chart, "Histogram of Noisy Image");
 
         wnd.swapBuffers();
         frame++;
