@@ -39,7 +39,11 @@ int main(void)
     wnd.makeCurrent();
 
     forge::Chart chart(FG_CHART_3D);
+
+    chart.setAxesLabelFormat("%3.1f", "%3.1f", "%.2e");
+
     chart.setAxesLimits(-1.1f, 1.1f, -1.1f, 1.1f, 0.f, 10.f);
+
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
     forge::Plot plot3 = chart.plot(ZSIZE, forge::f32);

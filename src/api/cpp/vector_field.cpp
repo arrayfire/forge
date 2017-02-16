@@ -9,118 +9,119 @@
 
 #include <fg/vector_field.h>
 
-#include <handle.hpp>
-#include <chart_renderables.hpp>
+#include <error.hpp>
+
+#include <utility>
 
 namespace forge
 {
 
 VectorField::VectorField(const unsigned pNumPoints, const dtype pDataType, const ChartType pChartType)
 {
-    try {
-        mValue = getHandle(new common::VectorField(pNumPoints, pDataType, pChartType));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_vector_field temp = 0;
+    FG_THROW(fg_create_vector_field(&temp, pNumPoints, (fg_dtype)pDataType, pChartType));
+    std::swap(mValue, temp);
 }
 
 VectorField::VectorField(const VectorField& pOther)
 {
-    try {
-        mValue = getHandle(new common::VectorField(pOther.get()));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_vector_field temp = 0;
+
+    FG_THROW(fg_retain_vector_field(&temp, pOther.get()));
+
+    std::swap(mValue, temp);
+}
+
+VectorField::VectorField(const fg_vector_field pHandle)
+    : mValue(pHandle)
+{
 }
 
 VectorField::~VectorField()
 {
-    delete getVectorField(mValue);
+    FG_THROW(fg_release_vector_field(get()));
 }
 
 void VectorField::setColor(const Color pColor)
 {
-    try {
-        float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
-        float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
-        float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
-        float a = (((int) pColor       ) & 0xFF ) / 255.f;
-        getVectorField(mValue)->setColor(r, g, b, a);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
+    float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
+    float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
+    float a = (((int) pColor       ) & 0xFF ) / 255.f;
+
+    FG_THROW(fg_set_vector_field_color(get(), r, g, b, a));
 }
 
 void VectorField::setColor(const float pRed, const float pGreen,
                            const float pBlue, const float pAlpha)
 {
-    try {
-        getVectorField(mValue)->setColor(pRed, pGreen, pBlue, pAlpha);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_vector_field_color(get(), pRed, pGreen, pBlue, pAlpha));
 }
 
 void VectorField::setLegend(const char* pLegend)
 {
-    try {
-        getVectorField(mValue)->setLegend(pLegend);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_vector_field_legend(get(), pLegend));
 }
 
 unsigned VectorField::vertices() const
 {
-    try {
-        return getVectorField(mValue)->vbo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_vector_field_vertex_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned VectorField::colors() const
 {
-    try {
-        return getVectorField(mValue)->cbo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_vector_field_color_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned VectorField::alphas() const
 {
-    try {
-        return getVectorField(mValue)->abo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_vector_field_alpha_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned VectorField::directions() const
 {
-    try {
-        return getVectorField(mValue)->dbo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_vector_field_direction_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned VectorField::verticesSize() const
 {
-    try {
-        return (unsigned)getVectorField(mValue)->vboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_vector_field_vertex_buffer_size(&temp, get()));
+    return temp;
 }
 
 unsigned VectorField::colorsSize() const
 {
-    try {
-        return (unsigned)getVectorField(mValue)->cboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_vector_field_color_buffer_size(&temp, get()));
+    return temp;
 }
 
 unsigned VectorField::alphasSize() const
 {
-    try {
-        return (unsigned)getVectorField(mValue)->aboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_vector_field_alpha_buffer_size(&temp, get()));
+    return temp;
 }
 
 unsigned VectorField::directionsSize() const
 {
-    try {
-        return (unsigned)getVectorField(mValue)->dboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_vector_field_direction_buffer_size(&temp, get()));
+    return temp;
 }
 
 fg_vector_field VectorField::get() const
 {
-    try {
-        return mValue;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    return mValue;
 }
 
 }

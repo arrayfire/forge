@@ -23,16 +23,6 @@
 using namespace gl;
 using namespace forge;
 
-/* following function is thread safe */
-int getNextUniqueId()
-{
-    static int wndUnqIdTracker = 0;
-    static std::mutex wndUnqIdMutex;
-
-    std::lock_guard<std::mutex> lock(wndUnqIdMutex);
-    return wndUnqIdTracker++;
-}
-
 class FI_Manager
 {
     public:
@@ -78,6 +68,40 @@ private:
 
 namespace forge
 {
+
+/* following function is thread safe */
+int getNextUniqueId()
+{
+    static int wndUnqIdTracker = 0;
+    static std::mutex wndUnqIdMutex;
+
+    std::lock_guard<std::mutex> lock(wndUnqIdMutex);
+    return wndUnqIdTracker++;
+}
+
+static std::mutex initMutex;
+static int initCallCount = -1;
+
+void initWtkIfNotDone()
+{
+    std::lock_guard<std::mutex> lock(initMutex);
+
+    initCallCount++;
+
+    if (initCallCount==0)
+        forge::wtk::initWindowToolkit();
+}
+
+void destroyWtkIfDone()
+{
+    std::lock_guard<std::mutex> lock(initMutex);
+
+    initCallCount--;
+
+    if (initCallCount==-1)
+        forge::wtk::destroyWindowToolkit();
+}
+
 namespace opengl
 {
 
@@ -93,6 +117,8 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                         std::weak_ptr<window_impl> pWindow, const bool invisible)
     : mID(getNextUniqueId())
 {
+    initWtkIfNotDone();
+
     if (auto observe = pWindow.lock()) {
         mWindow = new wtk::Widget(pWidth, pHeight, pTitle, observe->get(), invisible);
     } else {
@@ -124,12 +150,8 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     mUBOSize = mCMap->cmapLength(FG_COLOR_MAP_DEFAULT);
     glEnable(GL_MULTISAMPLE);
 
-    std::vector<glm::mat4>& mats = mWindow->mViewMatrices;
-    std::vector<glm::mat4>& omats = mWindow->mOrientMatrices;
-    mats.resize(mWindow->mRows*mWindow->mCols);
-    omats.resize(mWindow->mRows*mWindow->mCols);
-    std::fill(mats.begin(), mats.end(), glm::mat4(1));
-    std::fill(omats.begin(), omats.end(), glm::mat4(1));
+    mWindow->resetViewMatrices();
+    mWindow->resetOrientationMatrices();
 
     /* setup default window font */
     mFont = std::make_shared<font_impl>();
@@ -146,6 +168,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 window_impl::~window_impl()
 {
     delete mWindow;
+    destroyWtkIfDone();
 }
 
 void window_impl::setFont(const std::shared_ptr<font_impl>& pFont)
@@ -232,8 +255,9 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     mWindow->resetCloseFlag();
     glViewport(0, 0, mWindow->mWidth, mWindow->mHeight);
 
-    const glm::mat4& viewMatrix = mWindow->mViewMatrices[0];
-    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[0];
+    const glm::mat4& viewMatrix = mWindow->getViewMatrix(std::make_tuple(1, 1, 0));
+    const glm::mat4& orientMatrix = mWindow->getOrientationMatrix(std::make_tuple(1, 1, 0));
+
     // clear color and depth buffers
     glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -248,91 +272,71 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
     CheckGL("End window_impl::draw");
 }
 
-void window_impl::grid(int pRows, int pCols)
-{
-    glViewport(0, 0, mWindow->mWidth, mWindow->mHeight);
-    glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    mWindow->mRows       = pRows;
-    mWindow->mCols       = pCols;
-    mWindow->mCellWidth  = mWindow->mWidth  / mWindow->mCols;
-    mWindow->mCellHeight = mWindow->mHeight / mWindow->mRows;
-
-    // resize viewMatrix/orientation arrays for views to appropriate size
-    std::vector<glm::mat4>& mats = mWindow->mViewMatrices;
-    std::vector<glm::mat4>& omats = mWindow->mOrientMatrices;
-    mats.resize(mWindow->mRows*mWindow->mCols);
-    omats.resize(mWindow->mRows*mWindow->mCols);
-    std::fill(mats.begin(), mats.end(), glm::mat4(1));
-    std::fill(omats.begin(), omats.end(), glm::mat4(1));
-}
-
-void window_impl::getGrid(int *pRows, int *pCols)
-{
-    *pRows = mWindow->mRows;
-    *pCols = mWindow->mCols;
-}
-
-void window_impl::draw(int pRowId, int pColId,
+void window_impl::draw(const int pRows, const int pCols, const int pIndex,
                        const std::shared_ptr<AbstractRenderable>& pRenderable,
                        const char* pTitle)
 {
-    CheckGL("Begin draw(row, column)");
+    CheckGL("Begin draw(rows, columns, index)");
     MakeContextCurrent(this);
     mWindow->resetCloseFlag();
 
-    float pos[2] = {0.0, 0.0};
-    int c     = pColId;
-    int r     = pRowId;
-    int x_off = c * mWindow->mCellWidth;
-    int y_off = (mWindow->mRows - 1 - r) * mWindow->mCellHeight;
+    const int cellWidth  = mWindow->mWidth/pCols;
+    const int cellHeight = mWindow->mHeight/pRows;
 
-    const glm::mat4& viewMatrix = mWindow->mViewMatrices[c+r*mWindow->mCols];
-    const glm::mat4& orientMatrix = mWindow->mOrientMatrices[c+r*mWindow->mCols];
+    int c    = pIndex % pCols;
+    int r    = pIndex / pCols;
+    int xOff = c * cellWidth;
+    int yOff = (pRows-1-r) * cellHeight;
+
+    const glm::mat4& viewMatrix = mWindow->getViewMatrix(std::make_tuple(pRows, pCols, pIndex));
+    const glm::mat4& orientMatrix = mWindow->getOrientationMatrix(std::make_tuple(pRows, pCols, pIndex));
+
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
      * */
-    int top_margin = int(0.06f*mWindow->mCellHeight);
-    int bot_margin = int(0.02f*mWindow->mCellHeight);
-    int lef_margin = int(0.02f*mWindow->mCellWidth);
-    int rig_margin = int(0.02f*mWindow->mCellWidth);
-    // set viewport to render sub image
-    glViewport(x_off + lef_margin, y_off + bot_margin,
-            mWindow->mCellWidth - 2 * rig_margin, mWindow->mCellHeight - 2 * top_margin);
-    glScissor(x_off + lef_margin, y_off + bot_margin,
-            mWindow->mCellWidth - 2 * rig_margin, mWindow->mCellHeight - 2 * top_margin);
+    int topCushionGap    = int(0.06f*cellHeight);
+    int bottomCushionGap = int(0.02f*cellHeight);
+    int leftCushionGap   = int(0.02f*cellWidth);
+    int rightCushionGap  = int(0.02f*cellWidth);
+    /* current view port */
+    int x = xOff + leftCushionGap;
+    int y = yOff + bottomCushionGap;
+    int w = cellWidth  - leftCushionGap - rightCushionGap;
+    int h = cellHeight - bottomCushionGap - topCushionGap;
+    /* set viewport to render sub image */
+    glViewport(x, y, w, h);
+    glScissor(x, y, w, h);
     glEnable(GL_SCISSOR_TEST);
 
-    // set colormap call is equivalent to noop for non-image renderables
+    /* set colormap call is equivalent to noop for non-image renderables */
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight,
-                        viewMatrix, orientMatrix);
+    pRenderable->render(mID, x, y, w, h, viewMatrix, orientMatrix);
 
     glDisable(GL_SCISSOR_TEST);
-    glViewport(x_off, y_off, mWindow->mCellWidth, mWindow->mCellHeight);
+    glViewport(x, y, cellWidth, cellHeight);
 
+    float pos[2] = {0.0, 0.0};
     if (pTitle!=NULL) {
-        mFont->setOthro2D(mWindow->mCellWidth, mWindow->mCellHeight);
-        pos[0] = mWindow->mCellWidth / 3.0f;
-        pos[1] = mWindow->mCellHeight*0.92f;
-        mFont->render(mID, pos, AF_BLUE, pTitle, 16);
+        mFont->setOthro2D(cellWidth, cellHeight);
+        pos[0] = cellWidth / 3.0f;
+        pos[1] = cellHeight*0.94f;
+        mFont->render(mID, pos, AF_BLUE, pTitle, 18);
     }
 
-    CheckGL("End draw(row, column)");
+    CheckGL("End draw(rows, columns, index)");
 }
 
 void window_impl::swapBuffers()
 {
     mWindow->swapBuffers();
     mWindow->pollEvents();
+    // clear color and depth buffers
+    glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void window_impl::saveFrameBuffer(const char* pFullPath)
 {
-    ARG_ASSERT(0, pFullPath != NULL);
-
     FI_Init();
 
     auto FIErrorHandler = [](FREE_IMAGE_FORMAT pOutputFIFormat, const char* pMessage) {

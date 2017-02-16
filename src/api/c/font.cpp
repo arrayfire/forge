@@ -24,7 +24,18 @@ fg_err fg_create_font(fg_font* pFont)
     return FG_ERR_NONE;
 }
 
-fg_err fg_destroy_font(fg_font pFont)
+fg_err fg_retain_font(fg_font* pOut, fg_font pIn)
+{
+    try {
+        common::Font* temp = new common::Font(getFont(pIn));
+        *pOut = getHandle(temp);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_release_font(fg_font pFont)
 {
     try {
         delete getFont(pFont);

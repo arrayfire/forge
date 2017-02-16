@@ -22,6 +22,30 @@
 
 #include <vector>
 #include <iterator>
+#include <unordered_map>
+#include <utility>
+
+#include <boost/functional/hash.hpp>
+
+using CellIndex = std::tuple<int, int, int>;
+using MatrixHashMap = std::unordered_map<CellIndex, glm::mat4>;
+
+namespace std
+{
+
+template<> struct hash<CellIndex>
+{
+    std::size_t operator()(const CellIndex & key) const
+    {
+        size_t seed = 0;
+        boost::hash_combine(seed, std::get<0>(key));
+        boost::hash_combine(seed, std::get<1>(key));
+        boost::hash_combine(seed, std::get<2>(key));
+        return seed;
+    }
+};
+
+}
 
 typedef unsigned int    uint;
 typedef unsigned short  ushort;
@@ -101,11 +125,11 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
 /* Convert float value to string with given precision
  *
  * @pVal is the float value whose string representation is requested.
- * @pPrecision is the precision of the float used while converting to string.
+ * @pFormat is the c-style printf format for floats
  *
  * @return is the string representation of input float value.
  */
-std::string toString(const float pVal, const int pPrecision = 2);
+std::string toString(const float pVal, const std::string pFormat);
 
 /* Get a vertex buffer object for quad that spans the screen
  */

@@ -9,8 +9,9 @@
 
 #include <fg/plot.h>
 
-#include <handle.hpp>
-#include <chart_renderables.hpp>
+#include <error.hpp>
+
+#include <utility>
 
 namespace forge
 {
@@ -18,117 +19,116 @@ namespace forge
 Plot::Plot(const unsigned pNumPoints, const dtype pDataType, const ChartType pChartType,
            const PlotType pPlotType, const MarkerType pMarkerType)
 {
-    try {
-        mValue = getHandle(new common::Plot(pNumPoints, pDataType, pPlotType, pMarkerType, pChartType));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_plot temp = 0;
+    FG_THROW(fg_create_plot(&temp, pNumPoints, (fg_dtype)pDataType,
+                            pChartType, pPlotType, pMarkerType));
+    std::swap(mValue, temp);
 }
 
 Plot::Plot(const Plot& pOther)
 {
-    try {
-        mValue = getHandle(new common::Plot(pOther.get()));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_plot temp = 0;
+
+    FG_THROW(fg_retain_plot(&temp, pOther.get()));
+
+    std::swap(mValue, temp);
+}
+
+Plot::Plot(const fg_plot pHandle)
+    : mValue(pHandle)
+{
 }
 
 Plot::~Plot()
 {
-    delete getPlot(mValue);
+    FG_THROW(fg_release_plot(get()));
 }
 
 void Plot::setColor(const Color pColor)
 {
-    try {
-        float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
-        float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
-        float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
-        float a = (((int) pColor       ) & 0xFF ) / 255.f;
-        getPlot(mValue)->setColor(r, g, b, a);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
+    float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
+    float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
+    float a = (((int) pColor       ) & 0xFF ) / 255.f;
+
+    FG_THROW(fg_set_plot_color(get(), r, g, b, a));
 }
 
 void Plot::setColor(const float pRed, const float pGreen,
                     const float pBlue, const float pAlpha)
 {
-    try {
-        getPlot(mValue)->setColor(pRed, pGreen, pBlue, pAlpha);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_plot_color(get(), pRed, pGreen, pBlue, pAlpha));
 }
 
 void Plot::setLegend(const char* pLegend)
 {
-    try {
-        getPlot(mValue)->setLegend(pLegend);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_plot_legend(get(), pLegend));
 }
 
 void Plot::setMarkerSize(const float pMarkerSize)
 {
-    try {
-        getPlot(mValue)->setMarkerSize(pMarkerSize);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_plot_marker_size(get(), pMarkerSize));
 }
 
 unsigned Plot::vertices() const
 {
-    try {
-        return getPlot(mValue)->vbo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_plot_vertex_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned Plot::colors() const
 {
-    try {
-        return getPlot(mValue)->cbo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_plot_color_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned Plot::alphas() const
 {
-    try {
-        return getPlot(mValue)->abo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_plot_alpha_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned Plot::radii() const
 {
-    try {
-        return getPlot(mValue)->mbo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_plot_radii_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned Plot::verticesSize() const
 {
-    try {
-        return (unsigned)getPlot(mValue)->vboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_plot_vertex_buffer_size(&temp, get()));
+    return temp;
 }
 
 unsigned Plot::colorsSize() const
 {
-    try {
-        return (unsigned)getPlot(mValue)->cboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_plot_color_buffer_size(&temp, get()));
+    return temp;
 }
 
 unsigned Plot::alphasSize() const
 {
-    try {
-        return (unsigned)getPlot(mValue)->aboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_plot_alpha_buffer_size(&temp, get()));
+    return temp;
 }
 
 unsigned Plot::radiiSize() const
 {
-    try {
-        return (unsigned)getPlot(mValue)->mboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_plot_radii_buffer_size(&temp, get()));
+    return temp;
 }
 
 fg_plot Plot::get() const
 {
-    try {
-        return mValue;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    return mValue;
 }
 
 }

@@ -34,16 +34,20 @@ class AbstractChart : public AbstractRenderable {
         std::vector<std::string> mZText;
         int   mTickCount;  /* should be an odd number always */
         int   mTickSize;
-        int   mDefaultLeftMargin;
-        int   mLeftMargin;
-        int   mRightMargin;
-        int   mTopMargin;
-        int   mBottomMargin;
+        /* margin variables represent the % of current dimensions
+         * and not the exact units of length */
+        float mLeftMargin;
+        float mRightMargin;
+        float mTopMargin;
+        float mBottomMargin;
         /* chart axes ranges and titles */
+        std::string  mXLabelFormat;
         float mXMax;
         float mXMin;
+        std::string  mYLabelFormat;
         float mYMax;
         float mYMin;
+        std::string  mZLabelFormat;
         float mZMax;
         float mZMin;
         std::string mXTitle;
@@ -74,13 +78,33 @@ class AbstractChart : public AbstractRenderable {
             return (maxval-minval)/(mTickCount-1);
         }
 
-        int getNumTicksC2E() const {
+        inline int getNumTicksC2E() const {
             /* Get # of ticks from center(0,0) to edge along axis */
             return (mTickCount-1)/2;
         }
 
+        inline float getLeftMargin(int pWidth) const {
+            return pWidth*mLeftMargin;
+        }
+
+        inline float getRightMargin(int pWidth) const {
+            return pWidth*mRightMargin;
+        }
+
+        inline float getBottomMargin(int pHeight) const {
+            return pHeight*mBottomMargin;
+        }
+
+        inline float getTopMargin(int pHeight) const {
+            return pHeight*mTopMargin;
+        }
+
+        inline float getTickSize() const {
+            return mTickSize;
+        }
+
         void renderTickLabels(const int pWindowId, const uint pW, const uint pH,
-                              const std::vector<std::string> &pTexts,
+                              const std::vector<std::string> &pTexts, const int pFontSize,
                               const glm::mat4 &pTransformation, const int pCoordsOffset,
                               const bool pUseZoffset=true) const;
 
@@ -93,8 +117,8 @@ class AbstractChart : public AbstractRenderable {
         virtual void generateTickLabels() = 0;
 
     public:
-        AbstractChart(const int pLeftMargin, const int pRightMargin,
-                      const int pTopMargin, const int pBottomMargin);
+        AbstractChart(const float pLeftMargin, const float pRightMargin,
+                      const float pTopMargin, const float pBottomMargin);
         virtual ~AbstractChart();
 
         void setAxesTitles(const char* pXTitle,
@@ -104,6 +128,10 @@ class AbstractChart : public AbstractRenderable {
         void setAxesLimits(const float pXmin, const float pXmax,
                            const float pYmin, const float pYmax,
                            const float pZmin, const float pZmax);
+
+        void setAxesLabelFormat(const std::string& pXFormat,
+                                const std::string& pYFormat,
+                                const std::string& pZFormat);
 
         void getAxesLimits(float* pXmin, float* pXmax,
                            float* pYmin, float* pYmax,
