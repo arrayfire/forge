@@ -1,4 +1,17 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+
+OPTION(USE_HUNTER "Use Hunter cmake package handler" OFF)
+
+if(USE_HUNTER)
+    include(${CMAKE_CURRENT_LIST_DIR}/CMakeModules/HunterGate.cmake)
+    
+    HunterGate(
+        URL "https://github.com/ruslo/hunter/archive/v0.18.43.tar.gz"
+        SHA1 "d2c8c42cd07f7cefe18fd9a9b9c13114b1a15a27"
+#        LOCAL
+    )
+endif()
+
 PROJECT(FORGE)
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -10,6 +23,7 @@ INCLUDE(Version)
 ############################## BEGIN - CMAKE OPTIONS ##########################
 OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
 OPTION(BUILD_EXAMPLES "Build Examples" ON)
+OPTION(USE_FREEIMAGE "Use freeimage to allow saving of charts" ON)
 
 # Set a default build type if none was specified
 IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)

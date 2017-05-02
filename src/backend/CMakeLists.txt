@@ -2,26 +2,35 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 ####################### BEGIN - Backend agnostic upstream dependencies #####################
 
-FIND_PACKAGE(Boost REQUIRED)
+if(USE_HUNTER)
+    hunter_add_package(Boost COMPONENTS system filesystem)
+    find_package(Boost REQUIRED COMPONENTS system filesystem)
+
+    hunter_add_package(glm)
+    find_package(glm CONFIG REQUIRED)
+
+    hunter_add_package(freetype)
+    find_package(freetype REQUIRED)
+else()
+    FIND_PACKAGE(Boost REQUIRED)
+
+    OPTION(USE_SYSTEM_GLM "Use the system GLM library" OFF)
+    IF(USE_SYSTEM_GLM)
+      FIND_PACKAGE(glm REQUIRED)
+    ELSE()
+      INCLUDE(build_glm)
+    ENDIF()
+
+    OPTION(USE_SYSTEM_FREETYPE "Use the system Freetype library" OFF)
+    IF(USE_SYSTEM_FREETYPE)
+      FIND_PACKAGE(Freetype REQUIRED)
+    ELSE()
+      INCLUDE(build_freetype)
+    ENDIF()
+endif()
 
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-
-OPTION(USE_SYSTEM_GLM "Use the system GLM library" OFF)
-IF(USE_SYSTEM_GLM)
-  FIND_PACKAGE(glm REQUIRED)
-ELSE()
-  INCLUDE(build_glm)
-ENDIF()
-
 INCLUDE_DIRECTORIES(${GLM_INCLUDE_DIRS})
-
-OPTION(USE_SYSTEM_FREETYPE "Use the system Freetype library" OFF)
-IF(USE_SYSTEM_FREETYPE)
-  FIND_PACKAGE(Freetype REQUIRED)
-ELSE()
-  INCLUDE(build_freetype)
-ENDIF()
-
 INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
 
 IF(UNIX)
@@ -29,9 +38,12 @@ IF(UNIX)
     INCLUDE_DIRECTORIES("${FONTCONFIG_INCLUDE_DIR}")
 ENDIF(UNIX)
 
-FIND_PACKAGE(FreeImage REQUIRED)
+if(USE_FREEIMAGE)
+	FIND_PACKAGE(FreeImage REQUIRED)
 
-INCLUDE_DIRECTORIES(${FREEIMAGE_INCLUDE_PATH})
+	INCLUDE_DIRECTORIES(${FREEIMAGE_INCLUDE_PATH})
+	ADD_DEFINITIONS(-DUSE_FREEIMAGE)
+endif()
 
 SET(USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
 SET_PROPERTY(CACHE USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
