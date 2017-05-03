@@ -18,10 +18,11 @@
 #include <memory>
 #include <mutex>
 
-#include <FreeImage.h>
-
 using namespace gl;
 using namespace forge;
+
+#ifdef USE_FREEIMAGE
+#include <FreeImage.h>
 
 class FI_Manager
 {
@@ -65,6 +66,7 @@ public:
 private:
     FIBITMAP * pBitmap;
 };
+#endif //USE_FREEIMAGE
 
 namespace forge
 {
@@ -337,6 +339,7 @@ void window_impl::swapBuffers()
 
 void window_impl::saveFrameBuffer(const char* pFullPath)
 {
+#ifdef USE_FREEIMAGE
     FI_Init();
 
     auto FIErrorHandler = [](FREE_IMAGE_FORMAT pOutputFIFormat, const char* pMessage) {
@@ -409,6 +412,9 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
     if (!(FreeImage_Save(format,bmp, pFullPath, flags) == TRUE)) {
         FG_ERROR("FreeImage Save Failed", FG_ERR_FREEIMAGE_SAVE_FAILED);
     }
+#else
+    FG_ERROR("Freeimage is not configured to build", FG_ERR_NOT_CONFIGURED);
+#endif //USE_FREEIMAGE
 }
 
 }
