@@ -14,7 +14,7 @@
 #
 # Usage example to compile an "executable" target to the glfw library:
 #
-# FIND_PACKAGE (glfw REQUIRED)
+# FIND_PACKAGE (GLFW REQUIRED)
 # INCLUDE_DIRECTORIES (${GLFW_INCLUDE_DIR})
 # ADD_EXECUTABLE (executable ${EXECUTABLE_SRCS})
 # TARGET_LINK_LIBRARIES (executable ${GLFW_LIBRARY})
