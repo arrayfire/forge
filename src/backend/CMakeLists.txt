@@ -49,14 +49,18 @@ SET(USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
 SET_PROPERTY(CACHE USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
 
 IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
-    FIND_PACKAGE(glfw3 REQUIRED)
-    IF(glfw3_FOUND)
+    #FIXME LATER: glfw3Config.cmake file provided by glfw 3.*
+    # is found on different locations in different linux/unix
+    # distributions, thus causing glfw3 not found errors.
+    # DON'T REPLACE GLFW with glfw3 in find_package command.
+    FIND_PACKAGE(GLFW REQUIRED)
+    IF(GLFW_FOUND)
         SET(WTK_INCLUDE_DIRS)
         SET(WTK_LIBRARIES glfw)
         ADD_DEFINITIONS(-DUSE_GLFW)
-    ELSE(glfw3_FOUND)
+    ELSE(GLFW_FOUND)
         MESSAGE(FATAL_ERROR "GLFW not found")
-    ENDIF(glfw3_FOUND)
+    ENDIF(GLFW_FOUND)
 ENDIF()
 
 IF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
