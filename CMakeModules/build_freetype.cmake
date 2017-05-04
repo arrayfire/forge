@@ -8,7 +8,7 @@ IF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 ENDIF()
 
 SET(freetype_location
-    ${prefix}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}freetype${LIB_POSTFIX}${CMAKE_SHARED_LIBRARY_SUFFIX})
+    ${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}freetype${LIB_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
 
 IF(CMAKE_VERSION VERSION_LESS 3.2)
     IF(CMAKE_GENERATOR MATCHES "Ninja")
@@ -38,17 +38,22 @@ ExternalProject_Add(
     -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
     -DCMAKE_C_FLAGS:STRING=${CFLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-    -DBUILD_SHARED_LIBS:BOOL=ON
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     ${byproducts}
     )
 
-ADD_LIBRARY(freetype IMPORTED SHARED)
+ADD_LIBRARY(freetype IMPORTED STATIC)
 
 ExternalProject_Get_Property(ft-ext install_dir)
 
 SET_TARGET_PROPERTIES(freetype PROPERTIES IMPORTED_LOCATION ${freetype_location})
 
+ADD_DEPENDENCIES(freetype ft-ext)
+
+# Based on the instructions on freetype site
+# for header path inclusion given at below URL
+# https://www.freetype.org/freetype2/docs/tutorial/step1.html#section-1
+# we are including <root>/include/freetype2 as FREETYPE_INCLUDE_DIRS
 SET(FREETYPE_INCLUDE_DIRS "${install_dir}/include/freetype2" CACHE INTERNAL "" FORCE)
 SET(FREETYPE_LIBRARIES ${freetype_location} CACHE INTERNAL "" FORCE)
 SET(FREETYPE_FOUND ON CACHE INTERNAL "" FORCE)

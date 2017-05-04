@@ -126,6 +126,20 @@ TARGET_LINK_LIBRARIES(forge
     )
 
 ADD_DEPENDENCIES(forge ${glsl_shader_targets})
+
+IF (NOT USE_SYSTEM_FREETYPE AND NOT USE_HUNTER)
+    ADD_DEPENDENCIES(forge freetype)
+ENDIF()
+
+# For freetype versions >2.6 static build is causing
+# link issues with users of forge when harfbuzz is not linked
+# to forge.
+# Unfortunately, can't use shared libs for Windows as it
+# doesn't support MSVC toolchain
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(forge PRIVATE harfbuzz)
+ENDIF(UNIX)
+
 IF(USE_SYSTEM_GLBINDING)
     TARGET_LINK_LIBRARIES(forge PRIVATE glbinding::glbinding)
 ELSE(USE_SYSTEM_GLBINDING)
