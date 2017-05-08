@@ -39,6 +39,7 @@ ELSE(TARGET forge)
 
     SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
     FIND_PACKAGE(Forge REQUIRED)
+    FIND_PACKAGE(OpenGL REQUIRED)
 
     SET(X11_LIBS "")
 
@@ -93,7 +94,7 @@ FOREACH(FILE ${CPU_EXAMPLE_SRC_FILES})
     IF(TARGET forge)
         BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "")
     ELSE(TARGET forge)
-        BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES} "${X11_LIBS}")
+        BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES} "${X11_LIBS};${OPENGL_gl_LIBRARY}")
     ENDIF()
 ENDFOREACH()
 
@@ -128,7 +129,7 @@ IF (BUILD_EXAMPLES_CUDA)
                 BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "${CUDA_LIBRARIES}")
             ELSE(TARGET forge)
                 BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                    "${X11_LIBS};${CUDA_LIBRARIES}")
+                    "${X11_LIBS};${OPENGL_gl_LIBRARY};${CUDA_LIBRARIES}")
             ENDIF()
         ENDFOREACH()
     ELSE()
@@ -152,10 +153,10 @@ IF (BUILD_EXAMPLES_OPENCL)
             GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
 
             IF(TARGET forge)
-                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "${OpenCL_LIBRARIES}")
+                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "${OpenCL_LIBRARIES};${OPENGL_gl_LIBRARY}")
             ELSE(TARGET forge)
                 BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                    "${X11_LIBS};${OpenCL_LIBRARIES}")
+                    "${X11_LIBS};${OPENGL_gl_LIBRARY};${OpenCL_LIBRARIES}")
             ENDIF()
         ENDFOREACH()
     ELSE()
