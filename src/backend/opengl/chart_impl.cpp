@@ -246,6 +246,16 @@ void AbstractChart::addRenderable(const std::shared_ptr<AbstractRenderable> pRen
     mRenderables.emplace_back(pRenderable);
 }
 
+void AbstractChart::removeRenderable(const std::shared_ptr<AbstractRenderable> pRenderable)
+{
+    auto pos=std::find(mRenderables.begin(), mRenderables.end(), pRenderable);
+
+    if(pos==mRenderables.end())
+        return;
+
+    mRenderables.erase(pos);
+}
+
 /********************* END-AbstractChart *********************/
 
 
