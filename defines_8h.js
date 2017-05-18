@@ -52,11 +52,15 @@ var defines_8h =
     [ "fg_color_map", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461", [
       [ "FG_COLOR_MAP_DEFAULT", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a14da1dff78a4a098cd4a17bcfae47a7e", null ],
       [ "FG_COLOR_MAP_SPECTRUM", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a1ef8ab3efad8e654a92bda80a80986cc", null ],
-      [ "FG_COLOR_MAP_COLORS", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a63eefcf4b061073537d7b1c5f81751c4", null ],
+      [ "FG_COLOR_MAP_RAINBOW", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461ac874751b61a4948ac420f9e4c7808af5", null ],
       [ "FG_COLOR_MAP_RED", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a339c7946701bc0b00e0716216a41d2b9", null ],
       [ "FG_COLOR_MAP_MOOD", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a977da85c11fbe90854b22b13a59d0bb4", null ],
       [ "FG_COLOR_MAP_HEAT", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461acb7ff24fa0f98d0c6534a66f0d81ef61", null ],
-      [ "FG_COLOR_MAP_BLUE", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a8dd43873a47aaa8f0695687ee39e28c3", null ]
+      [ "FG_COLOR_MAP_BLUE", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a8dd43873a47aaa8f0695687ee39e28c3", null ],
+      [ "FG_COLOR_MAP_INFERNO", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a31cbaec733d2c514fb030e04271e3832", null ],
+      [ "FG_COLOR_MAP_MAGMA", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a01e90803d0d2797e46185c3bb822b6a1", null ],
+      [ "FG_COLOR_MAP_PLASMA", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a1f30b0722bac5c81ec8b8edfe59078f5", null ],
+      [ "FG_COLOR_MAP_VIRIDIS", "defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a3aa3103f3333e57177dc930ff082e625", null ]
     ] ],
     [ "fg_dtype", "defines_8h.htm#a8490c7b8ea074ec5825112776b16a9d7", [
       [ "FG_INT8", "defines_8h.htm#a8490c7b8ea074ec5825112776b16a9d7a2b9b6afa95857563af98d137636e2e41", null ],

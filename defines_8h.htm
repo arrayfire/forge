@@ -83,7 +83,7 @@ $(document).ready(function(){initNavTree('defines_8h.htm','');});
 <div class="title">defines.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<h3 class="version">(2016-09-09 23:31:15 +0530, (build 25baa5d))</h3><div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
+<h3 class="version">(2017-05-08 15:11:27 +0530, (build c6bb28c))</h3><div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;<a class="el" href="version_8h_source.htm">fg/version.h</a>&gt;</code><br />
 <code>#include &lt;cstdlib&gt;</code><br />
 </div>
@@ -179,12 +179,17 @@ Enumerations</h2></td></tr>
 <tr class="memitem:a3c25187db6a9805731a4fd67959ab461"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461">fg_color_map</a> { <br />
 &#160;&#160;<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a14da1dff78a4a098cd4a17bcfae47a7e">FG_COLOR_MAP_DEFAULT</a> = 0, 
 <a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a1ef8ab3efad8e654a92bda80a80986cc">FG_COLOR_MAP_SPECTRUM</a> = 1, 
-<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a63eefcf4b061073537d7b1c5f81751c4">FG_COLOR_MAP_COLORS</a> = 2, 
+<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461ac874751b61a4948ac420f9e4c7808af5">FG_COLOR_MAP_RAINBOW</a> = 2, 
 <a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a339c7946701bc0b00e0716216a41d2b9">FG_COLOR_MAP_RED</a> = 3, 
 <br />
 &#160;&#160;<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a977da85c11fbe90854b22b13a59d0bb4">FG_COLOR_MAP_MOOD</a> = 4, 
 <a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461acb7ff24fa0f98d0c6534a66f0d81ef61">FG_COLOR_MAP_HEAT</a> = 5, 
-<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a8dd43873a47aaa8f0695687ee39e28c3">FG_COLOR_MAP_BLUE</a> = 6
+<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a8dd43873a47aaa8f0695687ee39e28c3">FG_COLOR_MAP_BLUE</a> = 6, 
+<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a31cbaec733d2c514fb030e04271e3832">FG_COLOR_MAP_INFERNO</a> = 7, 
+<br />
+&#160;&#160;<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a01e90803d0d2797e46185c3bb822b6a1">FG_COLOR_MAP_MAGMA</a> = 8, 
+<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a1f30b0722bac5c81ec8b8edfe59078f5">FG_COLOR_MAP_PLASMA</a> = 9, 
+<a class="el" href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461a3aa3103f3333e57177dc930ff082e625">FG_COLOR_MAP_VIRIDIS</a> = 10
 <br />
  }<tr class="memdesc:a3c25187db6a9805731a4fd67959ab461"><td class="mdescLeft">&#160;</td><td class="mdescRight">Color maps.  <a href="defines_8h.htm#a3c25187db6a9805731a4fd67959ab461">More...</a><br /></td></tr>
 </td></tr>
@@ -473,18 +478,15 @@ Enumerations</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Color maps. </p>
-<div class="image">
-<img src="gfx_palette.png" alt="gfx_palette.png"/>
-</div>
- <table class="fieldtable">
+<table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461a14da1dff78a4a098cd4a17bcfae47a7e"></a>FG_COLOR_MAP_DEFAULT&#160;</td><td class="fielddoc">
 <p>Default [0-255] grayscale colormap. </p>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461a1ef8ab3efad8e654a92bda80a80986cc"></a>FG_COLOR_MAP_SPECTRUM&#160;</td><td class="fielddoc">
-<p>Spectrum color. </p>
+<p>Visual spectrum (390nm-830nm) in sRGB colorspace. </p>
 </td></tr>
-<tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461a63eefcf4b061073537d7b1c5f81751c4"></a>FG_COLOR_MAP_COLORS&#160;</td><td class="fielddoc">
-<p>Pure Colors. </p>
+<tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461ac874751b61a4948ac420f9e4c7808af5"></a>FG_COLOR_MAP_RAINBOW&#160;</td><td class="fielddoc">
+<p>Rainbow color map. </p>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461a339c7946701bc0b00e0716216a41d2b9"></a>FG_COLOR_MAP_RED&#160;</td><td class="fielddoc">
 <p>Red color map. </p>
@@ -497,6 +499,18 @@ Enumerations</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461a8dd43873a47aaa8f0695687ee39e28c3"></a>FG_COLOR_MAP_BLUE&#160;</td><td class="fielddoc">
 <p>Blue color map. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461a31cbaec733d2c514fb030e04271e3832"></a>FG_COLOR_MAP_INFERNO&#160;</td><td class="fielddoc">
+<p>perceptually uniform shades of black-red-yellow </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461a01e90803d0d2797e46185c3bb822b6a1"></a>FG_COLOR_MAP_MAGMA&#160;</td><td class="fielddoc">
+<p>perceptually uniform shades of black-red-white </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461a1f30b0722bac5c81ec8b8edfe59078f5"></a>FG_COLOR_MAP_PLASMA&#160;</td><td class="fielddoc">
+<p>perceptually uniform shades of blue-red-yellow </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a3c25187db6a9805731a4fd67959ab461a3aa3103f3333e57177dc930ff082e625"></a>FG_COLOR_MAP_VIRIDIS&#160;</td><td class="fielddoc">
+<p>perceptually uniform shades of blue-green-yellow </p>
 </td></tr>
 </table>
 
@@ -667,7 +681,7 @@ Enumerations</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="defines_8h.htm">defines.h</a></li>
-    <li class="footer">Generated on Sat Sep 10 2016 11:16:14 for Forge by
+    <li class="footer">Generated on Thu May 18 2017 10:55:58 for Forge by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.11 </li>
   </ul>

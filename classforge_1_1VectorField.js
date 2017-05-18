@@ -2,6 +2,7 @@ var classforge_1_1VectorField =
 [
     [ "VectorField", "classforge_1_1VectorField.htm#af5b08d64396d3391bd0f6a842e97498e", null ],
     [ "VectorField", "classforge_1_1VectorField.htm#a338aa086ca87f42704da20b42b865099", null ],
+    [ "VectorField", "classforge_1_1VectorField.htm#a3b5c44f01bb267e001df485d65f20b17", null ],
     [ "~VectorField", "classforge_1_1VectorField.htm#acb4f919bda8f7f5d4c77895e05e35ecd", null ],
     [ "alphas", "classforge_1_1VectorField.htm#a3faf73cbe698f91a8625565207e2b10e", null ],
     [ "alphasSize", "classforge_1_1VectorField.htm#a13f1bea64fb3332a0b0dfa057090a7ee", null ],

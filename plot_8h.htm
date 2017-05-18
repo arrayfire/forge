@@ -82,7 +82,7 @@ $(document).ready(function(){initNavTree('plot_8h.htm','');});
 <div class="title">plot.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<h3 class="version">(2016-09-09 23:31:15 +0530, (build 25baa5d))</h3><div class="textblock"><code>#include &lt;<a class="el" href="defines_8h_source.htm">fg/defines.h</a>&gt;</code><br />
+<h3 class="version">(2017-05-08 15:11:27 +0530, (build c6bb28c))</h3><div class="textblock"><code>#include &lt;<a class="el" href="defines_8h_source.htm">fg/defines.h</a>&gt;</code><br />
 </div>
 <p><a href="plot_8h_source.htm">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -102,9 +102,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gaffa0499614393c088aebb973e28b95b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="defines_8h.htm#a0c13890087e4c32266826db56c710098">FGAPI</a> <a class="el" href="defines_8h.htm#a4ee782f922694c98a5d10822dedeabf0">fg_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__plot__functions.htm#gaffa0499614393c088aebb973e28b95b2">fg_create_plot</a> (<a class="el" href="defines_8h.htm#a53da417889f6b36df13f46a7dcfc8acf">fg_plot</a> *pPlot, const unsigned pNPoints, const <a class="el" href="defines_8h.htm#a8490c7b8ea074ec5825112776b16a9d7">fg_dtype</a> pType, const <a class="el" href="defines_8h.htm#af4e160ad397b0c0d8271fab83e2441db">fg_chart_type</a> pChartType, const <a class="el" href="defines_8h.htm#a3bc618792ca52006bf96800b9bd4050d">fg_plot_type</a> pPlotType, const <a class="el" href="defines_8h.htm#a4e31a5f495100699e2478393e158d971">fg_marker_type</a> pMarkerType)</td></tr>
 <tr class="memdesc:gaffa0499614393c088aebb973e28b95b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a Plot object.  <a href="group__plot__functions.htm#gaffa0499614393c088aebb973e28b95b2">More...</a><br /></td></tr>
 <tr class="separator:gaffa0499614393c088aebb973e28b95b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga50432c6c0c5535ca78025f4c4303dfcd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="defines_8h.htm#a0c13890087e4c32266826db56c710098">FGAPI</a> <a class="el" href="defines_8h.htm#a4ee782f922694c98a5d10822dedeabf0">fg_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__plot__functions.htm#ga50432c6c0c5535ca78025f4c4303dfcd">fg_destroy_plot</a> (<a class="el" href="defines_8h.htm#a53da417889f6b36df13f46a7dcfc8acf">fg_plot</a> pPlot)</td></tr>
-<tr class="memdesc:ga50432c6c0c5535ca78025f4c4303dfcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy plot object.  <a href="group__plot__functions.htm#ga50432c6c0c5535ca78025f4c4303dfcd">More...</a><br /></td></tr>
-<tr class="separator:ga50432c6c0c5535ca78025f4c4303dfcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa03c29b5d6b80ce2e2a1ac138fca8c3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="defines_8h.htm#a0c13890087e4c32266826db56c710098">FGAPI</a> <a class="el" href="defines_8h.htm#a4ee782f922694c98a5d10822dedeabf0">fg_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__plot__functions.htm#gaa03c29b5d6b80ce2e2a1ac138fca8c3a">fg_retain_plot</a> (<a class="el" href="defines_8h.htm#a53da417889f6b36df13f46a7dcfc8acf">fg_plot</a> *pOut, <a class="el" href="defines_8h.htm#a53da417889f6b36df13f46a7dcfc8acf">fg_plot</a> pIn)</td></tr>
+<tr class="memdesc:gaa03c29b5d6b80ce2e2a1ac138fca8c3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increase reference count of the resource.  <a href="group__plot__functions.htm#gaa03c29b5d6b80ce2e2a1ac138fca8c3a">More...</a><br /></td></tr>
+<tr class="separator:gaa03c29b5d6b80ce2e2a1ac138fca8c3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafe78b77407cd80f8b546bd59f5e2633c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="defines_8h.htm#a0c13890087e4c32266826db56c710098">FGAPI</a> <a class="el" href="defines_8h.htm#a4ee782f922694c98a5d10822dedeabf0">fg_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__plot__functions.htm#gafe78b77407cd80f8b546bd59f5e2633c">fg_release_plot</a> (<a class="el" href="defines_8h.htm#a53da417889f6b36df13f46a7dcfc8acf">fg_plot</a> pPlot)</td></tr>
+<tr class="memdesc:gafe78b77407cd80f8b546bd59f5e2633c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy plot object.  <a href="group__plot__functions.htm#gafe78b77407cd80f8b546bd59f5e2633c">More...</a><br /></td></tr>
+<tr class="separator:gafe78b77407cd80f8b546bd59f5e2633c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0a884cc68f6d1d829d3657d689f5a12a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="defines_8h.htm#a0c13890087e4c32266826db56c710098">FGAPI</a> <a class="el" href="defines_8h.htm#a4ee782f922694c98a5d10822dedeabf0">fg_err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__plot__functions.htm#ga0a884cc68f6d1d829d3657d689f5a12a">fg_set_plot_color</a> (<a class="el" href="defines_8h.htm#a53da417889f6b36df13f46a7dcfc8acf">fg_plot</a> pPlot, const float pRed, const float pGreen, const float pBlue, const float pAlpha)</td></tr>
 <tr class="memdesc:ga0a884cc68f6d1d829d3657d689f5a12a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the color of line graph(plot)  <a href="group__plot__functions.htm#ga0a884cc68f6d1d829d3657d689f5a12a">More...</a><br /></td></tr>
 <tr class="separator:ga0a884cc68f6d1d829d3657d689f5a12a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,7 +149,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="plot_8h.htm">plot.h</a></li>
-    <li class="footer">Generated on Sat Sep 10 2016 11:16:14 for Forge by
+    <li class="footer">Generated on Thu May 18 2017 10:55:58 for Forge by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.11 </li>
   </ul>

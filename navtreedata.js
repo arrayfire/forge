@@ -27,7 +27,7 @@ var NAVTREE =
     [ "Files", null, [
       [ "File List", "files.htm", "files" ],
       [ "Globals", "globals.htm", [
-        [ "All", "globals.htm", null ],
+        [ "All", "globals.htm", "globals_dup" ],
         [ "Functions", "globals_func.htm", null ],
         [ "Typedefs", "globals_type.htm", null ],
         [ "Enumerations", "globals_enum.htm", null ],
@@ -42,8 +42,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "ComputeCopy_8h.htm",
-"defines_8h.htm#ad77462d6460b60001e1ff156df960f1a",
-"opencl_2bubblechart_8cpp-example.htm"
+"defines_8h.htm#acfe99d230e216901bd782cc580e4e815",
+"group__win__functions.htm#gab01edfd22cb1e2df0d269666be4f642c"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

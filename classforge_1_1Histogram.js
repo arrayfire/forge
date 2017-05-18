@@ -2,6 +2,7 @@ var classforge_1_1Histogram =
 [
     [ "Histogram", "classforge_1_1Histogram.htm#a8a56250d1471d85d6e82cb13fafd1cf3", null ],
     [ "Histogram", "classforge_1_1Histogram.htm#aeec8b1d47263e8f26db87d0bd45f9686", null ],
+    [ "Histogram", "classforge_1_1Histogram.htm#a84deb9f140c2baaa6eedb459bfbe07e1", null ],
     [ "~Histogram", "classforge_1_1Histogram.htm#a4768fd035ecd222e12769c6a21cce831", null ],
     [ "alphas", "classforge_1_1Histogram.htm#a3faf73cbe698f91a8625565207e2b10e", null ],
     [ "alphasSize", "classforge_1_1Histogram.htm#a13f1bea64fb3332a0b0dfa057090a7ee", null ],

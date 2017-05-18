@@ -96,6 +96,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a338aa086ca87f42704da20b42b865099"><td class="memItemLeft" align="right" valign="top"><a class="el" href="defines_8h.htm#a0c13890087e4c32266826db56c710098">FGAPI</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classforge_1_1VectorField.htm#a338aa086ca87f42704da20b42b865099">VectorField</a> (const <a class="el" href="classforge_1_1VectorField.htm">VectorField</a> &amp;pOther)</td></tr>
 <tr class="memdesc:a338aa086ca87f42704da20b42b865099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor for <a class="el" href="classforge_1_1VectorField.htm" title="VectorField is a line graph to display two dimensional data. ">VectorField</a>.  <a href="#a338aa086ca87f42704da20b42b865099">More...</a><br /></td></tr>
 <tr class="separator:a338aa086ca87f42704da20b42b865099"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b5c44f01bb267e001df485d65f20b17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="defines_8h.htm#a0c13890087e4c32266826db56c710098">FGAPI</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classforge_1_1VectorField.htm#a3b5c44f01bb267e001df485d65f20b17">VectorField</a> (const <a class="el" href="defines_8h.htm#a8c8c5c30983524ffe7d57a4513c3d8b2">fg_vector_field</a> pHandle)</td></tr>
+<tr class="memdesc:a3b5c44f01bb267e001df485d65f20b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct <a class="el" href="classforge_1_1VectorField.htm" title="VectorField is a line graph to display two dimensional data. ">VectorField</a> ojbect from fg_vector_field resource handle.  <a href="#a3b5c44f01bb267e001df485d65f20b17">More...</a><br /></td></tr>
+<tr class="separator:a3b5c44f01bb267e001df485d65f20b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb4f919bda8f7f5d4c77895e05e35ecd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="defines_8h.htm#a0c13890087e4c32266826db56c710098">FGAPI</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classforge_1_1VectorField.htm#acb4f919bda8f7f5d4c77895e05e35ecd">~VectorField</a> ()</td></tr>
 <tr class="memdesc:acb4f919bda8f7f5d4c77895e05e35ecd"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classforge_1_1VectorField.htm" title="VectorField is a line graph to display two dimensional data. ">VectorField</a> Destructor.  <a href="#acb4f919bda8f7f5d4c77895e05e35ecd">More...</a><br /></td></tr>
 <tr class="separator:acb4f919bda8f7f5d4c77895e05e35ecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -203,6 +206,39 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="a3b5c44f01bb267e001df485d65f20b17"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="defines_8h.htm#a0c13890087e4c32266826db56c710098">FGAPI</a> <a class="el" href="classforge_1_1VectorField.htm">VectorField</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="defines_8h.htm#a8c8c5c30983524ffe7d57a4513c3d8b2">fg_vector_field</a>&#160;</td>
+          <td class="paramname"><em>pHandle</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct <a class="el" href="classforge_1_1VectorField.htm" title="VectorField is a line graph to display two dimensional data. ">VectorField</a> ojbect from fg_vector_field resource handle. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">pHandle</td><td>is the input fg_vector_field resource handle</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>This kind of construction assumes ownership of the resource handle is released during the <a class="el" href="classforge_1_1VectorField.htm" title="VectorField is a line graph to display two dimensional data. ">VectorField</a> object's destruction. </dd></dl>
 
 </div>
 </div>
@@ -490,7 +526,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="vector__field_8h_source.htm">vector_field.h (2016-09-09 23:31:15 +0530, (build 25baa5d))</a></li>
+<li><a class="el" href="vector__field_8h_source.htm">vector_field.h (2017-05-08 15:11:27 +0530, (build c6bb28c))</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -499,7 +535,7 @@ Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespaceforge.htm">forge</a></li><li class="navelem"><a class="el" href="classforge_1_1VectorField.htm">VectorField</a></li>
-    <li class="footer">Generated on Sat Sep 10 2016 11:16:14 for Forge by
+    <li class="footer">Generated on Thu May 18 2017 10:55:58 for Forge by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.11 </li>
   </ul>

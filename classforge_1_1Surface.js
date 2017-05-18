@@ -2,6 +2,7 @@ var classforge_1_1Surface =
 [
     [ "Surface", "classforge_1_1Surface.htm#a9df677ac558dc952ef2f26d6d66a1a0f", null ],
     [ "Surface", "classforge_1_1Surface.htm#abdaddd9b2ceccef52ba64157efdfa8bf", null ],
+    [ "Surface", "classforge_1_1Surface.htm#ae3211208a46580fec223900f3d502f47", null ],
     [ "~Surface", "classforge_1_1Surface.htm#a999478ecc7b13b0a9254a24356079d54", null ],
     [ "alphas", "classforge_1_1Surface.htm#a3faf73cbe698f91a8625565207e2b10e", null ],
     [ "alphasSize", "classforge_1_1Surface.htm#a13f1bea64fb3332a0b0dfa057090a7ee", null ],

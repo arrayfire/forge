@@ -2,6 +2,7 @@ var classforge_1_1Plot =
 [
     [ "Plot", "classforge_1_1Plot.htm#a855b1938229806de2e775e4e3c62edd6", null ],
     [ "Plot", "classforge_1_1Plot.htm#ab690b2f1e09affaaceab9074d25ca872", null ],
+    [ "Plot", "classforge_1_1Plot.htm#a104801283317e9f6fdc9d36894c516dc", null ],
     [ "~Plot", "classforge_1_1Plot.htm#a96133e108822b91cbf71421900205b28", null ],
     [ "alphas", "classforge_1_1Plot.htm#a3faf73cbe698f91a8625565207e2b10e", null ],
     [ "alphasSize", "classforge_1_1Plot.htm#a13f1bea64fb3332a0b0dfa057090a7ee", null ],

@@ -2,6 +2,7 @@ var classforge_1_1Image =
 [
     [ "Image", "classforge_1_1Image.htm#aa8b557a830848c689b9618d096090330", null ],
     [ "Image", "classforge_1_1Image.htm#a2e71400f28fd43b3adc978bdd8dab57b", null ],
+    [ "Image", "classforge_1_1Image.htm#a6789f27d9575b22b6cb27864c0f73f5f", null ],
     [ "~Image", "classforge_1_1Image.htm#a938f49fb6665a9330f9eeb8dffaa5790", null ],
     [ "channelType", "classforge_1_1Image.htm#a8d7247c6315e48ffe317415a88a37d9e", null ],
     [ "get", "classforge_1_1Image.htm#aef507f190d67f9408ea6d4153404c0c1", null ],
