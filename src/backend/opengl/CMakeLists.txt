@@ -140,8 +140,8 @@ ELSE(USE_SYSTEM_GLBINDING)
 ENDIF(USE_SYSTEM_GLBINDING)
 
 SET_TARGET_PROPERTIES(forge PROPERTIES
-                      VERSION ${FG_VERSION}
-                      SOVERSION 0)
+                      VERSION "${FG_VERSION}"
+                      SOVERSION "${FG_VERSION_MAJOR}")
 
 INSTALL(TARGETS forge
         EXPORT FORGE
