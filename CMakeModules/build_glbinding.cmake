@@ -2,12 +2,8 @@ INCLUDE(ExternalProject)
 
 SET(prefix ${PROJECT_BINARY_DIR}/third_party/glb)
 
-SET(LIB_POSTFIX "")
-IF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    SET(LIB_POSTFIX "d")
-ENDIF()
-
-SET(glbinding_location ${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glbinding${LIB_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
+SET(glbinding_location ${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glbinding${CMAKE_STATIC_LIBRARY_SUFFIX})
+SET(glbinding_location_debug ${prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glbindingd${CMAKE_STATIC_LIBRARY_SUFFIX})
 
 IF(CMAKE_VERSION VERSION_LESS 3.2)
     IF(CMAKE_GENERATOR MATCHES "Ninja")
@@ -48,7 +44,8 @@ ADD_LIBRARY(glbinding IMPORTED STATIC)
 
 ExternalProject_Get_Property(glb-ext install_dir)
 
-SET_TARGET_PROPERTIES(glbinding PROPERTIES IMPORTED_LOCATION ${glbinding_location})
+SET_TARGET_PROPERTIES(glbinding PROPERTIES IMPORTED_LOCATION_RELEASE ${glbinding_location})
+SET_TARGET_PROPERTIES(glbinding PROPERTIES IMPORTED_LOCATION_DEBUG ${glbinding_location_debug})
 
 ADD_DEPENDENCIES(glbinding glb-ext)
 
