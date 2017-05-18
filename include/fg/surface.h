@@ -41,13 +41,23 @@ FGAPI fg_err fg_create_surface(fg_surface *pSurface,
                             const fg_marker_type pMarkerType);
 
 /**
+   Increase reference count of the resource
+
+   \param[out] pOut is the new handle to existing resource
+   \param[in] pIn is the existing resource handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_retain_surface(fg_surface *pOut, fg_surface pIn);
+
+/**
    Destroy surface object
 
    \param[in] pSurface is the surface handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_destroy_surface(fg_surface pSurface);
+FGAPI fg_err fg_release_surface(fg_surface pSurface);
 
 /**
    Set the color of surface
@@ -175,6 +185,16 @@ class Surface {
            \param[in] pOther is the surface of which we make a copy of.
          */
         FGAPI Surface(const Surface& pOther);
+
+        /**
+          Construct Surface ojbect from fg_surface resource handle
+
+          \param[in] pHandle is the input fg_surface resource handle
+
+          \note This kind of construction assumes ownership of the resource handle
+          is released during the Surface object's destruction.
+         */
+        FGAPI explicit Surface(const fg_surface pHandle);
 
         /**
            surface Destructor

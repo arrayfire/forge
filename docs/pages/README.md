@@ -13,7 +13,8 @@ applications that use CUDA/OpenCL.
 * [glbinding](https://github.com/cginternals/glbinding)
 * [GLFW](http://www.glfw.org/)
 * [freetype](http://www.freetype.org/)
-* [FreeImage](http://freeimage.sourceforge.net/)
+* [FreeImage](http://freeimage.sourceforge.net/) - optional. Packages should ideally turn this
+  option ON.
 * On `Linux` and `OS X`, [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) is required.
 
 Above dependecies are available through package managers on most of the

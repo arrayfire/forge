@@ -1,9 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
-# Prior to GLM 0.9.7.0, the package is found by the FindGLM.cmake module.
-# This was removed with GLM 0.9.7.0, instead a glm-config.cmake configuration
-# file is provided. Therefore, both FIND_PACKAGE calls are necessary.
-FIND_PACKAGE(GLM QUIET)
-FIND_PACKAGE(glm QUIET)
+
+FIND_PACKAGE(OpenGL REQUIRED)
+
+INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 
 OPTION(USE_SYSTEM_GLBINDING "Use system glbinding" OFF)
 IF(USE_SYSTEM_GLBINDING)
@@ -15,82 +14,18 @@ ELSE(USE_SYSTEM_GLBINDING)
     INCLUDE(build_glbinding)
 ENDIF(USE_SYSTEM_GLBINDING)
 
-INCLUDE(GLSLtoH)
-
-IF((NOT glm_FOUND AND NOT GLM_FOUND) OR (${USE_LOCAL_GLM}))
-  SET(USE_LOCAL_GLM ON)
-  MESSAGE(STATUS "Downloading GLM headers.")
-  INCLUDE(build_glm)
-ELSE()
-  MESSAGE(STATUS "Using System GLM")
-ENDIF()
-
-FIND_PACKAGE(Freetype QUIET)
-
-IF(NOT FREETYPE_FOUND OR ${USE_LOCAL_FREETYPE})
-  SET(USE_LOCAL_FREETYPE ON)
-  MESSAGE(STATUS "Downloading and building Freetype libraries.")
-  INCLUDE(build_freetype)
-ELSE()
-  MESSAGE(STATUS "Using System FreeType2")
-ENDIF()
-
-IF(UNIX)
-    FIND_PACKAGE(FontConfig REQUIRED)
-ENDIF(UNIX)
-
-IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
-    FIND_PACKAGE(GLFW REQUIRED)
-    IF(GLFW_FOUND)
-        SET(WTK_INCLUDE_DIRS ${GLFW_INCLUDE_DIR})
-        SET(WTK_LIBRARIES ${GLFW_LIBRARY})
-        ADD_DEFINITIONS(-DUSE_GLFW)
-    ELSE(GLFW_FOUND)
-        MESSAGE(FATAL_ERROR "GLFW not found")
-    ENDIF(GLFW_FOUND)
-ENDIF()
-
-IF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
-    FIND_PACKAGE(SDL2 REQUIRED)
-    IF(SDL2_FOUND)
-        SET(WTK_INCLUDE_DIRS ${SDL2_INCLUDE_DIR})
-        SET(WTK_LIBRARIES ${SDL2_LIBRARY})
-        ADD_DEFINITIONS(-DUSE_SDL)
-    ELSE(SDL2_FOUND)
-        MESSAGE(FATAL_ERROR "SDL2 not found")
-    ENDIF(SDL2_FOUND)
-ENDIF()
-
-
 IF(WIN32)
     ADD_DEFINITIONS(-DFGDLL)
 ENDIF(WIN32)
 
-# OS Definitions
-IF(UNIX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-ELSE(UNIX) #Windows
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-ENDIF(UNIX)
-
-# DON'T REMOVE CURRENT BINARY DIRECTORY FROM
-# INCLUDE_DIRECTORIES, IT IS USED TO FIND
-# AUTO-GENERATED GLSL HEADERS
 INCLUDE_DIRECTORIES(
     ${CMAKE_INCLUDE_PATH}
-    ${FREETYPE_INCLUDE_DIRS}
-    ${GLM_INCLUDE_DIRS}
     ${WTK_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
     "${PROJECT_SOURCE_DIR}/src/api/c"
     "${PROJECT_SOURCE_DIR}/src/api/cpp"
     "${PROJECT_SOURCE_DIR}/src/backend"
     )
-
-IF(UNIX)
-    INCLUDE_DIRECTORIES("${FONTCONFIG_INCLUDE_DIR}")
-ENDIF(UNIX)
 
 FILE(GLOB api_headers
     "${PROJECT_SOURCE_DIR}/include/*.h"
@@ -128,11 +63,6 @@ FILE(GLOB gl_sources
     "*.cpp"
     )
 
-SET(glsl_shader_headers
-    "shader_headers")
-FILE(GLOB glsl_shaders
-    "shaders/*.glsl")
-
 LIST(SORT c_api_headers)
 LIST(SORT c_api_sources)
 LIST(SORT cpp_api_headers)
@@ -141,7 +71,6 @@ LIST(SORT bknd_headers)
 LIST(SORT bknd_sources)
 LIST(SORT gl_headers)
 LIST(SORT gl_sources)
-LIST(SORT glsl_shaders)
 
 SOURCE_GROUP(inc FILES ${api_headers})
 
@@ -173,18 +102,6 @@ ELSEIF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
     SOURCE_GROUP("src\\backend\\opengl\\sdl\\sources" FILES ${wtk_sources})
 ENDIF()
 
-SOURCE_GROUP("src\\backend\\opengl\\glsl" FILES ${glsl_shaders})
-
-GLSL_TO_H(
-    SOURCES ${glsl_shaders}
-    VARNAME  shader_files
-    EXTENSION "hpp"
-    OUTPUT_DIR ${glsl_shader_headers}
-    TARGETS glsl_shader_targets
-    NAMESPACE "glsl"
-    EOD "0"
-    )
-
 ADD_LIBRARY(forge SHARED
     ${api_headers}
     ${c_api_headers}
@@ -209,6 +126,11 @@ TARGET_LINK_LIBRARIES(forge
     )
 
 ADD_DEPENDENCIES(forge ${glsl_shader_targets})
+
+IF (NOT USE_SYSTEM_FREETYPE AND NOT USE_HUNTER)
+    ADD_DEPENDENCIES(forge freetype)
+ENDIF()
+
 IF(USE_SYSTEM_GLBINDING)
     TARGET_LINK_LIBRARIES(forge PRIVATE glbinding::glbinding)
 ELSE(USE_SYSTEM_GLBINDING)

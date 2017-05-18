@@ -9,104 +9,106 @@
 
 #include <fg/surface.h>
 
-#include <handle.hpp>
-#include <chart_renderables.hpp>
+#include <error.hpp>
+
+#include <utility>
 
 namespace forge
 {
 
 Surface::Surface(unsigned pNumXPoints, unsigned pNumYPoints, dtype pDataType, PlotType pPlotType, MarkerType pMarkerType)
 {
-    try {
-        mValue = getHandle(new common::Surface(pNumXPoints, pNumYPoints, pDataType, pPlotType, pMarkerType));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_surface temp = 0;
+    FG_THROW(fg_create_surface(&temp, pNumXPoints, pNumYPoints, (fg_dtype)pDataType,
+                               pPlotType, pMarkerType));
+    std::swap(mValue, temp);
 }
 
 Surface::Surface(const Surface& other)
 {
-    try {
-        mValue = getHandle(new common::Surface(other.get()));
-    } CATCH_INTERNAL_TO_EXTERNAL
+    fg_surface temp = 0;
+
+    FG_THROW(fg_retain_surface(&temp, other.get()));
+
+    std::swap(mValue, temp);
+}
+
+Surface::Surface(const fg_surface pHandle)
+    : mValue(pHandle)
+{
 }
 
 Surface::~Surface()
 {
-    delete getSurface(mValue);
+    FG_THROW(fg_release_surface(get()));
 }
 
 void Surface::setColor(const Color pColor)
 {
-    try {
-        float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
-        float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
-        float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
-        float a = (((int) pColor       ) & 0xFF ) / 255.f;
-        getSurface(mValue)->setColor(r, g, b, a);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    float r = (((int) pColor >> 24 ) & 0xFF ) / 255.f;
+    float g = (((int) pColor >> 16 ) & 0xFF ) / 255.f;
+    float b = (((int) pColor >> 8  ) & 0xFF ) / 255.f;
+    float a = (((int) pColor       ) & 0xFF ) / 255.f;
+
+    FG_THROW(fg_set_surface_color(get(), r, g, b, a));
 }
 
 void Surface::setColor(const float pRed, const float pGreen,
                     const float pBlue, const float pAlpha)
 {
-    try {
-        getSurface(mValue)->setColor(pRed, pGreen, pBlue, pAlpha);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_surface_color(get(), pRed, pGreen, pBlue, pAlpha));
 }
 
 void Surface::setLegend(const char* pLegend)
 {
-    try {
-        getSurface(mValue)->setLegend(pLegend);
-    } CATCH_INTERNAL_TO_EXTERNAL
+    FG_THROW(fg_set_surface_legend(get(), pLegend));
 }
 
 unsigned Surface::vertices() const
 {
-    try {
-        return getSurface(mValue)->vbo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_surface_vertex_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned Surface::colors() const
 {
-    try {
-        return getSurface(mValue)->cbo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_surface_color_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned Surface::alphas() const
 {
-    try {
-        return getSurface(mValue)->abo();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_surface_alpha_buffer(&temp, get()));
+    return temp;
 }
 
 unsigned Surface::verticesSize() const
 {
-    try {
-        return (unsigned)getSurface(mValue)->vboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_surface_vertex_buffer_size(&temp, get()));
+    return temp;
 }
 
 unsigned Surface::colorsSize() const
 {
-    try {
-        return (unsigned)getSurface(mValue)->cboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_surface_color_buffer_size(&temp, get()));
+    return temp;
 }
 
 unsigned Surface::alphasSize() const
 {
-    try {
-        return (unsigned)getSurface(mValue)->aboSize();
-    } CATCH_INTERNAL_TO_EXTERNAL
+    unsigned temp = 0;
+    FG_THROW(fg_get_surface_alpha_buffer_size(&temp, get()));
+    return temp;
 }
 
 fg_surface Surface::get() const
 {
-    try {
-        return mValue;
-    } CATCH_INTERNAL_TO_EXTERNAL
+    return mValue;
 }
 
 }

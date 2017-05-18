@@ -10,13 +10,10 @@
 #include <fg/image.h>
 #include <fg/window.h>
 
-#include <handle.hpp>
 #include <err_common.hpp>
+#include <handle.hpp>
 #include <image.hpp>
 #include <window.hpp>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 using namespace forge;
 
@@ -25,6 +22,9 @@ fg_err fg_create_image(fg_image* pImage,
                        const fg_channel_format pFormat, const fg_dtype pType)
 {
     try {
+        ARG_ASSERT(1, (pWidth>0));
+        ARG_ASSERT(2, (pHeight>0));
+
         *pImage = getHandle(new common::Image(pWidth, pHeight, pFormat, (forge::dtype)pType));
     }
     CATCHALL
@@ -32,9 +32,24 @@ fg_err fg_create_image(fg_image* pImage,
     return FG_ERR_NONE;
 }
 
-fg_err fg_destroy_image(fg_image pImage)
+fg_err fg_retain_image(fg_image* pOut, fg_image pImage)
 {
     try {
+        ARG_ASSERT(1, (pImage!=0));
+
+        common::Image* temp = new common::Image(pImage);
+        *pOut = getHandle(temp);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_release_image(fg_image pImage)
+{
+    try {
+        ARG_ASSERT(0, (pImage!=0));
+
         delete getImage(pImage);
     }
     CATCHALL
@@ -45,6 +60,9 @@ fg_err fg_destroy_image(fg_image pImage)
 fg_err fg_set_image_alpha(fg_image pImage, const float pAlpha)
 {
     try {
+        ARG_ASSERT(0, (pImage!=0));
+        ARG_ASSERT(1, (pAlpha>=0.0 && pAlpha<=1.0));
+
         getImage(pImage)->setAlpha(pAlpha);
     }
     CATCHALL
@@ -65,6 +83,8 @@ fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio)
 fg_err fg_get_image_width(unsigned *pOut, const fg_image pImage)
 {
     try {
+        ARG_ASSERT(1, (pImage!=0));
+
         *pOut = getImage(pImage)->width();
     }
     CATCHALL
@@ -75,6 +95,8 @@ fg_err fg_get_image_width(unsigned *pOut, const fg_image pImage)
 fg_err fg_get_image_height(unsigned *pOut, const fg_image pImage)
 {
     try {
+        ARG_ASSERT(1, (pImage!=0));
+
         *pOut = getImage(pImage)->height();
     }
     CATCHALL
@@ -85,6 +107,8 @@ fg_err fg_get_image_height(unsigned *pOut, const fg_image pImage)
 fg_err fg_get_image_pixelformat(fg_channel_format* pOut, const fg_image pImage)
 {
     try {
+        ARG_ASSERT(1, (pImage!=0));
+
         *pOut = getImage(pImage)->pixelFormat();
     }
     CATCHALL
@@ -95,6 +119,8 @@ fg_err fg_get_image_pixelformat(fg_channel_format* pOut, const fg_image pImage)
 fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage)
 {
     try {
+        ARG_ASSERT(1, (pImage!=0));
+
         *pOut = (fg_dtype)(getImage(pImage)->channelType());
     }
     CATCHALL
@@ -105,6 +131,8 @@ fg_err fg_get_image_type(fg_dtype* pOut, const fg_image pImage)
 fg_err fg_get_pixel_buffer(unsigned* pOut, const fg_image pImage)
 {
     try {
+        ARG_ASSERT(1, (pImage!=0));
+
         *pOut = getImage(pImage)->pbo();
     }
     CATCHALL
@@ -115,6 +143,8 @@ fg_err fg_get_pixel_buffer(unsigned* pOut, const fg_image pImage)
 fg_err fg_get_image_size(unsigned* pOut, const fg_image pImage)
 {
     try {
+        ARG_ASSERT(1, (pImage!=0));
+
         *pOut = getImage(pImage)->size();
     }
     CATCHALL
@@ -127,6 +157,13 @@ fg_err fg_render_image(const fg_window pWindow,
                        const int pX, const int pY, const int pWidth, const int pHeight)
 {
     try {
+        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(1, (pImage!=0));
+        ARG_ASSERT(2, (pX>=0));
+        ARG_ASSERT(3, (pY>=0));
+        ARG_ASSERT(4, (pWidth>0));
+        ARG_ASSERT(5, (pHeight>0));
+
         getImage(pImage)->render(getWindow(pWindow)->getID(),
                                  pX, pY, pWidth, pHeight,
                                  IDENTITY, IDENTITY);

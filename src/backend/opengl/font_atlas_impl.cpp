@@ -60,6 +60,8 @@
 
 using namespace gl;
 
+static const int BORDER_GAP = 4;
+
 namespace forge
 {
 namespace opengl
@@ -73,7 +75,7 @@ int FontAtlas::fit(const size_t pIndex, const size_t pWidth, const size_t pHeigh
     int widthLeft = pWidth;
     int i = pIndex;
 
-    if ((x + pWidth) > (mWidth-1)) {
+    if ((x + pWidth) > (mWidth-BORDER_GAP)) {
         return -1;
     }
 
@@ -84,7 +86,7 @@ int FontAtlas::fit(const size_t pIndex, const size_t pWidth, const size_t pHeigh
         if (node.y > y) {
             y = node.y;
         }
-        if ((y + pHeight) > (mHeight-1)) {
+        if ((y + pHeight) > (mHeight-BORDER_GAP)) {
             return -1;
         }
         widthLeft -= node.z;
@@ -125,9 +127,9 @@ FontAtlas::FontAtlas(const size_t pWidth, const size_t pHeight, const size_t pDe
 
     // one pixel border around the whole atlas to
     // avoid any artefact when sampling texture
-    nodes.push_back(glm::vec3(1,1,mWidth-2));
+    nodes.push_back(glm::vec3(BORDER_GAP, BORDER_GAP, mWidth-BORDER_GAP-1));
 
-    mData.reserve(mWidth*mHeight*mDepth);
+    mData.resize(mWidth*mHeight*mDepth, 0);
     CheckGL("End FontAtlas::FontAtlas");
 }
 
@@ -159,9 +161,10 @@ glm::vec4 FontAtlas::getRegion(const size_t pWidth, const size_t pHeight)
 {
     glm::vec4 region(0, 0, pWidth, pHeight);
 
-    size_t best_height = INT_MAX;
+    size_t best_height = UINT_MAX;
+    size_t best_width = UINT_MAX;
+
     int best_index  = -1;
-    size_t best_width = INT_MAX;
     int y;
 
     for(size_t i=0; i<nodes.size(); ++i)
@@ -225,8 +228,8 @@ bool FontAtlas::setRegion(const size_t pX, const size_t pY,
                           const size_t pWidth, const size_t pHeight,
                           const uchar* pData, const size_t pStride)
 {
-    if (pX>0 && pY>0 && pX < (mWidth-1) && (pX+pWidth) <= (mWidth-1) &&
-          pY <(mHeight-1) && (pY+pHeight) <= (mHeight-1))
+    if (pX>0 && pY>0 && pX < (mWidth-BORDER_GAP) && (pX+pWidth) <= (mWidth-BORDER_GAP) &&
+          pY <(mHeight-BORDER_GAP) && (pY+pHeight) <= (mHeight-BORDER_GAP))
     {
         size_t depth = mDepth;
         size_t charsize = sizeof(uchar);
@@ -275,7 +278,7 @@ void FontAtlas::clear()
     mUsed = 0;
 
     nodes.clear();
-    nodes.push_back(glm::vec3(1, 1, mWidth-2));
+    nodes.push_back(glm::vec3(BORDER_GAP, BORDER_GAP, mWidth-BORDER_GAP-1));
 
     std::fill(mData.begin(), mData.end(), 0);
 }

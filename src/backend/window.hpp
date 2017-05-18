@@ -31,7 +31,7 @@ class Window {
 
     public:
 
-        Window(int pWidth, int pHeight, const char* pTitle,
+        Window(const int pWidth, const int pHeight, const char* pTitle,
                 const Window* pWindow, const bool invisible = false) {
             if (pWindow) {
                 mWindow = std::make_shared<detail::window_impl>(pWidth, pHeight, pTitle,
@@ -59,15 +59,15 @@ class Window {
             mWindow->setTitle(pTitle);
         }
 
-        inline void setPos(int pX, int pY) {
+        inline void setPos(const int pX, const int pY) {
             mWindow->setPos(pX, pY);
         }
 
-        inline void setSize(unsigned pWidth, int pHeight) {
+        inline void setSize(const unsigned pWidth, const unsigned pHeight) {
             mWindow->setSize(pWidth, pHeight);
         }
 
-        inline void setColorMap(forge::ColorMap cmap) {
+        inline void setColorMap(const forge::ColorMap cmap) {
             mWindow->setColorMap(cmap);
         }
 
@@ -120,23 +120,16 @@ class Window {
             mWindow->swapBuffers();
         }
 
-        inline void grid(int pRows, int pCols) {
-            mWindow->grid(pRows, pCols);
-        }
-
-        inline void getGrid(int *pRows, int *pCols) {
-            mWindow->getGrid(pRows, pCols);
-        }
-
         template<typename T>
-        void draw(int pRowId, int pColId, T* pRenderable, const char* pTitle) {
-            mWindow->draw(pRowId, pColId, pRenderable->impl(), pTitle);
+        void draw(const int pRows, const int pCols, const int pIndex,
+                  T* pRenderable, const char* pTitle) {
+            mWindow->draw(pRows, pCols, pIndex, pRenderable->impl(), pTitle);
         }
 
-        void draw(int pRowId, int pColId, Image* pRenderable,
-                  const char* pTitle, const bool pKeepAspectRatio) {
+        void draw(const int pRows, const int pCols, const int pIndex,
+                  Image* pRenderable, const char* pTitle, const bool pKeepAspectRatio) {
             pRenderable->keepAspectRatio(pKeepAspectRatio);
-            mWindow->draw(pRowId, pColId, pRenderable->impl(), pTitle);
+            mWindow->draw(pRows, pCols, pIndex, pRenderable->impl(), pTitle);
         }
 
         inline void saveFrameBuffer(const char* pFullPath) {

@@ -34,13 +34,23 @@ FGAPI fg_err fg_create_histogram(fg_histogram *pHistogram,
                                  const unsigned pNBins, const fg_dtype pDataType);
 
 /**
+   Increase reference count of the resource
+
+   \param[out] pOut is the new handle to existing resource
+   \param[in] pIn is the existing resource handle
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_retain_histogram(fg_histogram *pOut, fg_histogram pIn);
+
+/**
    Destroy Histogram object
 
    \param[in] pHistogram is the histogram handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_destroy_histogram(fg_histogram pHistogram);
+FGAPI fg_err fg_release_histogram(fg_histogram pHistogram);
 
 /**
    Set the color of bar in the bar graph(histogram)
@@ -170,6 +180,16 @@ class Histogram {
            \param[in] pOther is the Histogram of which we make a copy of.
          */
         FGAPI Histogram(const Histogram& pOther);
+
+        /**
+          Construct Histogram ojbect from fg_histogram resource handle
+
+          \param[in] pHandle is the input fg_histogram resource handle
+
+          \note This kind of construction assumes ownership of the resource handle
+          is released during the Histogram object's destruction.
+         */
+        FGAPI explicit Histogram(const fg_histogram pHandle);
 
         /**
            Histogram Destructor

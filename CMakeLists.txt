@@ -1,20 +1,29 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+
+OPTION(USE_HUNTER "Use Hunter cmake package handler" OFF)
+
+if(USE_HUNTER)
+    include(${CMAKE_CURRENT_LIST_DIR}/CMakeModules/HunterGate.cmake)
+    
+    HunterGate(
+        URL "https://github.com/ruslo/hunter/archive/v0.18.43.tar.gz"
+        SHA1 "d2c8c42cd07f7cefe18fd9a9b9c13114b1a15a27"
+#        LOCAL
+    )
+endif()
+
 PROJECT(FORGE)
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 INCLUDE(FGInstallDirs)
+INCLUDE(Version)
 
-SET(USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
-SET_PROPERTY(CACHE USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
 
+############################## BEGIN - CMAKE OPTIONS ##########################
 OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
 OPTION(BUILD_EXAMPLES "Build Examples" ON)
-
-OPTION(USE_LOCAL_GLM "Download and use local GLM" OFF)
-OPTION(USE_LOCAL_FREETYPE "Download and use local freetype" OFF)
-MARK_AS_ADVANCED(USE_LOCAL_GLM)
-MARK_AS_ADVANCED(USE_LOCAL_FREETYPE)
+OPTION(USE_FREEIMAGE "Use freeimage to allow saving of charts" ON)
 
 # Set a default build type if none was specified
 IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -23,12 +32,14 @@ IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     SET_PROPERTY(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
       "MinSizeRel" "RelWithDebInfo")
 ENDIF()
+############################## END - CMAKE OPTIONS ##########################
 
+
+############################## BEGIN - OS Definitions #########################
 IF(UNIX)
     ADD_DEFINITIONS(-Wall -std=c++11 -fvisibility=hidden)
 ENDIF()
 
-# OS Definitions
 IF(UNIX)
     IF(APPLE)
         ADD_DEFINITIONS(-DOS_MAC)
@@ -45,21 +56,19 @@ IF(UNIX)
     ELSE(APPLE)
         ADD_DEFINITIONS(-DOS_LNX)
     ENDIF(APPLE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 ELSE(UNIX)
     ADD_DEFINITIONS(-DOS_WIN -DNOMINMAX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 ENDIF(UNIX)
+############################## END - OS Definitions ###########################
 
-INCLUDE(Version)
 
-FIND_PACKAGE(FreeImage REQUIRED)
-FIND_PACKAGE(OpenGL REQUIRED)
+INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/include")
 
-INCLUDE_DIRECTORIES(
-    "${PROJECT_SOURCE_DIR}/include"
-    ${OPENGL_INCLUDE_DIR}
-    ${FREEIMAGE_INCLUDE_PATH}
-    )
-
+## X11 libraries need to be explicitly linked on MacOS
+## This is required by both examples and the library itself
+## Hence, it is placed here.
 SET(X11_LIBS "")
 IF(APPLE)
     FIND_PACKAGE(X11 REQUIRED)
@@ -67,9 +76,7 @@ IF(APPLE)
     SET(X11_LIBS ${X11_LIBRARIES})
 ENDIF(APPLE)
 
-ADD_EXECUTABLE(glsl2cpp "${PROJECT_SOURCE_DIR}/CMakeModules/glsl2cpp.cpp")
-
-ADD_SUBDIRECTORY(src/backend/opengl)
+ADD_SUBDIRECTORY(src/backend)
 
 IF(BUILD_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
@@ -97,7 +104,7 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/ForgeConfigVersion
 
 #--------------------------------------------------------------------
 # Install files other than the library, examples and docs
-# The library is installed by src/CMakeLists.txt
+# The library is installed by src/backend/*/CMakeLists.txt
 #--------------------------------------------------------------------
 INSTALL(DIRECTORY "${PROJECT_SOURCE_DIR}/include/" DESTINATION "${FG_INSTALL_INC_DIR}"
     FILES_MATCHING

@@ -31,25 +31,105 @@ namespace forge
 namespace wtk
 {
 
-Widget::Widget()
-    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
-   mWidth(512), mHeight(512), mRows(1), mCols(1)
+void initWindowToolkit()
 {
-    mCellWidth  = mWidth;
-    mCellHeight = mHeight;
-    mFramePBO   = 0;
-}
-
-Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
-    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mRows(1), mCols(1)
-{
-    mFramePBO   = 0;
-
     if (!glfwInit()) {
         std::cerr << "ERROR: GLFW wasn't able to initalize\n";
         GLFW_THROW_ERROR("GLFW initilization failed", FG_ERR_GL_ERROR);
     }
+}
 
+void destroyWindowToolkit()
+{
+    glfwTerminate();
+}
+
+const glm::mat4 Widget::findTransform(const MatrixHashMap& pMap, const float pX, const float pY)
+{
+    for (auto it: pMap) {
+        const CellIndex& idx = it.first;
+        const glm::mat4& mat  = it.second;
+
+        const int rows = std::get<0>(idx);
+        const int cols = std::get<1>(idx);
+
+        const int cellWidth  = mWidth/cols;
+        const int cellHeight = mHeight/rows;
+
+        const int x = int(pX) / cellWidth;
+        const int y = int(pY) / cellHeight;
+        const int i = x + y * cols;
+        if (i==std::get<2>(idx)) {
+            return mat;
+        }
+    }
+
+    return IDENTITY;
+}
+
+const glm::mat4 Widget::getCellViewMatrix(const float pXPos, const float pYPos)
+{
+    return findTransform(mViewMatrices, pXPos, pYPos);
+}
+
+const glm::mat4 Widget::getCellOrientationMatrix(const float pXPos, const float pYPos)
+{
+    return findTransform(mOrientMatrices, pXPos, pYPos);
+}
+
+void Widget::setTransform(MatrixHashMap& pMap, const float pX, const float pY, const glm::mat4 &pMat)
+{
+    for (auto it: pMap) {
+        const CellIndex& idx = it.first;
+
+        const int rows = std::get<0>(idx);
+        const int cols = std::get<1>(idx);
+
+        const int cellWidth  = mWidth/cols;
+        const int cellHeight = mHeight/rows;
+
+        const int x = int(pX) / cellWidth;
+        const int y = int(pY) / cellHeight;
+        const int i = x + y * cols;
+        if (i==std::get<2>(idx)) {
+            pMap[idx] = pMat;
+        }
+    }
+}
+
+void Widget::setCellViewMatrix(const float pXPos, const float pYPos, const glm::mat4& pMatrix)
+{
+    return setTransform(mViewMatrices, pXPos, pYPos, pMatrix);
+}
+
+void Widget::setCellOrientationMatrix(const float pXPos, const float pYPos, const glm::mat4& pMatrix)
+{
+    return setTransform(mOrientMatrices, pXPos, pYPos, pMatrix);
+}
+
+
+void Widget::resetViewMatrices()
+{
+    for (auto it: mViewMatrices)
+        it.second = IDENTITY;
+}
+
+
+void Widget::resetOrientationMatrices()
+{
+    for (auto it: mOrientMatrices)
+        it.second = IDENTITY;
+}
+
+Widget::Widget()
+    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
+    mWidth(512), mHeight(512), mFramePBO(0)
+{
+}
+
+Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
+    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mFramePBO(0)
+{
     auto wndErrCallback = [](int errCode, const char* pDescription)
     {
         fputs(pDescription, stderr);
@@ -67,7 +147,8 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
         glfwWindowHint(GLFW_VISIBLE, static_cast<GLint>(GL_TRUE));
 
     glfwWindowHint(GLFW_SAMPLES, 4);
-    mWindow = glfwCreateWindow(pWidth, pHeight, pTitle, nullptr,
+    mWindow = glfwCreateWindow(pWidth, pHeight,
+                               (pTitle!=nullptr ? pTitle : "Forge-Demo"), nullptr,
                                (pWindow!=nullptr ? pWindow->getNativeHandle(): nullptr));
 
     if (!mWindow) {
@@ -109,8 +190,6 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
     glfwSetMouseButtonCallback(mWindow, mouseButtonCallback);
 
     glfwGetFramebufferSize(mWindow, &mWidth, &mHeight);
-    mCellWidth  = mWidth;
-    mCellHeight = mHeight;
 }
 
 Widget::~Widget()
@@ -143,7 +222,7 @@ long long Widget::getDisplayHandle()
 
 void Widget::setTitle(const char* pTitle)
 {
-    glfwSetWindowTitle(mWindow, pTitle);
+    glfwSetWindowTitle(mWindow, (pTitle!=nullptr ? pTitle : "Forge-Demo"));
 }
 
 void Widget::setPos(int pX, int pY)
@@ -194,8 +273,6 @@ void Widget::resizeHandler(int pWidth, int pHeight)
 {
     mWidth      = pWidth;
     mHeight     = pHeight;
-    mCellWidth  = mWidth  / mCols;
-    mCellHeight = mHeight / mRows;
     resizePixelBuffers();
 }
 
@@ -213,13 +290,13 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
     float deltaX = mLastXPos - pXPos;
     float deltaY = mLastYPos - pYPos;
 
-    int r, c;
-    getViewIds(&r, &c);
-    glm::mat4& viewMat = mViewMatrices[r+c*mRows];
+    const glm::mat4 viewMat = getCellViewMatrix(pXPos, pYPos);
 
     if (mButton == GLFW_MOUSE_BUTTON_LEFT) {
         // Translate
-        viewMat = translate(viewMat, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
+        glm::mat4 vMat = translate(viewMat, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
+
+        setCellViewMatrix(pXPos, pYPos, vMat);
 
     } else if (mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_ALT ||
                mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_CONTROL) {
@@ -228,10 +305,13 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
             if(deltaY < 0) {
                 deltaY = 1.0 / (-deltaY);
             }
-            viewMat = scale(viewMat, glm::vec3(pow(deltaY, SPEED)));
+            glm::mat4 vMat = scale(viewMat, glm::vec3(pow(deltaY, SPEED)));
+
+            setCellViewMatrix(pXPos, pYPos, vMat);
         }
     } else if (mButton == GLFW_MOUSE_BUTTON_RIGHT) {
-        glm::mat4& orientationMat = mOrientMatrices[r+c*mRows];
+        const glm::mat4 orientationMat = getCellOrientationMatrix(pXPos, pYPos);
+
         // Rotation
         int width, height;
         glfwGetWindowSize(mWindow, &width, &height);
@@ -247,7 +327,9 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
             glm::mat3 camera2object = glm::inverse(glm::mat3(viewMat));
             glm::vec3 axisInObjCoord = camera2object * axisInCamCoord;
 
-            orientationMat = glm::rotate(orientationMat, glm::degrees(angle), axisInObjCoord);
+            glm::mat4 oMat = glm::rotate(orientationMat, glm::degrees(angle), axisInObjCoord);
+
+            setCellOrientationMatrix(pXPos, pYPos, oMat);
         }
     }
 
@@ -275,10 +357,8 @@ void Widget::mouseButtonHandler(int pButton, int pAction, int pMods)
     }
     // reset UI transforms upon mouse middle click
     if (pButton == GLFW_MOUSE_BUTTON_MIDDLE && pMods == GLFW_MOD_CONTROL && pAction == GLFW_PRESS) {
-        int r, c;
-        getViewIds(&r, &c);
-        mViewMatrices[r+c*mRows] = glm::mat4(1);
-        mOrientMatrices[r+c*mRows] = glm::mat4(1);
+        setCellViewMatrix(x, y, IDENTITY);
+        setCellOrientationMatrix(x, y, IDENTITY);
     }
 }
 
@@ -299,6 +379,22 @@ void Widget::resizePixelBuffers()
     glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBO);
     glBufferData(GL_PIXEL_PACK_BUFFER, w*h*4*sizeof(uchar), 0, GL_DYNAMIC_READ);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+}
+
+const glm::mat4 Widget::getViewMatrix(const CellIndex& pIndex)
+{
+    if (mViewMatrices.find(pIndex)==mViewMatrices.end()) {
+        mViewMatrices.emplace(pIndex, IDENTITY);
+    }
+    return mViewMatrices[pIndex];
+}
+
+const glm::mat4 Widget::getOrientationMatrix(const CellIndex& pIndex)
+{
+    if (mOrientMatrices.find(pIndex)==mOrientMatrices.end()) {
+        mOrientMatrices.emplace(pIndex, IDENTITY);
+    }
+    return mOrientMatrices[pIndex];
 }
 
 }

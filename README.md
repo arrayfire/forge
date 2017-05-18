@@ -3,7 +3,7 @@ Forge - High Performance Visualizations
 
 [![Join the chat at https://gitter.im/arrayfire/forge](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/arrayfire/forge?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-A prototype of the OpenGL interop library that can be used with ArrayFire. The goal of **Forge** is to provide high performance OpenGL visualizations for C/C++ applications that use CUDA/OpenCL. Forge uses OpenGL >=3.3 forward compatible contexts, so please make sure you have capable hardware before trying it out.
+An OpenGL interop library that can be used with ArrayFire or any other application using CUDA or OpenCL compute backend. The goal of **Forge** is to provide high performance OpenGL visualizations for C/C++ applications that use CUDA/OpenCL. Forge uses OpenGL >=3.3 forward compatible contexts, so please make sure you have capable hardware before trying it out.
 
 ## Documentation
 
@@ -12,12 +12,14 @@ You can find the most recent and updated documentation [here](http://arrayfire.o
 ### Build Status
 | Platform | Linux x86 | Linux armv7l | Linux aarch64 | Windows | OSX |
 |:--------:|:---------:|:------------:|:-------------:|:-------:|:---:|
-| Status   | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-linux)](http://ci.arrayfire.org/view/All/job/forge/job/forge-linux/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrak1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrak1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrax1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrax1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-windows)](http://ci.arrayfire.org/view/All/job/forge/job/forge-windows/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-osx)](http://ci.arrayfire.org/view/All/job/forge/job/forge-osx/) |
+| Status   | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-linux)](http://ci.arrayfire.org/view/All/job/forge/job/forge-linux/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrax1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrax1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrax1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrax1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-windows)](http://ci.arrayfire.org/view/All/job/forge/job/forge-windows/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-osx)](http://ci.arrayfire.org/view/All/job/forge/job/forge-osx/) |
 
 ### Dependencies
 * [glbinding](https://github.com/cginternals/glbinding)
 * [GLFW](http://www.glfw.org/), optionally you can build with [SDL2](https://www.libsdl.org/) alternative too.
 * [freetype](http://www.freetype.org/)
+* [FreeImage](http://freeimage.sourceforge.net/) - optional. Packages should ideally turn this
+  option ON.
 * On `Linux` and `OS X`, [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) is required.
 
 Above dependencies are available through package managers on most of the Unix/Linux based distributions. We have provided an option in `CMake` for `Forge` to build it's own internal `freetype` version if you choose to not install it on your machine.
