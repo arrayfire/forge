@@ -12,7 +12,7 @@ today! Here are the guidelines we'd like you to follow:
 ## <a name="question"></a> Got a Question or Problem?
 
 If you have questions about how to use Forge, please direct these to the [Google Group][groups]
-discussion list or [StackOverflow][stackoverflow]. We are also available on [Gitter][gitter].
+discussion list or [Github][github]. We are also available on [Gitter][gitter].
 
 ## <a name="issue"></a> Found an Issue?
 
@@ -179,4 +179,3 @@ The rest of the commit message is then used for this.
 [github]: https://github.com/arrayfire/forge
 [gitter]: https://gitter.im/arrayfire/forge
 [groups]: https://groups.google.com/forum/#!forum/arrayfire-users
-[stackoverflow]: http://stackoverflow.com/questions/tagged/forge
