@@ -7,6 +7,8 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#ifdef FG_WINDOW_TOOLKIT
+
 #include <fg/window.h>
 
 #include <error.hpp>
@@ -154,3 +156,5 @@ void Window::saveFrameBuffer(const char* pFullPath)
 }
 
 }
+
+#endif //FG_WINDOW_TOOLKIT

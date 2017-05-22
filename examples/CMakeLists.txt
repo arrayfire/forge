@@ -84,83 +84,120 @@ IF(UNIX)
     SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -Wno-unused-function")
 ENDIF()
 
-FILE(GLOB CPU_EXAMPLE_SRC_FILES "cpu/*.cpp")
-LIST(SORT CPU_EXAMPLE_SRC_FILES)
-FOREACH(FILE ${CPU_EXAMPLE_SRC_FILES})
-    GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
-    GET_FILENAME_COMPONENT(FULL_DIR_NAME ${FILE} PATH)
-    GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
+IF(FG_WINDOW_TOOLKIT)
+    FILE(GLOB CPU_EXAMPLE_SRC_FILES "cpu/*.cpp")
+    LIST(SORT CPU_EXAMPLE_SRC_FILES)
+    FOREACH(FILE ${CPU_EXAMPLE_SRC_FILES})
+        GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
+        GET_FILENAME_COMPONENT(FULL_DIR_NAME ${FILE} PATH)
+        GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
 
-    IF(TARGET forge)
-        BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "")
-    ELSE(TARGET forge)
-        BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES} "${X11_LIBS};${OPENGL_gl_LIBRARY}")
+        IF(TARGET forge)
+            BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "")
+        ELSE(TARGET forge)
+            BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES} "${X11_LIBS};${OPENGL_gl_LIBRARY}")
+        ENDIF()
+    ENDFOREACH()
+
+    IF (BUILD_EXAMPLES_CUDA)
+        FIND_PACKAGE(CUDA QUIET)
+        IF(CUDA_FOUND)
+
+            IF(UNIX)
+                # GCC 5.3 and above give errors for mempcy from <string.h>
+                # This is a (temporary) fix for that
+                IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.3.0")
+                    ADD_DEFINITIONS(-D_FORCE_INLINES)
+                ENDIF()
+                # GCC 6.0 and above default to g++14, enabling c++11 features by default
+                # Enabling c++11 with nvcc 7.5 + gcc 6.x doesn't seem to work
+                # Only solution for now is to force use c++03 for gcc 6.x
+                IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "6.0.0")
+                    SET(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -Xcompiler -std=c++98")
+                ENDIF()
+            ENDIF(UNIX)
+
+            INCLUDE_DIRECTORIES(${CUDA_INCLUDE_DIRS})
+
+            FILE(GLOB CUDA_EXAMPLE_SRC_FILES "cuda/*.cu")
+            LIST(SORT CUDA_EXAMPLE_SRC_FILES)
+            FOREACH(FILE ${CUDA_EXAMPLE_SRC_FILES})
+                GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
+                GET_FILENAME_COMPONENT(FULL_DIR_NAME ${FILE} PATH)
+                GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
+
+                IF(TARGET forge)
+                    BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "${CUDA_LIBRARIES}")
+                ELSE(TARGET forge)
+                    BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
+                        "${X11_LIBS};${OPENGL_gl_LIBRARY};${CUDA_LIBRARIES}")
+                ENDIF()
+            ENDFOREACH()
+        ELSE()
+            MESSAGE(STATUS "CUDA Toolkit not found, not building CUDA examples.")
+        ENDIF()
     ENDIF()
-ENDFOREACH()
 
-IF (BUILD_EXAMPLES_CUDA)
-    FIND_PACKAGE(CUDA QUIET)
-    IF(CUDA_FOUND)
+    IF (BUILD_EXAMPLES_OPENCL)
+        FIND_PACKAGE(OpenCL QUIET)
+        IF(OpenCL_FOUND)
+            FILE(GLOB OpenCL_EXAMPLE_SRC_FILES "opencl/*.cpp")
+            LIST(SORT OpenCL_EXAMPLE_SRC_FILES)
+            INCLUDE_DIRECTORIES(
+                "${CMAKE_CURRENT_SOURCE_DIR}/opencl"
+                ${OpenCL_INCLUDE_DIRS}
+                ${CL2HPP_INCLUDE_DIRECTORY}
+                )
+            FOREACH(FILE ${OpenCL_EXAMPLE_SRC_FILES})
+                GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
+                GET_FILENAME_COMPONENT(FULL_DIR_NAME ${FILE} PATH)
+                GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
 
-        IF(UNIX)
-            # GCC 5.3 and above give errors for mempcy from <string.h>
-            # This is a (temporary) fix for that
-            IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.3.0")
-                ADD_DEFINITIONS(-D_FORCE_INLINES)
-            ENDIF()
-            # GCC 6.0 and above default to g++14, enabling c++11 features by default
-            # Enabling c++11 with nvcc 7.5 + gcc 6.x doesn't seem to work
-            # Only solution for now is to force use c++03 for gcc 6.x
-            IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "6.0.0")
-                SET(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -Xcompiler -std=c++98")
-            ENDIF()
-        ENDIF(UNIX)
-
-        INCLUDE_DIRECTORIES(${CUDA_INCLUDE_DIRS})
-
-        FILE(GLOB CUDA_EXAMPLE_SRC_FILES "cuda/*.cu")
-        LIST(SORT CUDA_EXAMPLE_SRC_FILES)
-        FOREACH(FILE ${CUDA_EXAMPLE_SRC_FILES})
-            GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
-            GET_FILENAME_COMPONENT(FULL_DIR_NAME ${FILE} PATH)
-            GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
-
-            IF(TARGET forge)
-                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "${CUDA_LIBRARIES}")
-            ELSE(TARGET forge)
-                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                    "${X11_LIBS};${OPENGL_gl_LIBRARY};${CUDA_LIBRARIES}")
-            ENDIF()
-        ENDFOREACH()
-    ELSE()
-        MESSAGE(STATUS "CUDA Toolkit not found, not building CUDA examples.")
+                IF(TARGET forge)
+                    BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "${OpenCL_LIBRARIES};${OPENGL_gl_LIBRARY}")
+                ELSE(TARGET forge)
+                    BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
+                        "${X11_LIBS};${OPENGL_gl_LIBRARY};${OpenCL_LIBRARIES}")
+                ENDIF()
+            ENDFOREACH()
+        ELSE()
+            MESSAGE(STATUS "OpenCL Libraries not found, not building OpenCL examples.")
+        ENDIF()
     ENDIF()
 ENDIF()
 
-IF (BUILD_EXAMPLES_OPENCL)
-    FIND_PACKAGE(OpenCL QUIET)
-    IF(OpenCL_FOUND)
-        FILE(GLOB OpenCL_EXAMPLE_SRC_FILES "opencl/*.cpp")
-        LIST(SORT OpenCL_EXAMPLE_SRC_FILES)
+IF (USE_QT5_WIDGET)
+    set(CMAKE_AUTOMOC ON)
+    IF(Qt5Core_FOUND)
+        set(Qt5_QChartView_EXAMPLE_SRC_FILES
+            qt5Widget/plot3.cpp
+			qt5Widget/plot3Threaded.cpp
+        )
+        LIST(SORT Qt5_QChartView_EXAMPLE_SRC_FILES)
+
+
         INCLUDE_DIRECTORIES(
-            "${CMAKE_CURRENT_SOURCE_DIR}/opencl"
-            ${OpenCL_INCLUDE_DIRS}
-            ${CL2HPP_INCLUDE_DIRECTORY}
+            ${Qt5Core_INCLUDE_DIRS} 
+            ${Qt5Widgets_INCLUDE_DIRS} 
+            ${Qt5Gui_INCLUDE_DIRS} 
+            ${Qt5OpenGL_INCLUDE_DIRS}
             )
-        FOREACH(FILE ${OpenCL_EXAMPLE_SRC_FILES})
+        FOREACH(FILE ${Qt5_QChartView_EXAMPLE_SRC_FILES})
             GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
             GET_FILENAME_COMPONENT(FULL_DIR_NAME ${FILE} PATH)
             GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
 
+            set(example_sources ${FILE} ${FULL_DIR_NAME}/${EXAMPLE}MainWindow.h ${FULL_DIR_NAME}/${EXAMPLE}MainWindow.cpp)
+
             IF(TARGET forge)
-                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "${OpenCL_LIBRARIES};${OPENGL_gl_LIBRARY}")
+                BUILD_EXAMPLE(${EXAMPLE} "${example_sources}" ${DIR_NAME} forge "Qt5::Core;Qt5::Widgets;Qt5::Gui;Qt5::OpenGL")
             ELSE(TARGET forge)
-                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                    "${X11_LIBS};${OPENGL_gl_LIBRARY};${OpenCL_LIBRARIES}")
+                BUILD_EXAMPLE(${EXAMPLE} "${example_sources}" ${DIR_NAME} ${FORGE_LIBRARIES}
+                    "${X11_LIBS};Qt5::Core;Qt5::Widgets;Qt5::Gui;Qt5::OpenGL")
             ENDIF()
         ENDFOREACH()
     ELSE()
-        MESSAGE(STATUS "OpenCL Libraries not found, not building OpenCL examples.")
+        MESSAGE(STATUS "Qt5 not found, not building Qt5 examples.")
     ENDIF()
 ENDIF()
 

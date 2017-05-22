@@ -84,6 +84,7 @@ int getNextUniqueId()
 static std::mutex initMutex;
 static int initCallCount = -1;
 
+#ifdef FG_WINDOW_TOOLKIT
 void initWtkIfNotDone()
 {
     std::lock_guard<std::mutex> lock(initMutex);
@@ -418,4 +419,7 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
 }
 
 }
+
+#endif //FG_WINDOW_TOOLKIT
+
 }

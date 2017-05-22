@@ -40,20 +40,36 @@ typedef std::vector<std::string>::const_iterator StringIter;
 static const int CHART2D_FONT_SIZE = 12;
 static const std::regex PRINTF_FIXED_FLOAT_RE("%[0-9]*.[0-9]*f");
 
-const std::shared_ptr<forge::opengl::font_impl>& getChartFont()
+const std::shared_ptr<forge::opengl::font_impl> getChartFont()
 {
-    static forge::common::Font gChartFont;
-    static std::once_flag flag;
+    static std::weak_ptr<forge::opengl::font_impl> chartFont;
+    std::shared_ptr<forge::opengl::font_impl> font=chartFont.lock();
 
-    std::call_once(flag, []() {
+    if(!font)
+    {
+        forge::common::Font gChartFont;
 #if defined(OS_WIN)
         gChartFont.loadSystemFont("Calibri");
 #else
         gChartFont.loadSystemFont("Vera");
 #endif
-    });
+        font=gChartFont.impl();
+        chartFont=font;
+    }
+    return font;
 
-    return gChartFont.impl();
+//    static forge::common::Font gChartFont;
+//    static std::once_flag flag;
+//
+//    std::call_once(flag, []() {
+//#if defined(OS_WIN)
+//        gChartFont.loadSystemFont("Calibri");
+//#else
+//        gChartFont.loadSystemFont("Vera");
+//#endif
+//    });
+//
+//    return gChartFont.impl();
 }
 
 template<typename T>
@@ -89,7 +105,7 @@ void AbstractChart::renderTickLabels(
         const glm::mat4 &pTransformation, const int pCoordsOffset,
         const bool pUseZoffset) const
 {
-    auto &fonter = getChartFont();
+    auto fonter = getChartFont();
     fonter->setOthro2D(int(pW), int(pH));
 
     float pos[2];
@@ -160,7 +176,7 @@ AbstractChart::AbstractChart(const float pLeftMargin, const float pRightMargin,
      * reference to font object used by Chart objects, we are
      * calling it here just to make sure required font glyphs
      * are loaded into the shared Font object */
-    getChartFont();
+    mFonter=getChartFont();
 
     mBorderAttribPointIndex      = mBorderProgram.getAttributeLocation("point");
     mBorderUniformColorIndex     = mBorderProgram.getUniformLocation("color");
@@ -538,7 +554,7 @@ void chart2d_impl::render(const int pWindowId,
     renderTickLabels(pWindowId, int(w), int(h), mYText, trgtFntSize, trans, 0, false);
     renderTickLabels(pWindowId, int(w), int(h), mXText, trgtFntSize, trans, mTickCount, false);
 
-    auto &fonter = getChartFont();
+    auto fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
 
     float pos[2];
@@ -931,7 +947,7 @@ void chart3d_impl::render(const int pWindowId,
     renderTickLabels(pWindowId, w, h, mYText, trgtFntSize, trans, mTickCount);
     renderTickLabels(pWindowId, w, h, mXText, trgtFntSize, trans, 2*mTickCount);
 
-    auto &fonter = getChartFont();
+    auto fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
 
     float pos[2];

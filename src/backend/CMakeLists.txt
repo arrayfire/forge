@@ -45,9 +45,6 @@ if(USE_FREEIMAGE)
 	ADD_DEFINITIONS(-DUSE_FREEIMAGE)
 endif()
 
-SET(USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
-SET_PROPERTY(CACHE USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
-
 IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
     #FIXME LATER: glfw3Config.cmake file provided by glfw 3.*
     # is found on different locations in different linux/unix

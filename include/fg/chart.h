@@ -328,9 +328,27 @@ FGAPI fg_err fg_remove_vector_field_from_chart(fg_chart pHandle, fg_vector_field
 
    \return \ref fg_err error code
  */
+#ifdef FG_WINDOW_TOOLKIT
 FGAPI fg_err fg_render_chart(const fg_window pWindow,
                              const fg_chart pChart,
                              const int pX, const int pY, const int pWidth, const int pHeight);
+#endif //FG_WINDOW_TOOLKIT
+
+/**
+Render the chart to given window id
+
+\param[in] windowId is target window's id to where chart will be rendered
+\param[in] pChart is chart handle
+\param[in] pX is x coordinate of origin of viewport in window coordinates
+\param[in] pY is y coordinate of origin of viewport in window coordinates
+\param[in] pWidth is the width of the viewport
+\param[in] pHeight is the height of the viewport
+
+\return \ref fg_err error code
+*/
+FGAPI fg_err fg_render_chart_to_id(const int windowId,
+    const fg_chart pChart,
+    const int pX, const int pY, const int pWidth, const int pHeight);
 
 /**
    Render the type of a chart
@@ -586,9 +604,22 @@ class Chart {
            \param[in] pVPW is the width of the viewport
            \param[in] pVPH is the height of the viewport
          */
+#ifdef FG_WINDOW_TOOLKIT
         FGAPI void render(const Window& pWindow,
                           const int pX, const int pY, const int pVPW, const int pVPH) const;
+#endif //FG_WINDOW_TOOLKIT
 
+        /**
+        Render the chart to given window id
+
+        \param[in] windowId is target window id to where chart will be rendered
+        \param[in] pX is x coordinate of origin of viewport in window coordinates
+        \param[in] pY is y coordinate of origin of viewport in window coordinates
+        \param[in] pVPW is the width of the viewport
+        \param[in] pVPH is the height of the viewport
+        */
+        FGAPI void render(const int windowId,
+                          const int pX, const int pY, const int pVPW, const int pVPH) const;
         /**
            Get the handle to internal implementation of Chart
          */

@@ -162,10 +162,18 @@ VectorField Chart::vectorField(const unsigned pNumPoints, const dtype pDataType)
     return VectorField(temp);
 }
 
+#ifdef FG_WINDOW_TOOLKIT
 void Chart::render(const Window& pWindow,
                    const int pX, const int pY, const int pVPW, const int pVPH) const
 {
     FG_THROW(fg_render_chart(pWindow.get(), get(), pX, pY, pVPW, pVPH));
+}
+#endif //FG_WINDOW_TOOLKIT
+
+void Chart::render(const int windowId,
+    const int pX, const int pY, const int pVPW, const int pVPH) const
+{
+    FG_THROW(fg_render_chart_to_id(windowId, get(), pX, pY, pVPW, pVPH));
 }
 
 fg_chart Chart::get() const

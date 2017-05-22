@@ -9,6 +9,8 @@
 
 #pragma once
 
+#ifdef FG_WINDOW_TOOLKIT
+
 #include <backend.hpp>
 #include <window_impl.hpp>
 
@@ -139,3 +141,5 @@ class Window {
 
 }
 }
+
+#endif //FG_WINDOW_TOOLKIT

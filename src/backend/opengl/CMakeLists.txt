@@ -63,6 +63,14 @@ FILE(GLOB gl_sources
     "*.cpp"
     )
 
+if(NOT USE_QT5_WIDGET) #remove qChartWidget source
+    list(REMOVE_ITEM api_headers ${CMAKE_SOURCE_DIR}/include/fg/qChartWidget.h)
+    list(REMOVE_ITEM cpp_api_sources ${CMAKE_SOURCE_DIR}/src/api/cpp/qChartWidget.cpp)
+endif()
+
+message(STATUS "api headers: ${api_headers}")
+message(STATUS "cpp api sources: ${cpp_api_sources}")
+
 LIST(SORT c_api_headers)
 LIST(SORT c_api_sources)
 LIST(SORT cpp_api_headers)
@@ -114,6 +122,8 @@ ADD_LIBRARY(forge SHARED
     ${gl_sources}
     ${wtk_headers}
     ${wtk_sources}
+    ${qt5_widget_headers}
+    ${qt5_widget_sources}
     )
 
 TARGET_LINK_LIBRARIES(forge
@@ -135,7 +145,7 @@ IF(USE_SYSTEM_GLBINDING)
     TARGET_LINK_LIBRARIES(forge PRIVATE glbinding::glbinding)
 ELSE(USE_SYSTEM_GLBINDING)
     INCLUDE_DIRECTORIES(${GLBINDING_INCLUDE_DIRS})
-    TARGET_LINK_LIBRARIES(forge PRIVATE ${GLBINDING_LIBRARIES})
+    TARGET_LINK_LIBRARIES(forge PRIVATE glbinding)
     ADD_DEPENDENCIES(forge glbinding)
 ENDIF(USE_SYSTEM_GLBINDING)
 

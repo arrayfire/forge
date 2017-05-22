@@ -152,6 +152,7 @@ fg_err fg_get_image_size(unsigned* pOut, const fg_image pImage)
     return FG_ERR_NONE;
 }
 
+#ifdef FG_WINDOW_TOOLKIT
 fg_err fg_render_image(const fg_window pWindow,
                        const fg_image pImage,
                        const int pX, const int pY, const int pWidth, const int pHeight)
@@ -171,4 +172,26 @@ fg_err fg_render_image(const fg_window pWindow,
     CATCHALL
 
     return FG_ERR_NONE;
+}
+#endif //FG_WINDOW_TOOLKIT
+
+fg_err fg_render_image_to_id(const int windowId,
+    const fg_image pImage,
+    const int pX, const int pY, const int pWidth, const int pHeight)
+{
+    try
+    {
+        ARG_ASSERT(1, (pImage!=0));
+        ARG_ASSERT(2, (pX>=0));
+        ARG_ASSERT(3, (pY>=0));
+        ARG_ASSERT(4, (pWidth>0));
+        ARG_ASSERT(5, (pHeight>0));
+
+        getImage(pImage)->render(windowId,
+            pX, pY, pWidth, pHeight,
+            IDENTITY, IDENTITY);
+    }
+    CATCHALL
+
+        return FG_ERR_NONE;
 }
