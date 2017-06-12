@@ -298,6 +298,7 @@ void ChartWidget::setThreadContext(QGLContext *glContext)
         FG_ERROR("Chart is not setup for threading, this function should not be called", FG_ERR_INTERNAL);
 
     setContext(glContext, nullptr, false);
+    makeCurrent();
     initialize();
 }
 
@@ -340,6 +341,8 @@ void ChartWidget::render()
 
     if(m_resize)
         resize();
+
+    makeCurrent();
 
     glViewport(0, 0, width(), height());
 
