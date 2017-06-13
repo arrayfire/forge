@@ -26,7 +26,7 @@ ENDIF(UNIX)
 
 ExternalProject_Add(
     ft-ext
-    GIT_REPOSITORY http://git.sv.nongnu.org/r/freetype/freetype2.git
+    GIT_REPOSITORY https://github.com/arrayfire/freetype2.git
     GIT_TAG VER-2-7-1
     PREFIX "${prefix}"
     INSTALL_DIR "${prefix}"
