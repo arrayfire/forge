@@ -2,6 +2,15 @@ INCLUDE(ExternalProject)
 
 SET(prefix ${PROJECT_BINARY_DIR}/third_party/cl2hpp)
 
+IF(CMAKE_VERSION VERSION_LESS 3.2)
+    IF(CMAKE_GENERATOR MATCHES "Ninja")
+        MESSAGE(WARNING "Building with Ninja has known issues with CMake older than 3.2")
+    endif()
+    SET(byproducts)
+ELSE()
+    SET(byproducts BUILD_BYPRODUCTS "${prefix}/package/CL/cl2.hpp")
+ENDIF()
+
 ExternalProject_Add(
     cl2hpp-ext
     GIT_REPOSITORY https://github.com/KhronosGroup/OpenCL-CLHPP.git
@@ -9,6 +18,7 @@ ExternalProject_Add(
     PREFIX "${prefix}"
     INSTALL_DIR "${prefix}/package"
     UPDATE_COMMAND ""
+    ${byproducts}
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -Wno-dev "-G${CMAKE_GENERATOR}" <SOURCE_DIR>
     -DCMAKE_SOURCE_DIR:PATH=<SOURCE_DIR>
     -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
