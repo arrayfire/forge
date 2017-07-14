@@ -1,106 +1,123 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
-####################### BEGIN - Backend agnostic upstream dependencies #####################
 
-if(USE_HUNTER)
-    hunter_add_package(Boost COMPONENTS system filesystem)
-    find_package(Boost REQUIRED COMPONENTS system filesystem)
+add_library(forge "")
 
-    hunter_add_package(glm)
-    find_package(glm CONFIG REQUIRED)
+set_target_properties(forge
+  PROPERTIES
+    CXX_STANDARD 11)
 
-    hunter_add_package(freetype)
-    find_package(freetype REQUIRED)
-else()
-    FIND_PACKAGE(Boost REQUIRED)
+target_sources(forge
+  PRIVATE
+    chart.hpp
+    chart_common.hpp
+    chart_renderables.hpp
+    cmap.hpp
+    defines.hpp
+    err_common.cpp
+    err_common.hpp
+    font.hpp
+    handle.cpp
+    handle.hpp
+    image.hpp
+    util.cpp
+    util.hpp
+    version.hpp
+    window.hpp
 
-    OPTION(USE_SYSTEM_GLM "Use the system GLM library" OFF)
-    IF(USE_SYSTEM_GLM)
-      FIND_PACKAGE(glm REQUIRED)
-    ELSE()
-      INCLUDE(build_glm)
-    ENDIF()
+    opengl/backend.hpp
+    opengl/chart_impl.cpp
+    opengl/chart_impl.hpp
+    opengl/colormap_impl.cpp
+    opengl/colormap_impl.hpp
+    opengl/common.cpp
+    opengl/common.hpp
+    opengl/err_opengl.cpp
+    opengl/err_opengl.hpp
+    opengl/font_atlas_impl.cpp
+    opengl/font_atlas_impl.hpp
+    opengl/font_impl.cpp
+    opengl/font_impl.hpp
+    opengl/gl_native_handles.cpp
+    opengl/gl_native_handles.hpp
+    opengl/histogram_impl.cpp
+    opengl/histogram_impl.hpp
+    opengl/image_impl.cpp
+    opengl/image_impl.hpp
+    opengl/plot_impl.cpp
+    opengl/plot_impl.hpp
+    opengl/surface_impl.cpp
+    opengl/surface_impl.hpp
+    opengl/util.cpp
+    opengl/vector_field_impl.cpp
+    opengl/vector_field_impl.hpp
+    opengl/window_impl.cpp
+    opengl/window_impl.hpp
+  )
 
-    OPTION(USE_SYSTEM_FREETYPE "Use the system Freetype library" OFF)
-    IF(USE_SYSTEM_FREETYPE)
-      FIND_PACKAGE(Freetype REQUIRED)
-    ELSE()
-      INCLUDE(build_freetype)
-    ENDIF()
-endif()
+target_include_directories(forge
+  PRIVATE
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/src/api/c
+    ${PROJECT_SOURCE_DIR}/src/backend
+    ${PROJECT_SOURCE_DIR}/src/backend/opengl
+    ${X11_INCLUDE_DIR}
+    ${PROJECT_BINARY_DIR}
+    ${FONTCONFIG_INCLUDE_DIR}
+    ${FREETYPE_INCLUDE_DIRS}
+  )
 
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${GLM_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS})
+if(USE_WINDOW_TOOLKIT STREQUAL "glfw3")
+  target_sources(forge
+    PRIVATE
+      opengl/glfw/window.cpp
+      opengl/glfw/window.hpp
+    )
+  target_include_directories(forge
+    PRIVATE
+      ${GLFW_INCLUDE_DIR})
 
-IF(UNIX)
-    FIND_PACKAGE(FontConfig REQUIRED)
-    INCLUDE_DIRECTORIES("${FONTCONFIG_INCLUDE_DIR}")
-ENDIF(UNIX)
-
-if(USE_FREEIMAGE)
-	FIND_PACKAGE(FreeImage REQUIRED)
-
-	INCLUDE_DIRECTORIES(${FREEIMAGE_INCLUDE_PATH})
-	ADD_DEFINITIONS(-DUSE_FREEIMAGE)
-endif()
-
-SET(USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
-SET_PROPERTY(CACHE USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
-
-IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
-    #FIXME LATER: glfw3Config.cmake file provided by glfw 3.*
-    # is found on different locations in different linux/unix
-    # distributions, thus causing glfw3 not found errors.
-    # DON'T REPLACE GLFW with glfw3 in find_package command.
-    FIND_PACKAGE(GLFW REQUIRED)
-    IF(GLFW_FOUND)
-        SET(WTK_INCLUDE_DIRS ${GLFW_INCLUDE_DIR})
-        SET(WTK_LIBRARIES ${GLFW_LIBRARY})
-        ADD_DEFINITIONS(-DUSE_GLFW)
-    ELSE(GLFW_FOUND)
-        MESSAGE(FATAL_ERROR "GLFW not found")
-    ENDIF(GLFW_FOUND)
-ENDIF()
-
-IF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
-    FIND_PACKAGE(SDL2 REQUIRED)
-    IF(SDL2_FOUND)
-        SET(WTK_INCLUDE_DIRS ${SDL2_INCLUDE_DIR})
-        SET(WTK_LIBRARIES ${SDL2_LIBRARY})
-        ADD_DEFINITIONS(-DUSE_SDL)
-    ELSE(SDL2_FOUND)
-        MESSAGE(FATAL_ERROR "SDL2 not found")
-    ENDIF(SDL2_FOUND)
-ENDIF()
-
-####################### END - Backend agnostic upstream dependencies #######################
-
-ADD_EXECUTABLE(glsl2cpp "${PROJECT_SOURCE_DIR}/CMakeModules/glsl2cpp.cpp")
-
-INCLUDE(GLSLtoH)
-
-SET(glsl_shader_headers "shader_headers")
-
-FILE(GLOB glsl_shaders "glsl_shaders/*.glsl")
-
-LIST(SORT glsl_shaders)
-
-SOURCE_GROUP("src\\backend\\glsl_shaders" FILES ${glsl_shaders})
-
-GLSL_TO_H(
-    SOURCES ${glsl_shaders}
-    VARNAME  shader_files
-    EXTENSION "hpp"
-    OUTPUT_DIR ${glsl_shader_headers}
-    TARGETS glsl_shader_targets
-    NAMESPACE "glsl"
-    EOD "0"
+  target_link_libraries(forge
+    PRIVATE
+      ${GLFW_LIBRARY}
     )
 
-# DON'T REMOVE CURRENT BINARY DIRECTORY FROM
-# INCLUDE_DIRECTORIES, IT IS USED TO FIND
-# AUTO-GENERATED GLSL HEADERS
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+  target_compile_definitions(forge
+    PRIVATE USE_GLFW)
+elseif(USE_WINDOW_TOOLKIT STREQUAL "sdl2")
+  target_sources(forge
+    PRIVATE
+      opengl/sdl/window.cpp
+      opengl/sdl/window.hpp
+    )
 
-ADD_SUBDIRECTORY(opengl)
+  target_include_directories(forge
+    PRIVATE
+      ${SDL2_INCLUDE_DIR})
+
+  target_link_libraries(forge
+    PRIVATE
+      ${SDL2_LIBRARY}
+    )
+  target_compile_definitions(forge
+    PRIVATE USE_SDL)
+endif()
+
+target_link_libraries(forge
+  PUBLIC
+    OpenGL::GL
+  PRIVATE
+    forge_c_api_interface
+    forge_cpp_api_interface
+    FreeImage::FreeImage
+    glbinding::glbinding
+    FontConfig::FontConfig
+    #${FONTCONFIG_LIBRARY}
+    ${FREETYPE_LIBRARIES}
+    ${X11_LIBRARIES}
+  )
+
+set_target_properties(forge PROPERTIES
+                      VERSION "${FG_VERSION}"
+                      SOVERSION "${FG_VERSION_MAJOR}")
+
+add_dependencies(forge ${glsl_shader_targets})

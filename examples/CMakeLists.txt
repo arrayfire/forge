@@ -13,19 +13,23 @@ ENDIF()
 
 MACRO(BUILD_EXAMPLE EX_NAME EX_SRC COMPUTE_NAME FG_LIBS COMPUTE_LIBS)
     IF(${COMPUTE_NAME} STREQUAL "cuda")
-        CUDA_ADD_EXECUTABLE(example_${EX_NAME}_${COMPUTE_NAME} ${EX_SRC})
+        cuda_add_executable(example_${EX_NAME}_${COMPUTE_NAME} ${EX_SRC})
     ELSE()
-        ADD_EXECUTABLE(example_${EX_NAME}_${COMPUTE_NAME} ${EX_SRC})
+        add_executable(example_${EX_NAME}_${COMPUTE_NAME} ${EX_SRC})
     ENDIF()
-    TARGET_LINK_LIBRARIES(example_${EX_NAME}_${COMPUTE_NAME} ${COMPUTE_LIBS} ${FG_LIBS})
-    SET_TARGET_PROPERTIES(example_${EX_NAME}_${COMPUTE_NAME}
+    target_link_libraries(example_${EX_NAME}_${COMPUTE_NAME} ${COMPUTE_LIBS} forge)
+    target_include_directories(example_${EX_NAME}_${COMPUTE_NAME}
+      PRIVATE ${PROJECT_SOURCE_DIR}/../include)
+
+    set_target_properties(example_${EX_NAME}_${COMPUTE_NAME}
         PROPERTIES
+        CXX_STANDARD 11
         OUTPUT_NAME ${EX_NAME}_${COMPUTE_NAME}
         RUNTIME_OUTPUT_DIRECTORY ${DIR_NAME}
         FOLDER "Examples/${COMPUTE_NAME}")
     IF(${COMPUTE_NAME} STREQUAL "opencl")
         IF(NOT USE_SYSTEM_CL2HPP)
-            ADD_DEPENDENCIES(example_${EX_NAME}_${COMPUTE_NAME} cl2hpp)
+            add_dependencies(example_${EX_NAME}_${COMPUTE_NAME} cl2hpp)
         ENDIF()
     ENDIF()
 ENDMACRO()

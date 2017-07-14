@@ -30,8 +30,11 @@ extern "C" {
 // And gl.h requires windows.h to be included before it
 #if defined(OS_WIN)
 #include <windows.h>
-#endif // OS_WIN
+#elif defined(OS_MAC) // OS_WIN
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #endif // GL_VERSION
 
 #include <cuda.h>
