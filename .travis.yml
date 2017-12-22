@@ -1,0 +1,51 @@
+#-----------------------------------------------------------------------------
+#
+#  Configuration for continuous integration service at travis-ci.org
+#
+#-----------------------------------------------------------------------------
+
+sudo: required
+
+services:
+    - docker
+
+language: cpp
+
+notifications:
+    email: false
+
+env:
+    matrix:
+        - VER=5   CC_NAME=gcc CXX_NAME=g++
+        - VER=4.9 CC_NAME=gcc CXX_NAME=g++
+        - VER=3.5 CC_NAME=clang CXX_NAME=clang++
+        - VER=3.9 CC_NAME=clang CXX_NAME=clang++
+
+before_install:
+    - docker run -d --name ubuntu-test -v $(pwd):/travis ubuntu:latest tail -f /dev/null
+    - docker ps
+
+install:
+  - docker exec -t ubuntu-test bash -c "apt-get update;
+    apt-get install -y software-properties-common python-software-properties git-core;
+    apt-get install -y build-essential cmake cmake-data libboost-thread-dev libboost-date-time-dev;
+    apt-get install -y libfontconfig1-dev libfreeimage-dev libfreetype6-dev;
+    apt-get install -y libglfw3-dev;
+    add-apt-repository -y ppa:ubuntu-toolchain-r/test;
+    apt-get update;
+    apt-get install -y $CC_NAME-$VER $CXX_NAME-$VER;
+    apt-add-repository -y ppa:cginternals/ppa;
+    apt-get update;
+    apt-get install -y libglbinding-dev;
+    apt-get update;
+    apt-get install -y opencl-headers;
+    apt-get install -y ocl-icd-opencl-dev;
+    cd /travis;
+    git clone --branch 0.9.8.5 https://github.com/g-truc/glm.git;
+    cd glm && cmake -DCMAKE_INSTALL_PREFIX=/travis/glm/package && make install;"
+
+script:
+  - docker exec -t ubuntu-test bash -c "cd /travis;
+    export GLM_DIR=/travis/glm/package/lib/x86_64-linux-gnu/cmake/glm;
+    cmake -DCMAKE_C_COMPILER=$CC_NAME-$VER -DCMAKE_CXX_COMPILER=$CXX_NAME-$VER -Dglm_DIR=$GLM_DIR . &&
+    make install"
