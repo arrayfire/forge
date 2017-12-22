@@ -13,7 +13,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include <string.h>
+#include <cstring>
 
 using std::string;
 using std::stringstream;
@@ -21,7 +21,7 @@ using std::cerr;
 
 void stringcopy(char* dest, const char* src, size_t len)
 {
-#ifdef OS_WIN
+#if defined(OS_WIN)
     strncpy_s(dest, MAX_ERR_SIZE, src, len);
 #else
     strncpy(dest, src, len);
@@ -70,6 +70,12 @@ Error::Error(const char * const pMessage, const char * const pFuncName,
              "Forge Exception (%s:%d):\n%sIn function %s\nIn file %s:%d",
              fg_err_to_string(pErrCode), (int)pErrCode, pMessage, pFuncName, pFileName, pLine);
     mMessage[sizeof(mMessage)-1] = '\0';
+}
+
+Error::Error(const Error& error)
+{
+    this->mErrCode = error.err();
+    memcpy(this->mMessage, error.what(), 1024);
 }
 
 Error::~Error() throw() {}

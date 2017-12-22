@@ -7,7 +7,7 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/util.h>
+#include <fg/update_buffer.h>
 #include <common.hpp>
 #include <err_opengl.hpp>
 
@@ -53,7 +53,6 @@ fg_err fg_finish()
 
 namespace forge
 {
-
 void updateVertexBuffer(const unsigned pBufferId,
                         const size_t pBufferSize,
                         const void* pBufferData)
@@ -78,5 +77,4 @@ void finish()
     if (val!=FG_ERR_NONE)
         FG_ERROR("glFinish failed", val);
 }
-
 }

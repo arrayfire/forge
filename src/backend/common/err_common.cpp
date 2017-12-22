@@ -14,6 +14,8 @@
 
 #include <string>
 #include <sstream>
+#include <cstdio>
+#include <cstdlib>
 
 using namespace forge;
 

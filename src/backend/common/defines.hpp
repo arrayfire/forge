@@ -26,7 +26,7 @@ clipFilePath(std::string path, std::string str)
     }
 }
 
-#if defined(_WIN32) || defined(_MSC_VER)
+#if defined(OS_WIN)
     #define __PRETTY_FUNCTION__ __FUNCSIG__
     #if _MSC_VER < 1900
         #define snprintf sprintf_s

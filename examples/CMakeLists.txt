@@ -1,167 +1,90 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-PROJECT(Forge-Examples)
+cmake_minimum_required(VERSION 3.5)
 
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+project(Forge-Examples LANGUAGES CXX)
 
-OPTION(BUILD_EXAMPLES_CUDA "Turn off/on building cuda examples" ON)
-OPTION(BUILD_EXAMPLES_OPENCL "Turn off/on building opencl examples" ON)
-OPTION(USE_SYSTEM_CL2HPP "Use cl2.hpp header installed on the system" OFF)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-IF(NOT USE_SYSTEM_CL2HPP)
-    INCLUDE(build_cl2hpp)
-ENDIF()
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
-MACRO(BUILD_EXAMPLE EX_NAME EX_SRC COMPUTE_NAME FG_LIBS COMPUTE_LIBS)
-    IF(${COMPUTE_NAME} STREQUAL "cuda")
-        CUDA_ADD_EXECUTABLE(example_${EX_NAME}_${COMPUTE_NAME} ${EX_SRC})
-    ELSE()
-        ADD_EXECUTABLE(example_${EX_NAME}_${COMPUTE_NAME} ${EX_SRC})
-    ENDIF()
-    TARGET_LINK_LIBRARIES(example_${EX_NAME}_${COMPUTE_NAME} ${COMPUTE_LIBS} ${FG_LIBS})
-    SET_TARGET_PROPERTIES(example_${EX_NAME}_${COMPUTE_NAME}
-        PROPERTIES
-        OUTPUT_NAME ${EX_NAME}_${COMPUTE_NAME}
-        RUNTIME_OUTPUT_DIRECTORY ${DIR_NAME}
-        FOLDER "Examples/${COMPUTE_NAME}")
-    IF(${COMPUTE_NAME} STREQUAL "opencl")
-        IF(NOT USE_SYSTEM_CL2HPP)
-            ADD_DEPENDENCIES(example_${EX_NAME}_${COMPUTE_NAME} cl2hpp)
-        ENDIF()
-    ENDIF()
-ENDMACRO()
+find_package(OpenGL REQUIRED)
+find_package(CUDA QUIET)
+find_package(OpenCL 1.2 QUIET)
 
-IF(TARGET forge)
+if(APPLE)
+    find_package(X11)
+    if(X11_FOUND AND NOT TARGET X11::x11)
+        add_library(X11::x11 UNKNOWN IMPORTED)
+        set_target_properties(X11::x11 PROPERTIES
+            IMPORTED_LINK_INTERFACE_LANGUAGE "C"
+            IMPORTED_LOCATION "${X11_X11_LIB}"
+            INTEFACE_INCLUDE_DIRECTORIES "${X11_INCLUDE_DIR}")
+    endif()
+endif()
 
-    # Building with Forge Source
-    SET(FORGE_FOUND False)
+option(BUILD_EXAMPLES_CUDA "Turn off/on building cuda examples" ${CUDA_FOUND})
+option(BUILD_EXAMPLES_OPENCL "Turn off/on building opencl examples" ${OpenCL_FOUND})
+mark_as_advanced(BUILD_EXAMPLES_CUDA BUILD_EXAMPLES_OPENCL)
 
-ELSE(TARGET forge)
+include(CMakeParseArguments)
+include(ConditionalDirectory)
+include(CMakeDependentOption)
+include(IfNotThisThenInclude)
 
-    SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
-    FIND_PACKAGE(Forge REQUIRED)
-    FIND_PACKAGE(OpenGL REQUIRED)
+cmake_dependent_option(USE_SYSTEM_CL2HPP "Use system cl2.hpp header" OFF "OpenCL_FOUND" OFF)
 
-    SET(X11_LIBS "")
+include_if_not(USE_SYSTEM_CL2HPP build_cl2hpp)
 
-    INCLUDE_DIRECTORIES(${FORGE_INCLUDE_DIRS})
+add_library(OSCompileFlags INTERFACE)
 
-    # OS Definitions
-    IF(UNIX)
-        ADD_DEFINITIONS(-Wall -std=c++11 -fvisibility=hidden)
+if (WIN32)
+    target_compile_definitions(OSCompileFlags
+        INTERFACE OS_WIN WIN32_MEAN_AND_LEAN)
+elseif (APPLE)
+    target_compile_definitions(OSCompileFlags INTERFACE OS_MAC)
+else(WIN32)
+    target_compile_definitions(OSCompileFlags INTERFACE OS_LNX)
+endif(WIN32)
 
-        # GCC 5.3 and above give errors for mempcy from <string.h>
-        # This is a (temporary) fix for that
-        IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.3.0")
-            ADD_DEFINITIONS(-D_FORCE_INLINES)
-        ENDIF()
+if(TARGET forge)
+    add_library(Forge::forge ALIAS forge)
+else()
+    include(${Forge_BINARY_DIR}/ForgeConfig.cmake)
+endif()
 
-        # MacOS specific environment settings
-        IF(APPLE)
-            ADD_DEFINITIONS(-DOS_MAC)
-            SET(CMAKE_MACOSX_RPATH ON)
-            SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-            SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-            SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}")
-            SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+function(add_example target_name source backend)
+    set(options CXX11)
+    set(single_value_args "")
+    set(multiple_value_args INCLUDE_DIRS LIBRARIES)
+    cmake_parse_arguments(arg "${options}" "${single_value_args}" "${multiple_value_args}" ${ARGN})
 
-            LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}" isSystemDir)
-            IF("${isSystemDir}" STREQUAL "-1")
-                SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}")
-            ENDIF("${isSystemDir}" STREQUAL "-1")
+    set(target "example_${target_name}_${backend}")
 
-            FIND_PACKAGE(X11 REQUIRED)
-            INCLUDE_DIRECTORIES(${X11_INCLUDE_DIR})
+    string(TOLOWER ${backend} lowerCaseBackend)
 
-        ELSE(APPLE)
-            ADD_DEFINITIONS(-DOS_LNX)
-        ENDIF(APPLE)
-    ELSE(UNIX)
-        ADD_DEFINITIONS(-DOS_WIN -DNOMINMAX)
-    ENDIF(UNIX)
-ENDIF(TARGET forge)
+    if (${lowerCaseBackend} STREQUAL "cuda" AND ${CMAKE_VERSION} VERSION_LESS "3.10.0")
+        cuda_add_executable(${target} ${source})
+    else ()
+        add_executable(${target} ${source})
+    endif ()
 
-IF(UNIX)
-    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -Wno-unused-function")
-ENDIF()
+    set_target_properties(${target} PROPERTIES OUTPUT_NAME "${target_name}")
+    set_target_properties(${target} PROPERTIES FOLDER Examples/${backend})
 
-FILE(GLOB CPU_EXAMPLE_SRC_FILES "cpu/*.cpp")
-LIST(SORT CPU_EXAMPLE_SRC_FILES)
-FOREACH(FILE ${CPU_EXAMPLE_SRC_FILES})
-    GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
-    GET_FILENAME_COMPONENT(FULL_DIR_NAME ${FILE} PATH)
-    GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
+    if (${arg_CXX11})
+        set_target_properties(${target} PROPERTIES CXX_STANDARD 11)
+    endif (${arg_CXX11})
 
-    IF(TARGET forge)
-        BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "")
-    ELSE(TARGET forge)
-        BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES} "${X11_LIBS};${OPENGL_gl_LIBRARY}")
-    ENDIF()
-ENDFOREACH()
+    target_include_directories(${target} PRIVATE ${arg_INCLUDE_DIRS})
 
-IF (BUILD_EXAMPLES_CUDA)
-    FIND_PACKAGE(CUDA QUIET)
-    IF(CUDA_FOUND)
+    target_link_libraries(${target}
+            OSCompileFlags
+            OpenGL::GL
+            Forge::forge
+            ${arg_LIBRARIES}
+            $<$<PLATFORM_ID:Darwin>:X11::x11>
+        )
+endfunction()
 
-        IF(UNIX)
-            # GCC 5.3 and above give errors for mempcy from <string.h>
-            # This is a (temporary) fix for that
-            IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.3.0")
-                ADD_DEFINITIONS(-D_FORCE_INLINES)
-            ENDIF()
-            # GCC 6.0 and above default to g++14, enabling c++11 features by default
-            # Enabling c++11 with nvcc 7.5 + gcc 6.x doesn't seem to work
-            # Only solution for now is to force use c++03 for gcc 6.x
-            IF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "6.0.0")
-                SET(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -Xcompiler -std=c++98")
-            ENDIF()
-        ENDIF(UNIX)
-
-        INCLUDE_DIRECTORIES(${CUDA_INCLUDE_DIRS})
-
-        FILE(GLOB CUDA_EXAMPLE_SRC_FILES "cuda/*.cu")
-        LIST(SORT CUDA_EXAMPLE_SRC_FILES)
-        FOREACH(FILE ${CUDA_EXAMPLE_SRC_FILES})
-            GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
-            GET_FILENAME_COMPONENT(FULL_DIR_NAME ${FILE} PATH)
-            GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
-
-            IF(TARGET forge)
-                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "${CUDA_LIBRARIES}")
-            ELSE(TARGET forge)
-                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                    "${X11_LIBS};${OPENGL_gl_LIBRARY};${CUDA_LIBRARIES}")
-            ENDIF()
-        ENDFOREACH()
-    ELSE()
-        MESSAGE(STATUS "CUDA Toolkit not found, not building CUDA examples.")
-    ENDIF()
-ENDIF()
-
-IF (BUILD_EXAMPLES_OPENCL)
-    FIND_PACKAGE(OpenCL QUIET)
-    IF(OpenCL_FOUND)
-        FILE(GLOB OpenCL_EXAMPLE_SRC_FILES "opencl/*.cpp")
-        LIST(SORT OpenCL_EXAMPLE_SRC_FILES)
-        INCLUDE_DIRECTORIES(
-            "${CMAKE_CURRENT_SOURCE_DIR}/opencl"
-            ${OpenCL_INCLUDE_DIRS}
-            ${CL2HPP_INCLUDE_DIRECTORY}
-            )
-        FOREACH(FILE ${OpenCL_EXAMPLE_SRC_FILES})
-            GET_FILENAME_COMPONENT(EXAMPLE ${FILE} NAME_WE)
-            GET_FILENAME_COMPONENT(FULL_DIR_NAME ${FILE} PATH)
-            GET_FILENAME_COMPONENT(DIR_NAME ${FULL_DIR_NAME} NAME)
-
-            IF(TARGET forge)
-                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} forge "${OpenCL_LIBRARIES};${OPENGL_gl_LIBRARY}")
-            ELSE(TARGET forge)
-                BUILD_EXAMPLE(${EXAMPLE} ${FILE} ${DIR_NAME} ${FORGE_LIBRARIES}
-                    "${X11_LIBS};${OPENGL_gl_LIBRARY};${OpenCL_LIBRARIES}")
-            ENDIF()
-        ENDFOREACH()
-    ELSE()
-        MESSAGE(STATUS "OpenCL Libraries not found, not building OpenCL examples.")
-    ENDIF()
-ENDIF()
-
-MARK_AS_ADVANCED(BUILD_EXAMPLES_CUDA BUILD_EXAMPLES_OPENCL)
+add_subdirectory(cpu)
+conditional_directory(BUILD_EXAMPLES_CUDA cuda)
+conditional_directory(BUILD_EXAMPLES_OPENCL opencl)

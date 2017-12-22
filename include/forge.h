@@ -31,7 +31,7 @@ they are related to.
 */
 
 #include "fg/defines.h"
-#include "fg/util.h"
+#include "fg/update_buffer.h"
 #include "fg/exception.h"
 #include "fg/window.h"
 #include "fg/font.h"
