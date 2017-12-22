@@ -37,7 +37,10 @@
 
 #include <cstdlib>
 
+#ifdef FG_WINDOW_TOOLKIT
 typedef void* fg_window;
+#endif //FG_WINDOW_TOOLKIT
+
 typedef void* fg_font;
 typedef void* fg_chart;
 typedef void* fg_image;

@@ -19,6 +19,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <map>
 
 using namespace gl;
 using namespace forge;

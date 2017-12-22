@@ -24,6 +24,9 @@ namespace opengl
 
 class AbstractChart : public AbstractRenderable {
     protected:
+        /* force font_impl to hang around while chart exist*/
+        std::shared_ptr<forge::opengl::font_impl> mFonter;
+
         /* internal class attributes for
         * drawing ticks on axes for plots*/
         std::vector<float> mTickTextX;
@@ -147,6 +150,7 @@ class AbstractChart : public AbstractRenderable {
         float zmin() const;
 
         void addRenderable(const std::shared_ptr<AbstractRenderable> pRenderable);
+        void removeRenderable(const std::shared_ptr<AbstractRenderable> pRenderable);
 };
 
 class chart2d_impl : public AbstractChart {

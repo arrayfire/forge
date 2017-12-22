@@ -7,6 +7,8 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#ifdef FG_WINDOW_TOOLKIT
+
 #include <fg/window.h>
 
 #include <err_common.hpp>
@@ -291,3 +293,5 @@ fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window pWindow
     CATCHALL
     return FG_ERR_NONE;
 }
+
+#endif //FG_WINDOW_TOOLKIT

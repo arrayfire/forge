@@ -30,6 +30,8 @@ they are related to.
 
 */
 
+#include "fg/config.h"
+
 #include "fg/defines.h"
 #include "fg/util.h"
 #include "fg/exception.h"
@@ -40,3 +42,7 @@ they are related to.
 #include "fg/plot.h"
 #include "fg/surface.h"
 #include "fg/histogram.h"
+
+#ifdef USE_QT5_WIDGET
+#include "fg/chartWidget.h"
+#endif //USE_QT5_WIDGET

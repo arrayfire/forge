@@ -24,6 +24,10 @@ INCLUDE(Version)
 OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
 OPTION(BUILD_EXAMPLES "Build Examples" ON)
 OPTION(USE_FREEIMAGE "Use freeimage to allow saving of charts" ON)
+OPTION(USE_QT5_WIDGET "Creates widget for use with Qt5" OFF)
+
+SET(USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
+SET_PROPERTY(CACHE USE_WINDOW_TOOLKIT PROPERTY STRINGS "none" "glfw3" "sdl2")
 
 # Set a default build type if none was specified
 IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -76,6 +80,22 @@ IF(APPLE)
     SET(X11_LIBS ${X11_LIBRARIES})
 ENDIF(APPLE)
 
+IF(USE_QT5_WIDGET)
+    find_package(Qt5Core REQUIRED)
+    find_package(Qt5Widgets REQUIRED)
+    find_package(Qt5Gui REQUIRED)
+    find_package(Qt5OpenGL REQUIRED)
+
+    IF(Qt5Core_FOUND)
+        SET(CMAKE_AUTOMOC ON)
+        SET(WTK_INCLUDE_DIRS ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
+        SET(WTK_LIBRARIES Qt5::Core Qt5::Widgets Qt5::Gui Qt5::OpenGL)
+        ADD_DEFINITIONS(-DUSE_QT5)
+    ELSE(Qt5Core_FOUND)
+        MESSAGE(FATAL_ERROR "Qt5 not found")
+    ENDIF(Qt5Core_FOUND)
+ENDIF()
+
 ADD_SUBDIRECTORY(src/backend)
 
 IF(BUILD_EXAMPLES)
@@ -90,6 +110,16 @@ ENDIF(BUILD_DOCUMENTATION)
 #--------------------------------------------------------------------
 # Create generated files
 #--------------------------------------------------------------------
+
+set(FG_WINDOW_TOOLKIT OFF)
+IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
+    set(FG_WINDOW_TOOLKIT ON)
+ELSEIF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
+    set(FG_WINDOW_TOOLKIT ON)
+ENDIF()
+
+configure_file(config.h.in "${CMAKE_CURRENT_SOURCE_DIR}/include/fg/config.h" @ONLY)
+
 INCLUDE(CMakePackageConfigHelpers)
 
 configure_package_config_file("${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"

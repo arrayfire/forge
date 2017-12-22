@@ -267,6 +267,56 @@ FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHan
                                           const unsigned pNPoints, const fg_dtype pType);
 
 /**
+Remove an Image object from the current chart
+
+\param[in] pHandle is chart handle to which image object will be added.
+\param[in] pImage is the handle of the image object to remove
+
+\return \ref fg_err error code
+*/
+FGAPI fg_err fg_remove_image_from_chart(fg_chart pHandle, fg_image pImage);
+
+/**
+Remove a Histogram object from the current chart
+
+\param[in] pHandle is chart handle
+\param[in] pHistogram is the handle of the histogram object to remove
+
+\return \ref fg_err error code
+*/
+FGAPI fg_err fg_remove_histogram_from_chart(fg_chart pHandle, fg_histogram pHistogram);
+
+/**
+Remove a Plot object from the current chart
+
+\param[in] pHandle is chart handle
+\param[in] pPlot is the handle of the plot object to remove
+
+\return \ref fg_err error code
+*/
+FGAPI fg_err fg_remove_plot_from_chart(fg_chart pHandle, fg_plot pPlot);
+
+/**
+Remove a Plot object from the current chart
+
+\param[in] pHandle is chart handle
+\param[in] pSurface is the handle of the surface object to remove
+
+\return \ref fg_err error code
+*/
+FGAPI fg_err fg_remove_surface_from_chart(fg_chart pHandle, fg_surface pSurface);
+
+/**
+Remove a Vector Field object from the current chart
+
+\param[in] pHandle is chart handle
+\param[in] pField is the handle of the Vector Field object to remove
+
+\return \ref fg_err error code
+*/
+FGAPI fg_err fg_remove_vector_field_from_chart(fg_chart pHandle, fg_vector_field pField);
+
+/**
    Render the chart to given window
 
    \param[in] pWindow is target window to where chart will be rendered
@@ -278,9 +328,27 @@ FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHan
 
    \return \ref fg_err error code
  */
+#ifdef FG_WINDOW_TOOLKIT
 FGAPI fg_err fg_render_chart(const fg_window pWindow,
                              const fg_chart pChart,
                              const int pX, const int pY, const int pWidth, const int pHeight);
+#endif //FG_WINDOW_TOOLKIT
+
+/**
+Render the chart to given window id
+
+\param[in] windowId is target window's id to where chart will be rendered
+\param[in] pChart is chart handle
+\param[in] pX is x coordinate of origin of viewport in window coordinates
+\param[in] pY is y coordinate of origin of viewport in window coordinates
+\param[in] pWidth is the width of the viewport
+\param[in] pHeight is the height of the viewport
+
+\return \ref fg_err error code
+*/
+FGAPI fg_err fg_render_chart_to_id(const int windowId,
+    const fg_chart pChart,
+    const int pX, const int pY, const int pWidth, const int pHeight);
 
 /**
    Render the type of a chart
@@ -434,6 +502,41 @@ class Chart {
         FGAPI void add(const VectorField& pVectorField);
 
         /**
+        Remove an existing Image object to the current chart
+
+        \param[in] pImage is the Image to remove from the chart
+        */
+        FGAPI void remove(const Image& pImage);
+
+        /**
+        Remove an existing Histogram object to the current chart
+
+        \param[in] pHistogram is the Histogram to remove from the chart
+        */
+        FGAPI void remove(const Histogram& pHistogram);
+
+        /**
+        Remove an existing Plot object to the current chart
+
+        \param[in] pPlot is the Plot to remove from the chart
+        */
+        FGAPI void remove(const Plot& pPlot);
+
+        /**
+        Remove an existing Surface object to the current chart
+
+        \param[in] pSurface is the Surface to remove from the chart
+        */
+        FGAPI void remove(const Surface& pSurface);
+
+        /**
+        Remove an existing vector field object to the current chart
+
+        \param[in] pVectorField is the Vectore to remove from the chart
+        */
+        FGAPI void remove(const VectorField& pVectorField);
+
+        /**
            Create and add an Image object to the current chart
 
            \param[in] pWidth Width of the image
@@ -501,9 +604,22 @@ class Chart {
            \param[in] pVPW is the width of the viewport
            \param[in] pVPH is the height of the viewport
          */
+#ifdef FG_WINDOW_TOOLKIT
         FGAPI void render(const Window& pWindow,
                           const int pX, const int pY, const int pVPW, const int pVPH) const;
+#endif //FG_WINDOW_TOOLKIT
 
+        /**
+        Render the chart to given window id
+
+        \param[in] windowId is target window id to where chart will be rendered
+        \param[in] pX is x coordinate of origin of viewport in window coordinates
+        \param[in] pY is y coordinate of origin of viewport in window coordinates
+        \param[in] pVPW is the width of the viewport
+        \param[in] pVPH is the height of the viewport
+        */
+        FGAPI void render(const int windowId,
+                          const int pX, const int pY, const int pVPW, const int pVPH) const;
         /**
            Get the handle to internal implementation of Chart
          */

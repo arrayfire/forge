@@ -17,7 +17,9 @@
 #include <chart.hpp>
 #include <chart_renderables.hpp>
 
+#ifdef FG_WINDOW_TOOLKIT
 fg_window getHandle(forge::common::Window* pValue);
+#endif //FG_WINDOW_TOOLKIT
 
 fg_font getHandle(forge::common::Font* pValue);
 
@@ -33,7 +35,9 @@ fg_surface getHandle(forge::common::Surface* pValue);
 
 fg_vector_field getHandle(forge::common::VectorField* pValue);
 
+#ifdef FG_WINDOW_TOOLKIT
 forge::common::Window* getWindow(const fg_window& pValue);
+#endif //FG_WINDOW_TOOLKIT
 
 forge::common::Font* getFont(const fg_font& pValue);
 

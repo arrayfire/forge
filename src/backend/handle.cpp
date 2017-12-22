@@ -11,10 +11,12 @@
 
 using namespace forge;
 
+#ifdef FG_WINDOW_TOOLKIT
 fg_window getHandle(common::Window* pValue)
 {
     return reinterpret_cast<fg_window>(pValue);
 }
+#endif //FG_WINDOW_TOOLKIT
 
 fg_font getHandle(common::Font* pValue)
 {
@@ -51,10 +53,12 @@ fg_vector_field getHandle(common::VectorField* pValue)
     return reinterpret_cast<fg_vector_field>(pValue);
 }
 
+#ifdef FG_WINDOW_TOOLKIT
 common::Window* getWindow(const fg_window& pValue)
 {
     return reinterpret_cast<common::Window*>(pValue);
 }
+#endif //FG_WINDOW_TOOLKIT
 
 common::Font* getFont(const fg_font& pValue)
 {

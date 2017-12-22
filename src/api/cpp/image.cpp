@@ -98,12 +98,19 @@ unsigned Image::size() const
     return retVal;
 }
 
+#ifdef FG_WINDOW_TOOLKIT
 void Image::render(const Window& pWindow,
                    const int pX, const int pY, const int pVPW, const int pVPH) const
 {
     FG_THROW(fg_render_image(pWindow.get(), get(), pX, pY, pVPW, pVPH));
 }
+#endif //FG_WINDOW_TOOLKIT
 
+void Image::render(const int windowId,
+    const int pX, const int pY, const int pVPW, const int pVPH) const
+{
+    FG_THROW(fg_render_image_to_id(windowId, get(), pX, pY, pVPW, pVPH));
+}
 
 fg_image Image::get() const
 {

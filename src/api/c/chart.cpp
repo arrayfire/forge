@@ -321,6 +321,91 @@ fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pChart,
     return FG_ERR_NONE;
 }
 
+
+fg_err fg_remove_image_from_chart(fg_chart pChart, fg_image pImage)
+{
+    try
+    {
+        ARG_ASSERT(0, (pChart!=0));
+        ARG_ASSERT(1, (pImage!=0));
+
+        common::Image* img=getImage(pImage);
+        getChart(pChart)->removeRenderable(img->impl());
+    }
+    CATCHALL
+
+        return FG_ERR_NONE;
+}
+
+fg_err fg_remove_histogram_from_chart(fg_chart pChart, fg_histogram pHistogram)
+{
+    try
+    {
+        ARG_ASSERT(0, (pHistogram!=0));
+        ARG_ASSERT(1, (pChart!=0));
+       
+        common::Chart* chrt=getChart(pChart);
+
+        common::Histogram* hist=getHistogram(pHistogram);
+        chrt->removeRenderable(hist->impl());
+    }
+    CATCHALL
+
+        return FG_ERR_NONE;
+}
+
+fg_err fg_remove_plot_from_chart(fg_chart pChart, fg_plot pPlot)
+{
+    try
+    {
+        ARG_ASSERT(0, (pPlot!=0));
+        ARG_ASSERT(1, (pChart!=0));
+
+        common::Chart* chrt=getChart(pChart);
+
+        common::Plot* plt=getPlot(pPlot);
+        chrt->removeRenderable(plt->impl());
+
+    }
+    CATCHALL
+
+        return FG_ERR_NONE;
+}
+
+fg_err fg_remove_surface_from_chart(fg_chart pChart, fg_surface pSurface)
+{
+    try
+    {
+        ARG_ASSERT(0, (pSurface!=0));
+        ARG_ASSERT(1, (pChart!=0));
+
+        common::Chart* chrt=getChart(pChart);
+
+        common::Surface* surf=getSurface(pSurface);
+        chrt->removeRenderable(surf->impl());
+    }
+    CATCHALL
+
+        return FG_ERR_NONE;
+}
+
+fg_err fg_remove_vector_field_from_chart(fg_chart pChart, fg_vector_field pField)
+{
+    try
+    {
+        ARG_ASSERT(0, (pField!=0));
+        ARG_ASSERT(1, (pChart!=0));
+
+        common::Chart* chrt=getChart(pChart);
+        common::VectorField* field=getVectorField(pField);
+        chrt->removeRenderable(field->impl());
+    }
+    CATCHALL
+
+        return FG_ERR_NONE;
+}
+
+#ifdef FG_WINDOW_TOOLKIT
 fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
                        const int pX, const int pY, const int pWidth, const int pHeight)
 {
@@ -339,6 +424,27 @@ fg_err fg_render_chart(const fg_window pWindow, const fg_chart pChart,
     CATCHALL
 
     return FG_ERR_NONE;
+}
+#endif //FG_WINDOW_TOOLKIT
+
+fg_err fg_render_chart_to_id(const int windowId, const fg_chart pChart,
+    const int pX, const int pY, const int pWidth, const int pHeight)
+{
+    try
+    {
+        ARG_ASSERT(1, (pChart!=0));
+        ARG_ASSERT(2, (pX>=0));
+        ARG_ASSERT(3, (pY>=0));
+        ARG_ASSERT(4, (pWidth>0));
+        ARG_ASSERT(5, (pHeight>0));
+
+        getChart(pChart)->render(windowId,
+            pX, pY, pWidth, pHeight,
+            IDENTITY, IDENTITY);
+    }
+    CATCHALL
+
+        return FG_ERR_NONE;
 }
 
 fg_err fg_get_chart_type(fg_chart_type *pChartType, const fg_chart pChart)

@@ -11,6 +11,8 @@
 
 #include <common.hpp>
 
+#ifdef FG_WINDOW_TOOLKIT
+
 #if defined(USE_GLFW)
 #include <glfw/window.hpp>
 #elif defined(USE_SDL)
@@ -81,3 +83,5 @@ void MakeContextCurrent(const window_impl* pWindow);
 
 }
 }
+
+#endif //FG_WINDOW_TOOLKIT

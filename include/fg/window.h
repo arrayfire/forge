@@ -9,6 +9,8 @@
 
 #pragma once
 
+#ifdef FG_WINDOW_TOOLKIT
+
 #include <fg/defines.h>
 #include <fg/font.h>
 #include <fg/image.h>
@@ -507,3 +509,4 @@ class Window {
 }
 
 #endif
+#endif //FG_WINDOW_TOOLKIT

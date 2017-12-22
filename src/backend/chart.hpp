@@ -85,6 +85,10 @@ class Chart {
             mChart->addRenderable(pRenderable);
         }
 
+        inline void removeRenderable(const std::shared_ptr<detail::AbstractRenderable> pRenderable) {
+            mChart->removeRenderable(pRenderable);
+        }
+
         inline void render(const int pWindowId,
                            const int pX, const int pY, const int pVPW, const int pVPH,
                            const glm::mat4 &pView, const glm::mat4 &pOrient) const {

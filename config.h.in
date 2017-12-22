@@ -1,0 +1,2 @@
+#cmakedefine FG_WINDOW_TOOLKIT
+#cmakedefine USE_QT5_WIDGET
