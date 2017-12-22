@@ -1,0 +1,153 @@
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 1.0.{build}-{branch}
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+
+  # blacklist
+  except:
+    - gh-pages
+
+# Do not build on tags (GitHub and BitBucket)
+skip_tags: true
+
+# Start builds on tags only (GitHub and BitBucket)
+skip_non_tags: false
+
+# Skipping commits with particular message or from specific user
+#skip_commits:
+#  message: /Created.*\.(png|jpg|jpeg|bmp|gif)/      # Regex for matching commit message
+#  author: John                                      # Commit author's username, name, email or regexp maching one of these.
+
+# Including commits with particular message or from specific user
+#only_commits:
+#  message: /build/                # Start a new build if message contains 'build'
+#  author: jack@company.com        # Start a new build for commit of user with email jack@company.com
+
+# Skipping commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
+#skip_commits:
+#  files:
+#    - docs/*
+#    - '**/*.html'
+
+# Including commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
+#only_commits:
+#  files:
+#    - Project-A/
+#    - Project-B/
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+
+# Maximum number of concurrent jobs for the project
+max_jobs: 2
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image:
+  - Visual Studio 2017
+
+environment:
+  # 0-4 warning levels; 0 is no warnings
+  MSBUILD_FLAGS: /maxcpucount
+  BOOST_ROOT: C:/Libraries/boost_1_65_1
+  matrix:
+    - generator: "Visual Studio 14 2015 Win64"
+    - generator: "Visual Studio 15 2017 Win64"
+
+install:
+  - ps: (new-object net.webclient).DownloadFile('https://github.com/cginternals/glbinding/releases/download/v2.1.1/glbinding-2.1.1-msvc2015-x64-dev.zip', 'c:/projects/glbinding-dev.zip')
+  - ps: Expand-Archive -LiteralPath C:\projects\glbinding-dev.zip -DestinationPath C:\projects\glbinding
+  - ps: (new-object net.webclient).DownloadFile('https://github.com/cginternals/glbinding/releases/download/v2.1.1/glbinding-2.1.1-msvc2015-x64-runtime.zip', 'c:/projects/glbinding-rt.zip')
+  - ps: Expand-Archive -LiteralPath C:\projects\glbinding-rt.zip -DestinationPath C:\projects\glbinding
+  - ps: (new-object net.webclient).DownloadFile('https://github.com/g-truc/glm/releases/download/0.9.8.5/glm-0.9.8.5.zip', 'c:/projects/glm.zip')
+  - ps: Expand-Archive -LiteralPath C:\projects\glm.zip -DestinationPath C:\projects
+  - ps: (new-object net.webclient).DownloadFile('https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.zip', 'c:/projects/glfw3.zip')
+  - ps: Expand-Archive -LiteralPath C:\projects\glfw3.zip -DestinationPath C:\projects
+  - ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/freeimage/FreeImage3170Win32Win64.zip', 'c:/projects/freeimage.zip')
+  - ps: Expand-Archive -LiteralPath C:\projects\freeimage.zip -DestinationPath C:\projects
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - date /T & time /T
+  - git config --global core.autocrlf input
+  - cmake --version
+
+# clone directory
+clone_folder: c:\projects\forge
+
+# fetch repository as zip archive
+shallow_clone: true                 # default is "false"
+
+# set clone depth
+clone_depth: 5                      # clone entire repository history if not defined
+
+# this is how to allow failing jobs in the matrix
+matrix:
+  fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
+  #  allow_failures:
+  #    - platform: x86
+  #      configuration: Debug
+  #    - platform: x64
+  #      configuration: Release
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: x64
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration:
+  - RelWithDebInfo
+  # - Debug
+  # - Release
+
+build:
+  parallel: true                                    # enable MSBuild parallel builds
+  project: c:/projects/forge/build/Forge.sln        # path to Visual Studio solution or project
+
+  # MSBuild verbosity level
+  # verbosity: quiet|minimal|normal|detailed
+  verbosity: quiet
+
+# scripts to run before build
+before_build:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - cd ../glm
+  - mkdir build
+  - cd build
+  - cmake .. -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/../glm/build/package
+  - cmake --build . --target INSTALL --config %configuration% -- /nologo
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - cd ../glfw-3.2.1
+  - mkdir build
+  - cd build
+  - cmake .. -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/../glfw-3.2.1/build/package -DBUILD_SHARED_LIBS=ON -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF
+  - cmake --build . --target INSTALL --config %configuration% -- /nologo
+
+# scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
+before_package:
+
+# scripts to run after build
+after_build:
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - mkdir build
+  - cd build
+  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DCMAKE_PREFIX_PATH="c:/projects/glbinding;c:/projects/glfw-3.2.1/build/package/lib/cmake/glfw3;c:/projects/glm/build/package/lib/cmake/glm" -DBOOST_ROOT="%BOOST_ROOT%" -DFreeImage_DYNAMIC_LIBRARY="c:/projects/FreeImage/Dist/x64/FreeImage.lib" -DFreeImage_INCLUDE_DIR="c:/projects/FreeImage/Dist/x64"
+  - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo
+  - cmake --build . --target INSTALL --config %configuration% -- /nologo
