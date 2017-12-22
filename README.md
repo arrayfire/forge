@@ -12,7 +12,7 @@ You can find the most recent and updated documentation [here](http://arrayfire.o
 ### Build Status
 | Platform | Linux x86 | Linux armv7l | Linux aarch64 | Windows | OSX |
 |:--------:|:---------:|:------------:|:-------------:|:-------:|:---:|
-| Status   | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-linux)](http://ci.arrayfire.org/view/All/job/forge/job/forge-linux/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrax1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrax1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrax1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrax1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-windows)](http://ci.arrayfire.org/view/All/job/forge/job/forge-windows/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-osx)](http://ci.arrayfire.org/view/All/job/forge/job/forge-osx/) |
+| Status   | [![Build Status](https://travis-ci.org/arrayfire/forge.svg?branch=v1.0)](https://travis-ci.org/arrayfire/forge) | `Unknown` | `Unknown` | [![Build Status](https://ci.appveyor.com/api/projects/status/github/arrayfire/forge?branch=v1.0&svg=true)](https://ci.appveyor.com/project/9prady9/forge-jwb4e) | [![Build Status](https://travis-ci.org/arrayfire/forge.svg?branch=v1.0)](https://travis-ci.org/arrayfire/forge) |
 
 ### Dependencies
 * [glbinding](https://github.com/cginternals/glbinding)
