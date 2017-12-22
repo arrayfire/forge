@@ -46,7 +46,7 @@ int main(void)
      * NOTE: THIS IS OPTIONAL STEP, BY DEFAULT WINDOW WILL
      * HAVE FONT ALREADY SETUP*/
     forge::Font fnt;
-#ifdef OS_WIN
+#if defined(OS_WIN)
     fnt.loadSystemFont("Calibri");
 #else
     fnt.loadSystemFont("Vera");

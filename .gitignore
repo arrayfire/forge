@@ -12,5 +12,5 @@ GRTAGS
 GPATH
 .dir-locals.el
 include/fg/version.h
-src/backend/version.hpp
+src/backend/common/version.hpp
 docs/details/examples.dox

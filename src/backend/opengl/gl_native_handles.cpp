@@ -9,9 +9,9 @@
 
 #include <gl_native_handles.hpp>
 
-#ifdef OS_WIN
+#if defined(OS_WIN)
 #include <windows.h>
-#elif OS_MAC
+#elif defined(OS_MAC)
 #include <OpenGL/OpenGL.h>
 #else
 #include <GL/glx.h>

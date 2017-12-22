@@ -1,0 +1,5 @@
+function(dependency_check VAR ERROR_MESSAGE)
+  if(NOT ${VAR})
+    message(SEND_ERROR ${ERROR_MESSAGE})
+  endif()
+endfunction()
