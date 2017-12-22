@@ -49,6 +49,10 @@ SET(USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
 SET_PROPERTY(CACHE USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
 
 IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
+	if(USE_HUNTER)
+		hunter_add_package(glfw)
+	endif()
+
     #FIXME LATER: glfw3Config.cmake file provided by glfw 3.*
     # is found on different locations in different linux/unix
     # distributions, thus causing glfw3 not found errors.
@@ -64,6 +68,10 @@ IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
 ENDIF()
 
 IF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
+	if(USE_HUNTER)
+		hunter_add_package(SDL2)
+	endif()
+
     FIND_PACKAGE(SDL2 REQUIRED)
     IF(SDL2_FOUND)
         SET(WTK_INCLUDE_DIRS ${SDL2_INCLUDE_DIR})
