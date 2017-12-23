@@ -12,17 +12,18 @@ You can find the most recent and updated documentation [here](http://arrayfire.o
 ### Build Status
 | Platform | Linux x86 | Linux armv7l | Linux aarch64 | Windows | OSX |
 |:--------:|:---------:|:------------:|:-------------:|:-------:|:---:|
-| Status   | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-linux)](http://ci.arrayfire.org/view/All/job/forge/job/forge-linux/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrax1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrax1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-tegrax1)](http://ci.arrayfire.org/view/All/job/forge/job/forge-tegrax1/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-windows)](http://ci.arrayfire.org/view/All/job/forge/job/forge-windows/) | [![Build Status](http://ci.arrayfire.org/buildStatus/icon?job=forge/forge-osx)](http://ci.arrayfire.org/view/All/job/forge/job/forge-osx/) |
+| Status   | [![Build Status](https://travis-ci.org/arrayfire/forge.svg?branch=master)](https://travis-ci.org/arrayfire/forge) | `Unknown` | `Unknown` | [https://ci.appveyor.com/api/projects/status/3xo0bm9706yccg5p/branch/master?svg=true](https://ci.appveyor.com/api/projects/status/3xo0bm9706yccg5p/branch/master?svg=true) | `Unknown` |
 
 ### Dependencies
 * [glbinding](https://github.com/cginternals/glbinding)
 * [GLFW](http://www.glfw.org/), optionally you can build with [SDL2](https://www.libsdl.org/) alternative too.
-* [freetype](http://www.freetype.org/)
-* [FreeImage](http://freeimage.sourceforge.net/) - optional. Packages should ideally turn this
-  option ON.
+* [freetype](http://www.freetype.org/). On Windows, freetype is built as a third-party package by
+  CMake.
+* [FreeImage](http://freeimage.sourceforge.net/) - optional. If FreeImage is found, this option is
+  automatically turned on.
 * On `Linux` and `OS X`, [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) is required.
 
-Above dependencies are available through package managers on most of the Unix/Linux based distributions. We have provided an option in `CMake` for `Forge` to build it's own internal `freetype` version if you choose to not install it on your machine.
+Above dependencies are available through package managers on most of the Unix/Linux based distributions.
 
 ### Sample Images
 |     |     |
