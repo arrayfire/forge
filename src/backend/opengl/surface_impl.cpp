@@ -221,13 +221,11 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
 
 surface_impl::~surface_impl()
 {
-    CheckGL("Begin Plot::~Plot");
     for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
         GLuint vao = it->second;
         glDeleteVertexArrays(1, &vao);
     }
     glDeleteBuffers(1, &mIBO);
-    CheckGL("End Plot::~Plot");
 }
 
 void surface_impl::render(const int pWindowId,

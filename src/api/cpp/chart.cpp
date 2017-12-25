@@ -38,7 +38,7 @@ Chart::Chart(const Chart& pOther)
 
 Chart::~Chart()
 {
-    FG_THROW(fg_release_chart(get()));
+    fg_release_chart(get());
 }
 
 void Chart::setAxesTitles(const char* pX,

@@ -154,13 +154,11 @@ vector_field_impl::vector_field_impl(const uint pNumPoints, const forge::dtype p
 
 vector_field_impl::~vector_field_impl()
 {
-    CheckGL("Begin vector_field_impl::~vector_field_impl");
     for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
         GLuint vao = it->second;
         glDeleteVertexArrays(1, &vao);
     }
     glDeleteBuffers(1, &mDBO);
-    CheckGL("End vector_field_impl::~vector_field_impl");
 }
 
 GLuint vector_field_impl::directions()
