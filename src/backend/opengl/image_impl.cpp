@@ -100,10 +100,8 @@ image_impl::image_impl(const uint pWidth, const uint pHeight,
 
 image_impl::~image_impl()
 {
-    CheckGL("Begin image_impl::~image_impl");
     glDeleteBuffers(1, &mPBO);
     glDeleteTextures(1, &mTex);
-    CheckGL("End image_impl::~image_impl");
 }
 
 void image_impl::setColorMapUBOParams(const GLuint pUBO, const GLuint pSize)

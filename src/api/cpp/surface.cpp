@@ -15,7 +15,6 @@
 
 namespace forge
 {
-
 Surface::Surface(unsigned pNumXPoints, unsigned pNumYPoints, dtype pDataType, PlotType pPlotType, MarkerType pMarkerType)
 {
     fg_surface temp = 0;
@@ -40,7 +39,7 @@ Surface::Surface(const fg_surface pHandle)
 
 Surface::~Surface()
 {
-    FG_THROW(fg_release_surface(get()));
+    fg_release_surface(get());
 }
 
 void Surface::setColor(const Color pColor)
@@ -110,5 +109,4 @@ fg_surface Surface::get() const
 {
     return mValue;
 }
-
 }

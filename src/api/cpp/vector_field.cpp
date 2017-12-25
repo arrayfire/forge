@@ -15,7 +15,6 @@
 
 namespace forge
 {
-
 VectorField::VectorField(const unsigned pNumPoints, const dtype pDataType, const ChartType pChartType)
 {
     fg_vector_field temp = 0;
@@ -39,7 +38,7 @@ VectorField::VectorField(const fg_vector_field pHandle)
 
 VectorField::~VectorField()
 {
-    FG_THROW(fg_release_vector_field(get()));
+    fg_release_vector_field(get());
 }
 
 void VectorField::setColor(const Color pColor)
@@ -123,5 +122,4 @@ fg_vector_field VectorField::get() const
 {
     return mValue;
 }
-
 }
