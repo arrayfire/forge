@@ -15,7 +15,6 @@
 
 namespace forge
 {
-
 Histogram::Histogram(const unsigned pNBins, const dtype pDataType)
 {
     fg_histogram temp = 0;
@@ -39,7 +38,7 @@ Histogram::Histogram(const fg_histogram pHandle)
 
 Histogram::~Histogram()
 {
-    FG_THROW(fg_release_histogram(get()));
+    fg_release_histogram(get());
 }
 
 void Histogram::setColor(const Color pColor)
@@ -109,5 +108,4 @@ fg_histogram Histogram::get() const
 {
     return mValue;
 }
-
 }

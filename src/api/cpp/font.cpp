@@ -15,7 +15,6 @@
 
 namespace forge
 {
-
 Font::Font()
 {
     fg_font temp = 0;
@@ -32,7 +31,7 @@ Font::Font(const Font& other)
 
 Font::~Font()
 {
-    FG_THROW(fg_release_font(get()));
+    fg_release_font(get());
 }
 
 void Font::loadFontFile(const char* const pFile)
@@ -49,5 +48,4 @@ fg_font Font::get() const
 {
     return mValue;
 }
-
 }

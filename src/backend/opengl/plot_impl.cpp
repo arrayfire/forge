@@ -165,13 +165,11 @@ plot_impl::plot_impl(const uint pNumPoints, const forge::dtype pDataType,
 
 plot_impl::~plot_impl()
 {
-    CheckGL("Begin plot_impl::~plot_impl");
     for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
         GLuint vao = it->second;
         glDeleteVertexArrays(1, &vao);
     }
     glDeleteBuffers(1, &mRBO);
-    CheckGL("End plot_impl::~plot_impl");
 }
 
 void plot_impl::setMarkerSize(const float pMarkerSize)

@@ -15,7 +15,6 @@
 
 namespace forge
 {
-
 Window::Window(const int pWidth, const int pHeight, const char* pTitle,
                const Window* pWindow, const bool invisible)
     : mValue(0)
@@ -38,7 +37,7 @@ Window::Window(const Window& other)
 
 Window::~Window()
 {
-    FG_THROW(fg_release_window(get()));
+    fg_release_window(get());
 }
 
 void Window::setFont(Font* pFont)
@@ -152,5 +151,4 @@ void Window::saveFrameBuffer(const char* pFullPath)
 {
     FG_THROW(fg_save_window_framebuffer(pFullPath, get()));
 }
-
 }
