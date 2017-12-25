@@ -120,12 +120,10 @@ histogram_impl::histogram_impl(const uint pNBins, const forge::dtype pDataType)
 
 histogram_impl::~histogram_impl()
 {
-    CheckGL("Begin histogram_impl::~histogram_impl");
     for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
         GLuint vao = it->second;
         glDeleteVertexArrays(1, &vao);
     }
-    CheckGL("End histogram_impl::~histogram_impl");
 }
 
 void histogram_impl::render(const int pWindowId,

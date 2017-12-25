@@ -175,13 +175,11 @@ AbstractChart::AbstractChart(const float pLeftMargin, const float pRightMargin,
 
 AbstractChart::~AbstractChart()
 {
-    CheckGL("Begin AbstractChart::~AbstractChart");
     for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
         GLuint vao = it->second;
         glDeleteVertexArrays(1, &vao);
     }
     glDeleteBuffers(1, &mDecorVBO);
-    CheckGL("End AbstractChart::~AbstractChart");
 }
 
 void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,

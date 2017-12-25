@@ -16,7 +16,6 @@
 
 namespace forge
 {
-
 Image::Image(const unsigned pWidth, const unsigned pHeight,
              const ChannelFormat pFormat, const dtype pDataType)
     : mValue(0)
@@ -43,7 +42,7 @@ Image::Image(const fg_image pHandle)
 
 Image::~Image()
 {
-    FG_THROW(fg_release_image(get()));
+    fg_release_image(get());
 }
 
 void Image::setAlpha(const float pAlpha)
@@ -109,5 +108,4 @@ fg_image Image::get() const
 {
     return mValue;
 }
-
 }

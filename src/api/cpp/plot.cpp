@@ -15,7 +15,6 @@
 
 namespace forge
 {
-
 Plot::Plot(const unsigned pNumPoints, const dtype pDataType, const ChartType pChartType,
            const PlotType pPlotType, const MarkerType pMarkerType)
 {
@@ -41,7 +40,7 @@ Plot::Plot(const fg_plot pHandle)
 
 Plot::~Plot()
 {
-    FG_THROW(fg_release_plot(get()));
+    fg_release_plot(get());
 }
 
 void Plot::setColor(const Color pColor)
@@ -130,5 +129,4 @@ fg_plot Plot::get() const
 {
     return mValue;
 }
-
 }
