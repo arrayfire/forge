@@ -147,6 +147,8 @@ class AbstractChart : public AbstractRenderable {
     float zmin() const;
 
     void addRenderable(const std::shared_ptr<AbstractRenderable> pRenderable);
+    void removeRenderable(
+        const std::shared_ptr<AbstractRenderable> pRenderable);
 };
 
 class chart2d_impl : public AbstractChart {
