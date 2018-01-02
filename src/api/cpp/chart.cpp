@@ -80,6 +80,26 @@ void Chart::add(const VectorField& pVectorField) {
     FG_THROW(fg_append_vector_field_to_chart(get(), pVectorField.get()));
 }
 
+void Chart::remove(const Image& pImage) {
+    FG_THROW(fg_remove_image_from_chart(get(), pImage.get()));
+}
+
+void Chart::remove(const Histogram& pHistogram) {
+    FG_THROW(fg_remove_histogram_from_chart(get(), pHistogram.get()));
+}
+
+void Chart::remove(const Plot& pPlot) {
+    FG_THROW(fg_remove_plot_from_chart(get(), pPlot.get()));
+}
+
+void Chart::remove(const Surface& pSurface) {
+    FG_THROW(fg_remove_surface_from_chart(get(), pSurface.get()));
+}
+
+void Chart::remove(const VectorField& pVectorField) {
+    FG_THROW(fg_remove_vector_field_from_chart(get(), pVectorField.get()));
+}
+
 Image Chart::image(const unsigned pWidth, const unsigned pHeight,
                    const ChannelFormat pFormat, const dtype pDataType) {
     fg_image temp = 0;
