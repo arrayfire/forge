@@ -32,8 +32,8 @@ class AbstractChart : public AbstractRenderable {
         std::vector<std::string> mXText;
         std::vector<std::string> mYText;
         std::vector<std::string> mZText;
-        int   mTickCount;  /* should be an odd number always */
-        int   mTickSize;
+        int     mTickCount;  /* should be an odd number always */
+        float   mTickSize;
         /* margin variables represent the % of current dimensions
          * and not the exact units of length */
         float mLeftMargin;

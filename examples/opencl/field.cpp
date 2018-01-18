@@ -89,8 +89,8 @@ void generatePoints(cl::Buffer& points, cl::Buffer& dirs,
     }
 
     static const NDRange local(8, 8);
-    NDRange global(local[0] * divup(NELEMS, local[0]),
-                   local[1] * divup(NELEMS, local[1]));
+    NDRange global(local[0] * divup((int)(NELEMS), (int)(local[0])),
+                   local[1] * divup((int)(NELEMS), (int)(local[1])));
 
     pointGenKernel.setArg(0, points);
     pointGenKernel.setArg(1, dirs);
@@ -120,9 +120,9 @@ int main(void)
         divPoints.setLegend("Convergence Points");
         divPoints.setMarkerSize(24);
 
-        size_t npoints = NELEMS*NELEMS;
+        size_t npoints = (size_t)(NELEMS*NELEMS);
 
-        forge::VectorField field = chart.vectorField(npoints, forge::f32);
+        forge::VectorField field = chart.vectorField((unsigned)(npoints), forge::f32);
         field.setColor(0.f, 0.6f, 0.3f, 1.f);
 
         /*

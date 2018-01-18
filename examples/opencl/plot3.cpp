@@ -23,8 +23,8 @@ const unsigned DIMY = 800;
 static const float ZMIN = 0.1f;
 static const float ZMAX = 10.f;
 
-const float DX = 0.005;
-static const unsigned ZSIZE = (ZMAX-ZMIN)/DX+1;
+const float DX = 0.005f;
+static const unsigned ZSIZE = (unsigned)((ZMAX-ZMIN)/DX+1);
 
 using namespace std;
 
@@ -118,7 +118,7 @@ int main(void)
         copyToGLBuffer(handle, (ComputeResourceHandle)devOut(), plot3.verticesSize());
 
         do {
-            t+=0.01;
+            t+=0.01f;
             kernel(devOut, queue, t);
             copyToGLBuffer(handle, (ComputeResourceHandle)devOut(), plot3.verticesSize());
             wnd.draw(chart);

@@ -97,8 +97,8 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue)
     auto juliaOp = cl::KernelFunctor<Buffer, unsigned, unsigned>(kern);
 
     static const NDRange local(8, 8);
-    NDRange global(local[0] * divup(DIMX, local[0]),
-                   local[1] * divup(DIMY, local[1]));
+    NDRange global(local[0] * divup(DIMX, (int)(local[0])),
+                   local[1] * divup(DIMY, (int)(local[1])));
 
     juliaOp(EnqueueArgs(queue, global, local), devOut, DIMX, DIMY);
 }

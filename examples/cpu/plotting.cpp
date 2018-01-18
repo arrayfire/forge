@@ -58,10 +58,10 @@ int main(void)
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    forge::Plot plt0 = chart.plot(sinData.size()/2, forge::f32); //create a default plot
-    forge::Plot plt1 = chart.plot(cosData.size()/2, forge::f32, FG_PLOT_LINE, FG_MARKER_NONE); //or specify a specific plot type
-    forge::Plot plt2 = chart.plot(tanData.size()/2, forge::f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE); //last parameter specifies marker shape
-    forge::Plot plt3 = chart.plot(logData.size()/2, forge::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
+    forge::Plot plt0 = chart.plot((unsigned)(sinData.size()/2), forge::f32); //create a default plot
+    forge::Plot plt1 = chart.plot((unsigned)(cosData.size()/2), forge::f32, FG_PLOT_LINE, FG_MARKER_NONE); //or specify a specific plot type
+    forge::Plot plt2 = chart.plot((unsigned)(tanData.size()/2), forge::f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE); //last parameter specifies marker shape
+    forge::Plot plt3 = chart.plot((unsigned)(logData.size()/2), forge::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
 
     /*
      * Set plot colors

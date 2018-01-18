@@ -17,7 +17,7 @@
 
 const unsigned DIMX = 640;
 const unsigned DIMY = 480;
-const float PI = 3.14159265359;
+const float PI = 3.14159265359f;
 const float MINIMUM = 1.0f;
 const float MAXIMUM = 20.f;
 const float STEP    = 2.0f;
@@ -61,7 +61,7 @@ int main(void)
     divPoints.setLegend("Convergence Points");
     divPoints.setMarkerSize(24);
 
-    forge::VectorField field = chart.vectorField(NELEMS*NELEMS, forge::f32);
+    forge::VectorField field = chart.vectorField((unsigned)(NELEMS*NELEMS), forge::f32);
     field.setColor(0.f, 0.6f, 0.3f, 1.f);
 
     std::vector<float> points;
