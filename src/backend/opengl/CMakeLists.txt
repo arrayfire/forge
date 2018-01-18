@@ -81,7 +81,7 @@ target_link_libraries(${BackendTarget}
     PRIVATE
         glbinding::glbinding
         glm
-        FreeType::FreeType
+        freetype::freetype
         Boost::boost
         backend_interface
         wtk_interface

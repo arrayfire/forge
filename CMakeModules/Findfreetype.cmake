@@ -15,19 +15,18 @@
 # Usage:
 # find_package(FreeType)
 # if (FreeType_FOUND)
-#    target_link_libraries(mylib PRIVATE FreeType::FreeType)
+#    target_link_libraries(mylib PRIVATE freetype::freetype)
 # endif (FreeType_FOUND)
 #
 # OR if you want to link against the static library:
 #
 # find_package(FreeType)
 # if (FreeType_FOUND)
-#    target_link_libraries(mylib PRIVATE FreeType::FreeType_STATIC)
+#    target_link_libraries(mylib PRIVATE freetype::freetype_STATIC)
 # endif (FreeType_FOUND)
 #
 # NOTE: You do not need to include the Freetype include directories since they
 # will be included as part of the target_link_libraries command
-
 if(WIN32)
     include(build_freetype)
 else(WIN32)
@@ -46,9 +45,9 @@ else(WIN32)
         REQUIRED_VARS FreeType_LIBRARY FreeType_INCLUDE_DIR
         )
 
-    if (FreeType_FOUND AND NOT TARGET FreeType::FreeType)
-        add_library(FreeType::FreeType UNKNOWN IMPORTED)
-        set_target_properties(FreeType::FreeType PROPERTIES
+    if (FreeType_FOUND AND NOT TARGET freetype::freetype)
+        add_library(freetype::freetype UNKNOWN IMPORTED)
+        set_target_properties(freetype::freetype PROPERTIES
             IMPORTED_LINK_INTERFACE_LANGUAGE "C"
             IMPORTED_LOCATION "${FreeType_LIBRARY}"
             INTERFACE_INCLUDE_DIRECTORIES "${FreeType_INCLUDE_DIR}")
