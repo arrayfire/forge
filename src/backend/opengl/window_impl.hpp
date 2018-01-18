@@ -15,6 +15,8 @@
 #include <glfw/window.hpp>
 #elif defined(USE_SDL)
 #include <sdl/window.hpp>
+#elif defined(USE_QT5)
+#include <qt5/window.hpp>
 #endif
 
 #include <colormap_impl.hpp>

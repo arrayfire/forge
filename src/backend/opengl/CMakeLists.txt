@@ -57,6 +57,11 @@ if(${WINDOW_TOOLKIT} STREQUAL "glfw3")
 elseif(${WINDOW_TOOLKIT} STREQUAL "sdl2")
     add_subdirectory(sdl)
     target_compile_definitions(${BackendTarget} PRIVATE USE_SDL)
+elseif(${WINDOW_TOOLKIT} STREQUAL "Qt5")
+    find_package(Qt5Core REQUIRED) #need it for the AUTOMOC to work on the target
+    add_subdirectory(qt5)
+    target_compile_definitions(${BackendTarget} PRIVATE USE_QT5)
+    set_target_properties(${BackendTarget} PROPERTIES AUTOMOC TRUE)
 endif()
 
 if(WITH_FREEIMAGE)
@@ -109,6 +114,8 @@ if(${WINDOW_TOOLKIT} STREQUAL "glfw3")
     source_group("backend\\glfw" REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/glfw/*)
 elseif(${WINDOW_TOOLKIT} STREQUAL "sdl2")
     source_group("backend\\sdl2" REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/sdl/*)
+elseif(${WINDOW_TOOLKIT} STREQUAL "Qt5")
+    source_group("backend\\qt5" REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/qt5/*)
 endif()
 
 #--------------------------------------------------------------------

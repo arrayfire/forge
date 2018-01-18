@@ -59,7 +59,7 @@ endif(Boost_FOUND AND NOT TARGET Boost::boost)
 
 
 set(WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
-set_property(CACHE WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
+set_property(CACHE WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2" "Qt5")
 
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
