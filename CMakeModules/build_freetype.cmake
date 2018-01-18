@@ -1,3 +1,4 @@
+
 include(ExternalProject)
 
 set(LIB_POSTFIX "")
@@ -32,21 +33,21 @@ ExternalProject_Add(
 
 ExternalProject_Get_Property(ft-ext install_dir)
 
-set(FreeType_INCLUDE_DIR ${install_dir}/include/freetype2 CACHE INTERNAL "" FORCE)
-set(FreeType_LIBRARY ${freetype_location} CACHE INTERNAL "" FORCE)
+set(freetype_INCLUDE_DIR ${install_dir}/include/freetype2 CACHE INTERNAL "" FORCE)
+set(freetype_LIBRARY ${freetype_location} CACHE INTERNAL "" FORCE)
 
-mark_as_advanced(FreeType_INCLUDE_DIR FreeType_LIBRARY)
+mark_as_advanced(freetype_INCLUDE_DIR freetype_LIBRARY)
 
 include(FindPackageHandleStandardArgs)
 
-find_package_handle_standard_args(FreeType REQUIRED_VARS FreeType_LIBRARY FreeType_INCLUDE_DIR)
-
-if (FreeType_FOUND AND NOT TARGET FreeType::FreeType)
-    file(MAKE_DIRECTORY ${FreeType_INCLUDE_DIR})
-    add_library(FreeType::FreeType STATIC IMPORTED)
-    set_target_properties(FreeType::FreeType PROPERTIES
+find_package_handle_standard_args(freetype REQUIRED_VARS freetype_LIBRARY freetype_INCLUDE_DIR)
+    
+if (freetype_FOUND AND NOT TARGET freetype::freetype)
+    file(MAKE_DIRECTORY ${freetype_INCLUDE_DIR})
+    add_library(freetype::freetype STATIC IMPORTED)
+    set_target_properties(freetype::freetype PROPERTIES
         IMPORTED_LINK_INTERFACE_LANGUAGE "C"
-        IMPORTED_LOCATION "${FreeType_LIBRARY}"
-        INTERFACE_INCLUDE_DIRECTORIES "${FreeType_INCLUDE_DIR}")
-    add_dependencies(FreeType::FreeType ft-ext)
+        IMPORTED_LOCATION "${freetype_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${freetype_INCLUDE_DIR}")
+    add_dependencies(freetype::freetype ft-ext)
 endif ()

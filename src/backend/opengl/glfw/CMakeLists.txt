@@ -1,3 +1,7 @@
+if(USE_HUNTER)
+    hunter_add_package(glfw)
+endif()
+
 find_package(glfw3)
 
 add_library(wtk_interface INTERFACE)

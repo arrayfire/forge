@@ -6,6 +6,10 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
+if(USE_HUNTER)
+    hunter_add_package(OpenCL)
+endif()
+
 find_package(OpenGL REQUIRED)
 find_package(CUDA QUIET)
 find_package(OpenCL 1.2 QUIET)
