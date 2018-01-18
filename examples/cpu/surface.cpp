@@ -23,8 +23,8 @@ static const float YMIN = -32.0f;
 static const float YMAX =  32.0f;
 
 const float DX = 0.25;
-const size_t XSIZE = (XMAX-XMIN)/DX;
-const size_t YSIZE = (YMAX-YMIN)/DX;
+const size_t XSIZE = (size_t)((XMAX-XMIN)/DX);
+const size_t YSIZE = (size_t)((YMAX-YMIN)/DX);
 
 void genSurface(float dx, std::vector<float> &vec )
 {
@@ -33,7 +33,7 @@ void genSurface(float dx, std::vector<float> &vec )
         for(float y=YMIN; y < YMAX; y+=dx) {
             vec.push_back(x);
             vec.push_back(y);
-            float z = sqrt(x*x+y*y) + 2.2204e-16;
+            float z = sqrt(x*x+y*y) + 2.2204e-16f;
             vec.push_back(sin(z)/z);
         }
     }

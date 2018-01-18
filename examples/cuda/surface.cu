@@ -21,8 +21,8 @@ const float YMIN = -8.0f;
 const float YMAX = 8.f;
 
 const float DX = 0.5;
-const size_t XSIZE = (XMAX-XMIN)/DX;
-const size_t YSIZE = (YMAX-YMIN)/DX;
+const size_t XSIZE = (size_t)((XMAX-XMIN)/DX);
+const size_t YSIZE = (size_t)((YMAX-YMIN)/DX);
 
 void kernel(float dx, float* dev_out);
 

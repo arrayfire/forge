@@ -139,7 +139,7 @@ float interp(float x0, float x1, float alpha)
 
 PerlinNoise::PerlinNoise()
 {
-    std::srand(std::time(0));
+    std::srand((unsigned)(std::time(0)));
 
     for(unsigned i=0; i < IMGW; i++)
     {
@@ -216,11 +216,11 @@ void kernel(Bitmap& bmp)
             float u = x/(float)(bmp.width);
             float v = y/(float)(bmp.height);
 
-            unsigned char noiseVal = 255 * perlin.noise(u, v);
-            bmp.ptr[offset*4 + 0]   = noiseVal;
-            bmp.ptr[offset*4 + 1]   = noiseVal;
-            bmp.ptr[offset*4 + 2]   = noiseVal;
-            bmp.ptr[offset*4 + 3]   = 255;
+            unsigned char noiseVal = (unsigned char)(255 * perlin.noise(u, v));
+            bmp.ptr[offset*4 + 0]  = noiseVal;
+            bmp.ptr[offset*4 + 1]  = noiseVal;
+            bmp.ptr[offset*4 + 2]  = noiseVal;
+            bmp.ptr[offset*4 + 3]  = 255;
         }
     }
 }

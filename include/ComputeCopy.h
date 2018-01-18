@@ -178,8 +178,10 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
 
 #if defined(USE_FORGE_OPENCL_COPY_HELPERS)
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
 
 #define FORGE_OCL_CHECK(cl_status, message) \
     if(cl_status != CL_SUCCESS) \
@@ -242,7 +244,9 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
                     "Failed in clWaitForEvents after clEnqueueReleaseGLObjects");
 }
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif
 
 #endif
 

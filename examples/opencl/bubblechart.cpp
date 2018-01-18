@@ -23,10 +23,10 @@ using namespace std;
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
-static const float  DX = 0.1;
+static const float  DX = 0.1f;
 static const float  FRANGE_START = 0.f;
 static const float  FRANGE_END = 2 * 3.141592f;
-static const int DATA_SIZE = (FRANGE_END - FRANGE_START) / DX;
+static const int DATA_SIZE = (int)((FRANGE_END - FRANGE_START) / DX);
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
 #include <ComputeCopy.h>
@@ -92,7 +92,7 @@ void kernel(cl::Buffer& devOut, int fnCode, int outFlags,
     static cl::Program      prog;
     static cl::Kernel       randKernel, colorsKernel, mapKernel;
 
-    std::srand(std::time(0));
+    std::srand((unsigned)(std::time(0)));
 
     if (compileFlag) {
         try {
@@ -116,7 +116,7 @@ void kernel(cl::Buffer& devOut, int fnCode, int outFlags,
     }
 
     static const NDRange local(32);
-    NDRange global(local[0] * divup(DATA_SIZE, local[0]));
+    NDRange global(local[0] * divup(DATA_SIZE, (int)(local[0])));
 
     mapKernel.setArg(0, devOut);
     mapKernel.setArg(1, fnCode);

@@ -21,8 +21,8 @@ const unsigned DIMY = 800;
 static const float ZMIN = 0.1f;
 static const float ZMAX = 10.f;
 
-const float DX = 0.005;
-const size_t ZSIZE = (ZMAX-ZMIN)/DX+1;
+const float DX = 0.005f;
+const size_t ZSIZE = (size_t)((ZMAX-ZMIN)/DX+1);
 
 void kernel(float t, float dx, float* dev_out);
 
@@ -64,7 +64,7 @@ int main(void)
     copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, plot3.verticesSize());
 
     do {
-        t+=0.01;
+        t+=0.01f;
         kernel(t, DX, dev_out);
         copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, plot3.verticesSize());
         wnd.draw(chart);

@@ -175,7 +175,7 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
 
     auto cursorCallback = [](GLFWwindow* w, double xpos, double ypos)
     {
-        static_cast<Widget*>(glfwGetWindowUserPointer(w))->cursorHandler(xpos, ypos);
+        static_cast<Widget*>(glfwGetWindowUserPointer(w))->cursorHandler(float(xpos), float(ypos));
     };
 
     auto mouseButtonCallback = [](GLFWwindow* w, int button, int action, int mods)
@@ -301,9 +301,9 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
     } else if (mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_ALT ||
                mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_CONTROL) {
         // Zoom
-        if(deltaY != 0) {
-            if(deltaY < 0) {
-                deltaY = 1.0 / (-deltaY);
+        if(deltaY != 0.0f) {
+            if(deltaY < 0.0f) {
+                deltaY = 1.0f / (-deltaY);
             }
             glm::mat4 vMat = scale(viewMat, glm::vec3(pow(deltaY, SPEED)));
 
@@ -317,8 +317,8 @@ void Widget::cursorHandler(const float pXPos, const float pYPos)
         glfwGetWindowSize(mWindow, &width, &height);
 
         if (mLastXPos != pXPos || mLastYPos != pYPos) {
-            glm::vec3 op1 = trackballPoint(mLastXPos, mLastYPos, width, height);
-            glm::vec3 op2 = trackballPoint(pXPos, pYPos, width, height);
+            glm::vec3 op1 = trackballPoint(mLastXPos, mLastYPos, float(width), float(height));
+            glm::vec3 op2 = trackballPoint(pXPos, pYPos, float(width), float(height));
 
             float angle = std::acos(std::min(1.0f, glm::dot(op1, op2)));
 
@@ -341,8 +341,8 @@ void Widget::mouseButtonHandler(int pButton, int pAction, int pMods)
 {
     double x, y;
     glfwGetCursorPos(mWindow, &x, &y);
-    mLastXPos = x;
-    mLastYPos = y;
+    mLastXPos = float(x);
+    mLastYPos = float(y);
 
     mButton = -1;
     if (pAction == GLFW_PRESS) {
@@ -357,8 +357,8 @@ void Widget::mouseButtonHandler(int pButton, int pAction, int pMods)
     }
     // reset UI transforms upon mouse middle click
     if (pButton == GLFW_MOUSE_BUTTON_MIDDLE && pMods == GLFW_MOD_CONTROL && pAction == GLFW_PRESS) {
-        setCellViewMatrix(x, y, IDENTITY);
-        setCellOrientationMatrix(x, y, IDENTITY);
+        setCellViewMatrix(float(x), float(y), IDENTITY);
+        setCellOrientationMatrix(float(x), float(y), IDENTITY);
     }
 }
 
