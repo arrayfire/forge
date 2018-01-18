@@ -51,9 +51,9 @@ int main(void)
     divPoints.setLegend("Convergence Points");
     divPoints.setMarkerSize(24);
 
-    size_t npoints = NELEMS*NELEMS;
+    size_t npoints = (size_t)(NELEMS*NELEMS);
 
-    forge::VectorField field = chart.vectorField(npoints, forge::f32);
+    forge::VectorField field = chart.vectorField((unsigned)(npoints), forge::f32);
     field.setColor(0.f, 0.6f, 0.3f, 1.f);
 
     FORGE_CUDA_CHECK(cudaMalloc((void**)&dpoints, 8*sizeof(unsigned)));
@@ -113,8 +113,8 @@ void pointGenKernel(float* points, float* dirs, int nelems, float minimum, float
 void generatePoints(float* points, float* dirs)
 {
     static dim3 threads(8, 8);
-    dim3 blocks(divup(NELEMS, threads.x),
-                divup(NELEMS, threads.y));
+    dim3 blocks(divup((int)(NELEMS), threads.x),
+                divup((int)(NELEMS), threads.y));
 
-    pointGenKernel<<<blocks, threads>>>(points, dirs, NELEMS, MINIMUM, STEP);
+    pointGenKernel<<<blocks, threads>>>(points, dirs, (int)(NELEMS), MINIMUM, STEP);
 }

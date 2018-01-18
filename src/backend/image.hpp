@@ -50,7 +50,7 @@ class Image {
 
         inline unsigned pbo() const { return mImage->pbo(); }
 
-        inline size_t size() const { return mImage->size(); }
+        inline uint size() const { return mImage->size(); }
 
         inline void render(const int pWindowId,
                            const int pX, const int pY, const int pVPW, const int pVPH,

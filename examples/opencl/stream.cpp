@@ -25,7 +25,7 @@ const unsigned DIMY = 480;
 const float MINIMUM = 1.0f;
 const float MAXIMUM = 20.f;
 const float STEP    = 2.0f;
-const int NELEMS    = (MAXIMUM-MINIMUM+1)/STEP;
+const int NELEMS    = (int)((MAXIMUM-MINIMUM+1)/STEP);
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
 #include <ComputeCopy.h>
@@ -116,8 +116,8 @@ void generatePoints(Buffer& points, Buffer &dirs, Buffer& colors,
     }
 
     static const NDRange local(8, 8);
-    int blk_x = divup(NELEMS, local[0]);
-    int blk_y = divup(NELEMS, local[1]);
+    int blk_x = divup(NELEMS, (int)(local[0]));
+    int blk_y = divup(NELEMS, (int)(local[1]));
 
     NDRange global(NELEMS * local[0] * blk_x, local[1] * blk_y);
 
@@ -130,7 +130,7 @@ void generatePoints(Buffer& points, Buffer &dirs, Buffer& colors,
     queue.enqueueNDRangeKernel(pointGenKernel, cl::NullRange, global, local);
     const int numElems = NELEMS*NELEMS*NELEMS;
     static const NDRange thrds(64, 1);
-    NDRange glob(thrds[0] * divup(numElems, thrds[0]), thrds[1]);
+    NDRange glob(thrds[0] * divup(numElems, (int)(thrds[0])), (int)(thrds[1]));
 
     colorsKernel.setArg(0, colors);
     colorsKernel.setArg(1, NELEMS);

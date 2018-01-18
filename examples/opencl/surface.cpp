@@ -23,8 +23,8 @@ static const float YMIN = -8.0f;
 static const float YMAX = 8.f;
 
 const float DX = 0.5;
-const unsigned XSIZE = (XMAX-XMIN)/DX;
-const unsigned YSIZE = (YMAX-YMIN)/DX;
+const unsigned XSIZE = (unsigned)((XMAX-XMIN)/DX);
+const unsigned YSIZE = (unsigned)((YMAX-YMIN)/DX);
 
 using namespace std;
 
@@ -86,8 +86,8 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, cl::Device& device)
     }
 
     NDRange local(8, 8);
-    NDRange global(local[0]*divup(XSIZE, local[0]),
-                   local[1]*divup(YSIZE, local[1]));
+    NDRange global(local[0]*divup(XSIZE, (int)(local[0])),
+                   local[1]*divup(YSIZE, (int)(local[1])));
 
     kern.setArg(0, devOut);
     kern.setArg(1, DX);

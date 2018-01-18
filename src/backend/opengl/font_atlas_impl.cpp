@@ -70,26 +70,26 @@ namespace opengl
 int FontAtlas::fit(const size_t pIndex, const size_t pWidth, const size_t pHeight)
 {
     auto node = nodes[pIndex];
-    int x = node.x;
-    int y = node.y;
-    int widthLeft = pWidth;
-    int i = pIndex;
+    int x = int(node.x);
+    int y = int(node.y);
+    int widthLeft = int(pWidth);
+    int i = int(pIndex);
 
     if ((x + pWidth) > (mWidth-BORDER_GAP)) {
         return -1;
     }
 
-    y = node.y;
+    y = int(node.y);
 
     while (widthLeft > 0) {
         auto node = nodes[i];
         if (node.y > y) {
-            y = node.y;
+            y = int(node.y);
         }
         if ((y + pHeight) > (mHeight-BORDER_GAP)) {
             return -1;
         }
-        widthLeft -= node.z;
+        widthLeft -= int(node.z);
         ++i;
     }
     return y;
@@ -177,10 +177,10 @@ glm::vec4 FontAtlas::getRegion(const size_t pWidth, const size_t pHeight)
                  (((y + pHeight) == best_height) && (node.z < best_width)) )
             {
                 best_height = y + pHeight;
-                best_index  = i;
-                best_width  = node.z;
+                best_index  = int(i);
+                best_width  = int(node.z);
                 region.x    = node.x;
-                region.y    = y;
+                region.y    = float(y);
             }
         }
     }
@@ -204,7 +204,7 @@ glm::vec4 FontAtlas::getRegion(const size_t pWidth, const size_t pHeight)
 
         if (node.x < (prev.x + prev.z) )
         {
-            int shrink = prev.x + prev.z - node.x;
+            int shrink = int(prev.x + prev.z - node.x);
             node.x += shrink;
             node.z -= shrink;
             if (node.z <= 0) {
@@ -250,21 +250,21 @@ void FontAtlas::upload()
 
     if (mDepth == 4) {
 #ifdef GL_UNSIGNED_INT_8_8_8_8_REV
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RGBA), mWidth, mHeight, 0, GL_BGRA,
+        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RGBA), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_BGRA,
                      GL_UNSIGNED_INT_8_8_8_8_REV, mData.data());
 #else
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RGBA), mWidth, mHeight, 0, GL_RGBA,
+        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RGBA), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, mData.data());
 #endif
     } else if (mDepth == 3) {
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RGB), mWidth, mHeight, 0, GL_RGB,
+        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RGB), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_RGB,
                      GL_UNSIGNED_BYTE, mData.data());
     } else {
 #if defined(GL_ES_VERSION_2_0) || defined(GL_ES_VERSION_3_0)
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_LUMINANCE), mWidth, mHeight, 0, GL_LUMINANCE,
+        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_LUMINANCE), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_LUMINANCE,
                      GL_UNSIGNED_BYTE, mData.data());
 #else
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RED), mWidth, mHeight, 0, GL_RED,
+        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RED), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_RED,
                      GL_UNSIGNED_BYTE, mData.data());
 #endif
     }

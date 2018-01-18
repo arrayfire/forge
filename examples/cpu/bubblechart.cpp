@@ -51,8 +51,8 @@ int main(void)
     std::mt19937_64 gen(r());
 
     std::uniform_int_distribution<int> uDist(20, 80);
-    std::uniform_real_distribution<float> cDist(0.2, 0.6);
-    std::uniform_real_distribution<float> fDist(0.4, 0.6);
+    std::uniform_real_distribution<float> cDist(0.2f, 0.6f);
+    std::uniform_real_distribution<float> fDist(0.4f, 0.6f);
 
     auto clr = std::bind(cDist, gen);
     auto rnd = std::bind(uDist, e1);
@@ -80,9 +80,9 @@ int main(void)
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    forge::Plot plt1 = chart.plot(cosData.size()/2, forge::f32,
+    forge::Plot plt1 = chart.plot((unsigned)(cosData.size()/2), forge::f32,
                                FG_PLOT_LINE, FG_MARKER_TRIANGLE); //or specify a specific plot type
-    forge::Plot plt2 = chart.plot(tanData.size()/2, forge::f32,
+    forge::Plot plt2 = chart.plot((unsigned)(tanData.size()/2), forge::f32,
                                FG_PLOT_LINE, FG_MARKER_CIRCLE); //last parameter specifies marker shape
 
     /* Set plot colors */

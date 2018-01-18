@@ -21,8 +21,8 @@ const unsigned DIMY = 800;
 static const float ZMIN = 0.1f;
 static const float ZMAX = 10.f;
 
-const float DX = 0.005;
-const size_t ZSIZE = (ZMAX-ZMIN)/DX+1;
+const float DX = 0.005f;
+const size_t ZSIZE = (size_t)((ZMAX-ZMIN)/DX+1);
 
 using namespace std;
 
@@ -31,9 +31,9 @@ void generateCurve(float t, float dx, std::vector<float> &vec )
     vec.clear();
     for (int i=0; i < (int)ZSIZE; ++i) {
         float z = ZMIN + i*dx;
-        vec.push_back(cos(z*t+t)/z);
-        vec.push_back(sin(z*t+t)/z);
-        vec.push_back(z+0.1*sin(t));
+        vec.push_back((float)(cos(z*t+t)/z));
+        vec.push_back((float)(sin(z*t+t)/z));
+        vec.push_back((float)(z+0.1*sin(t)));
     }
 }
 
@@ -74,7 +74,7 @@ int main(void)
     copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), plot3.verticesSize());
 
     do {
-        t+=0.01;
+        t+=0.01f;
         generateCurve(t, DX, function);
         copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), plot3.verticesSize());
         wnd.draw(chart);

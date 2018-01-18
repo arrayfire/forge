@@ -22,10 +22,10 @@ using namespace std;
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
-const float    dx = 0.1;
+const float    dx = 0.1f;
 const float    FRANGE_START = 0.f;
 const float    FRANGE_END = 2 * 3.141592f;
-const unsigned DATA_SIZE = ( FRANGE_END - FRANGE_START ) / dx;
+const unsigned DATA_SIZE = (unsigned)(( FRANGE_END - FRANGE_START ) / dx);
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
 #include <ComputeCopy.h>
