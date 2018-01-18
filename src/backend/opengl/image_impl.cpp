@@ -162,7 +162,7 @@ void image_impl::render(const int pWindowId,
 
     mProgram.bind();
 
-    glUniform1i(mNumCIndex, mFormatSize);
+    glUniform1i(mNumCIndex, gl::GLint(mFormatSize));
     glUniform1f(mAlphaIndex, mAlpha);
 
     // load texture from PBO

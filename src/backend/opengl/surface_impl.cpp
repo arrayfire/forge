@@ -127,7 +127,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
     glUniform1i(mSurfPVAIndex, mIsPVAOn);
 
     bindResources(pWindowId);
-    glDrawElements(GL_TRIANGLE_STRIP, mIBOSize, GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(GL_TRIANGLE_STRIP, gl::GLsizei(mIBOSize), GL_UNSIGNED_INT, (void*)0);
     unbindResources();
     mSurfProgram.unbind();
 
@@ -142,7 +142,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUniform4fv(mMarkerColIndex, 1, mColor);
 
         bindResources(pWindowId);
-        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_POINTS, gl::GLsizei(mIBOSize), GL_UNSIGNED_INT, (void*)0);
         unbindResources();
 
         mMarkerProgram.unbind();
@@ -164,7 +164,7 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
       mSurfAlphaIndex(-1), mSurfPVCIndex(-1), mSurfPVAIndex(-1)
 {
     CheckGL("Begin surface_impl::surface_impl");
-    setColor(0.9, 0.5, 0.6, 1.0);
+    setColor(0.9f, 0.5f, 0.6f, 1.0f);
 
     mMarkerMatIndex  = mMarkerProgram.getUniformLocation("transform");
     mMarkerPVCIndex  = mMarkerProgram.getUniformLocation("isPVCOn");
@@ -264,7 +264,7 @@ void scatter3_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUniform4fv(mMarkerColIndex, 1, mColor);
 
         bindResources(pWindowId);
-        glDrawElements(GL_POINTS, mIBOSize, GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_POINTS, gl::GLsizei(mIBOSize), GL_UNSIGNED_INT, (void*)0);
         unbindResources();
 
         mMarkerProgram.unbind();

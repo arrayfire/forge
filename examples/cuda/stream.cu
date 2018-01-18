@@ -17,7 +17,7 @@ const unsigned DIMY = 480;
 const float MINIMUM = 1.0f;
 const float MAXIMUM = 20.f;
 const float STEP    = 2.0f;
-const int NELEMS    = (MAXIMUM-MINIMUM+1)/STEP;
+const int NELEMS    = (int)((MAXIMUM-MINIMUM+1)/STEP);
 
 void generateColors(float* colors);
 

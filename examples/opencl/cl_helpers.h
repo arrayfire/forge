@@ -12,10 +12,14 @@
 #define CL_HPP_MINIMUM_OPENCL_VERSION 120
 #define CL_HPP_TARGET_OPENCL_VERSION 120
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 #include <CL/cl2.hpp>
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif
 
 #include <sstream>
 #include <algorithm>
@@ -84,7 +88,7 @@ bool checkGLInterop(const cl::Platform &plat,  const cl::Device &pDevice, const 
 
     if (err != CL_SUCCESS) return false;
 
-    int num = ret / sizeof(cl_device_id);
+    int num = (int)(ret / sizeof(cl_device_id));
     devices.resize(num);
 
     // Check if current device is present in the associated devices

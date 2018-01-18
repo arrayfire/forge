@@ -103,7 +103,7 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
         FT_THROW_ERROR("Freetype charmap set failed", FG_ERR_FREETYPE_ERROR);
     }
     /* set the pixel size of font */
-    bError = FT_Set_Pixel_Sizes(face, 0, pFontSize);
+    bError = FT_Set_Pixel_Sizes(face, 0, (FT_UInt)pFontSize);
     if (bError) {
         FT_Done_Face(face);
         FT_Done_FreeType(library);
@@ -113,7 +113,7 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
     size_t missed = 0;
 
     /* retrieve the list of current font size */
-    auto& currList = mGlyphLists[pFontSize-MIN_FONT_SIZE];
+    auto& currList = mGlyphLists[pFontSize-size_t(MIN_FONT_SIZE)];
 
     for (int i=START_CHAR; i<=END_CHAR; ++i)
     {
@@ -169,8 +169,8 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
         w = w-1; // reduce by one again to leave one pixel border
         h = h-1; // reduce by one again to leave one pixel border
 
-        int x = region.x;
-        int y = region.y;
+        int x = int(region.x);
+        int y = int(region.y);
 
         mAtlas->setRegion(x, y, w, h, bmp.buffer, bmp.pitch);
 
@@ -182,8 +182,8 @@ void font_impl::loadAtlasWithGlyphs(const size_t pFontSize)
         glyph->mBearingX = face->glyph->metrics.horiBearingX>>6;
         glyph->mBearingY = face->glyph->metrics.horiBearingY>>6;
 
-        glyph->mAdvanceX = face->glyph->advance.x>>6;
-        glyph->mAdvanceY = (face->glyph->metrics.height - face->glyph->metrics.horiBearingY)>>6;
+        glyph->mAdvanceX = float(face->glyph->advance.x>>6);
+        glyph->mAdvanceY = float((face->glyph->metrics.height - face->glyph->metrics.horiBearingY)>>6);
 
         glyph->mS0       = x/(float)mAtlas->width();
         glyph->mT1       = y/(float)mAtlas->height();
@@ -210,8 +210,8 @@ void font_impl::bindResources(int pWindowId)
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sz, 0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sz, reinterpret_cast<void*>(sz));
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, gl::GLsizei(2*sz), 0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, gl::GLsizei(2*sz), reinterpret_cast<void*>(sz));
         /* store the vertex array object corresponding to
          * the window instance in the map */
         mVAOMap[pWindowId] = vao;
@@ -256,7 +256,7 @@ font_impl::font_impl()
     mTexIndex  = mProgram.getUniformLocation("tex");
     mClrIndex  = mProgram.getUniformLocation("textColor");
 
-    mGlyphLists.resize(MAX_FONT_SIZE-MIN_FONT_SIZE+1, GlyphList());
+    mGlyphLists.resize(size_t(MAX_FONT_SIZE-MIN_FONT_SIZE)+1, GlyphList());
 }
 
 font_impl::~font_impl()
@@ -292,7 +292,7 @@ void font_impl::loadFont(const char* const pFile)
 
     mTTFfile = pFile;
     /* Load different font sizes into font atlas */
-    for (size_t s=MIN_FONT_SIZE; s<=MAX_FONT_SIZE; ++s) {
+    for (size_t s = size_t(MIN_FONT_SIZE); s <= size_t(MAX_FONT_SIZE); ++s) {
         loadAtlasWithGlyphs(s);
     }
 
@@ -432,15 +432,15 @@ void font_impl::render(int pWindowId,
     float loc_y = pPos[1];
 
     if (pFontSize<MIN_FONT_SIZE) {
-       pFontSize = MIN_FONT_SIZE;
+       pFontSize = size_t(MIN_FONT_SIZE);
     }
     else if (pFontSize>MAX_FONT_SIZE) {
-        pFontSize = MAX_FONT_SIZE;
+        pFontSize = size_t(MAX_FONT_SIZE);
     }
 
     glm::mat4 R = (pIsVertical ? glm::rotate(I, glm::radians(90.f), glm::vec3(0,0,1)) : I);
 
-    auto& glyphList = mGlyphLists[pFontSize - MIN_FONT_SIZE];
+    auto& glyphList = mGlyphLists[pFontSize - size_t(MIN_FONT_SIZE)];
 
     for (size_t i=0; i<std::strlen(pText); ++i)
     {
@@ -459,7 +459,7 @@ void font_impl::render(int pWindowId,
 
             glUniformMatrix4fv(mMMatIndex, 1, GL_FALSE, (GLfloat*)&TR);
 
-            glDrawArrays(GL_TRIANGLE_STRIP, g->mOffset, 4);
+            glDrawArrays(GL_TRIANGLE_STRIP, gl::GLint(g->mOffset), 4);
 
             if (pIsVertical) {
                 loc_y += (g->mAdvanceX);

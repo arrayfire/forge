@@ -165,7 +165,7 @@ void kernel(cl::Buffer& image, cl::Buffer& base, cl::Buffer& perlin,
     static cl::Kernel  initKernel, computeKernel, normKernel, fillKernel;
     static cl::Kernel  memSetKernel, genHistogram, genHistColors;
 
-    std::srand(std::time(0));
+    std::srand((unsigned)(std::time(0)));
 
     if (compileFlag) {
         try {
@@ -193,8 +193,8 @@ void kernel(cl::Buffer& image, cl::Buffer& base, cl::Buffer& perlin,
     }
 
     static const NDRange local(16, 16);
-    NDRange global(local[0] * divup(IMGW, local[0]),
-                   local[1] * divup(IMGH, local[1]));
+    NDRange global(local[0] * divup(IMGW, (int)(local[0])),
+                   local[1] * divup(IMGH, (int)(local[1])));
 
     float persistence = 0.5f;
     float amp  = 1.0f;

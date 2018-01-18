@@ -140,7 +140,7 @@ void AbstractChart::renderTickLabels(
 
 AbstractChart::AbstractChart(const float pLeftMargin, const float pRightMargin,
                              const float pTopMargin, const float pBottomMargin)
-    : mTickCount(9), mTickSize(10),
+    : mTickCount(9), mTickSize(10.0f),
       mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
       mXLabelFormat("%4.1f"), mXMax(0), mXMin(0),
@@ -383,7 +383,7 @@ int getDigitCount(float value)
             }
         }
     } else {
-        int num = value;
+        int num = int(value);
         while (num) {
             num = num/10;
             count++;
@@ -484,7 +484,7 @@ void chart2d_impl::render(const int pWindowId,
     chart2d_impl::unbindResources();
 
     glEnable(GL_SCISSOR_TEST);
-    glScissor(pX+lgap, pY+bgap, w, h);
+    glScissor(gl::GLint(pX+lgap), gl::GLint(pY+bgap), gl::GLsizei(w), gl::GLsizei(h));
 
     /* render all renderables */
     for (auto renderable : mRenderables) {
@@ -868,7 +868,7 @@ void chart3d_impl::render(const int pWindowId,
     chart3d_impl::unbindResources();
 
     glEnable(GL_SCISSOR_TEST);
-    glScissor(pX+lgap, pY+bgap, w, h);
+    glScissor(gl::GLint(pX + lgap), gl::GLint(pY + bgap), gl::GLsizei(w), gl::GLsizei(h));
 
     glm::mat4 renderableMat = PROJECTION * pView * VIEW;
 
@@ -915,9 +915,9 @@ void chart3d_impl::render(const int pWindowId,
 
     const int trgtFntSize = calcTrgtFntSize(w, h);
 
-    renderTickLabels(pWindowId, w, h, mZText, trgtFntSize, trans, 0);
-    renderTickLabels(pWindowId, w, h, mYText, trgtFntSize, trans, mTickCount);
-    renderTickLabels(pWindowId, w, h, mXText, trgtFntSize, trans, 2*mTickCount);
+    renderTickLabels(pWindowId, uint(w), uint(h), mZText, trgtFntSize, trans, 0);
+    renderTickLabels(pWindowId, uint(w), uint(h), mYText, trgtFntSize, trans, mTickCount);
+    renderTickLabels(pWindowId, uint(w), uint(h), mXText, trgtFntSize, trans, 2*mTickCount);
 
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
@@ -928,7 +928,7 @@ void chart3d_impl::render(const int pWindowId,
     if (!mZTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
 
-        pos[0] = trgtFntSize;
+        pos[0] = float(trgtFntSize);
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
 
         fonter->render(pWindowId, pos, BLACK, mZTitle.c_str(), trgtFntSize, true);
