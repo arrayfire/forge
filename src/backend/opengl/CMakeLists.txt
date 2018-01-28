@@ -13,6 +13,13 @@ if (WIN32)
     target_compile_definitions(${BackendTarget}
         PUBLIC FGDLL
         PRIVATE OS_WIN WIN32_MEAN_AND_LEAN)
+
+    # C4251: Warnings about dll interfaces. Thrown by glbinding, may be fixed in
+    #        the future
+    # C4068: Warnings about unknown pragmas
+    # C4275: Warnings about using non-exported classes as base class of an
+    #        exported class
+    set_target_properties(${BackendTarget} PROPERTIES COMPILE_FLAGS "/wd4251 /wd4068 /wd4275")
 elseif (APPLE)
     target_compile_definitions(${BackendTarget} PRIVATE OS_MAC)
 else(WIN32)
@@ -115,14 +122,23 @@ endif()
 # Install forget target
 #--------------------------------------------------------------------
 install(TARGETS forge
-    EXPORT ForgeConfig
-    ARCHIVE DESTINATION ${FG_INSTALL_LIB_DIR}
-    LIBRARY DESTINATION ${FG_INSTALL_LIB_DIR}
+    EXPORT ForgeTargets
+    COMPONENT forge
+    PUBLIC_HEADER DESTINATION fg
     RUNTIME DESTINATION ${FG_INSTALL_BIN_DIR}
+    LIBRARY DESTINATION ${FG_INSTALL_LIB_DIR}
+    ARCHIVE DESTINATION ${FG_INSTALL_LIB_DIR}
+    FRAMEWORK DESTINATION framework
+    INCLUDES DESTINATION ${FG_INSTALL_INC_DIR}
     )
 
-install(EXPORT ForgeConfig NAMESPACE Forge:: DESTINATION ${FG_INSTALL_CMAKE_DIR})
-
-#Following ForgeConfig.cmake is built using local build tree
-#Don't copy this file anywhere else
-export(TARGETS forge NAMESPACE Forge:: FILE ForgeConfig.cmake)
+# install dependencies
+get_target_library_path(binary_location forge)
+if (EXISTS "${binary_location}")
+    get_prerequisites(${binary_location} dependencies 1 1 "" "${prerequisites_search_dirs}")
+    resolve_dependencies_paths(forge_deps
+        "${dependencies}" "${binary_location}" "${prerequisites_search_dirs}")
+    install(FILES ${forge_deps}
+        DESTINATION ${FG_INSTALL_BIN_DIR}
+        COMPONENT   dependencies)
+endif ()

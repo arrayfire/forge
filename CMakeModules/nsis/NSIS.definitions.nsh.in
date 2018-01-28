@@ -1,0 +1,31 @@
+!define MUI_WELCOMEPAGE_TITLE '${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION} Installer'
+!define MUI_WELCOMEPAGE_TITLE_3LINES
+!define MUI_WELCOMEPAGE_TEXT    \
+"An OpenGL interop library that can be used with ArrayFire or any other application using CUDA or OpenCL compute backend.$\r$\n$\r$\n\
+The goal of Forge is to provide high performance OpenGL visualizations for C/C++ applications that use CUDA/OpenCL.$\r$\n$\r$\n\
+Forge uses OpenGL >=3.3 forward compatible contexts, so please make sure you have capable hardware before trying it out."
+
+!define MUI_ICON "@CPACK_FG_ASSETS_DIR@arrayfire.ico"
+!define MUI_UNICON "@CPACK_FG_ASSETS_DIR@arrayfire.ico"
+
+!define MUI_WELCOMEFINISHPAGE_BITMAP "@CPACK_FG_ASSETS_DIR@arrayfire_sym.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "@CPACK_FG_ASSETS_DIR@arrayfire_sym.bmp"
+!define MUI_WELCOMEFINISHPAGE_UNBITMAP_NOSTRETCH
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP_NOSTRETCH
+
+!define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_RIGHT
+!define MUI_HEADERIMAGE_BITMAP "@CPACK_FG_ASSETS_DIR@arrayfire_logo.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "@CPACK_FG_ASSETS_DIR@arrayfire_logo.bmp"
+!define MUI_HEADERIMAGE_BITMAP_NOSTRETCH
+!define MUI_HEADERIMAGE_UNBITMAP_NOSTRETCH
+!define MUI_ABORTWARNING
+
+; Defines for Finish Page
+!define MUI_FINISHPAGE_RUN "explorer.exe"
+!define MUI_FINISHPAGE_RUN_PARAMETERS "$INSTDIR"
+!define MUI_FINISHPAGE_RUN_TEXT "Open Forge Install Directory to see Examples"
+!define MUI_FINISHPAGE_SHOWREADME "http://arrayfire.org/forge/index.htm"
+!define MUI_FINISHPAGE_SHOWREADME_TEXT "Open Forge Documentation on the Web"
+!define MUI_FINISHPAGE_LINK "ArrayFire Support and Services"
+!define MUI_FINISHPAGE_LINK_LOCATION "http://arrayfire.com/consulting/"
