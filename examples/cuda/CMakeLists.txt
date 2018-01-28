@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Forge-CUDA-Examples LANGUAGES CXX)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORCE_INLINES")
+
 if (${CMAKE_VERSION} VERSION_LESS "3.10.0")
     INCLUDE_DIRECTORIES(
           ${Forge_SOURCE_DIR}/include

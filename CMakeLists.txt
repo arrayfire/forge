@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.5)
 OPTION(USE_HUNTER "Use Hunter cmake package handler" OFF)
 if(USE_HUNTER)
     include(${CMAKE_CURRENT_LIST_DIR}/CMakeModules/HunterGate.cmake)
-    
     HunterGate(
         URL "https://github.com/ruslo/hunter/archive/v0.19.208.tar.gz"
         SHA1 "4128ac8c79c21b250bf825e8119ce0bff05e5132"
@@ -19,11 +18,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeMod
 set(CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}prefix;${CMAKE_PREFIX_PATH}")
 
 include(BuildType)
-include(CMakeDependentOption)
-include(ConditionalDirectory)
-include(DependencyCheck)
-include(Version)
 include(FGInstallDirs)
+include(GetPrerequisites)
+include(InternalUtils)
+include(platform)
+include(Version)
 
 if(USE_HUNTER)
     hunter_add_package(glbinding)
@@ -83,11 +82,56 @@ conditional_directory(BUILD_EXAMPLES examples)
 #--------------------------------------------------------------------
 install(DIRECTORY include/
     DESTINATION ${FG_INSTALL_INC_DIR}
+    COMPONENT headers
     FILES_MATCHING
     PATTERN "*.h"
     PATTERN "*.hpp"
     PATTERN ".gitignore" EXCLUDE
     )
+
+install(EXPORT ForgeTargets
+    NAMESPACE Forge::
+    DESTINATION ${FG_INSTALL_CMAKE_DIR}
+    COMPONENT cmake)
+
+export(EXPORT ForgeTargets
+    NAMESPACE Forge::
+    FILE cmake/ForgeTargets.cmake)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${Forge_BINARY_DIR}/cmake/ForgeConfigVersion.cmake"
+    COMPATIBILITY SameMajorVersion
+)
+
+# This config file will be installed so we need to set the install_destination
+# path relative to the install path
+set(INCLUDE_DIRS include)
+set(CMAKE_DIR ${FG_INSTALL_CMAKE_DIR})
+configure_package_config_file(
+    ${CMAKE_MODULE_PATH}/ForgeConfig.cmake.in
+    cmake/install/ForgeConfig.cmake
+    INSTALL_DESTINATION "${FG_INSTALL_CMAKE_DIR}"
+    PATH_VARS INCLUDE_DIRS CMAKE_DIR
+    )
+
+install(FILES ${Forge_BINARY_DIR}/cmake/install/ForgeConfig.cmake
+    ${Forge_BINARY_DIR}/cmake/ForgeConfigVersion.cmake
+    DESTINATION ${FG_INSTALL_CMAKE_DIR}
+    COMPONENT cmake)
+
+# Following file will be used to create the config file for the build directory.
+# These config files will be used by the examples to find the Forge
+# libraries
+set(INCLUDE_DIRS "${Forge_SOURCE_DIR}/include" "${Forge_BINARY_DIR}/include")
+set(CMAKE_DIR "${Forge_BINARY_DIR}/cmake")
+configure_package_config_file(
+  ${CMAKE_MODULE_PATH}/ForgeConfig.cmake.in
+  cmake/ForgeConfig.cmake
+  INSTALL_DESTINATION "${Forge_BINARY_DIR}/cmake"
+  PATH_VARS INCLUDE_DIRS CMAKE_DIR
+  INSTALL_PREFIX "${Forge_BINARY_DIR}"
+)
 
 #--------------------------------------------------------------------
 # Install examples
@@ -100,3 +144,5 @@ install(DIRECTORY include/
 install(DIRECTORY examples/ #NOTE The slash at the end is important
     DESTINATION ${FG_INSTALL_EXAMPLE_DIR}
     COMPONENT examples)
+
+include(CPackConfig)

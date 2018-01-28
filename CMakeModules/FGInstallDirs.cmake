@@ -21,26 +21,26 @@ endif()
 
 # Data files
 if(NOT DEFINED FG_INSTALL_DATA_DIR)
-    set(FG_INSTALL_DATA_DIR "share/Forge" CACHE PATH "Installation path for data files")
+    set(FG_INSTALL_DATA_DIR "data" CACHE PATH "Installation path for data files")
 endif()
 
 # Documentation
 if(NOT DEFINED FG_INSTALL_DOC_DIR)
-    set(FG_INSTALL_DOC_DIR "${FG_INSTALL_DATA_DIR}/doc" CACHE PATH "Installation path for documentation")
+    set(FG_INSTALL_DOC_DIR "doc" CACHE PATH "Installation path for documentation")
 endif()
 
 if(NOT DEFINED FG_INSTALL_EXAMPLE_DIR)
-    set(FG_INSTALL_EXAMPLE_DIR "${FG_INSTALL_DATA_DIR}/examples" CACHE PATH "Installation path for examples")
+    set(FG_INSTALL_EXAMPLE_DIR "examples" CACHE PATH "Installation path for examples")
 endif()
 
 # Man pages
 if(NOT DEFINED FG_INSTALL_MAN_DIR)
-    set(FG_INSTALL_MAN_DIR "${FG_INSTALL_DATA_DIR}/man" CACHE PATH "Installation path for man pages")
+    set(FG_INSTALL_MAN_DIR "man" CACHE PATH "Installation path for man pages")
 endif()
 
 # CMake files
 if(NOT DEFINED FG_INSTALL_CMAKE_DIR)
-    set(FG_INSTALL_CMAKE_DIR "${FG_INSTALL_DATA_DIR}/cmake" CACHE PATH "Installation path for CMake files")
+    set(FG_INSTALL_CMAKE_DIR "cmake" CACHE PATH "Installation path for CMake files")
 endif()
 
 # Use absolute paths (these changes are internal and will not show up in cache)
