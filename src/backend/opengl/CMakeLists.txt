@@ -2,7 +2,7 @@ find_package(OpenGL REQUIRED)
 
 set(BackendTarget "forge")
 
-add_library(${BackendTarget} SHARED "")
+add_library(${BackendTarget} "")
 
 set_target_properties(${BackendTarget} PROPERTIES FOLDER Forge)
 set_target_properties(${BackendTarget} PROPERTIES POSITION_INDEPENDENT_CODE ON)
