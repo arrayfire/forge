@@ -70,7 +70,11 @@ endif()
 
 if(WITH_FREEIMAGE)
     target_compile_definitions(${BackendTarget} PRIVATE USE_FREEIMAGE)
-    target_link_libraries(${BackendTarget} PRIVATE FreeImage::FreeImage)
+    if (USE_STATIC_FREEIMAGE)
+        target_link_libraries(${BackendTarget} PRIVATE FreeImage::FreeImage_STATIC)
+    else ()
+        target_link_libraries(${BackendTarget} PRIVATE FreeImage::FreeImage)
+    endif ()
 endif()
 
 target_include_directories(${BackendTarget}

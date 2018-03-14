@@ -11,6 +11,7 @@ include(platform)
 
 option(BUILD_SHARED_LIBS "Build shared/static library" ON)
 option(USE_HUNTER "Use Hunter cmake package handler" OFF)
+option(USE_STATIC_FREEIMAGE "Use static version of freeimage" OFF)
 
 if(USE_HUNTER)
     set(HUNTER_TLS_VERIFY OFF)
