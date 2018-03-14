@@ -2,24 +2,28 @@ add_library(backend_interface INTERFACE)
 
 target_sources(backend_interface
     INTERFACE
-        ${CMAKE_CURRENT_SOURCE_DIR}/chart_common.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/chart.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/chart_renderables.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/cmap.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/defines.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/err_common.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/err_common.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/font.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/handle.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/handle.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/image.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/util.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/util.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/window.hpp
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/chart_common.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/chart.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/chart_renderables.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/cmap.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/defines.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/err_common.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/err_common.cpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/font.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/handle.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/handle.cpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/image.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/util.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/util.cpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/window.hpp>
     )
 
 target_include_directories(backend_interface
     INTERFACE
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${PROJECT_SOURCE_DIR}/include
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     )
+
+if (NOT BUILD_SHARED_LIBS)
+    install(TARGETS backend_interface EXPORT ForgeTargets)
+endif ()
