@@ -8,6 +8,8 @@ set_target_properties(${BackendTarget} PROPERTIES FOLDER Forge)
 set_target_properties(${BackendTarget} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set_target_properties(${BackendTarget} PROPERTIES CXX_STANDARD 11)
 set_target_properties(${BackendTarget} PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${BackendTarget} PROPERTIES VERSION ${Forge_VERSION})
+set_target_properties(${BackendTarget} PROPERTIES SOVERSION ${Forge_VERSION_MAJOR})
 
 if (WIN32)
     target_compile_definitions(${BackendTarget}
