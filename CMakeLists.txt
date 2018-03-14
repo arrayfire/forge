@@ -1,21 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 
-option(BUILD_SHARED_LIBS "Build shared/static library" ON)
-option(USE_HUNTER "Use Hunter cmake package handler" OFF)
-
-if(USE_HUNTER)
-    include(${CMAKE_CURRENT_LIST_DIR}/CMakeModules/HunterGate.cmake)
-    HunterGate(
-        URL "https://github.com/ruslo/hunter/archive/v0.19.208.tar.gz"
-        SHA1 "4128ac8c79c21b250bf825e8119ce0bff05e5132"
-        FILEPATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules/Hunter/config.cmake"
-    )
-endif()
-
-project(Forge VERSION 1.1.0 LANGUAGES C CXX)
-
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 set(CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}prefix;${CMAKE_PREFIX_PATH}")
 
@@ -24,7 +8,28 @@ include(FGInstallDirs)
 include(GetPrerequisites)
 include(InternalUtils)
 include(platform)
+
+option(BUILD_SHARED_LIBS "Build shared/static library" ON)
+option(USE_HUNTER "Use Hunter cmake package handler" OFF)
+
+if(USE_HUNTER)
+    set(HUNTER_TLS_VERIFY OFF)
+    set(HUNTER_BUILD_SHARED_LIBS OFF)
+    include(${CMAKE_CURRENT_LIST_DIR}/CMakeModules/HunterGate.cmake)
+    HunterGate(
+        URL "https://github.com/ruslo/hunter/archive/v0.20.18.tar.gz"
+        SHA1 "c2614bc107a5172c167a5784f476b6fb39e314a9"
+        FILEPATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules/Hunter/config.cmake"
+    )
+    mark_as_advanced(HUNTER_TLS_VERIFY)
+    mark_as_advanced(HUNTER_BUILD_SHARED_LIBS)
+endif()
+
+project(Forge VERSION 1.1.0 LANGUAGES C CXX)
+
 include(Version)
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if(USE_HUNTER)
     hunter_add_package(glbinding)

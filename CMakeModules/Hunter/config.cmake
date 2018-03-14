@@ -9,15 +9,17 @@ macro(myhunter_config pkg_name ver)
     )
 endmacro()
 
-myhunter_config(freeimage hunter-v3.17.0)
+myhunter_config(Boost 1.66.0)
 myhunter_config(freetype 2.6.2)
 myhunter_config(OpenCL 2.1-p0)
+myhunter_config(glm 0.9.8.5)
 
-#freeimag dependencies
-myhunter_config(ZLIB 1.2.8-p3)
-myhunter_config(TIFF 4.0.2-p3)
-myhunter_config(PNG 1.6.26-p1)
-myhunter_config(Jpeg 9b-p3)
+#myhunter_config(freeimage hunter-v3.17.0)
+##freeimag dependencies
+#myhunter_config(ZLIB 1.2.8-p3)
+#myhunter_config(TIFF 4.0.2-p3)
+#myhunter_config(PNG 1.6.26-p1)
+#myhunter_config(Jpeg 9b-p3)
 
 #glfw dependencies
 myhunter_config(xcursor 1.1.13)
