@@ -20,9 +20,6 @@
 using namespace gl;
 using namespace std;
 
-// identity matrix
-static const glm::mat4 I(1.0f);
-
 namespace forge
 {
 namespace opengl

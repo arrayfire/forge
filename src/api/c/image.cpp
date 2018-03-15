@@ -17,6 +17,9 @@
 
 using namespace forge;
 
+using forge::common::getImage;
+using forge::common::getWindow;
+
 fg_err fg_create_image(fg_image* pImage,
                        const unsigned pWidth, const unsigned pHeight,
                        const fg_channel_format pFormat, const fg_dtype pType)

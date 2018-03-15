@@ -17,6 +17,10 @@
 #include <cassert>
 #include <vector>
 
+namespace forge
+{
+namespace common
+{
 ////////////////////////////////////////////////////////////////////////////////
 // Exception Classes
 // Error, TypeError, ArgumentError
@@ -138,23 +142,23 @@ const char * getName(forge::dtype type);
 ////////////////////////////////////////////////////////////////////////////////
 // Macros
 ////////////////////////////////////////////////////////////////////////////////
-#define ARG_ASSERT(INDEX, COND) do {                        \
-        if((COND) == false) {                               \
-            throw ArgumentError(__PRETTY_FUNCTION__,        \
-                                __FG_FILENAME__, __LINE__,  \
-                                INDEX, #COND);              \
-        }                                                   \
+#define ARG_ASSERT(INDEX, COND) do {                                \
+        if((COND) == false) {                                       \
+            throw forge::common::ArgumentError(__PRETTY_FUNCTION__, \
+                                __FG_FILENAME__, __LINE__,          \
+                                INDEX, #COND);                      \
+        }                                                           \
     } while(0)
 
 #define TYPE_ERROR(INDEX, type) do {                        \
-        throw TypeError(__PRETTY_FUNCTION__,                \
+        throw forge::common::TypeError(__PRETTY_FUNCTION__, \
                         __FG_FILENAME__, __LINE__,          \
                         INDEX, type);                       \
     } while(0)                                              \
 
 
 #define FG_ERROR(MSG, ERR_TYPE) do {                        \
-        throw FgError(__PRETTY_FUNCTION__,                  \
+        throw forge::common::FgError(__PRETTY_FUNCTION__,   \
                       __FG_FILENAME__, __LINE__,            \
                       MSG, ERR_TYPE);                       \
     } while(0)
@@ -168,5 +172,8 @@ const char * getName(forge::dtype type);
 
 #define CATCHALL                                            \
     catch(...) {                                            \
-        return processException();                          \
+        return forge::common::processException();           \
     }
+
+}
+}

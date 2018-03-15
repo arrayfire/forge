@@ -14,6 +14,8 @@
 
 using namespace forge;
 
+using forge::common::getFont;
+
 fg_err fg_create_font(fg_font* pFont)
 {
     try {

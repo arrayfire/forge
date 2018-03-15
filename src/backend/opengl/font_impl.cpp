@@ -63,6 +63,9 @@ namespace forge
 namespace opengl
 {
 
+const float MIN_FONT_SIZE = 8.0f;
+const float MAX_FONT_SIZE = 24.0f;
+
 #ifdef NDEBUG
 /* Relase Mode */
 #define FT_THROW_ERROR(msg, error) \

@@ -26,6 +26,8 @@ colormap_impl::colormap_impl()
     mRedMapBuffer(0), mMoodMapBuffer(0), mHeatMapBuffer(0),
     mBlueMapBuffer(0)
 {
+    using namespace forge::common;
+
     size_t channel_bytes = sizeof(float)*4; /* 4 is for 4 channels */
     mDefMapLen     = (GLuint)(sizeof(cmap_default)  / channel_bytes);
     mSpecMapLen    = (GLuint)(sizeof(cmap_spectrum) / channel_bytes);
