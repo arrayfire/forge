@@ -14,6 +14,8 @@
 
 using namespace forge;
 
+using forge::common::getPlot;
+
 fg_err fg_create_plot(fg_plot *pPlot,
                       const unsigned pNPoints, const fg_dtype pType,
                       const fg_chart_type pChartType,

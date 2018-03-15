@@ -14,6 +14,8 @@
 
 using namespace forge;
 
+using forge::common::getSurface;
+
 fg_err fg_create_surface(fg_surface *pSurface,
                       const unsigned pXPoints, const unsigned pYPoints,
                       const fg_dtype pType,

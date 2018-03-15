@@ -16,9 +16,6 @@
 #include <vector>
 #include <memory>
 
-static const float MIN_FONT_SIZE = 8.0f;
-static const float MAX_FONT_SIZE = 24.0f;
-
 namespace forge
 {
 namespace opengl

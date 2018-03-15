@@ -19,17 +19,17 @@ using std::string;
 using std::stringstream;
 using std::cerr;
 
+namespace forge
+{
+
 void stringcopy(char* dest, const char* src, size_t len)
 {
 #if defined(OS_WIN)
-    strncpy_s(dest, MAX_ERR_SIZE, src, len);
+    strncpy_s(dest, forge::common::MAX_ERR_SIZE, src, len);
 #else
     strncpy(dest, src, len);
 #endif
 }
-
-namespace forge
-{
 
 Error::Error() : mErrCode(FG_ERR_UNKNOWN)
 {

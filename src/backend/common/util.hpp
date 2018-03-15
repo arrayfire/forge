@@ -13,4 +13,12 @@
 
 #pragma once
 
+namespace forge
+{
+namespace common
+{
+
 std::string getEnvVar(const std::string &key);
+
+}
+}

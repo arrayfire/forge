@@ -17,34 +17,42 @@
 #include <chart.hpp>
 #include <chart_renderables.hpp>
 
-fg_window getHandle(forge::common::Window* pValue);
+namespace forge
+{
+namespace common
+{
 
-fg_font getHandle(forge::common::Font* pValue);
+fg_window getHandle(Window* pValue);
 
-fg_image getHandle(forge::common::Image* pValue);
+fg_font getHandle(Font* pValue);
 
-fg_chart getHandle(forge::common::Chart* pValue);
+fg_image getHandle(Image* pValue);
 
-fg_histogram getHandle(forge::common::Histogram* pValue);
+fg_chart getHandle(Chart* pValue);
 
-fg_plot getHandle(forge::common::Plot* pValue);
+fg_histogram getHandle(Histogram* pValue);
 
-fg_surface getHandle(forge::common::Surface* pValue);
+fg_plot getHandle(Plot* pValue);
 
-fg_vector_field getHandle(forge::common::VectorField* pValue);
+fg_surface getHandle(Surface* pValue);
 
-forge::common::Window* getWindow(const fg_window& pValue);
+fg_vector_field getHandle(VectorField* pValue);
 
-forge::common::Font* getFont(const fg_font& pValue);
+Window* getWindow(const fg_window& pValue);
 
-forge::common::Image* getImage(const fg_image& pValue);
+Font* getFont(const fg_font& pValue);
 
-forge::common::Chart* getChart(const fg_chart& pValue);
+Image* getImage(const fg_image& pValue);
 
-forge::common::Histogram* getHistogram(const fg_histogram& pValue);
+Chart* getChart(const fg_chart& pValue);
 
-forge::common::Plot* getPlot(const fg_plot& pValue);
+Histogram* getHistogram(const fg_histogram& pValue);
 
-forge::common::Surface* getSurface(const fg_surface& pValue);
+Plot* getPlot(const fg_plot& pValue);
 
-forge::common::VectorField* getVectorField(const fg_vector_field& pValue);
+Surface* getSurface(const fg_surface& pValue);
+
+VectorField* getVectorField(const fg_vector_field& pValue);
+
+}
+}

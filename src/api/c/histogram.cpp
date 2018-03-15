@@ -14,6 +14,8 @@
 
 using namespace forge;
 
+using forge::common::getHistogram;
+
 fg_err fg_create_histogram(fg_histogram *pHistogram,
         const unsigned pNBins, const fg_dtype pType)
 {

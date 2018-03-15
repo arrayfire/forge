@@ -14,6 +14,8 @@
 
 using namespace forge;
 
+using forge::common::getVectorField;
+
 fg_err fg_create_vector_field(fg_vector_field *pField,
                               const unsigned pNPoints,
                               const fg_dtype pType,

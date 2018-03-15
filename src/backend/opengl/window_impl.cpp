@@ -21,6 +21,9 @@
 using namespace gl;
 using namespace forge;
 
+namespace forge
+{
+
 #ifdef USE_FREEIMAGE
 #include <FreeImage.h>
 
@@ -67,9 +70,6 @@ private:
     FIBITMAP * pBitmap;
 };
 #endif //USE_FREEIMAGE
-
-namespace forge
-{
 
 /* following function is thread safe */
 int getNextUniqueId()

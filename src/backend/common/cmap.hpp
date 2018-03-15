@@ -9,6 +9,11 @@
 
 #pragma once
 
+namespace forge
+{
+namespace common
+{
+
 /**
  * Color maps: heat, rainbow are pulled from the following resource:
  *
@@ -2928,3 +2933,6 @@ float cmap_viridis[] =
     0.983868f, 0.904867f, 0.136897f, 1.0f,
     0.993248f, 0.906157f, 0.143936f, 1.0f,
 };
+
+}
+}
