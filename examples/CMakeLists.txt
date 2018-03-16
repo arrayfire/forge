@@ -6,7 +6,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
-if(USE_HUNTER)
+if(FG_ENABLE_HUNTER)
     hunter_add_package(OpenCL)
 endif()
 
@@ -25,18 +25,23 @@ if(APPLE)
     endif()
 endif()
 
-option(BUILD_EXAMPLES_CUDA "Turn off/on building cuda examples" ${CUDA_FOUND})
-option(BUILD_EXAMPLES_OPENCL "Turn off/on building opencl examples" ${OpenCL_FOUND})
-mark_as_advanced(BUILD_EXAMPLES_CUDA BUILD_EXAMPLES_OPENCL)
-
 include(CMakeParseArguments)
 include(ConditionalDirectory)
 include(CMakeDependentOption)
 include(IfNotThisThenInclude)
 
-cmake_dependent_option(USE_SYSTEM_CL2HPP "Use system cl2.hpp header" OFF "OpenCL_FOUND" OFF)
+option(FG_BUILD_CUDA_EXAMPLES "Turn off/on building cuda examples" ${CUDA_FOUND})
+option(FG_BUILD_OPENCL_EXAMPLES "Turn off/on building opencl examples" ${OpenCL_FOUND})
 
-include_if_not(USE_SYSTEM_CL2HPP build_cl2hpp)
+cmake_dependent_option(FG_USE_SYSTEM_CL2HPP "Use system cl2.hpp header" OFF "OpenCL_FOUND" OFF)
+
+include_if_not(FG_USE_SYSTEM_CL2HPP build_cl2hpp)
+
+mark_as_advanced(FG_BUILD_CUDA_EXAMPLES FG_BUILD_OPENCL_EXAMPLES)
+
+fg_deprecate(BUILD_EXAMPLES_CUDA FG_BUILD_CUDA_EXAMPLES)
+fg_deprecate(BUILD_EXAMPLES_OPENCL FG_BUILD_OPENCL_EXAMPLES)
+fg_deprecate(USE_SYSTEM_CL2HPP FG_USE_SYSTEM_CL2HPP)
 
 add_library(OSCompileFlags INTERFACE)
 
@@ -90,5 +95,5 @@ function(add_example target_name source backend)
 endfunction()
 
 add_subdirectory(cpu)
-conditional_directory(BUILD_EXAMPLES_CUDA cuda)
-conditional_directory(BUILD_EXAMPLES_OPENCL opencl)
+conditional_directory(FG_BUILD_CUDA_EXAMPLES cuda)
+conditional_directory(FG_BUILD_OPENCL_EXAMPLESCL opencl)

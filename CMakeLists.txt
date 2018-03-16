@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+set(CMAKE_MODULE_PATH
+    ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 set(CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}prefix;${CMAKE_PREFIX_PATH}")
 
 include(BuildType)
@@ -9,15 +10,10 @@ include(GetPrerequisites)
 include(InternalUtils)
 include(platform)
 
-option(BUILD_SHARED_LIBS "Build shared/static library" ON)
-option(USE_HUNTER "Use Hunter cmake package handler" OFF)
-option(USE_STATIC_FREEIMAGE "Use static version of freeimage" OFF)
-option(USE_STATIC_STDCPP "Use static libstdc++ for generating forge library" OFF)
-option(USE_STATIC_GCC "Use static libgcc for generating forge library" OFF)
-mark_as_advanced(USE_STATIC_STDCPP)
-mark_as_advanced(USE_STATIC_GCC)
+option(BUILD_SHARED_LIBS        "Build shared/static library" ON)
+option(FG_ENABLE_HUNTER         "Use Hunter cmake package handler" OFF)
 
-if(USE_HUNTER)
+if(FG_ENABLE_HUNTER)
     set(HUNTER_TLS_VERIFY OFF)
     set(HUNTER_BUILD_SHARED_LIBS OFF)
     include(${CMAKE_CURRENT_LIST_DIR}/CMakeModules/HunterGate.cmake)
@@ -36,7 +32,15 @@ include(Version)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-if(USE_HUNTER)
+# Set a default build type if none was specified
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+    # Set the possible values of build type for cmake-gui
+    set_property(CACHE CMAKE_BUILD_TYPE
+        PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
+if(FG_ENABLE_HUNTER)
     hunter_add_package(glbinding)
     hunter_add_package(glm)
     hunter_add_package(freetype)
@@ -58,27 +62,41 @@ find_package(X11 QUIET)
 find_package(FreeImage QUIET)
 find_package(Boost REQUIRED)
 
-option(BUILD_DOCS      "Build Documentation"               ${DOXYGEN_FOUND})
-option(BUILD_EXAMPLES  "Build Examples"                    ON)
-option(WITH_FREEIMAGE  "Use FreeImage to add support for
-                        saving framebuffer to disk"        ${FreeImage_FOUND})
+option(FG_BUILD_DOCS
+    "Build Documentation" ${DOXYGEN_FOUND})
+option(FG_BUILD_EXAMPLES
+    "Build Examples" ON)
+option(FG_WITH_FREEIMAGE
+    "Use FreeImage to add support for saving framebuffer to disk"
+    ${FreeImage_FOUND})
+
+option(FG_USE_STATIC_FREEIMAGE
+    "Use static version of freeimage" OFF)
+option(FG_USE_STATIC_STDCPP
+    "Use static libstdc++ for generating forge library" OFF)
+option(FG_USE_STATIC_GCC
+    "Use static libgcc for generating forge library" OFF)
+
+set(FG_USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
+set_property(CACHE FG_USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
+
+mark_as_advanced(
+    FG_USE_STATIC_FREEIMAGE
+    FG_USE_STATIC_STDCPP
+    FG_USE_STATIC_GCC
+    )
+
+fg_deprecate(BUILD_DOCS FG_BUILD_DOCS)
+fg_deprecate(BUILD_EXAMPLES FG_BUILD_EXAMPLES)
+fg_deprecate(WITH_FREEIMAGE FG_WITH_FREEIMAGE)
+fg_deprecate(USE_STATIC_FREEIMAGE FG_USE_STATIC_FREEIMAGE)
+fg_deprecate(WITH_TOOLKIT FG_USE_WINDOW_TOOLKIT)
 
 if(Boost_FOUND AND NOT TARGET Boost::boost)
     add_library(Boost::boost INTERFACE IMPORTED)
-    set_property(TARGET Boost::boost PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
+    set_property(TARGET Boost::boost
+        PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif(Boost_FOUND AND NOT TARGET Boost::boost)
-
-
-set(WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
-set_property(CACHE WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
-
-# Set a default build type if none was specified
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-    # Set the possible values of build type for cmake-gui
-    set_property(CACHE CMAKE_BUILD_TYPE
-        PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
 
 add_subdirectory(src/backend/common)
 add_subdirectory(src/backend/glsl_shaders)
@@ -86,8 +104,8 @@ add_subdirectory(src/api/c)
 add_subdirectory(src/api/cpp)
 add_subdirectory(src/backend/opengl)
 
-conditional_directory(BUILD_DOCS docs)
-conditional_directory(BUILD_EXAMPLES examples)
+conditional_directory(FG_BUILD_DOCS docs)
+conditional_directory(FG_BUILD_EXAMPLES examples)
 
 #--------------------------------------------------------------------
 # Install include folder, docs, examples etc.
@@ -148,10 +166,10 @@ configure_package_config_file(
 #--------------------------------------------------------------------
 # Install examples
 #--------------------------------------------------------------------
-# install the examples irrespective of the BUILD_EXAMPLES value
+# install the examples irrespective of the FG_BUILD_EXAMPLES value
 # only the examples source files are installed, so the installation of these
-# source files does not depend on BUILD_EXAMPLES
-# when BUILD_EXAMPLES is OFF, the examples source is installed without
+# source files does not depend on FG_BUILD_EXAMPLES
+# when FG_BUILD_EXAMPLES is OFF, the examples source is installed without
 # building the example executables
 install(DIRECTORY examples/ #NOTE The slash at the end is important
     DESTINATION ${FG_INSTALL_EXAMPLE_DIR}
