@@ -7,6 +7,7 @@ macro(myhunter_config pkg_name ver)
         CONFIGURATION_TYPES Release
         CMAKE_ARGS CMAKE_POSITION_INDEPENDENT_CODE=ON ${ARGN}
     )
+    mark_as_advanced(${pkg_name}_DIR)
 endmacro()
 
 myhunter_config(Boost 1.66.0)
