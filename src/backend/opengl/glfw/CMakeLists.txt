@@ -1,4 +1,4 @@
-if(USE_HUNTER)
+if(FG_ENABLE_HUNTER)
     hunter_add_package(glfw)
 endif()
 

@@ -60,17 +60,17 @@ target_sources(${BackendTarget}
         ${CMAKE_CURRENT_SOURCE_DIR}/window_impl.cpp
     )
 
-if(${WINDOW_TOOLKIT} STREQUAL "glfw3")
+if(${FG_USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
     add_subdirectory(glfw)
     target_compile_definitions(${BackendTarget} PRIVATE USE_GLFW)
-elseif(${WINDOW_TOOLKIT} STREQUAL "sdl2")
+elseif(${FG_USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
     add_subdirectory(sdl)
     target_compile_definitions(${BackendTarget} PRIVATE USE_SDL)
 endif()
 
-if(WITH_FREEIMAGE)
+if(FG_WITH_FREEIMAGE)
     target_compile_definitions(${BackendTarget} PRIVATE USE_FREEIMAGE)
-    if (USE_STATIC_FREEIMAGE)
+    if (FG_USE_STATIC_FREEIMAGE)
         target_link_libraries(${BackendTarget} PRIVATE FreeImage::FreeImage_STATIC)
     else ()
         target_link_libraries(${BackendTarget} PRIVATE FreeImage::FreeImage)
@@ -107,8 +107,8 @@ if(UNIX)
     PRIVATE
       FontConfig::FontConfig
       ${X11_X11_LIB}
-      $<$<AND:$<CXX_COMPILER_ID:GNU>,$<BOOL:${USE_STATIC_STDCPP}>>:-static-libstdc++>
-      $<$<AND:$<C_COMPILER_ID:GNU>,$<BOOL:${USE_STATIC_GCC}>>:-static-libgcc>
+      $<$<AND:$<CXX_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_STDCPP}>>:-static-libstdc++>
+      $<$<AND:$<C_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_GCC}>>:-static-libgcc>
   )
 endif(UNIX)
 
@@ -120,9 +120,9 @@ source_group("api\\c"           REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/api/c
 source_group("backend"          REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/common/*|${CMAKE_CURRENT_SOURCE_DIR}/*)
 source_group("backend\\shaders" REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/glsl_shaders/*)
 
-if(${WINDOW_TOOLKIT} STREQUAL "glfw3")
+if(${FG_USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
     source_group("backend\\glfw" REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/glfw/*)
-elseif(${WINDOW_TOOLKIT} STREQUAL "sdl2")
+elseif(${FG_USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
     source_group("backend\\sdl2" REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/sdl/*)
 endif()
 

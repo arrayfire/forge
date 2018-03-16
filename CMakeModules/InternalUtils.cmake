@@ -32,3 +32,30 @@ function(resolve_dependencies_paths out_deps in_deps context search_dirs)
     endforeach()
     set(${out_deps} ${out_list} PARENT_SCOPE)
 endfunction()
+
+function(__fg_deprecate_var var access value)
+  if(access STREQUAL "READ_ACCESS")
+      message(DEPRECATION "Variable ${var} is deprecated. Use FG_${var} instead.")
+  endif()
+endfunction()
+
+function(fg_deprecate var newvar)
+  if(DEFINED ${var})
+    message(DEPRECATION "Variable ${var} is deprecated. Use ${newvar} instead.")
+    get_property(doc CACHE ${newvar} PROPERTY HELPSTRING)
+    set(${newvar} ${${var}} CACHE BOOL "${doc}" FORCE)
+    unset(${var} CACHE)
+  endif()
+  variable_watch(${var} __fg_deprecate_var)
+endfunction()
+
+# mark CUDA cmake cache variables as advanced
+# this should have been taken care of by FindCUDA I think.
+mark_as_advanced(
+    CMAKE_CUDA_HOST_COMPILER
+    CUDA_HOST_COMPILER
+    CUDA_SDK_ROOT_DIR
+    CUDA_TOOLKIT_ROOT_DIR
+    CUDA_USE_STATIC_CUDA_RUNTIME
+    CUDA_rt_LIBRARY
+    )
