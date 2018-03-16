@@ -103,11 +103,13 @@ target_link_libraries(${BackendTarget}
     )
 
 if(UNIX)
-    target_link_libraries(${BackendTarget}
-        PRIVATE
-          FontConfig::FontConfig
-          ${X11_X11_LIB}
-	)
+  target_link_libraries(${BackendTarget}
+    PRIVATE
+      FontConfig::FontConfig
+      ${X11_X11_LIB}
+      $<$<AND:$<CXX_COMPILER_ID:GNU>,$<BOOL:${USE_STATIC_STDCPP}>>:-static-libstdc++>
+      $<$<AND:$<C_COMPILER_ID:GNU>,$<BOOL:${USE_STATIC_GCC}>>:-static-libgcc>
+  )
 endif(UNIX)
 
 add_dependencies(${BackendTarget} ${glsl_shader_targets})
