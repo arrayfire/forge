@@ -46,21 +46,24 @@ if(FG_ENABLE_HUNTER)
     hunter_add_package(freetype)
     hunter_add_package(Boost)
 
-    find_package(freetype CONFIG REQUIRED)
+    find_package(glbinding          REQUIRED NO_CMAKE_PATH NO_SYSTEM_ENVIRONMENT_PATH)
+    find_package(glm                REQUIRED NO_CMAKE_PATH NO_SYSTEM_ENVIRONMENT_PATH)
+    find_package(freetype CONFIG    REQUIRED NO_CMAKE_PATH NO_SYSTEM_ENVIRONMENT_PATH)
+    find_package(Boost              REQUIRED NO_CMAKE_PATH NO_SYSTEM_ENVIRONMENT_PATH)
 else()
-    find_package(freetype REQUIRED)
+    find_package(glbinding  REQUIRED)
+    find_package(glm        REQUIRED)
+    find_package(freetype   REQUIRED)
+    find_package(Boost      REQUIRED)
 endif()
 
-find_package(Doxygen QUIET)
-find_package(glbinding REQUIRED)
-find_package(glm REQUIRED)
-
+#packages not available via hunter
+find_package(Doxygen    QUIET)
+find_package(X11        QUIET)
+find_package(FreeImage  QUIET)
 if(UNIX)
     find_package(FontConfig REQUIRED)
 endif()
-find_package(X11 QUIET)
-find_package(FreeImage QUIET)
-find_package(Boost REQUIRED)
 
 option(FG_BUILD_DOCS
     "Build Documentation" ${DOXYGEN_FOUND})

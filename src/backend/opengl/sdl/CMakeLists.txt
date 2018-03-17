@@ -1,8 +1,9 @@
 if(FG_ENABLE_HUNTER)
     hunter_add_package(SDL2)
+    find_package(SDL2 NO_CMAKE_PATH NO_SYSTEM_ENVIRONMENT_PATH)
+else()
+    find_package(SDL2)
 endif()
-
-find_package(SDL2)
 
 add_library(wtk_interface INTERFACE)
 

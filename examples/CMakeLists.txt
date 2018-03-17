@@ -8,11 +8,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeMod
 
 if(FG_ENABLE_HUNTER)
     hunter_add_package(OpenCL)
+    find_package(OpenCL 1.2 QUIET NO_CMAKE_PATH NO_SYSTEM_ENVIRONMENT_PATH)
+else ()
+    find_package(OpenCL 1.2 QUIET)
 endif()
 
 find_package(OpenGL REQUIRED)
 find_package(CUDA QUIET)
-find_package(OpenCL 1.2 QUIET)
 
 if(APPLE)
     find_package(X11)
