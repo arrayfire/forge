@@ -59,7 +59,6 @@ endif()
 
 #packages not available via hunter
 find_package(Doxygen    QUIET)
-find_package(X11        QUIET)
 find_package(FreeImage  QUIET)
 if(UNIX)
     find_package(FontConfig REQUIRED)
