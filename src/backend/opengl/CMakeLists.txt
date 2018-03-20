@@ -107,8 +107,8 @@ if(UNIX)
     PRIVATE
       FontConfig::FontConfig
       ${X11_X11_LIB}
-      $<$<AND:$<CXX_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_STDCPP}>>:-static-libstdc++>
-      $<$<AND:$<C_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_GCC}>>:-static-libgcc>
+      $<$<AND:$<CXX_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_CPPFLAGS}>>:-static-libstdc++>
+      $<$<AND:$<C_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_CPPFLAGS}>>:-static-libgcc>
   )
 endif(UNIX)
 

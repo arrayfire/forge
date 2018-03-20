@@ -75,18 +75,15 @@ option(FG_WITH_FREEIMAGE
 
 option(FG_USE_STATIC_FREEIMAGE
     "Use static version of freeimage" OFF)
-option(FG_USE_STATIC_STDCPP
-    "Use static libstdc++ for generating forge library" OFF)
-option(FG_USE_STATIC_GCC
-    "Use static libgcc for generating forge library" OFF)
+option(FG_USE_STATIC_CPPFLAGS
+    "Use static libstdc++ & libgcc for generating forge library" OFF)
 
 set(FG_USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
 set_property(CACHE FG_USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
 
 mark_as_advanced(
     FG_USE_STATIC_FREEIMAGE
-    FG_USE_STATIC_STDCPP
-    FG_USE_STATIC_GCC
+    FG_USE_STATIC_CPPFLAGS
     )
 
 fg_deprecate(BUILD_DOCS FG_BUILD_DOCS)
