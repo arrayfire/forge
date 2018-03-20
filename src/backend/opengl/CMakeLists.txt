@@ -85,7 +85,6 @@ target_include_directories(${BackendTarget}
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${PROJECT_BINARY_DIR}
         ${PROJECT_SOURCE_DIR}/include
-        ${X11_INCLUDE_DIR}
     )
 
 target_link_libraries(${BackendTarget}
@@ -106,7 +105,6 @@ if(UNIX)
   target_link_libraries(${BackendTarget}
     PRIVATE
       FontConfig::FontConfig
-      ${X11_X11_LIB}
       $<$<AND:$<CXX_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_CPPFLAGS}>>:-static-libstdc++>
       $<$<AND:$<C_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_CPPFLAGS}>>:-static-libgcc>
   )
