@@ -17,7 +17,7 @@ find_package(OpenGL REQUIRED)
 find_package(CUDA QUIET)
 
 if(APPLE)
-    find_package(X11)
+    find_package(X11 REQUIRED)
     if(X11_FOUND AND NOT TARGET X11::x11)
         add_library(X11::x11 UNKNOWN IMPORTED)
         set_target_properties(X11::x11 PROPERTIES
