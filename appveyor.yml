@@ -140,6 +140,6 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - mkdir build
   - cd build
-  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\build\package -DCMAKE_PREFIX_PATH="c:\projects\dependencies\glbinding;c:\projects\dependencies\glfw-3.2.1\build\package\lib\cmake\glfw3;c:\projects\dependencies\glm\build\package\lib\cmake\glm" -DBOOST_ROOT="%BOOST_ROOT%" -DFreeImage_DYNAMIC_LIBRARY="c:\projects\dependencies\FreeImage\Dist\x64\FreeImage.lib" -DFreeImage_INCLUDE_DIR="c:\projects\dependencies\FreeImage\Dist\x64"
+  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\build\package -DCMAKE_PREFIX_PATH="c:\projects\dependencies\glbinding;c:\projects\dependencies\glfw-3.2.1\build\package\lib\cmake\glfw3;c:\projects\dependencies\glm\build\package\lib\cmake\glm" -DBOOST_ROOT="%BOOST_ROOT%" -DFreeImage_ROOT="c:\projects\dependencies\FreeImage\Dist\x64"
   - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo
   - cmake --build . --target INSTALL --config %configuration% -- /nologo
