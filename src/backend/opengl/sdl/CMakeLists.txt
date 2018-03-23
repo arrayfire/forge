@@ -23,3 +23,9 @@ target_link_libraries(wtk_interface INTERFACE SDL2::SDL2)
 if (NOT BUILD_SHARED_LIBS)
     install(TARGETS wtk_interface EXPORT ForgeTargets)
 endif ()
+
+if (WIN32)
+    install(FILES $<TARGET_FILE:SDL2::SDL2>
+    DESTINATION ${FG_INSTALL_BIN_DIR}
+    COMPONENT dependencies)
+endif ()

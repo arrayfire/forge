@@ -139,12 +139,13 @@ install(TARGETS forge
     )
 
 # install dependencies
-get_target_library_path(binary_location forge)
-if (EXISTS "${binary_location}")
-    get_prerequisites(${binary_location} dependencies 1 1 "" "${prerequisites_search_dirs}")
-    resolve_dependencies_paths(forge_deps
-        "${dependencies}" "${binary_location}" "${prerequisites_search_dirs}")
-    install(FILES ${forge_deps}
+if (WIN32)
+    if (NOT FG_USE_STATIC_FREEIMAGE)
+        install(FILES $<TARGET_FILE:FreeImage::FreeImage>
+            DESTINATION ${FG_INSTALL_BIN_DIR}
+            COMPONENT dependencies)
+	endif ()
+    install(FILES $<TARGET_FILE:glbinding::glbinding>
         DESTINATION ${FG_INSTALL_BIN_DIR}
-        COMPONENT   dependencies)
+        COMPONENT dependencies)
 endif ()
