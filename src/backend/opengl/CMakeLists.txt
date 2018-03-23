@@ -140,7 +140,7 @@ install(TARGETS forge
 
 # install dependencies
 if (WIN32)
-    if (NOT FG_USE_STATIC_FREEIMAGE)
+    if (FG_WITH_FREEIMAGE AND NOT FG_USE_STATIC_FREEIMAGE)
         install(FILES $<TARGET_FILE:FreeImage::FreeImage>
             DESTINATION ${FG_INSTALL_BIN_DIR}
             COMPONENT dependencies)
