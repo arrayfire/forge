@@ -40,7 +40,12 @@ endif()
 
 # CMake files
 if(NOT DEFINED FG_INSTALL_CMAKE_DIR)
-    set(FG_INSTALL_CMAKE_DIR "lib/cmake/Forge" CACHE PATH "Installation path for CMake files")
+    if(WIN32)
+        set(cmake_dir "cmake")
+    else()
+        set(cmake_dir "lib/cmake/Forge")
+    endif()
+    set(FG_INSTALL_CMAKE_DIR "${cmake_dir}" CACHE PATH "Installation path for CMake files")
 endif()
 
 # Use absolute paths (these changes are internal and will not show up in cache)
