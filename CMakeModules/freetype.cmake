@@ -1,4 +1,3 @@
-# FindFreeType.cmake
 # Author: Pradeep Garigipati <pradeep@arrayfire.com>
 #
 # Heavy work is done by FindFreetype.cmake that comes along with

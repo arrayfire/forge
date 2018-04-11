@@ -53,7 +53,11 @@ if(FG_ENABLE_HUNTER)
 else()
     find_package(glbinding  REQUIRED)
     find_package(glm        REQUIRED)
-    find_package(freetype   REQUIRED)
+
+    # freetype.cmake builds freetype on windows
+    # and calls find_package(Freetype) on other platforms
+    include(freetype)
+
     find_package(Boost      REQUIRED)
 endif()
 
@@ -175,3 +179,4 @@ install(DIRECTORY examples/ #NOTE The slash at the end is important
     COMPONENT examples)
 
 include(CPackConfig)
+
