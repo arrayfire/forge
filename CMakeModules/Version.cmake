@@ -29,8 +29,7 @@ execute_process(
     COMMAND git log -1 --format=%h
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_COMMIT_HASH
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 if(NOT GIT_COMMIT_HASH)
     message(STATUS "No git. Setting hash to default")
@@ -39,10 +38,8 @@ endif()
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/CMakeModules/version.h.in
-    ${PROJECT_SOURCE_DIR}/include/fg/version.h
-)
+    ${PROJECT_BINARY_DIR}/include/fg/version.h)
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/CMakeModules/version.hpp.in
-    ${PROJECT_BINARY_DIR}/src/backend/common/version.hpp
-)
+    ${PROJECT_BINARY_DIR}/src/backend/common/version.hpp)

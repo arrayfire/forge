@@ -86,8 +86,7 @@ set_property(CACHE FG_USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
 
 mark_as_advanced(
     FG_USE_STATIC_FREEIMAGE
-    FG_USE_STATIC_CPPFLAGS
-    )
+    FG_USE_STATIC_CPPFLAGS)
 
 fg_deprecate(BUILD_DOCS FG_BUILD_DOCS)
 fg_deprecate(BUILD_EXAMPLES FG_BUILD_EXAMPLES)
@@ -119,8 +118,7 @@ install(DIRECTORY include/
     FILES_MATCHING
     PATTERN "*.h"
     PATTERN "*.hpp"
-    PATTERN ".gitignore" EXCLUDE
-    )
+    PATTERN ".gitignore" EXCLUDE)
 
 install(EXPORT ForgeTargets
     NAMESPACE Forge::
@@ -134,8 +132,7 @@ export(EXPORT ForgeTargets
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
     "${Forge_BINARY_DIR}/cmake/ForgeConfigVersion.cmake"
-    COMPATIBILITY SameMajorVersion
-)
+    COMPATIBILITY SameMajorVersion)
 
 # This config file will be installed so we need to set the install_destination
 # path relative to the install path
@@ -145,8 +142,7 @@ configure_package_config_file(
   "${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
   "cmake/install/ForgeConfig.cmake"
   INSTALL_DESTINATION "${FG_INSTALL_CMAKE_DIR}"
-  PATH_VARS INCLUDE_DIRS CMAKE_DIR
-)
+  PATH_VARS INCLUDE_DIRS CMAKE_DIR)
 
 install(FILES ${Forge_BINARY_DIR}/cmake/install/ForgeConfig.cmake
     ${Forge_BINARY_DIR}/cmake/ForgeConfigVersion.cmake
@@ -163,8 +159,7 @@ configure_package_config_file(
   "cmake/ForgeConfig.cmake"
   INSTALL_DESTINATION "${Forge_BINARY_DIR}/cmake"
   PATH_VARS INCLUDE_DIRS CMAKE_DIR
-  INSTALL_PREFIX "${Forge_BINARY_DIR}"
-)
+  INSTALL_PREFIX "${Forge_BINARY_DIR}")
 
 #--------------------------------------------------------------------
 # Install examples
@@ -179,4 +174,3 @@ install(DIRECTORY examples/ #NOTE The slash at the end is important
     COMPONENT examples)
 
 include(CPackConfig)
-
