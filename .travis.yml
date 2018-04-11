@@ -4,29 +4,39 @@
 #
 #-----------------------------------------------------------------------------
 
-sudo: required
-
-services:
-    - docker
-
 language: cpp
 
 notifications:
     email: false
 
-env:
-    matrix:
-        - VER=5   CC_NAME=gcc CXX_NAME=g++
-        - VER=4.9 CC_NAME=gcc CXX_NAME=g++
-        - VER=3.5 CC_NAME=clang CXX_NAME=clang++
-        - VER=3.9 CC_NAME=clang CXX_NAME=clang++
+matrix:
+    include:
+        - os: linux
+          sudo: required
+          services: docker
+          env: VER=5 CC_NAME=gcc CXX_NAME=g++
+        - os: linux
+          sudo: required
+          services: docker
+          env: VER=4.9 CC_NAME=gcc CXX_NAME=g++
+        - os: linux
+          sudo: required
+          services: docker
+          env: VER=3.5 CC_NAME=clang CXX_NAME=clang++
+        - os: linux
+          sudo: required
+          services: docker
+          env: VER=3.9 CC_NAME=clang CXX_NAME=clang++
+        - os: osx
+          osx_image: xcode9.3
 
 before_install:
-    - docker run -d --name ubuntu-test -v $(pwd):/travis ubuntu:latest tail -f /dev/null
-    - docker ps
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -d --name ubuntu-test -v $(pwd):/travis ubuntu:latest tail -f /dev/null; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker ps; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install glfw glbinding fontconfig freeimage glm boost; fi
 
 install:
-  - docker exec -t ubuntu-test bash -c "apt-get update;
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker exec -t ubuntu-test bash -c "apt-get update;
     apt-get install -y software-properties-common python-software-properties git-core;
     apt-get install -y build-essential cmake cmake-data libboost-thread-dev libboost-date-time-dev;
     apt-get install -y libfontconfig1-dev libfreeimage-dev libfreetype6-dev;
@@ -42,10 +52,12 @@ install:
     apt-get install -y ocl-icd-opencl-dev;
     cd /travis;
     git clone --branch 0.9.8.5 https://github.com/g-truc/glm.git;
-    cd glm && cmake -DCMAKE_INSTALL_PREFIX=/travis/glm/package && make install;"
+    cd glm && cmake -DCMAKE_INSTALL_PREFIX=/travis/glm/package && make install;"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew info cmake; fi
 
 script:
-  - docker exec -t ubuntu-test bash -c "cd /travis;
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker exec -t ubuntu-test bash -c "cd /travis;
     export GLM_DIR=/travis/glm/package/lib/x86_64-linux-gnu/cmake/glm;
     cmake -DCMAKE_C_COMPILER=$CC_NAME-$VER -DCMAKE_CXX_COMPILER=$CXX_NAME-$VER -Dglm_DIR=$GLM_DIR . &&
-    make install"
+    make install"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cmake . -DCMAKE_INSTALL_PREFIX:PATH=`pwd`/package && make install; fi
