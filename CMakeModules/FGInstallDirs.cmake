@@ -19,11 +19,6 @@ if(NOT DEFINED FG_INSTALL_INC_DIR)
     set(FG_INSTALL_INC_DIR "include" CACHE PATH "Installation path for headers")
 endif()
 
-# Data files
-if(NOT DEFINED FG_INSTALL_DATA_DIR)
-    set(FG_INSTALL_DATA_DIR "data" CACHE PATH "Installation path for data files")
-endif()
-
 # Documentation
 if(NOT DEFINED FG_INSTALL_DOC_DIR)
     set(FG_INSTALL_DOC_DIR "doc" CACHE PATH "Installation path for documentation")
@@ -59,3 +54,12 @@ if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
                           "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_PREFIX}"
                            ABSOLUTE)
 endif()
+
+mark_as_advanced(
+    FG_INSTALL_CMAKE_DIR
+    FG_INSTALL_MAN_DIR
+    FG_INSTALL_EXAMPLE_DIR
+    FG_INSTALL_DOC_DIR
+    FG_INSTALL_INC_DIR
+    FG_INSTALL_LIB_DIR
+    FG_INSTALL_BIN_DIR)
