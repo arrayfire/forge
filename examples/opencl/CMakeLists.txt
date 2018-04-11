@@ -4,7 +4,7 @@ project(Forge-OPENCL-Examples LANGUAGES CXX)
 
 macro(make_ocl_example target src)
     add_example(${target} ${src} opencl CXX11
-        INCLUDE_DIRS ${CMAKE_CURRENT_DIR}
+        INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
         LIBRARIES OpenCL::OpenCL;OpenCL::cl2hpp)
 endmacro(make_ocl_example)
 

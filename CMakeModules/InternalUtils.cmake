@@ -48,5 +48,4 @@ mark_as_advanced(
     CUDA_SDK_ROOT_DIR
     CUDA_TOOLKIT_ROOT_DIR
     CUDA_USE_STATIC_CUDA_RUNTIME
-    CUDA_rt_LIBRARY
-    )
+    CUDA_rt_LIBRARY)

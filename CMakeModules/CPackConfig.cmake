@@ -187,8 +187,9 @@ file(GLOB_RECURSE CACHES "${CMAKE_SOURCE_DIR}/CMakeCache.txt")
 
 include(CPack)
 
-# Configure file with custom definitions for NSIS.
-configure_file(
-  ${PROJECT_SOURCE_DIR}/CMakeModules/nsis/NSIS.definitions.nsh.in
-  ${CMAKE_CURRENT_BINARY_DIR}/NSIS.definitions.nsh
-)
+if (WIN32)
+    # Configure file with custom definitions for NSIS.
+    configure_file(
+        ${PROJECT_SOURCE_DIR}/CMakeModules/nsis/NSIS.definitions.nsh.in
+        ${CMAKE_CURRENT_BINARY_DIR}/NSIS.definitions.nsh)
+endif ()

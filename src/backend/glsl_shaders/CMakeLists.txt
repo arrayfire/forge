@@ -14,7 +14,7 @@ convert_glsl_shaders_to_headers(
     SOURCES ${glsl_shaders}
     VARNAME  shader_files
     EXTENSION "hpp"
-    OUTPUT_DIR "shader_headers"
+    OUTPUT_DIR "include/shader_headers"
     TARGETS glsl_shader_targets
     NAMESPACE "glsl"
     EOD "0"

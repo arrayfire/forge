@@ -4,7 +4,7 @@ project(Forge-Examples LANGUAGES CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
 if(FG_ENABLE_HUNTER)
     hunter_add_package(OpenCL)
@@ -13,8 +13,15 @@ else ()
     find_package(OpenCL 1.2 QUIET)
 endif()
 
+find_package(Forge REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(CUDA QUIET)
+
+mark_as_advanced(
+    CUDA_HOST_COMPILER
+    CUDA_USE_STATIC_CUDA_RUNTIME
+    CUDA_rt_LIBRARY
+    CMAKE_CUDA_HOST_COMPILER)
 
 if(APPLE)
     find_package(X11 REQUIRED)
@@ -28,9 +35,8 @@ if(APPLE)
 endif()
 
 include(CMakeParseArguments)
-include(ConditionalDirectory)
 include(CMakeDependentOption)
-include(IfNotThisThenInclude)
+include(InternalUtils)
 
 option(FG_BUILD_CUDA_EXAMPLES "Turn off/on building cuda examples" ${CUDA_FOUND})
 option(FG_BUILD_OPENCL_EXAMPLES "Turn off/on building opencl examples" ${OpenCL_FOUND})
@@ -44,23 +50,6 @@ mark_as_advanced(FG_BUILD_CUDA_EXAMPLES FG_BUILD_OPENCL_EXAMPLES)
 fg_deprecate(BUILD_EXAMPLES_CUDA FG_BUILD_CUDA_EXAMPLES)
 fg_deprecate(BUILD_EXAMPLES_OPENCL FG_BUILD_OPENCL_EXAMPLES)
 fg_deprecate(USE_SYSTEM_CL2HPP FG_USE_SYSTEM_CL2HPP)
-
-add_library(OSCompileFlags INTERFACE)
-
-if (WIN32)
-    target_compile_definitions(OSCompileFlags
-        INTERFACE OS_WIN WIN32_MEAN_AND_LEAN)
-elseif (APPLE)
-    target_compile_definitions(OSCompileFlags INTERFACE OS_MAC)
-else(WIN32)
-    target_compile_definitions(OSCompileFlags INTERFACE OS_LNX)
-endif(WIN32)
-
-if(TARGET forge)
-    add_library(Forge::forge ALIAS forge)
-else()
-    include(${Forge_BINARY_DIR}/ForgeConfig.cmake)
-endif()
 
 function(add_example target_name source backend)
     set(options CXX11)
@@ -92,8 +81,7 @@ function(add_example target_name source backend)
             OpenGL::GL
             Forge::forge
             ${arg_LIBRARIES}
-            $<$<PLATFORM_ID:Darwin>:X11::x11>
-        )
+            $<$<PLATFORM_ID:Darwin>:X11::x11>)
 endfunction()
 
 add_subdirectory(cpu)

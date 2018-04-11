@@ -1,52 +1,77 @@
-# Defines the following variables:
-# Forge_INCLUDE_DIRS    - Location of Forge's include directory.
-# Forge_LIBRARIES       - Location of Forge's libraries.
-# Forge_FOUND           - True if Forge has been located
-#
-# You may provide a hint to where Forge's root directory may be located
-# by setting Forge_DIR.
-#
-#=============================================================================
-# Copyright (c) 2015, ArrayFire
+# Copyright (c) 2018, ArrayFire
 # All rights reserved.
 #
-# Redistribution and use in source and binary forms, with or without modification,
-# are permitted provided that the following conditions are met:
-#
-# * Redistributions of source code must retain the above copyright notice, this
-#   list of conditions and the following disclaimer.
-#
-# * Redistributions in binary form must reproduce the above copyright notice, this
-#   list of conditions and the following disclaimer in the documentation and/or
-#   other materials provided with the distribution.
-#
-# * Neither the name of the ArrayFire nor the names of its
-#   contributors may be used to endorse or promote products derived from
-#   this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#=============================================================================
+# This file is distributed under 3-clause BSD license.
+# The complete license agreement can be obtained at:
+# http://arrayfire.com/licenses/BSD-3-Clause
 
-SET(Forge_VERSION "@Forge_VERSION@")
+# Forge
+# -----
+#
+# This is the cmake configuration file for Forge library. It provides
+# the following imported targets.
+#
+# ``Forge::forge`` - the target for Forge
+#
+# This target can be used to link with your application using the
+# ``target_link_library`` command. Here is an example of how to use these
+# targets in your application:
+#
+#   add_executable(mybinary source.cpp)
+#   target_link_library(mybinary PRIVATE Forge::forge)
+#
+# This example creates a mybinary executable from the source.cpp file and links
+# against the Forge library. Note you do *not* need to set the include
+# directories as they are automatically included with the target.
+#
+# This is the recommended way of linking against Forge
+#
+#
+# Legacy Variables
+# ----------------
+#
+# Defines the following variables:
+# Forge_INCLUDE_DIRS  - Path to Forge include directory.
+# Forge_LIBRARIES     - Path to Forge libraries used in link commands.
+# Forge_FOUND         - True if Forge backend has been found.
+#
+# You may provide a hint to where Forge's root directory may be located
+# by setting Forge_DIR. You do not need to set this if you installed
+# Forge using the official installers or the package manager(please submit
+# a bug report if any issues). If CMake is unable to locate Forge then
+# set the Forge_DIR to the directory of this file.
+#
+# If you are trying to link against a source build then this should be set to
+# the build directory.
 
 @PACKAGE_INIT@
 
-SET_AND_CHECK(Forge_INCLUDE_DIRS "${PACKAGE_PREFIX_DIR}/@FG_INSTALL_INC_DIR@")
-SET_AND_CHECK(Forge_LIBRARY_DIRS "${PACKAGE_PREFIX_DIR}/@FG_INSTALL_LIB_DIR@")
+set_and_check(Forge_INCLUDE_DIRS @PACKAGE_INCLUDE_DIRS@)
 
-FIND_LIBRARY(Forge_LIBRARIES forge HINTS ${Forge_LIBRARY_DIRS})
+set(Forge_FOUND OFF)
 
-INCLUDE(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(Forge DEFAULT_MSG
-  Forge_INCLUDE_DIRS Forge_LIBRARIES)
+if (NOT TARGET Forge::forge AND
+        NOT TARGET forge AND
+        EXISTS @PACKAGE_CMAKE_DIR@/ForgeTargets.cmake)
+    include(@PACKAGE_CMAKE_DIR@/ForgeTargets.cmake)
+endif ()
 
-INCLUDE("@PACKAGE_CMAKE_DIR@/ForgeTargets.cmake")
+if (TARGET Forge::forge)
+    get_property(config TARGET Forge::forge PROPERTY IMPORTED_CONFIGURATIONS)
+    if(NOT config)
+      set(config "NOCONFIG")
+    endif()
+    get_property(loc TARGET Forge::forge PROPERTY IMPORTED_LOCATION_${config})
+endif ()
+
+if ((TARGET Forge::forge AND EXISTS ${loc})
+    OR
+    TARGET forge)
+    set(Forge_FOUND ON)
+    if (TARGET forge AND NOT TARGET Forge::forge)
+        add_library(Forge::forge ALIAS forge)
+    endif ()
+    set(Forge_LIBRARIES Forge::forge)
+else ()
+    set(Forge_FOUND OFF)
+endif ()

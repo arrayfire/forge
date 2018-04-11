@@ -80,10 +80,11 @@ endif()
 target_include_directories(${BackendTarget}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${PROJECT_BINARY_DIR}
+        ${PROJECT_BINARY_DIR}/include
         ${PROJECT_SOURCE_DIR}/include
     )
 

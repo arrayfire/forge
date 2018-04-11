@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_MODULE_PATH
-    ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
-set(CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}prefix;${CMAKE_PREFIX_PATH}")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
 
 include(BuildType)
 include(FGInstallDirs)
@@ -106,9 +105,6 @@ add_subdirectory(src/api/c)
 add_subdirectory(src/api/cpp)
 add_subdirectory(src/backend/opengl)
 
-conditional_directory(FG_BUILD_DOCS docs)
-conditional_directory(FG_BUILD_EXAMPLES examples)
-
 #--------------------------------------------------------------------
 # Install include folder, docs, examples etc.
 #--------------------------------------------------------------------
@@ -119,11 +115,16 @@ install(DIRECTORY include/
     PATTERN "*.h"
     PATTERN "*.hpp"
     PATTERN ".gitignore" EXCLUDE)
+# The Forge version header is generated and thus need to be
+# included explicitly
+install(FILES ${Forge_BINARY_DIR}/include/fg/version.h
+    DESTINATION "${FG_INSTALL_INC_DIR}/fg/"
+    COMPONENT headers)
 
 install(EXPORT ForgeTargets
     NAMESPACE Forge::
     DESTINATION ${FG_INSTALL_CMAKE_DIR}
-    COMPONENT cmake)
+    COMPONENT forge)
 
 export(EXPORT ForgeTargets
     NAMESPACE Forge::
@@ -174,3 +175,6 @@ install(DIRECTORY examples/ #NOTE The slash at the end is important
     COMPONENT examples)
 
 include(CPackConfig)
+
+conditional_directory(FG_BUILD_DOCS docs)
+conditional_directory(FG_BUILD_EXAMPLES examples)
