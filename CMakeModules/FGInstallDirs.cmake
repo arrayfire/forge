@@ -19,18 +19,30 @@ if(NOT DEFINED FG_INSTALL_INC_DIR)
     set(FG_INSTALL_INC_DIR "include" CACHE PATH "Installation path for headers")
 endif()
 
+set(DATA_DIR "share/Forge")
+
 # Documentation
 if(NOT DEFINED FG_INSTALL_DOC_DIR)
-    set(FG_INSTALL_DOC_DIR "doc" CACHE PATH "Installation path for documentation")
+    if (WIN32)
+        set(docs_dir "doc")
+    else ()
+        set(docs_dir "${DATA_DIR}/doc")
+    endif ()
+    set(FG_INSTALL_DOC_DIR "${docs_dir}" CACHE PATH "Installation path for documentation")
 endif()
 
 if(NOT DEFINED FG_INSTALL_EXAMPLE_DIR)
-    set(FG_INSTALL_EXAMPLE_DIR "examples" CACHE PATH "Installation path for examples")
+    if (WIN32)
+        set(examples_dir "examples")
+    else ()
+        set(examples_dir "${DATA_DIR}/examples")
+    endif ()
+    set(FG_INSTALL_EXAMPLE_DIR "${examples_dir}" CACHE PATH "Installation path for examples")
 endif()
 
 # Man pages
 if(NOT DEFINED FG_INSTALL_MAN_DIR)
-    set(FG_INSTALL_MAN_DIR "man" CACHE PATH "Installation path for man pages")
+    set(FG_INSTALL_MAN_DIR "${DATA_DIR}/man" CACHE PATH "Installation path for man pages")
 endif()
 
 # CMake files
@@ -38,7 +50,7 @@ if(NOT DEFINED FG_INSTALL_CMAKE_DIR)
     if(WIN32)
         set(cmake_dir "cmake")
     else()
-        set(cmake_dir "lib/cmake/Forge")
+        set(cmake_dir "${DATA_DIR}/cmake")
     endif()
     set(FG_INSTALL_CMAKE_DIR "${cmake_dir}" CACHE PATH "Installation path for CMake files")
 endif()
