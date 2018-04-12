@@ -13,7 +13,14 @@ endmacro()
 myhunter_config(Boost 1.66.0)
 myhunter_config(freetype 2.6.2)
 myhunter_config(OpenCL 2.1-p0)
-myhunter_config(glm 0.9.8.5)
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "7.2.0")
+        myhunter_config(glm 0.9.7.6)
+    else()
+        myhunter_config(glm 0.9.8.5)
+    endif()
+endif ()
 
 #myhunter_config(freeimage hunter-v3.17.0)
 ##freeimag dependencies
