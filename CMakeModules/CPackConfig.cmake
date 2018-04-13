@@ -7,7 +7,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/CMakeModules/nsis")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMakeModules/nsis")
 
 include(Version)
 include(CPackIFW)
@@ -48,13 +48,10 @@ set(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION})
 
 # Platform specific settings for CPACK generators
 # - OSX specific
-#   - DragNDrop (OSX only)
-#   - PackageMaker (OSX only)
-#   - OSXX11 (OSX only)
-#   - Bundle (OSX only)
+#   - productbuild (OSX only)
 # - Windows
 #   - NSIS64 Generator
-if (WIN32)
+if(WIN32)
   set(WIN_INSTALL_SOURCE ${PROJECT_SOURCE_DIR}/CMakeModules/nsis)
 
   set(LICENSE_FILE       "${Forge_SOURCE_DIR}/LICENSE")
@@ -70,15 +67,15 @@ if (WIN32)
   set(CPACK_NSIS_HELP_LINK "${APP_URL}")
   set(CPACK_NSIS_URL_INFO_ABOUT "${APP_URL}")
   set(CPACK_NSIS_INSTALLED_ICON_NAME "${MY_CPACK_PACKAGE_ICON}")
-  if (CMAKE_CL_64)
+  if(CMAKE_CL_64)
     set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
-  else (CMAKE_CL_64)
+  else(CMAKE_CL_64)
     set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
-  endif (CMAKE_CL_64)
-else ()
+  endif(CMAKE_CL_64)
+else()
     set(CPACK_RESOURCE_FILE_LICENSE "${Forge_SOURCE_DIR}/LICENSE")
     set(CPACK_RESOURCE_FILE_README "${Forge_SOURCE_DIR}/README.md")
-endif ()
+endif()
 
 # Set the default components installed in the package
 get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
@@ -92,25 +89,31 @@ cpack_add_install_type(Extra
 cpack_add_install_type(Runtime
   DISPLAY_NAME "Runtime")
 
+cpack_add_component_group(backends
+  DISPLAY_NAME "Forge"
+  DESCRIPTION "Forge libraries")
+
 cpack_add_component(dependencies
-  DISPLAY_NAME "Forge Library Dependencies"
-  DESCRIPTION "Libraries required by forge OpenGL backend"
+  DISPLAY_NAME "Forge Dependencies"
+  DESCRIPTION "Libraries required by Forge OpenGL backend"
+  PARENT_GROUP backends
   INSTALL_TYPES Development Runtime)
 
 cpack_add_component(forge
   DISPLAY_NAME "Forge"
   DESCRIPTION "Forge library."
+  PARENT_GROUP backends
   DEPENDS dependencies
   INSTALL_TYPES Development Runtime)
 
 cpack_add_component(documentation
   DISPLAY_NAME "Documentation"
-  DESCRIPTION "Doxygen documentation"
+  DESCRIPTION "Forge documentation files"
   INSTALL_TYPES Extra)
 
 cpack_add_component(headers
   DISPLAY_NAME "C/C++ Headers"
-  DESCRIPTION "Headers for the Forge Libraries."
+  DESCRIPTION "Development headers for the Forge library."
   INSTALL_TYPES Development)
 
 cpack_add_component(cmake
@@ -135,10 +138,11 @@ set(CPACK_IFW_PACKAGE_ICON "${MY_CPACK_PACKAGE_ICON}")
 set(CPACK_IFW_PACKAGE_WINDOW_ICON "${CMAKE_SOURCE_DIR}/assets/arrayfire_icon.png")
 set(CPACK_IFW_PACKAGE_LOGO "${CMAKE_SOURCE_DIR}/assets/arrayfire_logo.png")
 if (WIN32)
-    set(CPACK_IFW_ADMIN_TARGET_DIRECTORY "$PROGRAMFILES64/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+  set(CPACK_IFW_ADMIN_TARGET_DIRECTORY "$PROGRAMFILES64/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
 else ()
-    set(CPACK_IFW_ADMIN_TARGET_DIRECTORY "/opt/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+  set(CPACK_IFW_ADMIN_TARGET_DIRECTORY "/opt/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
 endif ()
+cpack_ifw_configure_component_group(backends)
 cpack_ifw_configure_component(dependencies)
 cpack_ifw_configure_component(forge)
 cpack_ifw_configure_component(documentation)
