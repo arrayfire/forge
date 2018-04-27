@@ -80,4 +80,4 @@ endfunction()
 
 add_subdirectory(cpu)
 conditional_directory(FG_BUILD_CUDA_EXAMPLES cuda)
-conditional_directory(FG_BUILD_OPENCL_EXAMPLESCL opencl)
+conditional_directory(FG_BUILD_OPENCL_EXAMPLES opencl)
