@@ -59,7 +59,7 @@ myhunter_config(glbinding 2.1.3-p0
     OPTION_BUILD_TOOLS=ON
     gtest_force_shared_crt=ON)
 
-myhunter_config(glfw 3.3.0-p4
+myhunter_config(glfw 3.3.0-p2
     GLFW_BUILD_DOCS=OFF
     GLFW_BUILD_EXAMPLES=OFF
     GLFW_BUILD_TESTS=OFF)
