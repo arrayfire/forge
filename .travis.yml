@@ -33,7 +33,8 @@ matrix:
 before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -d --name ubuntu-test -v $(pwd):/travis ubuntu:latest tail -f /dev/null; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker ps; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install glfw glbinding fontconfig freeimage glm boost; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install glfw glbinding fontconfig freeimage glm; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew upgrade boost; fi
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker exec -t ubuntu-test bash -c "apt-get update;
