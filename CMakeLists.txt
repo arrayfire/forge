@@ -17,8 +17,8 @@ if(FG_ENABLE_HUNTER)
     set(HUNTER_BUILD_SHARED_LIBS OFF)
     include(${CMAKE_CURRENT_LIST_DIR}/CMakeModules/HunterGate.cmake)
     HunterGate(
-        URL "https://github.com/ruslo/hunter/archive/v0.20.38.tar.gz"
-        SHA1 "efd84db1349e38974f53d4c4fc0b368a3b49f022"
+        URL "https://github.com/ruslo/hunter/archive/v0.20.60.tar.gz"
+        SHA1 "35a23a3e2f8a2c87f6762c43f3cc64a0bee50943"
         FILEPATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules/Hunter/config.cmake"
     )
     mark_as_advanced(HUNTER_TLS_VERIFY)
