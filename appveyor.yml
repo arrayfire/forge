@@ -72,7 +72,7 @@ environment:
 
 install:
   - ps: cd C:\Tools\vcpkg
-  - ps: vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl
+  - ps: vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl freetype
 
 # scripts that are called at very beginning, before repo cloning
 init:
