@@ -94,7 +94,7 @@ target_link_libraries(${BackendTarget}
     PRIVATE
         glbinding::glbinding
         glm
-        freetype::freetype
+        Freetype::Freetype
         Boost::boost
         backend_interface
         wtk_interface
@@ -144,7 +144,7 @@ if (WIN32)
         install(FILES $<TARGET_FILE:FreeImage::FreeImage>
             DESTINATION ${FG_INSTALL_BIN_DIR}
             COMPONENT dependencies)
-	endif ()
+    endif ()
     install(FILES $<TARGET_FILE:glbinding::glbinding>
         DESTINATION ${FG_INSTALL_BIN_DIR}
         COMPONENT dependencies)
