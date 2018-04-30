@@ -40,23 +40,27 @@
 find_path(FreeImage_INCLUDE_DIR
   NAMES FreeImage.h
   PATHS
-    /usr/include
-    /usr/local/include
-    /sw/include
-    /opt/local/include
-	${FreeImage_ROOT}
+    /usr
+    /usr/local
+    /sw
+    /opt/local
+    ${FreeImage_ROOT}
+  PATH_SUFFIXES
+    include
   DOC "The directory where FreeImage.h resides")
 
 find_library(FreeImage_LINK_LIBRARY
   NAMES FreeImage freeimage
   PATHS
-    /usr/lib64
-    /usr/lib
-    /usr/local/lib64
-    /usr/local/lib
-    /sw/lib
-    /opt/local/lib
-	${FreeImage_ROOT}
+    /usr
+    /usr/local
+    /sw
+    /opt/local
+    ${FreeImage_ROOT}
+  PATH_SUFFIXES
+    lib
+    lib64
+    x64/lib
   DOC "The FreeImage library")
 
 find_library(FreeImage_STATIC_LIBRARY
@@ -65,13 +69,15 @@ find_library(FreeImage_STATIC_LIBRARY
     ${CMAKE_STATIC_LIBRARY_PREFIX}FreeImage${CMAKE_STATIC_LIBRARY_SUFFIX}
     ${CMAKE_STATIC_LIBRARY_PREFIX}freeimage${CMAKE_STATIC_LIBRARY_SUFFIX}
   PATHS
-    /usr/lib64
-    /usr/lib
-    /usr/local/lib64
-    /usr/local/lib
-    /sw/lib
-    /opt/local/lib
+    /usr
+    /usr/local
+    /sw
+    /opt/local
     ${FreeImage_ROOT}
+  PATH_SUFFIXES
+    lib
+    lib64
+    x64/lib
   DOC "The FreeImage static library")
 
 if (WIN32)
@@ -81,8 +87,14 @@ if (WIN32)
       ${CMAKE_SHARED_LIBRARY_PREFIX}freeimage${CMAKE_SHARED_LIBRARY_SUFFIX}
     PATHS
       ${FreeImage_ROOT}
+    PATH_SUFFIXES
+      lib
+      lib64
+      x64/lib
+      bin
+      x64/bin
     DOC "The FreeImage dll")
-	mark_as_advanced(FreeImage_DLL_LIBRARY)
+  mark_as_advanced(FreeImage_DLL_LIBRARY)
 endif ()
 
 mark_as_advanced(
@@ -98,18 +110,18 @@ if(FreeImage_FOUND AND NOT TARGET FreeImage::FreeImage)
   add_library(FreeImage::FreeImage SHARED IMPORTED)
   if(WIN32)
     set_target_properties(FreeImage::FreeImage
-	  PROPERTIES
+      PROPERTIES
         IMPORTED_LINK_INTERFACE_LANGUAGE "C"
         INTERFACE_INCLUDE_DIRECTORIES "${FreeImage_INCLUDE_DIR}"
         IMPORTED_LOCATION "${FreeImage_DLL_LIBRARY}"
-	    IMPORTED_IMPLIB "${FreeImage_LINK_LIBRARY}")
+        IMPORTED_IMPLIB "${FreeImage_LINK_LIBRARY}")
   else(WIN32)
     set_target_properties(FreeImage::FreeImage
-	  PROPERTIES
+      PROPERTIES
         IMPORTED_LINK_INTERFACE_LANGUAGE "C"
         INTERFACE_INCLUDE_DIRECTORIES "${FreeImage_INCLUDE_DIR}"
         IMPORTED_LOCATION "${FreeImage_LINK_LIBRARY}"
-	    IMPORTED_NO_SONAME FALSE)
+        IMPORTED_NO_SONAME FALSE)
   endif(WIN32)
 endif()
 
