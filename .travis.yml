@@ -14,51 +14,59 @@ matrix:
         - os: linux
           sudo: required
           services: docker
-          env: VER=5 CC_NAME=gcc CXX_NAME=g++
+          env: VER_SUFFIX='-4.8' CC_NAME=gcc CXX_NAME=g++
         - os: linux
           sudo: required
           services: docker
-          env: VER=4.9 CC_NAME=gcc CXX_NAME=g++
+          env: VER_SUFFIX='-5' CC_NAME=gcc CXX_NAME=g++
         - os: linux
           sudo: required
           services: docker
-          env: VER=3.5 CC_NAME=clang CXX_NAME=clang++
+          env: VER_SUFFIX='' CC_NAME=gcc CXX_NAME=g++ #gcc 7.3
         - os: linux
           sudo: required
           services: docker
-          env: VER=3.9 CC_NAME=clang CXX_NAME=clang++
+          env: VER_SUFFIX='-3.9' CC_NAME=clang CXX_NAME=clang++
+        - os: linux
+          sudo: required
+          services: docker
+          env: VER_SUFFIX='-4.0' CC_NAME=clang CXX_NAME=clang++
+        - os: linux
+          sudo: required
+          services: docker
+          env: VER_SUFFIX='-5.0' CC_NAME=clang CXX_NAME=clang++
+        - os: linux
+          sudo: required
+          services: docker
+          env: VER_SUFFIX='-6.0' CC_NAME=clang CXX_NAME=clang++
         - os: osx
           osx_image: xcode9.3
 
 before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -d --name ubuntu-test -v $(pwd):/travis ubuntu:latest tail -f /dev/null; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker ps; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install glfw glbinding fontconfig freeimage glm; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew upgrade boost; fi
 
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker exec -t ubuntu-test bash -c "apt-get update;
-    apt-get install -y software-properties-common python-software-properties git-core;
-    apt-get install -y build-essential cmake cmake-data libboost-thread-dev libboost-date-time-dev;
-    apt-get install -y libfontconfig1-dev libfreeimage-dev libfreetype6-dev;
-    apt-get install -y libglfw3-dev;
-    add-apt-repository -y ppa:ubuntu-toolchain-r/test;
-    apt-get update;
-    apt-get install -y $CC_NAME-$VER $CXX_NAME-$VER;
-    apt-add-repository -y ppa:cginternals/ppa;
-    apt-get update;
-    apt-get install -y libglbinding-dev;
-    apt-get update;
-    apt-get install -y opencl-headers;
-    apt-get install -y ocl-icd-opencl-dev;
-    cd /travis;
-    git clone --branch 0.9.8.5 https://github.com/g-truc/glm.git;
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker exec -t ubuntu-test bash -c "apt-get update &&
+    apt-get install -y software-properties-common git python-minimal &&
+    apt-get install -y build-essential cmake cmake-data libboost-thread-dev libboost-date-time-dev &&
+    apt-get install -y libfontconfig1-dev libfreeimage-dev libfreetype6-dev &&
+    apt-get install -y libglfw3-dev libglbinding-dev &&
+    add-apt-repository -y ppa:ubuntu-toolchain-r/test &&
+    apt-get update &&
+    apt-get install -y $CC_NAME$VER_SUFFIX $CXX_NAME$VER_SUFFIX &&
+    apt-get install -y opencl-headers &&
+    apt-get install -y ocl-icd-opencl-dev &&
+    cd /travis &&
+    git clone --branch 0.9.7.6 https://github.com/g-truc/glm.git &&
     cd glm && cmake -DCMAKE_INSTALL_PREFIX=/travis/glm/package && make install;"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install glfw glbinding fontconfig freeimage glm; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew upgrade boost; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew info cmake; fi
 
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker exec -t ubuntu-test bash -c "cd /travis;
     export GLM_DIR=/travis/glm/package/lib/x86_64-linux-gnu/cmake/glm;
-    cmake -DCMAKE_C_COMPILER=$CC_NAME-$VER -DCMAKE_CXX_COMPILER=$CXX_NAME-$VER -Dglm_DIR=$GLM_DIR . &&
-    make install"; fi
+    cmake -DCMAKE_C_COMPILER=$CC_NAME$VER_SUFFIX -DCMAKE_CXX_COMPILER=$CXX_NAME$VER_SUFFIX -Dglm_DIR=$GLM_DIR . &&
+    make all"; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cmake . -DCMAKE_INSTALL_PREFIX:PATH=`pwd`/package && make install; fi

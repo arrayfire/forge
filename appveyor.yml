@@ -7,13 +7,14 @@
 #---------------------------------#
 
 # version format
-version: 1.0.{build}-{branch}
+version: '{branch}-{build}'
 
 # branches to build
 branches:
   # whitelist
   only:
     - master
+    - v1.0
 
   # blacklist
   except:
@@ -70,7 +71,8 @@ environment:
     - generator: "Visual Studio 15 2017 Win64"
 
 install:
-  - ps: Invoke-Expression "$env:APPVEYOR_BUILD_FOLDER\appveyor_deps_install.ps1"
+  - ps: cd C:\Tools\vcpkg
+  - ps: vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -106,7 +108,7 @@ configuration:
   # - Release
 
 cache:
-  - C:\projects\dependencies -> appveyor.yml
+  - C:\Tools\vcpkg\installed\ -> appveyor.yml
 
 build:
   parallel: true                                    # enable MSBuild parallel builds
@@ -118,16 +120,6 @@ build:
 
 # scripts to run before build
 before_build:
-  - ps: cd "$env:APPVEYOR_BUILD_FOLDER"
-  - ps: cd ..\dependencies\glm
-  - ps: if (-Not (Test-Path .\build -PathType Container)) { mkdir build }
-  - ps: cd build
-  - ps: if (-Not (Test-Path .\package\lib\cmake\glm\glmConfig.cmake)) { cmake .. -G "$env:generator" -DCMAKE_INSTALL_PREFIX="$env:APPVEYOR_BUILD_FOLDER\..\dependencies\glm\build\package"; cmake --build . --target INSTALL --config $env:configuration -- /nologo }
-  - ps: cd "$env:APPVEYOR_BUILD_FOLDER"
-  - ps: cd ..\dependencies\glfw-3.2.1
-  - ps: if (-Not (Test-Path .\build -PathType Container)) { mkdir build }
-  - ps: cd build
-  - ps: if (-Not (Test-Path .\package\lib\cmake\glfw3\glfw3Config.cmake)) { cmake .. -G "$env:generator" -DCMAKE_INSTALL_PREFIX="$env:APPVEYOR_BUILD_FOLDER\..\dependencies\glfw-3.2.1\build\package" -DBUILD_SHARED_LIBS=ON -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF; cmake --build . --target INSTALL --config $env:configuration -- /nologo }
 
 # scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
 before_package:
@@ -140,6 +132,6 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - mkdir build
   - cd build
-  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\build\package -DCMAKE_PREFIX_PATH="c:\projects\dependencies\glbinding;c:\projects\dependencies\glfw-3.2.1\build\package\lib\cmake\glfw3;c:\projects\dependencies\glm\build\package\lib\cmake\glm" -DBOOST_ROOT="%BOOST_ROOT%" -DFreeImage_ROOT="c:\projects\dependencies\FreeImage\Dist\x64"
+  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DFreeImage_ROOT="c:/tools/vcpkg/installed/x64-windows"
   - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo
   - cmake --build . --target INSTALL --config %configuration% -- /nologo
