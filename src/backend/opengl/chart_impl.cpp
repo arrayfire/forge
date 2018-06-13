@@ -35,6 +35,11 @@
 using namespace gl;
 using namespace std;
 
+namespace forge
+{
+namespace opengl
+{
+
 typedef std::vector<std::string>::const_iterator StringIter;
 
 static const int CHART2D_FONT_SIZE = 12;
@@ -75,11 +80,6 @@ int calcTrgtFntSize(const float w, const float h)
 {
     return CHART2D_FONT_SIZE;
 }
-
-namespace forge
-{
-namespace opengl
-{
 
 /********************* BEGIN-AbstractChart *********************/
 

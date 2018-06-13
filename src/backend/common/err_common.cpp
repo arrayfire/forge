@@ -14,9 +14,13 @@
 
 #include <string>
 #include <sstream>
+#include <cstdio>
+#include <cstdlib>
 
-using namespace forge;
-
+namespace forge
+{
+namespace common
+{
 using std::string;
 using std::stringstream;
 
@@ -134,4 +138,7 @@ const char * getName(forge::dtype type)
         case u16    :   return "unsigned short";
         default     :   TYPE_ERROR(1, type);
     }
+}
+
+}
 }

@@ -1,57 +1,45 @@
 #
 # Make a version file that includes the Forge version and git revision
 #
-CMAKE_POLICY(PUSH)
+set(FG_VERSION_MAJOR ${Forge_VERSION_MAJOR})
+set(FG_VERSION_MINOR ${Forge_VERSION_MINOR})
+set(FG_VERSION_PATCH ${Forge_VERSION_PATCH})
 
-IF("${CMAKE_VERSION}" VERSION_GREATER "3.1" OR "${CMAKE_VERSION}" VERSION_EQUAL "3.1")
-    CMAKE_POLICY(SET CMP0054 OLD)
-ENDIF()
-
-SET(FG_VERSION_MAJOR "1")
-SET(FG_VERSION_MINOR "0")
-SET(FG_VERSION_PATCH "2")
-
-SET(FG_VERSION "${FG_VERSION_MAJOR}.${FG_VERSION_MINOR}.${FG_VERSION_PATCH}")
-SET(FG_API_VERSION_CURRENT ${FG_VERSION_MAJOR}${FG_VERSION_MINOR})
-
+set(FG_VERSION "${FG_VERSION_MAJOR}.${FG_VERSION_MINOR}.${FG_VERSION_PATCH}")
+set(FG_API_VERSION_CURRENT ${FG_VERSION_MAJOR}${FG_VERSION_MINOR})
 
 # From CMake 3.0.0 CMAKE_<LANG>_COMPILER_ID is AppleClang for OSX machines
 # that use clang for compilations
-IF("${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang")
-    SET(COMPILER_NAME "AppleClang")
-ELSEIF("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
-    SET(COMPILER_NAME "LLVM Clang")
-ELSEIF("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
-    SET(COMPILER_NAME "GNU Compiler Collection(GCC/G++)")
-ELSEIF("${CMAKE_C_COMPILER_ID}" STREQUAL "Intel")
-    SET(COMPILER_NAME "Intel Compiler")
-ELSEIF("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
-    SET(COMPILER_NAME "Microsoft Visual Studio")
-ENDIF()
+if("${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang")
+    set(COMPILER_NAME "AppleClang")
+elseif("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
+    set(COMPILER_NAME "LLVM Clang")
+elseif("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+    set(COMPILER_NAME "GNU Compiler Collection(GCC/G++)")
+elseif("${CMAKE_C_COMPILER_ID}" STREQUAL "Intel")
+    set(COMPILER_NAME "Intel Compiler")
+elseif("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+    set(COMPILER_NAME "Microsoft Visual Studio")
+endif()
 
-SET(COMPILER_VERSION "${CMAKE_C_COMPILER_VERSION}")
-SET(FG_COMPILER_STRING "${COMPILER_NAME} ${COMPILER_VERSION}")
+set(COMPILER_VERSION "${CMAKE_C_COMPILER_VERSION}")
+set(FG_COMPILER_STRING "${COMPILER_NAME} ${COMPILER_VERSION}")
 
-EXECUTE_PROCESS(
+execute_process(
     COMMAND git log -1 --format=%h
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_COMMIT_HASH
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-IF(NOT GIT_COMMIT_HASH)
-    MESSAGE(STATUS "No git. Setting hash to default")
-    SET(GIT_COMMIT_HASH "default")
-ENDIF()
+if(NOT GIT_COMMIT_HASH)
+    message(STATUS "No git. Setting hash to default")
+    set(GIT_COMMIT_HASH "default")
+endif()
 
-CONFIGURE_FILE(
+configure_file(
     ${PROJECT_SOURCE_DIR}/CMakeModules/version.h.in
-    ${PROJECT_SOURCE_DIR}/include/fg/version.h
-)
+    ${PROJECT_BINARY_DIR}/include/fg/version.h)
 
-CONFIGURE_FILE(
+configure_file(
     ${PROJECT_SOURCE_DIR}/CMakeModules/version.hpp.in
-    ${PROJECT_SOURCE_DIR}/src/backend/version.hpp
-)
-
-CMAKE_POLICY(POP)
+    ${PROJECT_BINARY_DIR}/src/backend/common/version.hpp)

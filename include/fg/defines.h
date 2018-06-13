@@ -9,7 +9,7 @@
 
 #pragma once
 
-#ifdef OS_WIN
+#if defined(OS_WIN)
     // http://msdn.microsoft.com/en-us/library/b0084kay(v=VS.80).aspx
     // http://msdn.microsoft.com/en-us/library/3y1sfaz2%28v=VS.80%29.aspx
     #ifdef FGDLL // libfg

@@ -60,12 +60,12 @@
 
 using namespace gl;
 
-static const int BORDER_GAP = 4;
-
 namespace forge
 {
 namespace opengl
 {
+
+static const int BORDER_GAP = 4;
 
 int FontAtlas::fit(const size_t pIndex, const size_t pWidth, const size_t pHeight)
 {

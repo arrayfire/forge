@@ -23,6 +23,12 @@
 using namespace gl;
 using namespace std;
 
+
+namespace forge
+{
+namespace opengl
+{
+
 void generateGridIndices(std::vector<unsigned int>& indices,
                          unsigned short rows, unsigned short cols)
 {
@@ -50,11 +56,6 @@ void generateGridIndices(std::vector<unsigned int>& indices,
         }
     }
 }
-
-namespace forge
-{
-namespace opengl
-{
 
 void surface_impl::bindResources(const int pWindowId)
 {

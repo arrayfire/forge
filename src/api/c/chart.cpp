@@ -24,6 +24,7 @@
 #include <window.hpp>
 
 using namespace forge;
+using namespace forge::common;
 
 fg_err fg_create_chart(fg_chart *pChart,
                        const fg_chart_type pChartType)

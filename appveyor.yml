@@ -7,7 +7,7 @@
 #---------------------------------#
 
 # version format
-version: 1.0.{build}-{branch}
+version: '{branch}-{build}'
 
 # branches to build
 branches:
@@ -72,7 +72,7 @@ environment:
 
 install:
   - ps: cd C:\Tools\vcpkg
-  - ps: vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl
+  - ps: vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl freetype
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -132,6 +132,6 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - mkdir build
   - cd build
-  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DFREEIMAGE_DYNAMIC_LIBRARY="c:/tools/vcpkg/installed/x64-windows/lib/FreeImage.lib" -DFREEIMAGE_INCLUDE_PATH="c:/tools/vcpkg/installed/x64-windows/include" -DGLFW_INCLUDE_DIR="c:/tools/vcpkg/installed/x64-windows/include" -DGLFW_LIBRARY="c:/tools/vcpkg/installed/x64-windows/lib/glfw3dll.lib" -DUSE_SYSTEM_GLBINDING:BOOL=ON
+  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DFreeImage_ROOT="c:/tools/vcpkg/installed/x64-windows"
   - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo
   - cmake --build . --target INSTALL --config %configuration% -- /nologo

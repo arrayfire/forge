@@ -7,7 +7,7 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/util.h>
+#include <fg/update_buffer.h>
 #include <common.hpp>
 #include <err_opengl.hpp>
 
@@ -22,7 +22,7 @@ fg_err fg_update_vertex_buffer(const unsigned pBufferId,
         glBufferSubData(GL_ARRAY_BUFFER, 0, pBufferSize, pBufferData);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
-    CATCHALL
+    CATCHALL;
 
     return FG_ERR_NONE;
 }
@@ -36,7 +36,7 @@ fg_err fg_update_pixel_buffer(const unsigned pBufferId,
         glBufferSubData(GL_PIXEL_UNPACK_BUFFER, 0, pBufferSize, pBufferData);
         glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     }
-    CATCHALL
+    CATCHALL;
 
     return FG_ERR_NONE;
 }
@@ -46,14 +46,13 @@ fg_err fg_finish()
     try {
         glFinish();
     }
-    CATCHALL
+    CATCHALL;
 
     return FG_ERR_NONE;
 }
 
 namespace forge
 {
-
 void updateVertexBuffer(const unsigned pBufferId,
                         const size_t pBufferSize,
                         const void* pBufferData)
@@ -78,5 +77,4 @@ void finish()
     if (val!=FG_ERR_NONE)
         FG_ERROR("glFinish failed", val);
 }
-
 }

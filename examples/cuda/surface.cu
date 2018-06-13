@@ -76,8 +76,8 @@ void sincos_surf(float dx, float* out,
     int i = blockIdx.x * blockDim.x  + threadIdx.x;
     int j = blockIdx.y * blockDim.y  + threadIdx.y;
 
-    float x= ::XMIN + i*dx;
-    float y= ::YMIN + j*dx;
+    float x= XMIN + i*dx;
+    float y= YMIN + j*dx;
     if (i<XSIZE && j<YSIZE) {
         int offset = j + i * YSIZE;
         out[ 3 * offset     ] = x;

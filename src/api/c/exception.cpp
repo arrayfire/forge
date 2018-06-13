@@ -40,8 +40,8 @@ const char * fg_err_to_string(const fg_err err)
 
 void fg_get_last_error(char **msg, int *len)
 {
-    std::string &error = getGlobalErrorString();
-    int slen = std::min(MAX_ERR_SIZE, (int)error.size());
+    std::string &error = forge::common::getGlobalErrorString();
+    int slen = std::min(forge::common::MAX_ERR_SIZE, (int)error.size());
     if(len && slen == 0) {
         *len = 0;
         *msg = NULL;

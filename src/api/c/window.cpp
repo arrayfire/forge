@@ -15,6 +15,11 @@
 
 using namespace forge;
 
+using forge::common::getWindow;
+using forge::common::getFont;
+using forge::common::getImage;
+using forge::common::getChart;
+
 fg_err fg_create_window(fg_window *pWindow,
                         const int pWidth, const int pHeight,
                         const char* pTitle,

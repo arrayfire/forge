@@ -4,11 +4,6 @@
 #
 #-----------------------------------------------------------------------------
 
-sudo: required
-
-services:
-    - docker
-
 language: cpp
 
 notifications:
@@ -72,6 +67,6 @@ install:
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker exec -t ubuntu-test bash -c "cd /travis;
     export GLM_DIR=/travis/glm/package/lib/x86_64-linux-gnu/cmake/glm;
-    cmake -DCMAKE_C_COMPILER=$CC_NAME$VER_SUFFIX -DCMAKE_CXX_COMPILER=$CXX_NAME$VER_SUFFIX -Dglm_DIR=$GLM_DIR -DUSE_SYSTEM_FREETYPE=ON -DUSE_SYSTEM_GLBINDING=ON . &&
+    cmake -DCMAKE_C_COMPILER=$CC_NAME$VER_SUFFIX -DCMAKE_CXX_COMPILER=$CXX_NAME$VER_SUFFIX -Dglm_DIR=$GLM_DIR . &&
     make all"; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cmake . -DCMAKE_INSTALL_PREFIX:PATH=`pwd`/package && make install; fi

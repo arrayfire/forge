@@ -17,6 +17,11 @@
 
 using namespace gl;
 
+namespace forge
+{
+namespace opengl
+{
+
 void commonErrorCheck(const char *pMsg, const char* pFile, int pLine)
 {
     GLenum x = glGetError();
@@ -40,4 +45,7 @@ void glErrorCheck(const char *pMsg, const char* pFile, int pLine)
 void glForceErrorCheck(const char *pMsg, const char* pFile, int pLine)
 {
     commonErrorCheck(pMsg, pFile, pLine);
+}
+
+}
 }

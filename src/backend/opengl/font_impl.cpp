@@ -36,11 +36,11 @@ static const struct {
 } FT_Errors[] =
 #include FT_ERRORS_H
 
-#ifndef OS_WIN
+#if !defined(OS_WIN)
 #include <fontconfig/fontconfig.h>
 #endif
 
-#ifdef OS_WIN
+#if defined(OS_WIN)
 #include <windows.h>
 #include <regex>
 #endif
@@ -62,6 +62,9 @@ namespace forge
 {
 namespace opengl
 {
+
+const float MIN_FONT_SIZE = 8.0f;
+const float MAX_FONT_SIZE = 24.0f;
 
 #ifdef NDEBUG
 /* Relase Mode */
@@ -342,7 +345,7 @@ void font_impl::loadSystemFont(const char* const pName)
 {
     std::string ttf_file_path;
 
-#ifndef OS_WIN
+#if !defined(OS_WIN)
     // use fontconfig to get the file
     FcConfig* config = FcInitLoadConfigAndFonts();
     if (!config) {

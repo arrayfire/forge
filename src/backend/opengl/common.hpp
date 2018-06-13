@@ -109,7 +109,7 @@ gl::GLuint createBuffer(gl::GLenum pTarget, size_t pSize, const T* pPtr, gl::GLe
     return retVal;
 }
 
-#ifdef OS_WIN
+#if defined(OS_WIN)
 /* Get the paths to font files in Windows system directory
  *
  * @pFiles is the output vector to which font file paths are appended to.

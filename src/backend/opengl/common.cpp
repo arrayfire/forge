@@ -214,7 +214,7 @@ float clampTo01(const float pValue)
     return (pValue < 0.0f ? 0.0f : (pValue>1.0f ? 1.0f : pValue));
 }
 
-#ifdef OS_WIN
+#if defined(OS_WIN)
 #include <windows.h>
 #include <strsafe.h>
 

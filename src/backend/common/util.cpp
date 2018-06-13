@@ -15,6 +15,11 @@
 #include <Windows.h>
 #endif
 
+namespace forge
+{
+namespace common
+{
+
 using std::string;
 
 string getEnvVar(const std::string &key)
@@ -34,4 +39,7 @@ string getEnvVar(const std::string &key)
     char * str = getenv(key.c_str());
     return str==NULL ? string("") : string(str);
 #endif
+}
+
+}
 }

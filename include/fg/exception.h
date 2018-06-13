@@ -41,6 +41,8 @@ public:
     Error(const char * const pMessage, const char * const pFuncName,
           const char * const pFileName, int pLine, ErrorCode pErrCode);
 
+    Error(const Error& error);
+
     virtual ~Error() throw();
 
     virtual const char * what() const throw() { return mMessage; }

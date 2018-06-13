@@ -1,156 +1,151 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+find_package(OpenGL REQUIRED)
 
-FIND_PACKAGE(OpenGL REQUIRED)
+set(BackendTarget "forge")
 
-INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
+add_library(${BackendTarget} "")
 
-OPTION(USE_SYSTEM_GLBINDING "Use system glbinding" OFF)
-IF(USE_SYSTEM_GLBINDING)
-    # Point glbinding_DIR (case sensitive) to the location of glbinding-config.cmake
-    # This file is generally at CMAKE_INSTALL_PREFIX/glbinding-config.cmake of
-    # the glbinding project
-    FIND_PACKAGE(glbinding REQUIRED)
-ELSE(USE_SYSTEM_GLBINDING)
-    INCLUDE(build_glbinding)
-ENDIF(USE_SYSTEM_GLBINDING)
+set_target_properties(${BackendTarget} PROPERTIES FOLDER Forge)
+set_target_properties(${BackendTarget} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties(${BackendTarget} PROPERTIES CXX_STANDARD 11)
+set_target_properties(${BackendTarget} PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${BackendTarget} PROPERTIES VERSION ${Forge_VERSION})
+set_target_properties(${BackendTarget} PROPERTIES SOVERSION ${Forge_VERSION_MAJOR})
 
-IF(WIN32)
-    ADD_DEFINITIONS(-DFGDLL)
-ENDIF(WIN32)
+if (WIN32)
+    target_compile_definitions(${BackendTarget}
+        PUBLIC FGDLL
+        PRIVATE OS_WIN WIN32_MEAN_AND_LEAN)
 
-INCLUDE_DIRECTORIES(
-    ${CMAKE_INCLUDE_PATH}
-    ${WTK_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    "${PROJECT_SOURCE_DIR}/src/api/c"
-    "${PROJECT_SOURCE_DIR}/src/api/cpp"
-    "${PROJECT_SOURCE_DIR}/src/backend"
+    # C4251: Warnings about dll interfaces. Thrown by glbinding, may be fixed in
+    #        the future
+    # C4068: Warnings about unknown pragmas
+    # C4275: Warnings about using non-exported classes as base class of an
+    #        exported class
+    set_target_properties(${BackendTarget} PROPERTIES COMPILE_FLAGS "/wd4251 /wd4068 /wd4275")
+elseif (APPLE)
+    target_compile_definitions(${BackendTarget} PRIVATE OS_MAC)
+else(WIN32)
+    target_compile_definitions(${BackendTarget} PRIVATE OS_LNX)
+endif(WIN32)
+
+target_sources(${BackendTarget}
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/backend.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/chart_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/chart_impl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/colormap_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/colormap_impl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/common.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/common.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/err_opengl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/err_opengl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/font_atlas_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/font_atlas_impl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/font_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/font_impl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/gl_native_handles.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/gl_native_handles.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/histogram_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/histogram_impl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/image_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/image_impl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/plot_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/plot_impl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/surface_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/surface_impl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/update_buffer.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector_field_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vector_field_impl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/window_impl.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/window_impl.cpp
     )
 
-FILE(GLOB api_headers
-    "${PROJECT_SOURCE_DIR}/include/*.h"
-    "${PROJECT_SOURCE_DIR}/include/fg/*.h"
+if(${FG_USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
+    add_subdirectory(glfw)
+    target_compile_definitions(${BackendTarget} PRIVATE USE_GLFW)
+elseif(${FG_USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
+    add_subdirectory(sdl)
+    target_compile_definitions(${BackendTarget} PRIVATE USE_SDL)
+endif()
+
+if(FG_WITH_FREEIMAGE)
+    target_compile_definitions(${BackendTarget} PRIVATE USE_FREEIMAGE)
+    if (FG_USE_STATIC_FREEIMAGE)
+        target_link_libraries(${BackendTarget} PRIVATE FreeImage::FreeImage_STATIC)
+    else ()
+        target_link_libraries(${BackendTarget} PRIVATE FreeImage::FreeImage)
+    endif ()
+endif()
+
+target_include_directories(${BackendTarget}
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${PROJECT_BINARY_DIR}/include
+        ${PROJECT_SOURCE_DIR}/include
     )
 
-FILE(GLOB c_api_headers
-    "${PROJECT_SOURCE_DIR}/src/api/c/*.hpp"
-    )
-FILE(GLOB c_api_sources
-    "${PROJECT_SOURCE_DIR}/src/api/c/*.cpp"
-    )
-FILE(GLOB cpp_api_headers
-    "${PROJECT_SOURCE_DIR}/src/api/cpp/*.hpp"
-    )
-FILE(GLOB cpp_api_sources
-    "${PROJECT_SOURCE_DIR}/src/api/cpp/*.cpp"
-    )
-
-FILE(GLOB bknd_headers
-    "${PROJECT_SOURCE_DIR}/src/backend/*.hpp"
+target_link_libraries(${BackendTarget}
+    PUBLIC
+        OpenGL::GL
+    PRIVATE
+        glbinding::glbinding
+        glm
+        Freetype::Freetype
+        Boost::boost
+        backend_interface
+        wtk_interface
+        c_api_interface
+        cpp_api_interface
     )
 
-FILE(GLOB bknd_sources
-    "${PROJECT_SOURCE_DIR}/src/backend/*.cpp"
-    )
+if(UNIX)
+  target_link_libraries(${BackendTarget}
+    PRIVATE
+      FontConfig::FontConfig
+      $<$<AND:$<CXX_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_CPPFLAGS}>>:-static-libstdc++>
+      $<$<AND:$<C_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_CPPFLAGS}>>:-static-libgcc>
+  )
+endif(UNIX)
 
-FILE(GLOB gl_headers
-    "*.hpp"
-    "*.h"
-    )
+add_dependencies(${BackendTarget} ${glsl_shader_targets})
 
-FILE(GLOB gl_sources
-    "*.c"
-    "*.cpp"
-    )
+source_group(include            REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/include/*)
+source_group("api\\cpp"         REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/api/cpp/*)
+source_group("api\\c"           REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/api/c/*)
+source_group("backend"          REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/common/*|${CMAKE_CURRENT_SOURCE_DIR}/*)
+source_group("backend\\shaders" REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/glsl_shaders/*)
 
-LIST(SORT c_api_headers)
-LIST(SORT c_api_sources)
-LIST(SORT cpp_api_headers)
-LIST(SORT cpp_api_sources)
-LIST(SORT bknd_headers)
-LIST(SORT bknd_sources)
-LIST(SORT gl_headers)
-LIST(SORT gl_sources)
+if(${FG_USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
+    source_group("backend\\glfw" REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/glfw/*)
+elseif(${FG_USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
+    source_group("backend\\sdl2" REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/sdl/*)
+endif()
 
-SOURCE_GROUP(inc FILES ${api_headers})
+#--------------------------------------------------------------------
+# Install forget target
+#--------------------------------------------------------------------
+install(TARGETS forge
+    EXPORT ForgeTargets
+    COMPONENT forge
+    PUBLIC_HEADER DESTINATION fg
+    RUNTIME DESTINATION ${FG_INSTALL_BIN_DIR}
+    LIBRARY DESTINATION ${FG_INSTALL_LIB_DIR}
+    ARCHIVE DESTINATION ${FG_INSTALL_LIB_DIR}
+    FRAMEWORK DESTINATION framework
+    INCLUDES DESTINATION ${FG_INSTALL_INC_DIR})
 
-SOURCE_GROUP("src\\api\\c\\headers" FILES ${c_api_headers})
-SOURCE_GROUP("src\\api\\c\\sources" FILES ${c_api_sources})
-
-SOURCE_GROUP("src\\api\\cpp\\headers" FILES ${cpp_api_headers})
-SOURCE_GROUP("src\\api\\cpp\\sources" FILES ${cpp_api_sources})
-
-SOURCE_GROUP("src\\backend" FILES ${bknd_headers})
-SOURCE_GROUP("src\\backend" FILES ${bknd_sources})
-
-SOURCE_GROUP("src\\backend\\opengl\\headers" FILES ${gl_headers})
-SOURCE_GROUP("src\\backend\\opengl\\sources" FILES ${gl_sources})
-
-IF(${USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
-    FILE(GLOB wtk_headers
-        "glfw/*.hpp")
-    FILE(GLOB wtk_sources
-        "glfw/*.cpp")
-    SOURCE_GROUP("src\\backend\\opengl\\glfw\\headers" FILES ${wtk_headers})
-    SOURCE_GROUP("src\\backend\\opengl\\glfw\\sources" FILES ${wtk_sources})
-ELSEIF(${USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
-    FILE(GLOB wtk_headers
-        "sdl/*.hpp")
-    FILE(GLOB wtk_sources
-        "sdl/*.cpp")
-    SOURCE_GROUP("src\\backend\\opengl\\sdl\\headers" FILES ${wtk_headers})
-    SOURCE_GROUP("src\\backend\\opengl\\sdl\\sources" FILES ${wtk_sources})
-ENDIF()
-
-ADD_LIBRARY(forge SHARED
-    ${api_headers}
-    ${c_api_headers}
-    ${c_api_sources}
-    ${cpp_api_headers}
-    ${cpp_api_sources}
-    ${bknd_headers}
-    ${bknd_sources}
-    ${gl_headers}
-    ${gl_sources}
-    ${wtk_headers}
-    ${wtk_sources}
-    )
-
-TARGET_LINK_LIBRARIES(forge
-    PRIVATE ${FONTCONFIG_LIBRARY}
-    PRIVATE ${FREETYPE_LIBRARIES}
-    PRIVATE ${WTK_LIBRARIES}
-    PRIVATE ${OPENGL_gl_LIBRARY}
-    PRIVATE ${FREEIMAGE_LIBRARY}
-    PRIVATE ${X11_LIBS}
-    )
-
-ADD_DEPENDENCIES(forge ${glsl_shader_targets})
-
-IF (NOT USE_SYSTEM_FREETYPE AND NOT USE_HUNTER)
-    ADD_DEPENDENCIES(forge freetype)
-ENDIF()
-
-IF(USE_SYSTEM_GLBINDING)
-    TARGET_LINK_LIBRARIES(forge PRIVATE glbinding::glbinding)
-ELSE(USE_SYSTEM_GLBINDING)
-    INCLUDE_DIRECTORIES(${GLBINDING_INCLUDE_DIRS})
-    TARGET_LINK_LIBRARIES(forge PRIVATE ${GLBINDING_LIBRARIES})
-    ADD_DEPENDENCIES(forge glbinding)
-ENDIF(USE_SYSTEM_GLBINDING)
-
-SET_TARGET_PROPERTIES(forge PROPERTIES
-                      VERSION "${FG_VERSION}"
-                      SOVERSION "${FG_VERSION_MAJOR}")
-
-INSTALL(TARGETS forge
-        EXPORT FORGE
-        DESTINATION "${FG_INSTALL_LIB_DIR}"
-        COMPONENT libraries)
-
-EXPORT(TARGETS forge FILE ForgeTargets.cmake)
-
-INSTALL(EXPORT FORGE DESTINATION "${FG_INSTALL_CMAKE_DIR}"
-        COMPONENT cmake
-        FILE ForgeTargets.cmake
-       )
+# install dependencies
+if (WIN32)
+    if (FG_WITH_FREEIMAGE AND NOT FG_USE_STATIC_FREEIMAGE)
+        install(FILES $<TARGET_FILE:FreeImage::FreeImage>
+            DESTINATION ${FG_INSTALL_BIN_DIR}
+            COMPONENT dependencies)
+    endif ()
+    install(FILES $<TARGET_FILE:glbinding::glbinding>
+        DESTINATION ${FG_INSTALL_BIN_DIR}
+        COMPONENT dependencies)
+endif ()

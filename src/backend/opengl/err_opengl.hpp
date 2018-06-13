@@ -11,8 +11,16 @@
 
 #include <fg/defines.h>
 
+namespace forge
+{
+namespace opengl
+{
+
 void glErrorCheck(const char *pMsg, const char* pFile, int pLine);
 void glForceErrorCheck(const char *pMsg, const char* pFile, int pLine);
 
 #define CheckGL(msg)      glErrorCheck     (msg, __FILE__, __LINE__)
 #define ForceCheckGL(msg) glForceErrorCheck(msg, __FILE__, __LINE__)
+
+}
+}

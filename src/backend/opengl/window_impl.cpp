@@ -21,6 +21,9 @@
 using namespace gl;
 using namespace forge;
 
+namespace forge
+{
+
 #ifdef USE_FREEIMAGE
 #include <FreeImage.h>
 
@@ -67,9 +70,6 @@ private:
     FIBITMAP * pBitmap;
 };
 #endif //USE_FREEIMAGE
-
-namespace forge
-{
 
 /* following function is thread safe */
 int getNextUniqueId()
@@ -157,7 +157,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 
     /* setup default window font */
     mFont = std::make_shared<font_impl>();
-#ifdef OS_WIN
+#if defined(OS_WIN)
     mFont->loadSystemFont("Calibri");
 #else
     mFont->loadSystemFont("Vera");
