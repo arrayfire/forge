@@ -29,6 +29,8 @@
   ;Default installation folder
   InstallDir "@CPACK_NSIS_INSTALL_ROOT@\@CPACK_PACKAGE_INSTALL_DIRECTORY@\v@CPACK_PACKAGE_VERSION_MAJOR@"
 
+  !define cmake_pkg_reg_key 'HKCU "Software\Kitware\CMake\Packages\Forge"'
+
 ;--------------------------------
 ;General
 
@@ -695,7 +697,8 @@ Section "-Core installation"
 @CPACK_NSIS_CREATE_ICONS_EXTRA@
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
-  CreateShortcut "$INSTDIR\..\cmake.lnk" "$INSTDIR\cmake"
+  ;Add key for CMake package
+  WriteRegStr ${cmake_pkg_reg_key} Forge_CMake_DIR '$INSTDIR'
 
   ;Read a value from an InstallOptions INI file
   !insertmacro MUI_INSTALLOPTIONS_READ $DO_NOT_ADD_TO_PATH "NSIS.InstallOptions.ini" "Field 2" "State"
@@ -852,7 +855,9 @@ Section "Uninstall"
 @CPACK_NSIS_DELETE_ICONS@
 @CPACK_NSIS_DELETE_ICONS_EXTRA@
 
-  Delete "$INSTDIR\..\cmake.lnk"
+  ;Delete cmake package key
+  DeleteRegValue ${cmake_pkg_reg_key} Forge_CMake_DIR
+
   ;Delete empty start menu parent diretories
   StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
 
