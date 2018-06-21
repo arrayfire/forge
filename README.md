@@ -13,11 +13,16 @@ An OpenGL interop library that can be used with ArrayFire or any other applicati
 You can find the most recent and updated documentation [here](http://arrayfire.org/forge/index.htm).
 
 ### Dependencies
-[glbinding](https://github.com/cginternals/glbinding), [GLFW](http://www.glfw.org/), [freetype](http://www.freetype.org/) and [FreeImage](http://freeimage.sourceforge.net/) (optional).
 
-On `Linux` & `OS X`, [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) is required. [SDL2](https://www.libsdl.org/) can be used as an alternative to `glfw`.
+- [glbinding](https://github.com/cginternals/glbinding)
+- [GLFW](http://www.glfw.org/) or [SDL2](https://www.libsdl.org/)
+- [freetype](http://www.freetype.org/)
+- [boost](https://www.boost.org/) - not a runtime dependency.
+- [FreeImage](http://freeimage.sourceforge.net/) (optional).
+- [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) on Linux and OSX.
 
-Above dependencies are available through package managers on most of the Unix/Linux based distributions. On Windows, we recommend using [vcpkg](https://github.com/Microsoft/vcpkg) to quickly setup forge development environment.
+**Linux/Unix**: Dependencies should be available via respective package managers.
+**Windows**: We recommend [vcpkg](https://github.com/Microsoft/vcpkg).
 
 ### Sample Images
 |     |     |
