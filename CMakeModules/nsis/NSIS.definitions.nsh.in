@@ -24,7 +24,7 @@ Forge uses OpenGL >=3.3 forward compatible contexts, so please make sure you hav
 ; Defines for Finish Page
 !define MUI_FINISHPAGE_RUN "explorer.exe"
 !define MUI_FINISHPAGE_RUN_PARAMETERS "$INSTDIR"
-!define MUI_FINISHPAGE_RUN_TEXT "Open Forge Install Directory to see Examples"
+!define MUI_FINISHPAGE_RUN_TEXT "Open Forge Install Directory"
 !define MUI_FINISHPAGE_SHOWREADME "http://arrayfire.org/forge/index.htm"
 !define MUI_FINISHPAGE_SHOWREADME_TEXT "Open Forge Documentation on the Web"
 !define MUI_FINISHPAGE_LINK "ArrayFire Support and Services"
