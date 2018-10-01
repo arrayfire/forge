@@ -93,13 +93,17 @@ target_link_libraries(${BackendTarget}
         glbinding::glbinding
         $<$<NOT:$<CONFIG:Release>>:glbinding::glbinding-aux>
         glm
-        Freetype::Freetype
         Boost::boost
         backend_interface
         wtk_interface
         c_api_interface
         cpp_api_interface
     )
+if (FG_ENABLE_HUNTER)
+    target_link_libraries(${BackendTarget} PRIVATE freetype::freetype)
+else ()
+    target_link_libraries(${BackendTarget} PRIVATE Freetype::Freetype)
+endif ()
 
 if(UNIX)
   target_link_libraries(${BackendTarget}
