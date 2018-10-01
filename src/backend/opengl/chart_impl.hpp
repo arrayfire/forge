@@ -79,7 +79,9 @@ class AbstractChart : public AbstractRenderable {
         }
 
         inline int getNumTicksC2E() const {
-            /* Get # of ticks from center(0,0) to edge along axis */
+            /* Get # of ticks from center(0,0) to edge along axis
+             * Excluding the center tick
+             */
             return (mTickCount-1)/2;
         }
 
