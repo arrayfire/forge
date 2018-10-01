@@ -49,7 +49,7 @@ typedef unsigned short  ushort;
 typedef unsigned char   uchar;
 
 static const float BLACK[]   = {0.0f    , 0.0f    , 0.0f    , 1.0f};
-static const float GRAY[]    = {0.85f   , 0.85f   , 0.85f   , 1.0f};
+static const float GRAY[]    = {0.75f   , 0.75f   , 0.75f   , 1.0f};
 static const float WHITE[]   = {1.0f    , 1.0f    , 1.0f    , 1.0f};
 static const float AF_BLUE[] = {0.0588f , 0.1137f , 0.2745f , 1.0f};
 static const glm::mat4 IDENTITY(1.0f);
