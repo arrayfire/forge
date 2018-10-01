@@ -346,7 +346,7 @@ void chart2d_impl::generateChartData()
     pushPoint(decorData,  1.0f, 0.0f);
     pushPoint(decorData,  0.0f,-1.0f);
     pushPoint(decorData,  0.0f, 1.0f);
-    for (int i=1; i<=ticksLeft; ++i) {
+    for (int i=1; i<ticksLeft; ++i) {
         float delta = i*step;
         pushPoint(decorData, -1.0f,-delta);
         pushPoint(decorData,  1.0f,-delta);
@@ -478,7 +478,7 @@ void chart2d_impl::render(const int pWindowId,
     mBorderProgram.bind();
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
-    glDrawArrays(GL_LINES, 4+2*mTickCount, 4*mTickCount);
+    glDrawArrays(GL_LINES, 4+2*mTickCount, 8*mTickCount-16);
     mBorderProgram.unbind();
     chart2d_impl::unbindResources();
 
@@ -546,7 +546,7 @@ void chart2d_impl::render(const int pWindowId,
 
     if (!mXTitle.empty()) {
         glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
-//
+
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
 
@@ -617,7 +617,12 @@ void chart3d_impl::pushTicktextCoords(const float pX, const float pY, const floa
 void chart3d_impl::generateChartData()
 {
     CheckGL("Begin chart3d_impl::generateChartData");
-    static const float border[] = { -1, -1, 1,  -1, -1, -1,  -1, -1, -1,  1, -1, -1,  1, -1, -1,  1, 1, -1 };
+    static const float border[] = { -1, -1,  1,
+                                    -1, -1, -1,
+                                    -1, -1, -1,
+                                     1, -1, -1,
+                                     1, -1, -1,
+                                     1,  1, -1 };
     static const int nValues = sizeof(border)/sizeof(float);
 
     std::vector<float> decorData;
@@ -711,7 +716,7 @@ void chart3d_impl::generateChartData()
     pushPoint(decorData,  1.0f,  1.0f, 0.0f);
     pushPoint(decorData,  0.0f,  1.0f,-1.0f);
     pushPoint(decorData,  0.0f,  1.0f, 1.0f);
-    for (int i=1; i<=ticksLeft; ++i) {
+    for (int i=1; i<ticksLeft; ++i) {
         float delta = i*step;
         /* xy plane center lines */
         pushPoint(decorData, -1.0f,-delta, -1.0f);
@@ -862,7 +867,7 @@ void chart3d_impl::render(const int pWindowId,
     mBorderProgram.bind();
     glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
     glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
-    glDrawArrays(GL_LINES, 6+3*mTickCount, 12*mTickCount);
+    glDrawArrays(GL_LINES, 6+3*mTickCount, 3*(8*mTickCount-16));
     mBorderProgram.unbind();
     chart3d_impl::unbindResources();
 
