@@ -110,7 +110,15 @@ Shaders loadShaders(const char* pVertexShaderSrc,
     GLuint f, v;
 
     v = glCreateShader(GL_VERTEX_SHADER);
+    if (!v) {
+        std::cerr << "Vertex shader creation failed." << std::endl;
+        FG_COMPILE_LINK_ERROR(v, Shader);
+    }
     f = glCreateShader(GL_FRAGMENT_SHADER);
+    if (!f) {
+        std::cerr << "Fragment shader creation failed." << std::endl;
+        FG_COMPILE_LINK_ERROR(f, Shader);
+    }
 
     // load shaders & get length of each
     glShaderSource(v, 1, &pVertexShaderSrc, NULL);
@@ -136,6 +144,10 @@ Shaders loadShaders(const char* pVertexShaderSrc,
     /* compile geometry shader if source provided */
     if (pGeometryShaderSrc) {
         g = glCreateShader(GL_GEOMETRY_SHADER);
+        if (!g) {
+            std::cerr << "Geometry shader not compiled." << std::endl;
+            FG_COMPILE_LINK_ERROR(g, Shader);
+        }
         glShaderSource(g, 1, &pGeometryShaderSrc, NULL);
         glCompileShader(g);
         glGetShaderiv(g, GL_COMPILE_STATUS, &compiled);

@@ -65,14 +65,15 @@ image:
 environment:
   # 0-4 warning levels; 0 is no warnings
   MSBUILD_FLAGS: /maxcpucount
-  BOOST_ROOT: C:/Libraries/boost_1_65_1
+  BOOST_ROOT: C:/Libraries/boost_1_67_0
   matrix:
     - generator: "Visual Studio 14 2015 Win64"
     - generator: "Visual Studio 15 2017 Win64"
 
 install:
-  - ps: cd C:\Tools\vcpkg
-  - ps: vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl freetype
+  - cmd: cd C:\Tools\vcpkg
+  - cmd: git pull
+  - cmd: vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl freetype
 
 # scripts that are called at very beginning, before repo cloning
 init:

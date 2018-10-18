@@ -15,6 +15,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <glbinding-aux/types_to_string.h>
+
 using namespace gl;
 
 namespace forge

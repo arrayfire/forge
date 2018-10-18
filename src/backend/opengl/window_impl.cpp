@@ -90,7 +90,7 @@ void initWtkIfNotDone()
 
     initCallCount++;
 
-    if (initCallCount==0)
+    if (initCallCount == 0)
         forge::wtk::initWindowToolkit();
 }
 
@@ -107,35 +107,30 @@ void destroyWtkIfDone()
 namespace opengl
 {
 
-void MakeContextCurrent(const window_impl* pWindow)
-{
-    if (pWindow != NULL) {
-        pWindow->get()->makeContextCurrent();
-        glbinding::Binding::useCurrentContext();
-    }
-}
-
 window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                         std::weak_ptr<window_impl> pWindow, const bool invisible)
     : mID(getNextUniqueId())
 {
+    using widget_ptr = std::unique_ptr<wtk::Widget>;
+
     initWtkIfNotDone();
 
     if (auto observe = pWindow.lock()) {
-        mWindow = new wtk::Widget(pWidth, pHeight, pTitle, observe->get(), invisible);
+        mWidget = widget_ptr(new wtk::Widget(pWidth, pHeight, pTitle,
+                                             observe->get(), invisible));
     } else {
         /* when windows are not sharing any context, just create
          * a dummy wtk::Widget object and pass it on */
-        mWindow = new wtk::Widget(pWidth, pHeight, pTitle, nullptr, invisible);
+        mWidget = widget_ptr(new wtk::Widget(pWidth, pHeight, pTitle,
+                                             widget_ptr(), invisible));
     }
-    /* Set context (before glewInit()) */
-    MakeContextCurrent(this);
 
-    glbinding::Binding::useCurrentContext();
-    glbinding::Binding::initialize(false); // lazy function pointer evaluation
+    mWidget->makeContextCurrent();
 
-    mCxt = mWindow->getGLContextHandle();
-    mDsp = mWindow->getDisplayHandle();
+    glbinding::Binding::initialize(mWidget->getProcAddr(), false);
+
+    mCxt = mWidget->getGLContextHandle();
+    mDsp = mWidget->getDisplayHandle();
     /* copy colormap shared pointer if
      * this window shares context with another window
      * */
@@ -145,15 +140,15 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
         mCMap = std::make_shared<colormap_impl>();
     }
 
-    mWindow->resizePixelBuffers();
+    mWidget->resizePixelBuffers();
 
     /* set the colormap to default */
     mColorMapUBO = mCMap->cmapUniformBufferId(FG_COLOR_MAP_DEFAULT);
     mUBOSize = mCMap->cmapLength(FG_COLOR_MAP_DEFAULT);
     glEnable(GL_MULTISAMPLE);
 
-    mWindow->resetViewMatrices();
-    mWindow->resetOrientationMatrices();
+    mWidget->resetViewMatrices();
+    mWidget->resetOrientationMatrices();
 
     /* setup default window font */
     mFont = std::make_shared<font_impl>();
@@ -169,8 +164,13 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 
 window_impl::~window_impl()
 {
-    delete mWindow;
     destroyWtkIfDone();
+}
+
+void window_impl::makeContextCurrent()
+{
+    mWidget->makeContextCurrent();
+    glbinding::Binding::useCurrentContext();
 }
 
 void window_impl::setFont(const std::shared_ptr<font_impl>& pFont)
@@ -180,17 +180,17 @@ void window_impl::setFont(const std::shared_ptr<font_impl>& pFont)
 
 void window_impl::setTitle(const char* pTitle)
 {
-    mWindow->setTitle(pTitle);
+    mWidget->setTitle(pTitle);
 }
 
 void window_impl::setPos(int pX, int pY)
 {
-    mWindow->setPos(pX, pY);
+    mWidget->setPos(pX, pY);
 }
 
 void window_impl::setSize(unsigned pW, unsigned pH)
 {
-    mWindow->setSize(pW, pH);
+    mWidget->setSize(pW, pH);
 }
 
 void window_impl::setColorMap(forge::ColorMap cmap)
@@ -217,17 +217,17 @@ long long  window_impl::display() const
 
 int window_impl::width() const
 {
-    return mWindow->mWidth;
+    return mWidget->mWidth;
 }
 
 int window_impl::height() const
 {
-    return mWindow->mHeight;
+    return mWidget->mHeight;
 }
 
-const wtk::Widget* window_impl::get() const
+const std::unique_ptr<wtk::Widget>& window_impl::get() const
 {
-    return mWindow;
+    return mWidget;
 }
 
 const std::shared_ptr<colormap_impl>& window_impl::colorMapPtr() const
@@ -237,28 +237,28 @@ const std::shared_ptr<colormap_impl>& window_impl::colorMapPtr() const
 
 void window_impl::hide()
 {
-    mWindow->hide();
+    mWidget->hide();
 }
 
 void window_impl::show()
 {
-    mWindow->show();
+    mWidget->show();
 }
 
 bool window_impl::close()
 {
-    return mWindow->close();
+    return mWidget->close();
 }
 
 void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 {
     CheckGL("Begin window_impl::draw");
-    MakeContextCurrent(this);
-    mWindow->resetCloseFlag();
-    glViewport(0, 0, mWindow->mWidth, mWindow->mHeight);
+    makeContextCurrent();
+    mWidget->resetCloseFlag();
+    glViewport(0, 0, mWidget->mWidth, mWidget->mHeight);
 
-    const glm::mat4& viewMatrix = mWindow->getViewMatrix(std::make_tuple(1, 1, 0));
-    const glm::mat4& orientMatrix = mWindow->getOrientationMatrix(std::make_tuple(1, 1, 0));
+    const glm::mat4& viewMatrix = mWidget->getViewMatrix(std::make_tuple(1, 1, 0));
+    const glm::mat4& orientMatrix = mWidget->getOrientationMatrix(std::make_tuple(1, 1, 0));
 
     // clear color and depth buffers
     glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
@@ -266,11 +266,11 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable)
 
     // set colormap call is equivalent to noop for non-image renderables
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
-    pRenderable->render(mID, 0, 0, mWindow->mWidth, mWindow->mHeight,
+    pRenderable->render(mID, 0, 0, mWidget->mWidth, mWidget->mHeight,
                         viewMatrix, orientMatrix);
 
-    mWindow->swapBuffers();
-    mWindow->pollEvents();
+    mWidget->swapBuffers();
+    mWidget->pollEvents();
     CheckGL("End window_impl::draw");
 }
 
@@ -279,19 +279,19 @@ void window_impl::draw(const int pRows, const int pCols, const int pIndex,
                        const char* pTitle)
 {
     CheckGL("Begin draw(rows, columns, index)");
-    MakeContextCurrent(this);
-    mWindow->resetCloseFlag();
+    makeContextCurrent();
+    mWidget->resetCloseFlag();
 
-    const int cellWidth  = mWindow->mWidth/pCols;
-    const int cellHeight = mWindow->mHeight/pRows;
+    const int cellWidth  = mWidget->mWidth/pCols;
+    const int cellHeight = mWidget->mHeight/pRows;
 
     int c    = pIndex % pCols;
     int r    = pIndex / pCols;
     int xOff = c * cellWidth;
     int yOff = (pRows-1-r) * cellHeight;
 
-    const glm::mat4& viewMatrix = mWindow->getViewMatrix(std::make_tuple(pRows, pCols, pIndex));
-    const glm::mat4& orientMatrix = mWindow->getOrientationMatrix(std::make_tuple(pRows, pCols, pIndex));
+    const glm::mat4& viewMatrix = mWidget->getViewMatrix(std::make_tuple(pRows, pCols, pIndex));
+    const glm::mat4& orientMatrix = mWidget->getOrientationMatrix(std::make_tuple(pRows, pCols, pIndex));
 
     /* following margins are tested out for various
      * aspect ratios and are working fine. DO NOT CHANGE.
@@ -330,8 +330,8 @@ void window_impl::draw(const int pRows, const int pCols, const int pIndex,
 
 void window_impl::swapBuffers()
 {
-    mWindow->swapBuffers();
-    mWindow->pollEvents();
+    mWidget->swapBuffers();
+    mWidget->pollEvents();
     // clear color and depth buffers
     glClearColor(WHITE[0], WHITE[1], WHITE[2], WHITE[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -360,8 +360,8 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
         FG_ERROR("Supports only bmp and png as of now", FG_ERR_FREEIMAGE_SAVE_FAILED);
     }
 
-    uint w = mWindow->mWidth;
-    uint h = mWindow->mHeight;
+    uint w = mWidget->mWidth;
+    uint h = mWidget->mHeight;
     uint c = 4;
     uint d = c * 8;
 
@@ -379,14 +379,14 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
      * it was async call(which it should be unless vendor driver
      * is doing something fishy) and the transfer is over by now
      * */
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mWindow->mFramePBO);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, mWidget->mFramePBO);
 
     uchar* src = (uchar*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 
     if (src) {
         // copy data from mapped memory location
-        uint w = mWindow->mWidth;
-        uint h = mWindow->mHeight;
+        uint w = mWidget->mWidth;
+        uint h = mWidget->mHeight;
         uint i = 0;
 
         for (uint y = 0; y < h; ++y) {

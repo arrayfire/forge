@@ -13,6 +13,8 @@
 #include <SDL.h>
 #include <glm/glm.hpp>
 
+#include <memory>
+
 /* the short form wtk stands for
  * Windowing Tool Kit */
 namespace forge
@@ -60,7 +62,8 @@ class Widget {
         uint  mFramePBO;
 
         /* Constructors and methods */
-        Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible);
+        Widget(int pWidth, int pHeight, const char* pTitle,
+               const std::unique_ptr<Widget> &pWidget, const bool invisible);
 
         ~Widget();
 
@@ -71,6 +74,8 @@ class Widget {
         long long getGLContextHandle();
 
         long long getDisplayHandle();
+
+        glbinding::GetProcAddress getProcAddr();
 
         bool getClose() const;
 

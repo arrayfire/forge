@@ -93,6 +93,7 @@ target_link_libraries(${BackendTarget}
         OpenGL::GL
     PRIVATE
         glbinding::glbinding
+        glbinding::glbinding-aux
         glm
         Freetype::Freetype
         Boost::boost
@@ -145,7 +146,9 @@ if (WIN32)
             DESTINATION ${FG_INSTALL_BIN_DIR}
             COMPONENT dependencies)
     endif ()
-    install(FILES $<TARGET_FILE:glbinding::glbinding>
+    install(FILES
+        $<TARGET_FILE:glbinding::glbinding>
+        $<TARGET_FILE:glbinding::glbinding-aux>
         DESTINATION ${FG_INSTALL_BIN_DIR}
         COMPONENT dependencies)
 endif ()
