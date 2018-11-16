@@ -124,7 +124,8 @@ Widget::Widget()
 {
 }
 
-Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
+Widget::Widget(int pWidth, int pHeight, const char* pTitle,
+               const std::unique_ptr<Widget> &pWidget, const bool invisible)
     : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mFramePBO(0)
 {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -133,8 +134,8 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-    if (pWindow != nullptr) {
-        pWindow->makeContextCurrent();
+    if (pWidget) {
+        pWidget->makeContextCurrent();
         SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
     } else {
         //SDL_GL_MakeCurrent(NULL, NULL);
@@ -169,8 +170,8 @@ Widget::~Widget()
 {
     glDeleteBuffers(1, &mFramePBO);
 
-    SDL_DestroyWindow(mWindow);
     SDL_GL_DeleteContext(mContext);
+    SDL_DestroyWindow(mWindow);
 }
 
 SDL_Window* Widget::getNativeHandle() const
@@ -191,6 +192,16 @@ long long Widget::getGLContextHandle()
 long long Widget::getDisplayHandle()
 {
     return opengl::getCurrentDisplayHandle();
+}
+
+glbinding::GetProcAddress Widget::getProcAddr()
+{
+    using glbinding::GetProcAddress;
+    using glbinding::ProcAddress;
+    const GetProcAddress get_proc_address = [](const char *name) {
+        return reinterpret_cast<ProcAddress>(SDL_GL_GetProcAddress(name));
+    };
+    return get_proc_address;
 }
 
 void Widget::setTitle(const char* pTitle)

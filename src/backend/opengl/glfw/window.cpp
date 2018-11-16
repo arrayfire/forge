@@ -127,7 +127,8 @@ Widget::Widget()
 {
 }
 
-Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindow, const bool invisible)
+Widget::Widget(int pWidth, int pHeight, const char* pTitle,
+               const std::unique_ptr<Widget> &pWidget, const bool invisible)
     : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mFramePBO(0)
 {
     auto wndErrCallback = [](int errCode, const char* pDescription)
@@ -149,7 +150,7 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle, const Widget* pWindo
     glfwWindowHint(GLFW_SAMPLES, 4);
     mWindow = glfwCreateWindow(pWidth, pHeight,
                                (pTitle!=nullptr ? pTitle : "Forge-Demo"), nullptr,
-                               (pWindow!=nullptr ? pWindow->getNativeHandle(): nullptr));
+                               (pWidget ? pWidget->getNativeHandle(): nullptr));
 
     if (!mWindow) {
         std::cerr<<"Error: Could not Create GLFW Window!\n";
@@ -218,6 +219,11 @@ long long Widget::getGLContextHandle()
 long long Widget::getDisplayHandle()
 {
     return opengl::getCurrentDisplayHandle();
+}
+
+glbinding::GetProcAddress Widget::getProcAddr()
+{
+    return glfwGetProcAddress;
 }
 
 void Widget::setTitle(const char* pTitle)

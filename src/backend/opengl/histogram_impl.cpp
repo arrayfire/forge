@@ -8,7 +8,6 @@
  ********************************************************/
 
 #include <common.hpp>
-#include <err_opengl.hpp>
 #include <histogram_impl.hpp>
 #include <shader_headers/histogram_vs.hpp>
 #include <shader_headers/histogram_fs.hpp>

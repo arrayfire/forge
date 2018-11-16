@@ -4,14 +4,20 @@
 
 # NOTE: These paths are all relative to the project installation prefix.
 
+include(GNUInstallDirs)
+
 # Executables
 if(NOT DEFINED FG_INSTALL_BIN_DIR)
-    set(FG_INSTALL_BIN_DIR "bin" CACHE PATH "Installation path for executables")
+    set(FG_INSTALL_BIN_DIR "lib" CACHE PATH "Installation path for executables")
 endif()
 
 # Libraries
 if(NOT DEFINED FG_INSTALL_LIB_DIR)
-    set(FG_INSTALL_LIB_DIR "lib" CACHE PATH "Installation path for libraries")
+  if(WIN32)
+      set(FG_INSTALL_LIB_DIR "lib" CACHE PATH "Installation path for libraries")
+  else()
+      set(FG_INSTALL_LIB_DIR "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Installation path for libraries")
+  endif()
 endif()
 
 # Header files

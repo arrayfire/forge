@@ -7,7 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <err_opengl.hpp>
 #include <vector_field_impl.hpp>
 #include <shader_headers/vector_field2d_vs.hpp>
 #include <shader_headers/vector_field2d_gs.hpp>

@@ -53,7 +53,6 @@
 
 #include <font_atlas_impl.hpp>
 #include <common.hpp>
-#include <err_opengl.hpp>
 
 #include <cstring>
 #include <algorithm>
