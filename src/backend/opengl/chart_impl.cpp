@@ -10,7 +10,6 @@
 #include <font.hpp>
 
 #include <common.hpp>
-#include <err_opengl.hpp>
 #include <font_impl.hpp>
 #include <chart_impl.hpp>
 #include <image_impl.hpp>

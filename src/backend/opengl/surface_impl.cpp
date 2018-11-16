@@ -8,7 +8,6 @@
  ********************************************************/
 
 #include <common.hpp>
-#include <err_opengl.hpp>
 #include <surface_impl.hpp>
 #include <shader_headers/marker_fs.hpp>
 #include <shader_headers/plot3_vs.hpp>

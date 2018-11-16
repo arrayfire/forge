@@ -92,7 +92,7 @@ class Window {
         }
 
         inline void makeCurrent() {
-            MakeContextCurrent(mWindow.get());
+            mWindow->makeContextCurrent();
         }
 
         inline void hide() {
