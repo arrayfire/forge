@@ -115,8 +115,7 @@ configuration:
   # - Release
 
 cache:
-  - C:/vcpkg/installed/ -> appveyor.yml
-  - C:/vcpkg/scripts/ -> appveyor.yml
+  - C:/vcpkg/ -> appveyor.yml
 
 build:
   parallel: true                                    # enable MSBuild parallel builds
@@ -140,6 +139,6 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - mkdir build
   - cd build
-  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_TOOLCHAIN_FILE=c:/vcpkg/scripts/buildsystems/vcpkg.cmake -DFreeImage_ROOT="c:/vcpkg/installed/x64-windows"
+  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_TOOLCHAIN_FILE=c:/vcpkg/scripts/buildsystems/vcpkg.cmake -DFreeImage_ROOT="c:/vcpkg/installed/x64-windows" -DCMAKE_BUILD_TYPE:STRING=%configuration%
   - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo
   - cmake --build . --target INSTALL --config %configuration% -- /nologo
