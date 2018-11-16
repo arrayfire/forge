@@ -65,14 +65,21 @@ image:
 environment:
   # 0-4 warning levels; 0 is no warnings
   MSBUILD_FLAGS: /maxcpucount
-  BOOST_ROOT: C:/Libraries/boost_1_65_1
+  BOOST_ROOT: C:/Libraries/boost_1_67_0
   matrix:
     - generator: "Visual Studio 14 2015 Win64"
     - generator: "Visual Studio 15 2017 Win64"
 
 install:
-  - ps: cd C:\Tools\vcpkg
-  - ps: vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl freetype
+  - ps: cd C:\
+  - ps: if ( ! (Test-Path -Path "C:/vcpkg") ) {
+        git clone -q https://github.com/Microsoft/vcpkg.git;
+        cd .\vcpkg;
+        git checkout -q 4568b57ad7728f30c1e2badc9735c8990cd51265;
+        .\bootstrap-vcpkg.bat;
+        .\vcpkg integrate install;
+        vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl freetype
+      }
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -108,7 +115,8 @@ configuration:
   # - Release
 
 cache:
-  - C:\Tools\vcpkg\installed\ -> appveyor.yml
+  - C:/vcpkg/installed/ -> appveyor.yml
+  - C:/vcpkg/scripts/ -> appveyor.yml
 
 build:
   parallel: true                                    # enable MSBuild parallel builds
@@ -132,6 +140,6 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - mkdir build
   - cd build
-  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DFreeImage_ROOT="c:/tools/vcpkg/installed/x64-windows"
+  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_TOOLCHAIN_FILE=c:/vcpkg/scripts/buildsystems/vcpkg.cmake -DFreeImage_ROOT="c:/vcpkg/installed/x64-windows"
   - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo
   - cmake --build . --target INSTALL --config %configuration% -- /nologo

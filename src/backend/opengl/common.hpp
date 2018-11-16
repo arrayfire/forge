@@ -12,10 +12,8 @@
 #include <fg/defines.h>
 #include <fg/exception.h>
 #include <err_common.hpp>
-#pragma warning (push, 0)
-#include <glbinding/gl/gl.h>
+#include <glbinding/gl33core/gl.h>
 #include <glbinding/Binding.h>
-#pragma warning (pop)
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
@@ -155,6 +153,10 @@ namespace forge
 {
 namespace opengl
 {
+
+void glErrorCheck(const char *pMsg, const char* pFile, int pLine);
+
+#define CheckGL(msg) glErrorCheck(msg, __FILE__, __LINE__)
 
 typedef unsigned int    uint;
 typedef unsigned short  ushort;

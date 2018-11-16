@@ -34,7 +34,7 @@ class window_impl {
         long long     mCxt;
         long long     mDsp;
         int           mID;
-        wtk::Widget*  mWindow;
+        std::unique_ptr<wtk::Widget>  mWidget;
 
         std::shared_ptr<font_impl>     mFont;
         std::shared_ptr<colormap_impl> mCMap;
@@ -48,6 +48,7 @@ class window_impl {
 
         ~window_impl();
 
+        void makeContextCurrent();
         void setFont(const std::shared_ptr<font_impl>& pFont);
         void setTitle(const char* pTitle);
         void setPos(int pX, int pY);
@@ -59,7 +60,7 @@ class window_impl {
         long long display() const;
         int width() const;
         int height() const;
-        const wtk::Widget* get() const;
+        const std::unique_ptr<wtk::Widget>& get() const;
         const std::shared_ptr<colormap_impl>& colorMapPtr() const;
 
         void hide();
@@ -76,8 +77,6 @@ class window_impl {
 
         void saveFrameBuffer(const char* pFullPath);
 };
-
-void MakeContextCurrent(const window_impl* pWindow);
 
 }
 }

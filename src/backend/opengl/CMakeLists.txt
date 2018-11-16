@@ -37,8 +37,6 @@ target_sources(${BackendTarget}
         ${CMAKE_CURRENT_SOURCE_DIR}/colormap_impl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/common.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/common.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/err_opengl.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/err_opengl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/font_atlas_impl.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/font_atlas_impl.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/font_impl.hpp
@@ -93,6 +91,7 @@ target_link_libraries(${BackendTarget}
         OpenGL::GL
     PRIVATE
         glbinding::glbinding
+        $<$<NOT:$<CONFIG:Release>>:glbinding::glbinding-aux>
         glm
         Freetype::Freetype
         Boost::boost
@@ -145,7 +144,9 @@ if (WIN32)
             DESTINATION ${FG_INSTALL_BIN_DIR}
             COMPONENT dependencies)
     endif ()
-    install(FILES $<TARGET_FILE:glbinding::glbinding>
+    install(FILES
+        $<TARGET_FILE:glbinding::glbinding>
+        $<$<NOT:$<CONFIG:Release>>:$<TARGET_FILE:glbinding::glbinding-aux>>
         DESTINATION ${FG_INSTALL_BIN_DIR}
         COMPONENT dependencies)
 endif ()
