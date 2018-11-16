@@ -9,7 +9,6 @@
 
 #include <fg/update_buffer.h>
 #include <common.hpp>
-#include <err_opengl.hpp>
 
 using namespace gl;
 

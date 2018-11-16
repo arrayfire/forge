@@ -11,7 +11,6 @@
 // https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
 
 #include <common.hpp>
-#include <err_opengl.hpp>
 #include <window_impl.hpp>
 
 #include <algorithm>

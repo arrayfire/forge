@@ -8,7 +8,6 @@
  ********************************************************/
 
 #include <common.hpp>
-#include <err_opengl.hpp>
 #include <font_impl.hpp>
 #include <shader_headers/font_vs.hpp>
 #include <shader_headers/font_fs.hpp>

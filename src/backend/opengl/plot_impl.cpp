@@ -7,7 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <err_opengl.hpp>
 #include <plot_impl.hpp>
 #include <shader_headers/marker2d_vs.hpp>
 #include <shader_headers/marker_fs.hpp>

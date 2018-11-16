@@ -7,10 +7,14 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <fg/exception.h>
 #include <common.hpp>
 #include <window_impl.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
+#ifndef NDEBUG
+#include <glbinding-aux/types_to_string.h>
+#endif
 
 #include <cmath>
 #include <fstream>
@@ -166,6 +170,23 @@ namespace forge
 {
 namespace opengl
 {
+
+void glErrorCheck(const char *pMsg, const char* pFile, int pLine)
+{
+// Skipped in release mode
+#ifndef NDEBUG
+    auto errorCheck = [](const char *pMsg, const char* pFile, int pLine) {
+        GLenum x = glGetError();
+        if (x != GL_NO_ERROR) {
+            std::stringstream ss;
+            ss << "GL Error at: "<< pFile << ":"<<pLine
+               <<" Message: "<<pMsg<<" Error Code: "<< x << std::endl;
+            FG_ERROR(ss.str().c_str(), FG_ERR_GL_ERROR);
+        }
+    };
+    errorCheck(pMsg, pFile, pLine);
+#endif
+}
 
 ShaderProgram::ShaderProgram(const char* pVertShaderSrc,
                              const char* pFragShaderSrc,

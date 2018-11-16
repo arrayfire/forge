@@ -8,7 +8,6 @@
  ********************************************************/
 
 #include <common.hpp>
-#include <err_opengl.hpp>
 #include <image_impl.hpp>
 #include <window_impl.hpp>
 #include <shader_headers/image_vs.hpp>
