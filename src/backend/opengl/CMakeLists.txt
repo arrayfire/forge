@@ -94,10 +94,10 @@ target_link_libraries(${BackendTarget}
         $<$<NOT:$<CONFIG:Release>>:glbinding::glbinding-aux>
         glm
         Boost::boost
-        backend_interface
-        wtk_interface
-        c_api_interface
-        cpp_api_interface
+        forge_backend_interface
+        forge_wtk_interface
+        forge_c_api_interface
+        forge_cpp_api_interface
     )
 if (FG_ENABLE_HUNTER)
     target_link_libraries(${BackendTarget} PRIVATE freetype::freetype)

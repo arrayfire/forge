@@ -1,6 +1,6 @@
-add_library(backend_interface INTERFACE)
+add_library(forge_backend_interface INTERFACE)
 
-target_sources(backend_interface
+target_sources(forge_backend_interface
     INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/chart_common.hpp>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/chart.hpp>
@@ -18,12 +18,12 @@ target_sources(backend_interface
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/window.hpp>
     )
 
-target_include_directories(backend_interface
+target_include_directories(forge_backend_interface
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     )
 
 if (NOT BUILD_SHARED_LIBS)
-    install(TARGETS backend_interface EXPORT ForgeTargets)
+    install(TARGETS forge_backend_interface EXPORT ForgeTargets)
 endif ()
