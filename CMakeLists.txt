@@ -26,7 +26,7 @@ endif()
 
 project(Forge VERSION 1.1.0 LANGUAGES C CXX)
 
-include(Version)
+include(ForgeVersion)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
