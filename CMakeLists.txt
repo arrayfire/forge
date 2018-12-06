@@ -3,11 +3,10 @@ cmake_minimum_required(VERSION 3.5)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
 
-include(BuildType)
+include(ForgeBuildType)
 include(FGInstallDirs)
-include(GetPrerequisites)
-include(InternalUtils)
-include(platform)
+include(ForgeInternalUtils)
+include(ForgePlatformSetup)
 
 option(BUILD_SHARED_LIBS        "Build shared/static library" ON)
 option(FG_ENABLE_HUNTER         "Use Hunter cmake package handler" OFF)
@@ -27,7 +26,7 @@ endif()
 
 project(Forge VERSION 1.0.2 LANGUAGES C CXX)
 
-include(Version)
+include(ForgeVersion)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -174,3 +173,8 @@ include(CPackConfig)
 
 conditional_directory(FG_BUILD_DOCS docs)
 conditional_directory(FG_BUILD_EXAMPLES examples)
+
+mark_as_advanced(
+    pkgcfg_lib_FontConfigPkg_freetype
+    pkgcfg_lib_FontConfigPkg_fontconfig
+    )
