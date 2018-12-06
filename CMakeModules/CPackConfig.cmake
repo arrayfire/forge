@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.5)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMakeModules/nsis")
 
-include(Version)
+include(ForgeVersion)
 include(CPackIFW)
 
 set(VENDOR_NAME "ArrayFire")

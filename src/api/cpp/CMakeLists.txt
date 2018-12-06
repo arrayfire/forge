@@ -1,6 +1,6 @@
-add_library(cpp_api_interface INTERFACE)
+add_library(forge_cpp_api_interface INTERFACE)
 
-target_sources(cpp_api_interface
+target_sources(forge_cpp_api_interface
     INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/chart.cpp>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/error.hpp>
@@ -14,11 +14,11 @@ target_sources(cpp_api_interface
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/window.cpp>
     )
 
-target_include_directories(cpp_api_interface
+target_include_directories(forge_cpp_api_interface
     INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     )
 
 if (NOT BUILD_SHARED_LIBS)
-    install(TARGETS cpp_api_interface EXPORT ForgeTargets)
+    install(TARGETS forge_cpp_api_interface EXPORT ForgeTargets)
 endif ()
