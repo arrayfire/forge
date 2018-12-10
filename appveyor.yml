@@ -2,26 +2,17 @@
 #   - All section names are case-sensitive.
 #   - Section names should be unique on each level.
 
-#---------------------------------#
-#      general configuration      #
-#---------------------------------#
-
 # version format
 version: '{branch}-{build}'
 
 # branches to build
 branches:
-  # whitelist
-  only:
-    - master
-    - v1.0
-
   # blacklist
   except:
     - gh-pages
 
 # Do not build on tags (GitHub and BitBucket)
-skip_tags: true
+skip_tags: false
 
 # Start builds on tags only (GitHub and BitBucket)
 skip_non_tags: false
@@ -30,23 +21,6 @@ skip_non_tags: false
 #skip_commits:
 #  message: /Created.*\.(png|jpg|jpeg|bmp|gif)/      # Regex for matching commit message
 #  author: John                                      # Commit author's username, name, email or regexp maching one of these.
-
-# Including commits with particular message or from specific user
-#only_commits:
-#  message: /build/                # Start a new build if message contains 'build'
-#  author: jack@company.com        # Start a new build for commit of user with email jack@company.com
-
-# Skipping commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
-#skip_commits:
-#  files:
-#    - docs/*
-#    - '**/*.html'
-
-# Including commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
-#only_commits:
-#  files:
-#    - Project-A/
-#    - Project-B/
 
 # Do not build feature branch with open Pull Requests
 skip_branch_with_pr: true
@@ -67,7 +41,6 @@ environment:
   MSBUILD_FLAGS: /maxcpucount
   BOOST_ROOT: C:/Libraries/boost_1_67_0
   matrix:
-    - generator: "Visual Studio 14 2015 Win64"
     - generator: "Visual Studio 15 2017 Win64"
 
 install:
@@ -77,9 +50,15 @@ install:
         cd .\vcpkg;
         git checkout -q 4568b57ad7728f30c1e2badc9735c8990cd51265;
         .\bootstrap-vcpkg.bat;
-        .\vcpkg integrate install;
-        vcpkg --triplet x64-windows install freeimage glbinding glfw3 glm opencl freetype
+        Copy-Item -Path 'c:\projects\forge\CMakeModules\ForgeFreetypeVCPKGTriplet.cmake' -Destination .\triplets\x64-windows.cmake;
+        vcpkg --triplet x64-windows install glbinding glfw3 glm opencl freetype
       }
+  - ps: if ( ! (Test-Path -Path "C:/FreeImage") ) {
+        Invoke-WebRequest -Uri "https://nchc.dl.sourceforge.net/project/freeimage/Binary%20Distribution/3.18.0/FreeImage3180Win32Win64.zip" -OutFile FreeImage3180x64.zip;
+        Expand-Archive .\FreeImage3180x64.zip -DestinationPath .\;
+        Remove-Item -Path .\FreeImage3180x64.zip
+      }
+  - ps: If ($env:APPVEYOR_REPO_TAG -eq "false") {Set-AppveyorBuildVariable 'configuration' 'RelWithDebInfo'} Else {Set-AppveyorBuildVariable 'configuration' 'Release'}
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -108,14 +87,9 @@ matrix:
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
 
-# build Configuration, i.e. Debug, Release, etc.
-configuration:
-  - RelWithDebInfo
-  # - Debug
-  # - Release
-
 cache:
   - C:/vcpkg/ -> appveyor.yml
+  - C:/FreeImage/ -> appveyor.yml
 
 build:
   parallel: true                                    # enable MSBuild parallel builds
@@ -139,6 +113,24 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - mkdir build
   - cd build
-  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_TOOLCHAIN_FILE=c:/vcpkg/scripts/buildsystems/vcpkg.cmake -DFreeImage_ROOT="c:/vcpkg/installed/x64-windows" -DCMAKE_BUILD_TYPE:STRING=%configuration%
+  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/build/package -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_TOOLCHAIN_FILE=c:/vcpkg/scripts/buildsystems/vcpkg.cmake -DFreeImage_ROOT="c:\FreeImage\Dist\x64" -DCMAKE_BUILD_TYPE:STRING=%configuration%
   - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo
   - cmake --build . --target INSTALL --config %configuration% -- /nologo
+  - ps: If ($env:APPVEYOR_REPO_TAG -ne "false") {cpack -G NSIS64}
+
+artifacts:
+  - path: build\Forge-*.exe
+    name: fg_rel_bin
+
+deploy:
+ tag: $(APPVEYOR_REPO_TAG_NAME)
+ release: '$(APPVEYOR_REPO_TAG_NAME) Release'
+ provider: GitHub
+ auth_token:
+   secure: /0K0KS4oToqgUSdlCUYT1UTs4svJXx8ODOaeG9qh9JQC6+ge9mK6nwwjIGqTyF4+
+ artifact: fg_rel_bin
+ draft: true
+ prerelease: false
+ force_update: true
+ on:
+   APPVEYOR_REPO_TAG: true        # deploy on tag push only
