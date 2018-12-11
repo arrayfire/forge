@@ -1,49 +1,66 @@
-#-----------------------------------------------------------------------------
-#
-#  Configuration for continuous integration service at travis-ci.org
-#
-#-----------------------------------------------------------------------------
-
 language: cpp
 
 notifications:
-    email: false
+  email: false
 
 sudo: required
 
 services:
-    - docker
+- docker
 
 matrix:
-    include:
-        - os: linux
-          env: CC_NAME=gcc-4.8 CXX_NAME=g++-4.8
-        - os: linux
-          env: CC_NAME=gcc-5 CXX_NAME=g++-5
-        - os: linux
-          env: CC_NAME=gcc CXX_NAME=g++ #default gnu compilers from ubuntu
-        - os: linux
-          env: CC_NAME=clang-3.9 CXX_NAME=clang++-3.9
-        - os: linux
-          env: CC_NAME=clang-4.0 CXX_NAME=clang++-4.0
-        - os: linux
-          env: CC_NAME=clang-5.0 CXX_NAME=clang++-5.0
-        - os: linux
-          env: CC_NAME=clang-6.0 CXX_NAME=clang++-6.0
-        #- os: osx
-        #  osx_image: xcode9.3
+  include:
+  - os: linux
+    env: CC_NAME=gcc-4.8 CXX_NAME=g++-4.8
+  - os: linux
+    env: CC_NAME=gcc-5 CXX_NAME=g++-5
+  - os: linux
+    env: CC_NAME=gcc CXX_NAME=g++
+  - os: linux
+    env: CC_NAME=clang-3.9 CXX_NAME=clang++-3.9
+  - os: linux
+    env: CC_NAME=clang-4.0 CXX_NAME=clang++-4.0
+  - os: linux
+    env: CC_NAME=clang-5.0 CXX_NAME=clang++-5.0
+  - os: linux
+    env: CC_NAME=clang-6.0 CXX_NAME=clang++-6.0
 
 before_install:
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -d --name forge-pr -v $(pwd):/travis pradeepgarigipati/forge-ubuntu:bionic tail -f /dev/null; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker ps; fi
-
-install:
-#  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install glfw glbinding fontconfig freeimage glm; fi
-#  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew upgrade boost; fi
-#  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew info cmake; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]];
+  then
+    docker run -d --name forge-pr -v $(pwd):/travis pradeepgarigipati/forge-ubuntu:bionic tail -f /dev/null;
+  fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]];
+  then
+    docker ps;
+  fi
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker exec -t forge-pr bash -c "cd /travis;
-    CC=/usr/bin/$CC_NAME CXX=/usr/bin/$CXX_NAME cmake -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo . &&
-    make -j2 install"; fi
-#  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cmake . -DCMAKE_INSTALL_PREFIX:PATH=`pwd`/package && make install; fi
+- if [[ ( "$TRAVIS_OS_NAME" == "linux" ) && ( "$TRAVIS_BRANCH" == "$TRAVIS_TAG" )]];
+  then
+    docker exec -t forge-pr bash -c "cd
+    /travis; CC=/usr/bin/$CC_NAME CXX=/usr/bin/$CXX_NAME cmake -DCMAKE_BUILD_TYPE:STRING=Release
+    . && make -j2 install";
+  elif [[ "$TRAVIS_OS_NAME" == "linux" ]];
+  then
+    docker exec -t forge-pr bash -c "cd
+    /travis; CC=/usr/bin/$CC_NAME CXX=/usr/bin/$CXX_NAME cmake -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo
+    . && make -j2 install";
+  fi
+- if [[ ( "$TRAVIS_OS_NAME" == "linux" ) && ( "$TRAVIS_BRANCH" == "$TRAVIS_TAG" )]];
+  then
+    docker exec -t forge-pr bash -c "cd /travis; cpack -G STGZ;";
+  fi
+
+deploy:
+  provider: releases
+  api_key:
+    secure: eYRJtt9ifR/Heytu7xp1hmq+d8tePOgwzHwFY44q4rgjb6zGT48z4PsBoUTzLg0GuWE5Ct/azWXkBD1/Bxrn+xlgDcB54ym3vpX1kl8SP7l/MEShoynZ7sy7mLKEw5j+SVjvlxT6upnIRjcWktz4d1RgRvBOyAP6qBTU96NI9HJsymCWBaVPdwSLK5idkiy36rYxur3AU0uyK9nYF8hDMrDAjdVC5w/dmrs71l5rXeWDkeNEqiKtOHQUlPPFHcNvZa/EPnbHLAUxNAw31KdGaLhZnBFCc3E73/ZIGCGbxawVZr+OVjLUNSGS8jIsezY0kMuHX6pxCvBZiMZylqLGCovWMu+mOKL0hv0msTGPdMio3UijagNJZzuXKZ1btt/3nwxDrpqocvH7cnxa3f+bnNHaxiD2CpcHKlnk/gVXmigeb0/EHkCn37KmZxyzlF8z0uCaEK3krYiYNXvMb5GWiBsH56IaCDntq0CWgkUEcNyvwiS3CMzc2HWXe+2LnvgYgsBkBqVbaCX/TOuc0PXrH5qz6v0r7msIU42baCKoxzScq4riA4zw+inv8LRLwwTcCgEKfZMu/WH3rzHeLt3EgdLpuJ21qceo3IOxW/2vVAE6u9Ka2joqhoS0oBvEh90HmBS+3mtUhHcVeBAyEt1YaomrDJmsMXXtPsJvc2j5SFU=
+  file_glob: true
+  file: ./Forge-*.sh
+  overwrite: true
+  skip_cleanup: true
+  draft: true
+  on:
+    tags: true
+    condition: $CC_NAME = gcc-4.8
