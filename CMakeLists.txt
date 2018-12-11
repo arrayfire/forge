@@ -169,7 +169,7 @@ install(DIRECTORY examples/ #NOTE The slash at the end is important
     DESTINATION ${FG_INSTALL_EXAMPLE_DIR}
     COMPONENT examples)
 
-include(CPackConfig)
+include(ForgeCPackConfig)
 
 conditional_directory(FG_BUILD_DOCS docs)
 conditional_directory(FG_BUILD_EXAMPLES examples)
