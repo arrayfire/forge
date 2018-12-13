@@ -161,6 +161,9 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 
 window_impl::~window_impl()
 {
+    mCMap.reset();
+    mFont.reset();
+    mWidget.reset();
     destroyWtkIfDone();
 }
 
