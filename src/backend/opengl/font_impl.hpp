@@ -32,7 +32,7 @@ class font_impl {
         /* attributes */
         std::string mTTFfile;
         bool        mIsFontLoaded;
-        FontAtlas*  mAtlas;
+        std::unique_ptr<FontAtlas>  mAtlas;
         gl::GLuint  mVBO;
         ShaderProgram mProgram;
         int         mOrthoW;
