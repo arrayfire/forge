@@ -150,7 +150,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     /* setup default window font */
     mFont = std::make_shared<font_impl>();
 #if defined(OS_WIN)
-    mFont->loadSystemFont("Calibri");
+    mFont->loadSystemFont("Arial");
 #else
     mFont->loadSystemFont("Vera");
 #endif
