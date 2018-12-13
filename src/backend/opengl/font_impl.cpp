@@ -264,7 +264,7 @@ font_impl::~font_impl()
 {
     destroyGLResources();
     /* clean glyph texture atlas */
-    delete mAtlas;
+    mAtlas.reset();
 }
 
 void font_impl::setOthro2D(int pWidth, int pHeight)
