@@ -120,13 +120,13 @@ void Widget::resetOrientationMatrices()
 
 Widget::Widget()
     : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
-    mWidth(512), mHeight(512), mFramePBO(0)
+    mWidth(512), mHeight(512)
 {
 }
 
 Widget::Widget(int pWidth, int pHeight, const char* pTitle,
                const std::unique_ptr<Widget> &pWidget, const bool invisible)
-    : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mFramePBO(0)
+    : mWindow(nullptr), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1)
 {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -168,8 +168,6 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle,
 
 Widget::~Widget()
 {
-    glDeleteBuffers(1, &mFramePBO);
-
     SDL_GL_DeleteContext(mContext);
     SDL_DestroyWindow(mWindow);
 }
@@ -222,11 +220,6 @@ void Widget::setSize(unsigned pW, unsigned pH)
 void Widget::swapBuffers()
 {
     SDL_GL_SwapWindow(mWindow);
-
-    glReadBuffer(GL_FRONT);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBO);
-    glReadPixels(0, 0, mWidth, mHeight, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
 void Widget::hide()
@@ -271,7 +264,6 @@ void Widget::pollEvents()
                     case SDL_WINDOWEVENT_RESIZED:
                         mWidth      = evnt.window.data1;
                         mHeight     = evnt.window.data2;
-                        resizePixelBuffers();
                         break;
                 }
             }
@@ -352,20 +344,6 @@ void Widget::pollEvents()
             }
         }
     }
-}
-
-void Widget::resizePixelBuffers()
-{
-    if (mFramePBO!=0)
-        glDeleteBuffers(1, &mFramePBO);
-
-    uint w = mWidth;
-    uint h = mHeight;
-
-    glGenBuffers(1, &mFramePBO);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBO);
-    glBufferData(GL_PIXEL_PACK_BUFFER, w*h*4*sizeof(uchar), 0, GL_DYNAMIC_READ);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
 const glm::mat4 Widget::getViewMatrix(const CellIndex& pIndex)
