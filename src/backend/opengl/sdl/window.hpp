@@ -59,8 +59,6 @@ class Widget {
         int mWidth;     // Framebuffer width
         int mHeight;    // Framebuffer height
 
-        uint  mFramePBO;
-
         /* Constructors and methods */
         Widget(int pWidth, int pHeight, const char* pTitle,
                const std::unique_ptr<Widget> &pWidget, const bool invisible);
@@ -98,8 +96,6 @@ class Widget {
         void resetCloseFlag();
 
         void pollEvents();
-
-        void resizePixelBuffers();
 
         const glm::mat4 getViewMatrix(const CellIndex& pIndex);
 

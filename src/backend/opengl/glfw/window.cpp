@@ -123,13 +123,13 @@ void Widget::resetOrientationMatrices()
 
 Widget::Widget()
     : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1),
-    mWidth(512), mHeight(512), mFramePBO(0)
+    mWidth(512), mHeight(512)
 {
 }
 
 Widget::Widget(int pWidth, int pHeight, const char* pTitle,
                const std::unique_ptr<Widget> &pWidget, const bool invisible)
-    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1), mFramePBO(0)
+    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1)
 {
     auto wndErrCallback = [](int errCode, const char* pDescription)
     {
@@ -195,8 +195,6 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle,
 
 Widget::~Widget()
 {
-    glDeleteBuffers(1, &mFramePBO);
-
     if (mWindow)
         glfwDestroyWindow(mWindow);
 }
@@ -244,11 +242,6 @@ void Widget::setSize(unsigned pW, unsigned pH)
 void Widget::swapBuffers()
 {
     glfwSwapBuffers(mWindow);
-
-    glReadBuffer(GL_FRONT);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBO);
-    glReadPixels(0, 0, mWidth, mHeight, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
 void Widget::hide()
@@ -279,7 +272,6 @@ void Widget::resizeHandler(int pWidth, int pHeight)
 {
     mWidth      = pWidth;
     mHeight     = pHeight;
-    resizePixelBuffers();
 }
 
 void Widget::keyboardHandler(int pKey, int pScancode, int pAction, int pMods)
@@ -371,20 +363,6 @@ void Widget::mouseButtonHandler(int pButton, int pAction, int pMods)
 void Widget::pollEvents()
 {
     glfwPollEvents();
-}
-
-void Widget::resizePixelBuffers()
-{
-    if (mFramePBO!=0)
-        glDeleteBuffers(1, &mFramePBO);
-
-    uint w = mWidth;
-    uint h = mHeight;
-
-    glGenBuffers(1, &mFramePBO);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mFramePBO);
-    glBufferData(GL_PIXEL_PACK_BUFFER, w*h*4*sizeof(uchar), 0, GL_DYNAMIC_READ);
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
 const glm::mat4 Widget::getViewMatrix(const CellIndex& pIndex)

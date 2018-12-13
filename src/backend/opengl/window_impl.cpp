@@ -139,8 +139,6 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
         mCMap = std::make_shared<colormap_impl>();
     }
 
-    mWidget->resizePixelBuffers();
-
     /* set the colormap to default */
     mColorMapUBO = mCMap->cmapUniformBufferId(FG_COLOR_MAP_DEFAULT);
     mUBOSize = mCMap->cmapLength(FG_COLOR_MAP_DEFAULT);
@@ -338,6 +336,7 @@ void window_impl::swapBuffers()
 
 void window_impl::saveFrameBuffer(const char* pFullPath)
 {
+    this->makeContextCurrent();
 #ifdef USE_FREEIMAGE
     FI_Init();
 
@@ -378,32 +377,22 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
      * it was async call(which it should be unless vendor driver
      * is doing something fishy) and the transfer is over by now
      * */
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, mWidget->mFramePBO);
+    std::vector<GLubyte> pbuf(mWidget->mWidth * mWidget->mHeight * 4);
+    glReadBuffer(GL_FRONT);
+    glReadPixels(0, 0, mWidget->mWidth, mWidget->mHeight,
+                 GL_RGBA, GL_UNSIGNED_BYTE, pbuf.data());
+    uint i = 0;
 
-    uchar* src = (uchar*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-
-    if (src) {
-        // copy data from mapped memory location
-        uint w = mWidget->mWidth;
-        uint h = mWidget->mHeight;
-        uint i = 0;
-
-        for (uint y = 0; y < h; ++y) {
-            for (uint x = 0; x < w; ++x) {
-                *(dst + x * c + FI_RGBA_RED  ) = (uchar) src[4*i+0]; // r
-                *(dst + x * c + FI_RGBA_GREEN) = (uchar) src[4*i+1]; // g
-                *(dst + x * c + FI_RGBA_BLUE ) = (uchar) src[4*i+2]; // b
-                *(dst + x * c + FI_RGBA_ALPHA) = (uchar) src[4*i+3]; // a
-                ++i;
-            }
-            dst += pitch;
+    for (uint y = 0; y < h; ++y) {
+        for (uint x = 0; x < w; ++x) {
+            *(dst + x * c + FI_RGBA_RED  ) = (uchar) pbuf[4*i+0]; // r
+            *(dst + x * c + FI_RGBA_GREEN) = (uchar) pbuf[4*i+1]; // g
+            *(dst + x * c + FI_RGBA_BLUE ) = (uchar) pbuf[4*i+2]; // b
+            *(dst + x * c + FI_RGBA_ALPHA) = (uchar) pbuf[4*i+3]; // a
+            ++i;
         }
-
-        glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+        dst += pitch;
     }
-
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
     int flags = 0;
     if (format == FIF_JPEG)
         flags = flags | JPEG_QUALITYSUPERB;
