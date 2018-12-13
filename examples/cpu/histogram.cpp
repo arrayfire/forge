@@ -49,7 +49,7 @@ void kernel(Bitmap& bmp);
 
 void populateBins(Bitmap& bmp, int *hist_array, const unsigned nbins, float *hist_cols);
 
-int main(void)
+int main(int argc, char* argv[])
 {
     Bitmap bmp = createBitmap(IMGW, IMGH);
     /*
@@ -85,6 +85,8 @@ int main(void)
     createGLBuffer(&handles[0], img.pixels(), FORGE_IMAGE_BUFFER);
     createGLBuffer(&handles[1], hist.vertices(), FORGE_VERTEX_BUFFER);
     createGLBuffer(&handles[2], hist.colors(), FORGE_VERTEX_BUFFER);
+
+    wnd.setColorMap((fg_color_map)(argc == 2 ? atoi(argv[1]) : 1));
 
     do {
         /*

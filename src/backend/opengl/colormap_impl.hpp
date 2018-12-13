@@ -10,12 +10,14 @@
 #pragma once
 
 #include <common.hpp>
-#include <memory>
+#include <array>
 
 namespace forge
 {
 namespace opengl
 {
+
+constexpr unsigned int ForgeNumColorMaps = 11;
 
 class colormap_impl {
     private:
@@ -32,33 +34,10 @@ class colormap_impl {
          * the size of array declared in the shaders
          * used by *_impl objects to reflect appropriate
          * size */
-        gl::GLuint mDefaultMapBuffer;
-        gl::GLuint mSpecMapBuffer;
-        gl::GLuint mRainbowMapBuffer;
-        gl::GLuint mRedMapBuffer;
-        gl::GLuint mMoodMapBuffer;
-        gl::GLuint mHeatMapBuffer;
-        gl::GLuint mBlueMapBuffer;
-        gl::GLuint mInfernoMapBuffer;
-        gl::GLuint mMagmaMapBuffer;
-        gl::GLuint mPlasmaMapBuffer;
-        gl::GLuint mViridisMapBuffer;
-
-        /* Current color map lengths */
-        gl::GLuint mDefMapLen;
-        gl::GLuint mSpecMapLen;
-        gl::GLuint mRainbowMapLen;
-        gl::GLuint mRedMapLen;
-        gl::GLuint mMoodMapLen;
-        gl::GLuint mHeatMapLen;
-        gl::GLuint mBlueMapLen;
-        gl::GLuint mInfernoMapLen;
-        gl::GLuint mMagmaMapLen;
-        gl::GLuint mPlasmaMapLen;
-        gl::GLuint mViridisMapLen;
+        std::array<gl::GLuint, ForgeNumColorMaps> mMapIds;
+        std::array<gl::GLuint, ForgeNumColorMaps> mMapLens;
 
     public:
-        /* constructors and destructors */
         colormap_impl();
         ~colormap_impl();
 
