@@ -57,8 +57,6 @@
 #include <cstring>
 #include <algorithm>
 
-using namespace gl;
-
 namespace forge
 {
 namespace opengl
@@ -118,10 +116,10 @@ FontAtlas::FontAtlas(const size_t pWidth, const size_t pHeight, const size_t pDe
 
     glGenTextures(1, &mId);
     glBindTexture(GL_TEXTURE_2D, mId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLint>(GL_CLAMP_TO_EDGE));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLint>(GL_CLAMP_TO_EDGE));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(GL_LINEAR));
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLint>(GL_LINEAR));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // one pixel border around the whole atlas to
@@ -249,23 +247,18 @@ void FontAtlas::upload()
 
     if (mDepth == 4) {
 #ifdef GL_UNSIGNED_INT_8_8_8_8_REV
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RGBA), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_BGRA,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GLsizei(mWidth), GLsizei(mHeight), 0, GL_BGRA,
                      GL_UNSIGNED_INT_8_8_8_8_REV, mData.data());
 #else
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RGBA), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_RGBA,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GLsizei(mWidth), GLsizei(mHeight), 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, mData.data());
 #endif
     } else if (mDepth == 3) {
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RGB), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_RGB,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, GLsizei(mWidth), GLsizei(mHeight), 0, GL_RGB,
                      GL_UNSIGNED_BYTE, mData.data());
     } else {
-#if defined(GL_ES_VERSION_2_0) || defined(GL_ES_VERSION_3_0)
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_LUMINANCE), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_LUMINANCE,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, GLsizei(mWidth), GLsizei(mHeight), 0, GL_RED,
                      GL_UNSIGNED_BYTE, mData.data());
-#else
-        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(GL_RED), gl::GLsizei(mWidth), gl::GLsizei(mHeight), 0, GL_RED,
-                     GL_UNSIGNED_BYTE, mData.data());
-#endif
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);

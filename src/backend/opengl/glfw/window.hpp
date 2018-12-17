@@ -26,8 +26,6 @@ namespace wtk
 void initWindowToolkit();
 void destroyWindowToolkit();
 
-using namespace gl;
-
 class Widget {
     private:
         GLFWwindow* mWindow;
@@ -73,7 +71,7 @@ class Widget {
 
         long long getDisplayHandle();
 
-        glbinding::GetProcAddress getProcAddr();
+        GLADloadproc getProcAddr();
 
         void setTitle(const char* pTitle);
 

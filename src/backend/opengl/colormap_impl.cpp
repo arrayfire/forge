@@ -11,8 +11,6 @@
 #include <colormap_impl.hpp>
 #include <cmap.hpp>
 
-using namespace gl;
-
 #define CREATE_UNIFORM_BUFFER(color_array, size)  \
     createBuffer(GL_UNIFORM_BUFFER, 4*size, color_array, GL_STATIC_DRAW)
 

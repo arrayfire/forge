@@ -34,15 +34,15 @@ class colormap_impl {
          * the size of array declared in the shaders
          * used by *_impl objects to reflect appropriate
          * size */
-        std::array<gl::GLuint, ForgeNumColorMaps> mMapIds;
-        std::array<gl::GLuint, ForgeNumColorMaps> mMapLens;
+        std::array<GLuint, ForgeNumColorMaps> mMapIds;
+        std::array<GLuint, ForgeNumColorMaps> mMapLens;
 
     public:
         colormap_impl();
         ~colormap_impl();
 
-        gl::GLuint cmapUniformBufferId(forge::ColorMap cmap) const;
-        gl::GLuint cmapLength(forge::ColorMap cmap) const;
+        GLuint cmapUniformBufferId(forge::ColorMap cmap) const;
+        GLuint cmapLength(forge::ColorMap cmap) const;
 };
 
 }

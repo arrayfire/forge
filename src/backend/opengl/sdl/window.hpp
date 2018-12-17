@@ -73,7 +73,7 @@ class Widget {
 
         long long getDisplayHandle();
 
-        glbinding::GetProcAddress getProcAddr();
+        GLADloadproc getProcAddr();
 
         bool getClose() const;
 

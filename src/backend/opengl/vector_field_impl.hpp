@@ -26,31 +26,31 @@ namespace opengl
 
 class vector_field_impl : public AbstractRenderable {
     protected:
-        gl::GLuint    mDimension;
+        GLuint    mDimension;
         /* plot points characteristics */
-        gl::GLuint    mNumPoints;
+        GLuint    mNumPoints;
         forge::dtype mDataType;
-        gl::GLenum    mGLType;
+        GLenum    mGLType;
         /* OpenGL Objects */
         ShaderProgram mFieldProgram;
-        gl::GLuint    mDBO;
+        GLuint    mDBO;
         size_t    mDBOSize;
         /* shader variable index locations */
         /* vertex shader */
-        gl::GLuint    mFieldPointIndex;
-        gl::GLuint    mFieldColorIndex;
-        gl::GLuint    mFieldAlphaIndex;
-        gl::GLuint    mFieldDirectionIndex;
+        GLuint    mFieldPointIndex;
+        GLuint    mFieldColorIndex;
+        GLuint    mFieldAlphaIndex;
+        GLuint    mFieldDirectionIndex;
         /* geometry shader */
-        gl::GLuint    mFieldPVMatIndex;
-        gl::GLuint    mFieldModelMatIndex;
-        gl::GLuint    mFieldAScaleMatIndex;
+        GLuint    mFieldPVMatIndex;
+        GLuint    mFieldModelMatIndex;
+        GLuint    mFieldAScaleMatIndex;
         /* fragment shader */
-        gl::GLuint    mFieldPVCOnIndex;
-        gl::GLuint    mFieldPVAOnIndex;
-        gl::GLuint    mFieldUColorIndex;
+        GLuint    mFieldPVCOnIndex;
+        GLuint    mFieldPVAOnIndex;
+        GLuint    mFieldUColorIndex;
 
-        std::map<int, gl::GLuint> mVAOMap;
+        std::map<int, GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
@@ -64,7 +64,7 @@ class vector_field_impl : public AbstractRenderable {
                           const int pDimension=3);
         ~vector_field_impl();
 
-        gl::GLuint directions();
+        GLuint directions();
         size_t directionsSize() const;
 
         virtual void render(const int pWindowId,

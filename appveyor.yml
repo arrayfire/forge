@@ -51,7 +51,7 @@ install:
         git checkout -q 4568b57ad7728f30c1e2badc9735c8990cd51265;
         .\bootstrap-vcpkg.bat;
         Copy-Item -Path 'c:\projects\forge\CMakeModules\ForgeFreetypeVCPKGTriplet.cmake' -Destination .\triplets\x64-windows.cmake;
-        vcpkg --triplet x64-windows install glbinding glfw3 glm opencl freetype
+        vcpkg --triplet x64-windows install glfw3 glm opencl freetype
       }
   - ps: if ( ! (Test-Path -Path "C:/FreeImage") ) {
         Invoke-WebRequest -Uri "https://nchc.dl.sourceforge.net/project/freeimage/Binary%20Distribution/3.18.0/FreeImage3180Win32Win64.zip" -OutFile FreeImage3180x64.zip;

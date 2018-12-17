@@ -17,8 +17,6 @@ using glm::rotate;
 using glm::translate;
 using glm::scale;
 
-using namespace gl;
-
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -139,13 +137,13 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle,
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, static_cast<GLint>(GL_TRUE));
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     if (invisible)
-        glfwWindowHint(GLFW_VISIBLE, static_cast<GLint>(GL_FALSE));
+        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
     else
-        glfwWindowHint(GLFW_VISIBLE, static_cast<GLint>(GL_TRUE));
+        glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
 
     glfwWindowHint(GLFW_SAMPLES, 4);
     mWindow = glfwCreateWindow(pWidth, pHeight,
@@ -219,9 +217,9 @@ long long Widget::getDisplayHandle()
     return opengl::getCurrentDisplayHandle();
 }
 
-glbinding::GetProcAddress Widget::getProcAddr()
+GLADloadproc Widget::getProcAddr()
 {
-    return glfwGetProcAddress;
+    return reinterpret_cast<GLADloadproc>(glfwGetProcAddress);
 }
 
 void Widget::setTitle(const char* pTitle)

@@ -10,7 +10,6 @@ goal of Forge is to provide high performance OpenGL visualizations for C/C++
 applications that use CUDA/OpenCL.
 
 ## Upstream dependencies
-* [glbinding](https://github.com/cginternals/glbinding)
 * [GLFW](http://www.glfw.org/)
 * [freetype](http://www.freetype.org/)
 * [FreeImage](http://freeimage.sourceforge.net/) - optional. Packages should ideally turn this

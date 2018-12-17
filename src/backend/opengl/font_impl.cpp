@@ -52,8 +52,6 @@ static const struct {
 #define START_CHAR 32
 #define END_CHAR   126
 
-using namespace gl;
-
 /* freetype library types */
 
 namespace forge
@@ -211,8 +209,8 @@ void font_impl::bindResources(int pWindowId)
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, gl::GLsizei(2*sz), 0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, gl::GLsizei(2*sz), reinterpret_cast<void*>(sz));
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, GLsizei(2*sz), 0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, GLsizei(2*sz), reinterpret_cast<void*>(sz));
         /* store the vertex array object corresponding to
          * the window instance in the map */
         mVAOMap[pWindowId] = vao;
@@ -460,7 +458,7 @@ void font_impl::render(int pWindowId,
 
             glUniformMatrix4fv(mMMatIndex, 1, GL_FALSE, (GLfloat*)&TR);
 
-            glDrawArrays(GL_TRIANGLE_STRIP, gl::GLint(g->mOffset), 4);
+            glDrawArrays(GL_TRIANGLE_STRIP, GLint(g->mOffset), 4);
 
             if (pIsVertical) {
                 loc_y += (g->mAdvanceX);

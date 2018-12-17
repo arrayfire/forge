@@ -12,9 +12,6 @@
 #include <window_impl.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
-#ifndef NDEBUG
-#include <glbinding-aux/types_to_string.h>
-#endif
 
 #include <cmath>
 #include <fstream>
@@ -24,7 +21,6 @@
 #include <sstream>
 #include <string>
 
-using namespace gl;
 using namespace forge;
 using namespace std;
 
@@ -180,7 +176,8 @@ void glErrorCheck(const char *pMsg, const char* pFile, int pLine)
         if (x != GL_NO_ERROR) {
             std::stringstream ss;
             ss << "GL Error at: "<< pFile << ":"<<pLine
-               <<" Message: "<<pMsg<<" Error Code: "<< x << std::endl;
+               <<" Message: "<<pMsg<<" Error Code: "
+               << glGetString(x) << std::endl;
             FG_ERROR(ss.str().c_str(), FG_ERR_GL_ERROR);
         }
     };
@@ -209,24 +206,24 @@ ShaderProgram::~ShaderProgram()
     if (mProgram ) glDeleteProgram( mProgram );
 }
 
-gl::GLuint ShaderProgram::getProgramId() const
+GLuint ShaderProgram::getProgramId() const
 {
     return mProgram;
 }
 
 GLuint ShaderProgram::getUniformLocation(const char* pAttributeName)
 {
-    return gl::glGetUniformLocation(mProgram, pAttributeName);
+    return glGetUniformLocation(mProgram, pAttributeName);
 }
 
 GLuint ShaderProgram::getUniformBlockIndex(const char* pAttributeName)
 {
-    return gl::glGetUniformBlockIndex(mProgram, pAttributeName);
+    return glGetUniformBlockIndex(mProgram, pAttributeName);
 }
 
 GLuint ShaderProgram::getAttributeLocation(const char* pAttributeName)
 {
-    return gl::glGetAttribLocation(mProgram, pAttributeName);
+    return glGetAttribLocation(mProgram, pAttributeName);
 }
 
 void ShaderProgram::bind()

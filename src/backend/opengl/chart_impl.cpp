@@ -31,7 +31,6 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace gl;
 using namespace std;
 
 namespace forge
@@ -483,7 +482,7 @@ void chart2d_impl::render(const int pWindowId,
     chart2d_impl::unbindResources();
 
     glEnable(GL_SCISSOR_TEST);
-    glScissor(gl::GLint(pX+lgap), gl::GLint(pY+bgap), gl::GLsizei(w), gl::GLsizei(h));
+    glScissor(GLint(pX+lgap), GLint(pY+bgap), GLsizei(w), GLsizei(h));
 
     /* render all renderables */
     for (auto renderable : mRenderables) {
@@ -872,7 +871,7 @@ void chart3d_impl::render(const int pWindowId,
     chart3d_impl::unbindResources();
 
     glEnable(GL_SCISSOR_TEST);
-    glScissor(gl::GLint(pX + lgap), gl::GLint(pY + bgap), gl::GLsizei(w), gl::GLsizei(h));
+    glScissor(GLint(pX + lgap), GLint(pY + bgap), GLsizei(w), GLsizei(h));
 
     glm::mat4 renderableMat = PROJECTION * pView * VIEW;
 

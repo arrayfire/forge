@@ -23,27 +23,27 @@ class image_impl : public AbstractRenderable {
         uint   mWidth;
         uint   mHeight;
         forge::ChannelFormat mFormat;
-        gl::GLenum mGLformat;
-        gl::GLenum mGLiformat;
+        GLenum mGLformat;
+        GLenum mGLiformat;
         forge::dtype mDataType;
-        gl::GLenum mGLType;
+        GLenum mGLType;
         float  mAlpha;
         bool   mKeepARatio;
         size_t mFormatSize;
         /* internal resources for interop */
         size_t mPBOsize;
-        gl::GLuint mPBO;
-        gl::GLuint mTex;
+        GLuint mPBO;
+        GLuint mTex;
         ShaderProgram mProgram;
-        gl::GLuint mMatIndex;
-        gl::GLuint mTexIndex;
-        gl::GLuint mNumCIndex;
-        gl::GLuint mAlphaIndex;
-        gl::GLuint mCMapLenIndex;
-        gl::GLuint mCMapIndex;
+        GLuint mMatIndex;
+        GLuint mTexIndex;
+        GLuint mNumCIndex;
+        GLuint mAlphaIndex;
+        GLuint mCMapLenIndex;
+        GLuint mCMapIndex;
         /* color map details */
-        gl::GLuint mColorMapUBO;
-        gl::GLuint mUBOSize;
+        GLuint mColorMapUBO;
+        GLuint mUBOSize;
 
         /* helper functions to bind and unbind
          * resources for render quad primitive */
@@ -55,7 +55,7 @@ class image_impl : public AbstractRenderable {
                    const forge::ChannelFormat pFormat, const forge::dtype pDataType);
         ~image_impl();
 
-        void setColorMapUBOParams(const gl::GLuint pUBO, const gl::GLuint pSize);
+        void setColorMapUBOParams(const GLuint pUBO, const GLuint pSize);
         void setAlpha(const float pAlpha);
         void keepAspectRatio(const bool pKeep=true);
 

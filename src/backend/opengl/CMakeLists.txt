@@ -16,12 +16,10 @@ if (WIN32)
         PUBLIC FGDLL
         PRIVATE OS_WIN WIN32_MEAN_AND_LEAN)
 
-    # C4251: Warnings about dll interfaces. Thrown by glbinding, may be fixed in
-    #        the future
     # C4068: Warnings about unknown pragmas
     # C4275: Warnings about using non-exported classes as base class of an
     #        exported class
-    set_target_properties(${BackendTarget} PROPERTIES COMPILE_FLAGS "/wd4251 /wd4068 /wd4275")
+    set_target_properties(${BackendTarget} PROPERTIES COMPILE_FLAGS "/wd4068 /wd4275")
 elseif (APPLE)
     target_compile_definitions(${BackendTarget} PRIVATE OS_MAC)
 else(WIN32)
@@ -90,14 +88,13 @@ target_link_libraries(${BackendTarget}
     PUBLIC
         OpenGL::GL
     PRIVATE
-        glbinding::glbinding
-        $<$<NOT:$<CONFIG:Release>>:glbinding::glbinding-aux>
         glm
         Boost::boost
         forge_backend_interface
         forge_wtk_interface
         forge_c_api_interface
         forge_cpp_api_interface
+        forge_glad_interface
     )
 if (FG_ENABLE_HUNTER)
     target_link_libraries(${BackendTarget} PRIVATE freetype::freetype)
@@ -142,15 +139,8 @@ install(TARGETS forge
     INCLUDES DESTINATION ${FG_INSTALL_INC_DIR})
 
 # install dependencies
-if (WIN32)
-    if (FG_WITH_FREEIMAGE AND NOT FG_USE_STATIC_FREEIMAGE)
-        install(FILES $<TARGET_FILE:FreeImage::FreeImage>
-            DESTINATION ${FG_INSTALL_BIN_DIR}
-            COMPONENT dependencies)
-    endif ()
-    install(FILES
-        $<TARGET_FILE:glbinding::glbinding>
-        $<$<NOT:$<CONFIG:Release>>:$<TARGET_FILE:glbinding::glbinding-aux>>
+if (WIN32 AND FG_WITH_FREEIMAGE AND NOT FG_USE_STATIC_FREEIMAGE)
+    install(FILES $<TARGET_FILE:FreeImage::FreeImage>
         DESTINATION ${FG_INSTALL_BIN_DIR}
         COMPONENT dependencies)
 endif ()

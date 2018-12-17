@@ -10,8 +10,6 @@
 #include <fg/update_buffer.h>
 #include <common.hpp>
 
-using namespace gl;
-
 fg_err fg_update_vertex_buffer(const unsigned pBufferId,
                                const size_t pBufferSize,
                                const void* pBufferData)
