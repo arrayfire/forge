@@ -12,8 +12,7 @@
 #include <fg/defines.h>
 #include <fg/exception.h>
 #include <err_common.hpp>
-#include <glbinding/gl33core/gl.h>
-#include <glbinding/Binding.h>
+#include <glad/glad.h>
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
@@ -66,7 +65,7 @@ float clampTo01(const float pValue);
  *
  * @return GL_* typedef for data type
  */
-gl::GLenum dtype2gl(const forge::dtype pValue);
+GLenum dtype2gl(const forge::dtype pValue);
 
 /* Convert forge channel format enum to OpenGL enum to indicate color component layout
  *
@@ -74,7 +73,7 @@ gl::GLenum dtype2gl(const forge::dtype pValue);
  *
  * @return OpenGL enum indicating color component layout
  */
-gl::GLenum ctype2gl(const forge::ChannelFormat pMode);
+GLenum ctype2gl(const forge::ChannelFormat pMode);
 
 /* Convert forge channel format enum to OpenGL enum to indicate color component layout
  *
@@ -85,7 +84,7 @@ gl::GLenum ctype2gl(const forge::ChannelFormat pMode);
  *
  * @return OpenGL enum indicating color component layout
  */
-gl::GLenum ictype2gl(const forge::ChannelFormat pMode);
+GLenum ictype2gl(const forge::ChannelFormat pMode);
 
 /* Create OpenGL buffer object
  *
@@ -97,13 +96,13 @@ gl::GLenum ictype2gl(const forge::ChannelFormat pMode);
  * @return OpenGL buffer object identifier
  */
 template<typename T>
-gl::GLuint createBuffer(gl::GLenum pTarget, size_t pSize, const T* pPtr, gl::GLenum pUsage)
+GLuint createBuffer(GLenum pTarget, size_t pSize, const T* pPtr, GLenum pUsage)
 {
-    gl::GLuint retVal = 0;
-    gl::glGenBuffers(1, &retVal);
-    gl::glBindBuffer(pTarget, retVal);
-    gl::glBufferData(pTarget, pSize*sizeof(T), pPtr, pUsage);
-    gl::glBindBuffer(pTarget, 0);
+    GLuint retVal = 0;
+    glGenBuffers(1, &retVal);
+    glBindBuffer(pTarget, retVal);
+    glBufferData(pTarget, pSize*sizeof(T), pPtr, pUsage);
+    glBindBuffer(pTarget, 0);
     return retVal;
 }
 
@@ -130,7 +129,7 @@ std::string toString(const float pVal, const std::string pFormat);
 
 /* Get a vertex buffer object for quad that spans the screen
  */
-gl::GLuint screenQuadVBO(const int pWindowId);
+GLuint screenQuadVBO(const int pWindowId);
 
 /* Get a vertex array object that uses screenQuadVBO
  *
@@ -140,7 +139,7 @@ gl::GLuint screenQuadVBO(const int pWindowId);
  *
  *     `glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);`
  */
-gl::GLuint screenQuadVAO(const int pWindowId);
+GLuint screenQuadVAO(const int pWindowId);
 
 /* Print glm::mat4 to std::cout stream */
 std::ostream& operator<<(std::ostream&, const glm::mat4&);
@@ -164,10 +163,10 @@ typedef unsigned char   uchar;
 
 class ShaderProgram {
     private:
-        gl::GLuint mVertex;
-        gl::GLuint mFragment;
-        gl::GLuint mGeometry;
-        gl::GLuint mProgram;
+        GLuint mVertex;
+        GLuint mFragment;
+        GLuint mGeometry;
+        GLuint mProgram;
 
     public:
         ShaderProgram(const char* pVertShaderSrc,
@@ -176,11 +175,11 @@ class ShaderProgram {
 
         ~ShaderProgram();
 
-        gl::GLuint getProgramId() const;
+        GLuint getProgramId() const;
 
-        gl::GLuint getUniformLocation(const char* pAttributeName);
-        gl::GLuint getUniformBlockIndex(const char* pAttributeName);
-        gl::GLuint getAttributeLocation(const char* pAttributeName);
+        GLuint getUniformLocation(const char* pAttributeName);
+        GLuint getUniformBlockIndex(const char* pAttributeName);
+        GLuint getAttributeLocation(const char* pAttributeName);
 
         void bind();
         void unbind();
@@ -194,14 +193,14 @@ class ShaderProgram {
 class AbstractRenderable {
     protected:
         /* OpenGL buffer objects */
-        gl::GLuint  mVBO;
-        gl::GLuint  mCBO;
-        gl::GLuint  mABO;
+        GLuint  mVBO;
+        GLuint  mCBO;
+        GLuint  mABO;
         size_t      mVBOSize;
         size_t      mCBOSize;
         size_t      mABOSize;
-        gl::GLfloat mColor[4];
-        gl::GLfloat mRange[6];
+        GLfloat mColor[4];
+        GLfloat mRange[6];
         std::string mLegend;
         bool        mIsPVCOn;
         bool        mIsPVAOn;
@@ -232,9 +231,9 @@ class AbstractRenderable {
          *  cbo is for colors of those vertices
          *  abo is for alpha values for those vertices
          */
-        gl::GLuint vbo() const { return mVBO; }
-        gl::GLuint cbo() { mIsPVCOn = true; return mCBO; }
-        gl::GLuint abo() { mIsPVAOn = true; return mABO; }
+        GLuint vbo() const { return mVBO; }
+        GLuint cbo() { mIsPVCOn = true; return mCBO; }
+        GLuint abo() { mIsPVAOn = true; return mABO; }
         size_t vboSize() const { return mVBOSize; }
         size_t cboSize() const { return mCBOSize; }
         size_t aboSize() const { return mABOSize; }
@@ -285,7 +284,7 @@ class AbstractRenderable {
         /* virtual function to set colormap, a derviced class might
          * use it or ignore it if it doesnt have a need for color maps.
          */
-        virtual void setColorMapUBOParams(const gl::GLuint pUBO, const gl::GLuint pSize) {
+        virtual void setColorMapUBOParams(const GLuint pUBO, const GLuint pSize) {
         }
 
         /* render is a pure virtual function.

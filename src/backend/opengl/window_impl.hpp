@@ -39,8 +39,8 @@ class window_impl {
         std::shared_ptr<font_impl>     mFont;
         std::shared_ptr<colormap_impl> mCMap;
 
-        gl::GLuint mColorMapUBO;
-        gl::GLuint mUBOSize;
+        GLuint mColorMapUBO;
+        GLuint mUBOSize;
 
     public:
         window_impl(int pWidth, int pHeight, const char* pTitle,

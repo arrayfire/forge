@@ -17,7 +17,6 @@
 #include <memory>
 #include <mutex>
 
-using namespace gl;
 using namespace forge;
 
 namespace forge
@@ -126,7 +125,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
 
     mWidget->makeContextCurrent();
 
-    glbinding::Binding::initialize(mWidget->getProcAddr(), false);
+    gladLoadGLLoader(mWidget->getProcAddr());
 
     mCxt = mWidget->getGLContextHandle();
     mDsp = mWidget->getDisplayHandle();
@@ -170,7 +169,6 @@ window_impl::~window_impl()
 void window_impl::makeContextCurrent()
 {
     mWidget->makeContextCurrent();
-    glbinding::Binding::useCurrentContext();
 }
 
 void window_impl::setFont(const std::shared_ptr<font_impl>& pFont)

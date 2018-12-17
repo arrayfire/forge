@@ -53,12 +53,6 @@ myhunter_config(randrproto 1.3.2)
 myhunter_config(xi 1.6.1)
 myhunter_config(xext 1.3.1)
 
-myhunter_config(glbinding 2.1.3-p0
-    OPTION_BUILD_GPU_TESTS=ON
-    OPTION_BUILD_TESTS=ON
-    OPTION_BUILD_TOOLS=ON
-    gtest_force_shared_crt=ON)
-
 myhunter_config(glfw 3.3.0-p2
     GLFW_BUILD_DOCS=OFF
     GLFW_BUILD_EXAMPLES=OFF

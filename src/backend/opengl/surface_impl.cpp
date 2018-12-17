@@ -19,7 +19,6 @@
 
 #include <cmath>
 
-using namespace gl;
 using namespace std;
 
 
@@ -127,7 +126,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
     glUniform1i(mSurfPVAIndex, mIsPVAOn);
 
     bindResources(pWindowId);
-    glDrawElements(GL_TRIANGLE_STRIP, gl::GLsizei(mIBOSize), GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(GL_TRIANGLE_STRIP, GLsizei(mIBOSize), GL_UNSIGNED_INT, (void*)0);
     unbindResources();
     mSurfProgram.unbind();
 
@@ -142,7 +141,7 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUniform4fv(mMarkerColIndex, 1, mColor);
 
         bindResources(pWindowId);
-        glDrawElements(GL_POINTS, gl::GLsizei(mIBOSize), GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_POINTS, GLsizei(mIBOSize), GL_UNSIGNED_INT, (void*)0);
         unbindResources();
 
         mMarkerProgram.unbind();
@@ -264,7 +263,7 @@ void scatter3_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
         glUniform4fv(mMarkerColIndex, 1, mColor);
 
         bindResources(pWindowId);
-        glDrawElements(GL_POINTS, gl::GLsizei(mIBOSize), GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_POINTS, GLsizei(mIBOSize), GL_UNSIGNED_INT, (void*)0);
         unbindResources();
 
         mMarkerProgram.unbind();

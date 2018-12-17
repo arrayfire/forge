@@ -14,8 +14,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-using namespace gl;
-
 using glm::rotate;
 using glm::translate;
 using glm::scale;
@@ -192,14 +190,9 @@ long long Widget::getDisplayHandle()
     return opengl::getCurrentDisplayHandle();
 }
 
-glbinding::GetProcAddress Widget::getProcAddr()
+GLADloadproc Widget::getProcAddr()
 {
-    using glbinding::GetProcAddress;
-    using glbinding::ProcAddress;
-    const GetProcAddress get_proc_address = [](const char *name) {
-        return reinterpret_cast<ProcAddress>(SDL_GL_GetProcAddress(name));
-    };
-    return get_proc_address;
+    return static_cast<GLADloadproc>(SDL_GL_GetProcAddress);
 }
 
 void Widget::setTitle(const char* pTitle)

@@ -24,34 +24,34 @@ namespace opengl
 class surface_impl : public AbstractRenderable {
     protected:
         /* plot points characteristics */
-        gl::GLuint    mNumXPoints;
-        gl::GLuint    mNumYPoints;
-        gl::GLenum    mDataType;
+        GLuint    mNumXPoints;
+        GLuint    mNumYPoints;
+        GLenum    mDataType;
         forge::MarkerType mMarkerType;
         /* OpenGL Objects */
-        gl::GLuint    mIBO;
+        GLuint    mIBO;
         size_t        mIBOSize;
         ShaderProgram mMarkerProgram;
         ShaderProgram mSurfProgram;
         /* shared variable index locations */
-        gl::GLuint    mMarkerMatIndex;
-        gl::GLuint    mMarkerPointIndex;
-        gl::GLuint    mMarkerColorIndex;
-        gl::GLuint    mMarkerAlphaIndex;
-        gl::GLuint    mMarkerPVCIndex;
-        gl::GLuint    mMarkerPVAIndex;
-        gl::GLuint    mMarkerTypeIndex;
-        gl::GLuint    mMarkerColIndex;
+        GLuint    mMarkerMatIndex;
+        GLuint    mMarkerPointIndex;
+        GLuint    mMarkerColorIndex;
+        GLuint    mMarkerAlphaIndex;
+        GLuint    mMarkerPVCIndex;
+        GLuint    mMarkerPVAIndex;
+        GLuint    mMarkerTypeIndex;
+        GLuint    mMarkerColIndex;
 
-        gl::GLuint    mSurfMatIndex;
-        gl::GLuint    mSurfRangeIndex;
-        gl::GLuint    mSurfPointIndex;
-        gl::GLuint    mSurfColorIndex;
-        gl::GLuint    mSurfAlphaIndex;
-        gl::GLuint    mSurfPVCIndex;
-        gl::GLuint    mSurfPVAIndex;
+        GLuint    mSurfMatIndex;
+        GLuint    mSurfRangeIndex;
+        GLuint    mSurfPointIndex;
+        GLuint    mSurfColorIndex;
+        GLuint    mSurfAlphaIndex;
+        GLuint    mSurfPVCIndex;
+        GLuint    mSurfPVAIndex;
 
-        std::map<int, gl::GLuint> mVAOMap;
+        std::map<int, GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
