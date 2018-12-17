@@ -39,7 +39,7 @@ class FontAtlas {
         size_t mHeight;
         size_t mDepth;
         size_t mUsed;
-        gl::GLuint mId;
+        GLuint mId;
 
         std::vector<uchar> mData;
         std::vector<glm::vec3> nodes;
@@ -64,7 +64,7 @@ class FontAtlas {
         void upload();
         void clear();
 
-        gl::GLuint atlasTextureId() const;
+        GLuint atlasTextureId() const;
 };
 
 struct Glyph {

@@ -13,7 +13,6 @@ You can find the most recent and updated documentation [here](http://arrayfire.o
 
 ### Dependencies
 
-- [glbinding](https://github.com/cginternals/glbinding)
 - [GLFW](http://www.glfw.org/) or [SDL2](https://www.libsdl.org/)
 - [freetype](http://www.freetype.org/)
 - [glm](https://glm.g-truc.net) - not a runtime dependency

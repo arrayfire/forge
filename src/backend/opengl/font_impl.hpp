@@ -27,13 +27,13 @@ class font_impl {
     private:
         /* VAO map to store a vertex array object
          * for each valid window context */
-        std::map<int, gl::GLuint> mVAOMap;
+        std::map<int, GLuint> mVAOMap;
 
         /* attributes */
         std::string mTTFfile;
         bool        mIsFontLoaded;
         std::unique_ptr<FontAtlas>  mAtlas;
-        gl::GLuint  mVBO;
+        GLuint  mVBO;
         ShaderProgram mProgram;
         int         mOrthoW;
         int         mOrthoH;
@@ -42,10 +42,10 @@ class font_impl {
 
         /* OpenGL Data */
         glm::mat4   mProjMat;
-        gl::GLuint  mPMatIndex;
-        gl::GLuint  mMMatIndex;
-        gl::GLuint  mTexIndex;
-        gl::GLuint  mClrIndex;
+        GLuint  mPMatIndex;
+        GLuint  mMMatIndex;
+        GLuint  mTexIndex;
+        GLuint  mClrIndex;
 
         /* load all glyphs and create character atlas */
         void loadAtlasWithGlyphs(const size_t pFontSize);

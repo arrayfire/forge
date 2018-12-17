@@ -26,43 +26,43 @@ namespace opengl
 
 class plot_impl : public AbstractRenderable {
     protected:
-        gl::GLuint     mDimension;
-        gl::GLfloat    mMarkerSize;
+        GLuint     mDimension;
+        GLfloat    mMarkerSize;
         /* plot points characteristics */
-        gl::GLuint     mNumPoints;
+        GLuint     mNumPoints;
         forge::dtype      mDataType;
-        gl::GLenum     mGLType;
+        GLenum     mGLType;
         forge::MarkerType mMarkerType;
         forge::PlotType   mPlotType;
         bool           mIsPVROn;
         /* OpenGL Objects */
         ShaderProgram  mPlotProgram;
         ShaderProgram  mMarkerProgram;
-        gl::GLuint    mRBO;
+        GLuint    mRBO;
         size_t        mRBOSize;
         /* shader variable index locations */
-        gl::GLuint    mPlotMatIndex;
-        gl::GLuint    mPlotPVCOnIndex;
-        gl::GLuint    mPlotPVAOnIndex;
-        gl::GLuint    mPlotUColorIndex;
-        gl::GLuint    mPlotRangeIndex;
-        gl::GLuint    mPlotPointIndex;
-        gl::GLuint    mPlotColorIndex;
-        gl::GLuint    mPlotAlphaIndex;
+        GLuint    mPlotMatIndex;
+        GLuint    mPlotPVCOnIndex;
+        GLuint    mPlotPVAOnIndex;
+        GLuint    mPlotUColorIndex;
+        GLuint    mPlotRangeIndex;
+        GLuint    mPlotPointIndex;
+        GLuint    mPlotColorIndex;
+        GLuint    mPlotAlphaIndex;
 
-        gl::GLuint    mMarkerPVCOnIndex;
-        gl::GLuint    mMarkerPVAOnIndex;
-        gl::GLuint    mMarkerPVROnIndex;
-        gl::GLuint    mMarkerTypeIndex;
-        gl::GLuint    mMarkerColIndex;
-        gl::GLuint    mMarkerMatIndex;
-        gl::GLuint    mMarkerPSizeIndex;
-        gl::GLuint    mMarkerPointIndex;
-        gl::GLuint    mMarkerColorIndex;
-        gl::GLuint    mMarkerAlphaIndex;
-        gl::GLuint    mMarkerRadiiIndex;
+        GLuint    mMarkerPVCOnIndex;
+        GLuint    mMarkerPVAOnIndex;
+        GLuint    mMarkerPVROnIndex;
+        GLuint    mMarkerTypeIndex;
+        GLuint    mMarkerColIndex;
+        GLuint    mMarkerMatIndex;
+        GLuint    mMarkerPSizeIndex;
+        GLuint    mMarkerPointIndex;
+        GLuint    mMarkerColorIndex;
+        GLuint    mMarkerAlphaIndex;
+        GLuint    mMarkerRadiiIndex;
 
-        std::map<int, gl::GLuint> mVAOMap;
+        std::map<int, GLuint> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */

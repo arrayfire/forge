@@ -7,10 +7,6 @@
 
 # Platform specific settings
 #
-# Add paths and flags specific platforms. This can inc
+# Add paths and flags specific platforms.
+# This can included in root CMakeLists file
 
-if(APPLE)
-  # Some homebrew libraries(glbinding) are not installed in directories that
-  # CMake searches by default.
-  set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};/usr/local/opt")
-endif()
