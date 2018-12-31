@@ -88,6 +88,15 @@ if(Boost_FOUND AND NOT TARGET Boost::boost)
         PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif(Boost_FOUND AND NOT TARGET Boost::boost)
 
+if(UNIX AND FREETYPE_FOUND AND NOT TARGET Freetype::Freetype)
+    add_library(Freetype::Freetype UNKNOWN IMPORTED)
+    set_target_properties(Freetype::Freetype PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${FREETYPE_INCLUDE_DIRS}")
+    set_target_properties(Freetype::Freetype PROPERTIES
+        IMPORTED_LINK_INTERFACE_LANGUAGES "C"
+        INTERFACE_LINK_LIBRARIES "${FREETYPE_LIBRARIES}")
+endif(UNIX AND FREETYPE_FOUND AND NOT TARGET Freetype::Freetype)
+
 add_subdirectory(extern/glad)
 add_subdirectory(src/backend/common)
 add_subdirectory(src/backend/glsl_shaders)
