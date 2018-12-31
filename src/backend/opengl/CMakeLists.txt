@@ -79,6 +79,7 @@ target_include_directories(${BackendTarget}
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE
+        ${Forge_SOURCE_DIR}/extern/glm
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${PROJECT_BINARY_DIR}/include
         ${PROJECT_SOURCE_DIR}/include
@@ -88,7 +89,6 @@ target_link_libraries(${BackendTarget}
     PUBLIC
         OpenGL::GL
     PRIVATE
-        glm
         Boost::boost
         forge_backend_interface
         forge_wtk_interface
