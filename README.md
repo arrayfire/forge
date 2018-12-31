@@ -15,7 +15,6 @@ You can find the most recent and updated documentation [here](http://arrayfire.o
 
 - [GLFW](http://www.glfw.org/) or [SDL2](https://www.libsdl.org/)
 - [freetype](http://www.freetype.org/)
-- [glm](https://glm.g-truc.net) - not a runtime dependency
 - [boost](https://www.boost.org/) - not a runtime dependency.
 - [FreeImage](http://freeimage.sourceforge.net/) (optional).
 - [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) on Linux and OSX.
