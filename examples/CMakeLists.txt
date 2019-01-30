@@ -5,6 +5,9 @@ project(Forge-Examples LANGUAGES CXX)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+if(Forge_BINARY_DIR AND EXISTS "${Forge_BINARY_DIR}")
+  set(Forge_DIR ${Forge_BINARY_DIR})
+endif()
 
 find_package(OpenCL 1.2 QUIET)
 find_package(CUDA   QUIET)
