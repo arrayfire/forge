@@ -24,7 +24,7 @@ if (NOT BUILD_SHARED_LIBS)
     install(TARGETS forge_wtk_interface EXPORT ForgeTargets)
 endif ()
 
-if (WIN32)
+if (WIN32 AND BUILD_SHARED_LIBS)
     install(FILES $<TARGET_FILE:glfw>
     DESTINATION ${FG_INSTALL_BIN_DIR}
     COMPONENT dependencies)
