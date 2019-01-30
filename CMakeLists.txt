@@ -114,56 +114,11 @@ install(DIRECTORY include/
     PATTERN "*.h"
     PATTERN "*.hpp"
     PATTERN ".gitignore" EXCLUDE)
-# The Forge version header is generated and thus need to be
-# included explicitly
+
 install(FILES ${Forge_BINARY_DIR}/include/fg/version.h
     DESTINATION "${FG_INSTALL_INC_DIR}/fg/"
     COMPONENT headers)
 
-install(EXPORT ForgeTargets
-    NAMESPACE Forge::
-    DESTINATION ${FG_INSTALL_CMAKE_DIR}
-    COMPONENT forge)
-
-export(EXPORT ForgeTargets
-    NAMESPACE Forge::
-    FILE cmake/ForgeTargets.cmake)
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-    "${Forge_BINARY_DIR}/cmake/ForgeConfigVersion.cmake"
-    COMPATIBILITY SameMajorVersion)
-
-# This config file will be installed so we need to set the install_destination
-# path relative to the install path
-set(INCLUDE_DIRS include)
-set(CMAKE_DIR ${FG_INSTALL_CMAKE_DIR})
-configure_package_config_file(
-  "${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
-  "cmake/install/ForgeConfig.cmake"
-  INSTALL_DESTINATION "${FG_INSTALL_CMAKE_DIR}"
-  PATH_VARS INCLUDE_DIRS CMAKE_DIR)
-
-install(FILES ${Forge_BINARY_DIR}/cmake/install/ForgeConfig.cmake
-    ${Forge_BINARY_DIR}/cmake/ForgeConfigVersion.cmake
-    DESTINATION ${FG_INSTALL_CMAKE_DIR}
-    COMPONENT cmake)
-
-# Following file will be used to create the config file for the build directory.
-# These config files will be used by the examples to find the Forge
-# libraries
-set(INCLUDE_DIRS "${Forge_SOURCE_DIR}/include" "${Forge_BINARY_DIR}/include")
-set(CMAKE_DIR "${Forge_BINARY_DIR}/cmake")
-configure_package_config_file(
-  "${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
-  "cmake/ForgeConfig.cmake"
-  INSTALL_DESTINATION "${Forge_BINARY_DIR}/cmake"
-  PATH_VARS INCLUDE_DIRS CMAKE_DIR
-  INSTALL_PREFIX "${Forge_BINARY_DIR}")
-
-#--------------------------------------------------------------------
-# Install examples
-#--------------------------------------------------------------------
 # install the examples irrespective of the FG_BUILD_EXAMPLES value
 # only the examples source files are installed, so the installation of these
 # source files does not depend on FG_BUILD_EXAMPLES
@@ -173,6 +128,48 @@ install(DIRECTORY examples/ #NOTE The slash at the end is important
     DESTINATION ${FG_INSTALL_EXAMPLE_DIR}
     COMPONENT examples)
 
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${Forge_BINARY_DIR}/ForgeConfigVersion.cmake"
+    COMPATIBILITY SameMajorVersion)
+
+
+# export install config file
+set(INCLUDE_DIRS include)
+set(CMAKE_DIR ${FG_INSTALL_CMAKE_DIR})
+configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
+    "cmake_install/ForgeConfig.cmake"
+    INSTALL_DESTINATION "${FG_INSTALL_CMAKE_DIR}"
+    PATH_VARS INCLUDE_DIRS CMAKE_DIR
+)
+install(FILES ${Forge_BINARY_DIR}/cmake_install/ForgeConfig.cmake
+    ${Forge_BINARY_DIR}/ForgeConfigVersion.cmake
+    DESTINATION ${FG_INSTALL_CMAKE_DIR}
+    COMPONENT cmake
+)
+install(EXPORT ForgeTargets
+    NAMESPACE Forge::
+    DESTINATION ${FG_INSTALL_CMAKE_DIR}
+    COMPONENT forge
+)
+
+
+# export build tree targets config file
+set(INCLUDE_DIRS "${Forge_SOURCE_DIR}/include" "${Forge_BINARY_DIR}/include")
+set(CMAKE_DIR "${Forge_BINARY_DIR}")
+configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
+    "ForgeConfig.cmake"
+    INSTALL_DESTINATION "${Forge_BINARY_DIR}"
+    PATH_VARS INCLUDE_DIRS CMAKE_DIR
+    INSTALL_PREFIX "${Forge_BINARY_DIR}"
+)
+export(EXPORT ForgeTargets
+    NAMESPACE Forge::
+    FILE ForgeTargets.cmake
+)
+
 include(ForgeCPackConfig)
 
 conditional_directory(FG_BUILD_DOCS docs)
@@ -181,4 +178,4 @@ conditional_directory(FG_BUILD_EXAMPLES examples)
 mark_as_advanced(
     pkgcfg_lib_FontConfigPkg_freetype
     pkgcfg_lib_FontConfigPkg_fontconfig
-    )
+)
