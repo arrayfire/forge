@@ -24,7 +24,7 @@ if(FG_ENABLE_HUNTER)
     mark_as_advanced(HUNTER_BUILD_SHARED_LIBS)
 endif()
 
-project(Forge VERSION 1.0.3 LANGUAGES C CXX)
+project(Forge VERSION 1.0.4 LANGUAGES C CXX)
 
 include(ForgeVersion)
 
