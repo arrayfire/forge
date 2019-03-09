@@ -110,6 +110,12 @@ if(UNIX)
   )
 endif(UNIX)
 
+if (WIN32)
+  # C4275: Warnings about using non-exported classes as base class of an
+  # exported class
+  target_compile_options(${BackendTarget} PUBLIC /wd4275)
+endif ()
+
 add_dependencies(${BackendTarget} ${glsl_shader_targets})
 
 source_group(include            REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/include/*)
