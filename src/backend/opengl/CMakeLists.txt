@@ -13,8 +13,7 @@ set_target_properties(${BackendTarget} PROPERTIES SOVERSION ${Forge_VERSION_MAJO
 
 if (WIN32)
     target_compile_definitions(${BackendTarget}
-        PUBLIC FGDLL
-        PRIVATE OS_WIN WIN32_MEAN_AND_LEAN)
+        PRIVATE FGDLL OS_WIN WIN32_MEAN_AND_LEAN)
 
     # C4068: Warnings about unknown pragmas
     # C4275: Warnings about using non-exported classes as base class of an

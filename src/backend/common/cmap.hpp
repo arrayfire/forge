@@ -18,9 +18,12 @@ namespace common
 #if defined(OS_WIN)
 #pragma warning( push )
 #pragma warning( disable : 4305)
-#else
+#elif defined(__GNUC__)
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-truncation"
+#pragma GCC diagnostic ignored "-Wconversion"
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wconversion"
 #endif
 
 /**
@@ -2945,8 +2948,10 @@ static const float cmap_viridis[] =
 
 #if defined(OS_WIN)
 #pragma warning( pop ) // re-enable truncation warning
-#else
+#elif defined(__GNUC__)
 #pragma GCC diagnostic pop
+#elif defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 }

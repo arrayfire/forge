@@ -181,6 +181,9 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #endif
 
 #define FORGE_OCL_CHECK(cl_status, message) \
@@ -246,6 +249,8 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#elif defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif
