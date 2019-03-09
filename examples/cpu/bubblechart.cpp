@@ -50,12 +50,12 @@ int main(void)
     std::default_random_engine e1(r());
     std::mt19937_64 gen(r());
 
-    std::uniform_int_distribution<int> uDist(20, 80);
+    std::uniform_real_distribution<float> nDist(0.0f, 1.0f);
     std::uniform_real_distribution<float> cDist(0.2f, 0.6f);
     std::uniform_real_distribution<float> fDist(0.4f, 0.6f);
 
     auto clr = std::bind(cDist, gen);
-    auto rnd = std::bind(uDist, e1);
+    auto rnd = std::bind(nDist, e1);
     auto alp = std::bind(fDist, gen);
 
     std::vector<float> colors(3*tanData.size());

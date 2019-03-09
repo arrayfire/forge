@@ -183,7 +183,7 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #elif defined(__clang__)
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-but-set-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #endif
 
 #define FORGE_OCL_CHECK(cl_status, message) \
