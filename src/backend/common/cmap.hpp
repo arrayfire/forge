@@ -14,6 +14,15 @@ namespace forge
 namespace common
 {
 
+// Surppress truncation warning for this file
+#if defined(OS_WIN)
+#pragma warning( push )
+#pragma warning( disable : 4305)
+#else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
+#endif
+
 /**
  * Color maps: heat, rainbow are pulled from the following resource:
  *
@@ -21,7 +30,7 @@ namespace common
  * */
 
 /* grayscale */
-float cmap_default[] =
+static const float cmap_default[] =
 {
         0.0000f,    0.0000f,    0.0000f,    1.0000f,
         0.0039f,    0.0039f,    0.0039f,    1.0000f,
@@ -316,7 +325,7 @@ float cmap_default[] =
  *      rgb = (rgb > 0.0) .* rgb;
  * ```
  * */
-float cmap_spectrum[] =
+static const float cmap_spectrum[] =
 {
     0.01127986   , 0             , 0.08038571f    , 1.0f ,
     0.01541133   , 4.283736e-43  , 0.0994883f     , 1.0f ,
@@ -576,7 +585,7 @@ float cmap_spectrum[] =
     2.389238e-05 , -0            , -0            , 1.0f ,
 };
 
-float cmap_rainbow[] =
+static const float cmap_rainbow[] =
 {
     1.000000f, 0.000000f, 0.164706f, 1.0,
     1.000000f, 0.000000f, 0.142745f, 1.0,
@@ -836,7 +845,7 @@ float cmap_rainbow[] =
     1.000000f, 0.000000f, 0.807843f, 1.0,
 };
 
-float cmap_red[] =
+static const float cmap_red[] =
 {
         1.0000000000f,      1.0000000000f,      1.0000000000f,      1.0000f,
         1.0000000000f,      1.0000000000f,      0.9921568627f,      1.0000f,
@@ -1095,7 +1104,7 @@ float cmap_red[] =
 };
 
 /*-- http://mycarta.wordpress.com/2013/03/06/perceptual-rainbow-palette-the-goodies/ */
-float cmap_mood[] =
+static const float cmap_mood[] =
 {
         0.5151f,    0.0482f,    0.6697f,    1.0000f,
         0.5159f,    0.0561f,    0.6785f,    1.0000f,
@@ -1355,7 +1364,7 @@ float cmap_mood[] =
         0.8000f,    0.9255f,    0.3529f,    1.0000f,
 };
 
-float cmap_heat[] =
+static const float cmap_heat[] =
 {
     0.000000f, 0.000000f, 0.000000f, 1.0f,
     0.003660f, 0.000000f, 0.000000f, 1.0f,
@@ -1615,7 +1624,7 @@ float cmap_heat[] =
     1.000000f, 0.984314f, 0.968627f, 1.0f,
 };
 
-float cmap_blue[] =
+static const float cmap_blue[] =
 {
     0.968627f, 0.984314f, 1.000000f, 1.0f,
     0.965552f, 0.982345f, 0.999016f, 1.0f,
@@ -1891,7 +1900,7 @@ float cmap_blue[] =
 /// work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 /// inferno  perceptually uniform shades of black-red-yellow
-float cmap_inferno[] =
+static const float cmap_inferno[] =
 {
     0.001462f, 0.000466f, 0.013866f, 1.0f,
     0.002267f, 0.001270f, 0.018570f, 1.0f,
@@ -2152,7 +2161,7 @@ float cmap_inferno[] =
 };
 
 /// magma    perceptually uniform shades of black-red-white
-float cmap_magma[] =
+static const float cmap_magma[] =
 {
     0.001462f, 0.000466f, 0.013866f, 1.0f,
     0.002258f, 0.001295f, 0.018331f, 1.0f,
@@ -2413,7 +2422,7 @@ float cmap_magma[] =
 };
 
 /// plasma   perceptually uniform shades of blue-red-yellow
-float cmap_plasma[] =
+static const float cmap_plasma[] =
 {
     0.050383f, 0.029803f, 0.527975f, 1.0f,
     0.063536f, 0.028426f, 0.533124f, 1.0f,
@@ -2674,7 +2683,7 @@ float cmap_plasma[] =
 };
 
 /// viridis  perceptually uniform shades of blue-green-yellow
-float cmap_viridis[] =
+static const float cmap_viridis[] =
 {
     0.267004f, 0.004874f, 0.329415f, 1.0f,
     0.268510f, 0.009605f, 0.335427f, 1.0f,
@@ -2933,6 +2942,12 @@ float cmap_viridis[] =
     0.983868f, 0.904867f, 0.136897f, 1.0f,
     0.993248f, 0.906157f, 0.143936f, 1.0f,
 };
+
+#if defined(OS_WIN)
+#pragma warning( pop ) // re-enable truncation warning
+#else
+#pragma GCC diagnostic pop
+#endif
 
 }
 }
