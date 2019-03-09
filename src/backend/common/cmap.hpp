@@ -14,11 +14,11 @@ namespace forge
 namespace common
 {
 
-// Surppress truncation warning for this file
+// Surppress implicit conversion warning for this file
 #if defined(OS_WIN)
 #pragma warning( push )
 #pragma warning( disable : 4305)
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
 #elif defined(__clang__)
@@ -2946,9 +2946,10 @@ static const float cmap_viridis[] =
     0.993248f, 0.906157f, 0.143936f, 1.0f,
 };
 
+// re-enable conversion warning
 #if defined(OS_WIN)
-#pragma warning( pop ) // re-enable truncation warning
-#elif defined(__GNUC__)
+#pragma warning( pop )
+#elif defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #elif defined(__clang__)
 #pragma clang diagnostic pop
