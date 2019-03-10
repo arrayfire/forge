@@ -178,14 +178,6 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
 
 #if defined(USE_FORGE_OPENCL_COPY_HELPERS)
 
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-#elif defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
-
 #define FORGE_OCL_CHECK(cl_status, message) \
     if(cl_status != CL_SUCCESS) \
     { \
@@ -197,14 +189,11 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
 static
 void createGLBuffer(GfxHandle** pOut, const unsigned pResourceId, const BufferType pTarget)
 {
-    GfxHandle* temp = (GfxHandle*)malloc(sizeof(GfxHandle));
-
-    temp->mTarget = pTarget;
-
+    GfxHandle* temp   = (GfxHandle*)malloc(sizeof(GfxHandle));
+    temp->mTarget     = pTarget;
     cl_int returnCode = CL_SUCCESS;
 
     temp->mId = clCreateFromGLBuffer(getContext(), CL_MEM_WRITE_ONLY, pResourceId, &returnCode);
-
     FORGE_OCL_CHECK(returnCode, "Failed in clCreateFromGLBuffer");
 
     *pOut = temp;
@@ -223,35 +212,22 @@ void copyToGLBuffer(GfxHandle* pGLDestination, ComputeResourceHandle  pSource, c
     // The user is expected to implement a function
     // `cl_command_queue getCommandQueue()`
     cl_command_queue queue = getCommandQueue();
-
     cl_event waitEvent;
-
     cl_mem src = (cl_mem)pSource;
     cl_mem dst = pGLDestination->mId;
 
     fg_finish();
-
     FORGE_OCL_CHECK(clEnqueueAcquireGLObjects(queue, 1, &dst, 0, NULL, &waitEvent),
                     "Failed in clEnqueueAcquireGLObjects");
-
     FORGE_OCL_CHECK(clWaitForEvents(1, &waitEvent),
                     "Failed in clWaitForEvents after clEnqueueAcquireGLObjects");
-
     FORGE_OCL_CHECK(clEnqueueCopyBuffer(queue, src, dst, 0, 0, pSize, 0, NULL, &waitEvent),
                     "Failed in clEnqueueCopyBuffer");
-
     FORGE_OCL_CHECK(clEnqueueReleaseGLObjects(queue, 1, &dst, 0, NULL, &waitEvent),
                     "Failed in clEnqueueReleaseGLObjects");
-
     FORGE_OCL_CHECK(clWaitForEvents(1, &waitEvent),
                     "Failed in clWaitForEvents after clEnqueueReleaseGLObjects");
 }
-
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#elif defined(__clang__)
-#pragma clang diagnostic pop
-#endif
 
 #endif
 
