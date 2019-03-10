@@ -14,6 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <cmath>
+#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -304,10 +305,9 @@ void getFontFilePaths(std::vector<std::string>& pFiles,
 
 std::string toString(const float pVal, const std::string pFormat)
 {
-    std::unique_ptr<char> label(new char[std::to_string(pVal).length()+1]);
-
-    sprintf(label.get(), pFormat.c_str(), pVal);
-
+    size_t len = std::to_string(pVal).length();
+    std::unique_ptr<char> label(new char[len +1]);
+    std::snprintf(label.get(), len, pFormat.c_str(), pVal);
     return std::string(label.get());
 }
 
