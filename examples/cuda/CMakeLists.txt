@@ -4,14 +4,6 @@ project(Forge-CUDA-Examples LANGUAGES CXX)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORCE_INLINES")
 
-if (${CMAKE_VERSION} VERSION_LESS "3.10.0")
-    INCLUDE_DIRECTORIES(
-          ${CUDA_INCLUDE_DIRS}
-          ${CMAKE_CURRENT_SOURCE_DIR})
-else()
-    enable_language(CUDA)
-endif ()
-
 macro(make_cuda_example target src)
     add_example(${target} ${src} cuda CXX11
         INCLUDE_DIRS
