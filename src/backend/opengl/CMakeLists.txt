@@ -13,8 +13,7 @@ set_target_properties(${BackendTarget} PROPERTIES SOVERSION ${Forge_VERSION_MAJO
 
 if (WIN32)
     target_compile_definitions(${BackendTarget}
-        PUBLIC FGDLL
-        PRIVATE OS_WIN WIN32_MEAN_AND_LEAN)
+        PRIVATE FGDLL OS_WIN WIN32_MEAN_AND_LEAN)
 
     # C4068: Warnings about unknown pragmas
     # C4275: Warnings about using non-exported classes as base class of an
@@ -110,6 +109,12 @@ if(UNIX)
       $<$<AND:$<C_COMPILER_ID:GNU>,$<BOOL:${FG_USE_STATIC_CPPFLAGS}>>:-static-libgcc>
   )
 endif(UNIX)
+
+if (WIN32)
+  # C4275: Warnings about using non-exported classes as base class of an
+  # exported class
+  target_compile_options(${BackendTarget} PUBLIC /wd4275)
+endif ()
 
 add_dependencies(${BackendTarget} ${glsl_shader_targets})
 

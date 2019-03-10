@@ -35,10 +35,16 @@ include(CMakeParseArguments)
 include(CMakeDependentOption)
 include(InternalUtils)
 
-option(FG_BUILD_CUDA_EXAMPLES "Turn off/on building cuda examples" ${CUDA_FOUND})
-option(FG_BUILD_OPENCL_EXAMPLES "Turn off/on building opencl examples" ${OpenCL_FOUND})
+cmake_dependent_option(FG_BUILD_OPENCL_EXAMPLES
+  "Build opencl examples" ON
+  "OpenCL_FOUND;FG_BUILD_EXAMPLES" OFF)
 
-cmake_dependent_option(FG_USE_SYSTEM_CL2HPP "Use system cl2.hpp header" OFF "OpenCL_FOUND" OFF)
+cmake_dependent_option(FG_BUILD_CUDA_EXAMPLES
+  "Build cuda examples" ON
+  "CUDA_FOUND;FG_BUILD_EXAMPLES" OFF)
+
+cmake_dependent_option(FG_USE_SYSTEM_CL2HPP
+  "Use system cl2.hpp header" OFF "OpenCL_FOUND" OFF)
 
 include_if_not(FG_USE_SYSTEM_CL2HPP build_cl2hpp)
 
@@ -58,8 +64,12 @@ function(add_example target_name source backend)
 
     string(TOLOWER ${backend} lowerCaseBackend)
 
-    if (${lowerCaseBackend} STREQUAL "cuda" AND ${CMAKE_VERSION} VERSION_LESS "3.10.0")
-        cuda_add_executable(${target} ${source})
+    if (${lowerCaseBackend} STREQUAL "cuda")
+        set(native_cc_flags
+		  "-Xcompiler /wd4275 -Xcompiler /bigobj -Xcompiler /EHsc")
+        cuda_add_executable(${target} ${source}
+		  OPTIONS "${native_cc_flags} -Xcudafe \"--diag_suppress=1388\""
+		)
     else ()
         add_executable(${target} ${source})
     endif ()

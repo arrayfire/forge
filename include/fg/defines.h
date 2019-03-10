@@ -22,12 +22,9 @@
         #define false 0
         #define true  1
     #endif
-
-    #define FG_STATIC_ static
 #else
     #define FGAPI   __attribute__((visibility("default")))
     #include <stdbool.h>
-    #define FG_STATIC_
 #endif
 
 #include <fg/version.h>

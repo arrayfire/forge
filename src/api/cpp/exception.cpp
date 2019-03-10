@@ -9,11 +9,13 @@
 
 #include <fg/exception.h>
 #include <err_common.hpp>
-#include <string>
-#include <iostream>
-#include <sstream>
+
 #include <algorithm>
 #include <cstring>
+#include <cstdio>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 using std::string;
 using std::stringstream;
@@ -27,7 +29,7 @@ void stringcopy(char* dest, const char* src, size_t len)
 #if defined(OS_WIN)
     strncpy_s(dest, forge::common::MAX_ERR_SIZE, src, len);
 #else
-    strncpy(dest, src, len);
+    std::strncpy(dest, src, len);
 #endif
 }
 
@@ -46,9 +48,10 @@ Error::Error(const char * const pMessage)
 Error::Error(const char * const pFileName, int pLine, ErrorCode pErrCode)
     : mErrCode(pErrCode)
 {
-    snprintf(mMessage, sizeof(mMessage) - 1,
-             "Forge Exception (%s:%d):\nIn %s:%d",
-             fg_err_to_string(pErrCode), (int)pErrCode, pFileName, pLine);
+    std::snprintf(mMessage, sizeof(mMessage) - 1,
+                  "Forge Exception (%s:%d):\nIn %s:%d",
+                  fg_err_to_string(pErrCode), (int)pErrCode,
+                  pFileName, pLine);
     mMessage[sizeof(mMessage)-1] = '\0';
 }
 
@@ -56,9 +59,10 @@ Error::Error(const char * const pMessage,
              const char * const pFileName, const int pLine, ErrorCode pErrCode)
     : mErrCode(pErrCode)
 {
-    snprintf(mMessage, sizeof(mMessage) - 1,
-             "Forge Exception (%s:%d):\n%s\nIn %s:%d",
-             fg_err_to_string(pErrCode), (int)pErrCode, pMessage, pFileName, pLine);
+    std::snprintf(mMessage, sizeof(mMessage) - 1,
+                  "Forge Exception (%s:%d):\n%s\nIn %s:%d",
+                  fg_err_to_string(pErrCode), (int)pErrCode,
+                  pMessage, pFileName, pLine);
     mMessage[sizeof(mMessage)-1] = '\0';
 }
 
@@ -66,9 +70,10 @@ Error::Error(const char * const pMessage, const char * const pFuncName,
              const char * const pFileName, const int pLine, ErrorCode pErrCode)
     : mErrCode(pErrCode)
 {
-    snprintf(mMessage, sizeof(mMessage) - 1,
-             "Forge Exception (%s:%d):\n%sIn function %s\nIn file %s:%d",
-             fg_err_to_string(pErrCode), (int)pErrCode, pMessage, pFuncName, pFileName, pLine);
+    std::snprintf(mMessage, sizeof(mMessage) - 1,
+                  "Forge Exception (%s:%d):\n%sIn function %s\nIn file %s:%d",
+                  fg_err_to_string(pErrCode), (int)pErrCode,
+                  pMessage, pFuncName, pFileName, pLine);
     mMessage[sizeof(mMessage)-1] = '\0';
 }
 
