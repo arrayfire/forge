@@ -65,8 +65,11 @@ function(add_example target_name source backend)
     string(TOLOWER ${backend} lowerCaseBackend)
 
     if (${lowerCaseBackend} STREQUAL "cuda")
-        set(native_cc_flags
-		  "-Xcompiler /wd4275 -Xcompiler /bigobj -Xcompiler /EHsc")
+        set(native_cc_flags "")
+        if (WIN32)
+            set(native_cc_flags
+                "-Xcompiler /wd4275 -Xcompiler /bigobj -Xcompiler /EHsc")
+        endif ()
         cuda_add_executable(${target} ${source}
 		  OPTIONS "${native_cc_flags} -Xcudafe \"--diag_suppress=1388\""
 		)
