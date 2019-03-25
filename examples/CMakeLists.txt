@@ -43,16 +43,14 @@ cmake_dependent_option(FG_BUILD_CUDA_EXAMPLES
   "Build cuda examples" ON
   "CUDA_FOUND;FG_BUILD_EXAMPLES" OFF)
 
-cmake_dependent_option(FG_USE_SYSTEM_CL2HPP
-  "Use system cl2.hpp header" OFF "OpenCL_FOUND" OFF)
-
-include_if_not(FG_USE_SYSTEM_CL2HPP build_cl2hpp)
-
-mark_as_advanced(FG_BUILD_CUDA_EXAMPLES FG_BUILD_OPENCL_EXAMPLES)
+include(build_cl2hpp)
+mark_as_advanced(
+    FG_BUILD_CUDA_EXAMPLES
+    FG_BUILD_OPENCL_EXAMPLES
+    )
 
 fg_deprecate(BUILD_EXAMPLES_CUDA FG_BUILD_CUDA_EXAMPLES)
 fg_deprecate(BUILD_EXAMPLES_OPENCL FG_BUILD_OPENCL_EXAMPLES)
-fg_deprecate(USE_SYSTEM_CL2HPP FG_USE_SYSTEM_CL2HPP)
 
 function(add_example target_name source backend)
     set(options CXX11)
