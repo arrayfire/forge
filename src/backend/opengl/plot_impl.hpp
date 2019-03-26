@@ -26,41 +26,39 @@ namespace opengl
 
 class plot_impl : public AbstractRenderable {
     protected:
-        GLuint     mDimension;
-        GLfloat    mMarkerSize;
-        /* plot points characteristics */
-        GLuint     mNumPoints;
+        GLuint            mDimension;
+        GLfloat           mMarkerSize;
+        GLuint            mNumPoints;
         forge::dtype      mDataType;
-        GLenum     mGLType;
+        GLenum            mGLType;
         forge::MarkerType mMarkerType;
         forge::PlotType   mPlotType;
-        bool           mIsPVROn;
+        bool              mIsPVROn;
         /* OpenGL Objects */
-        ShaderProgram  mPlotProgram;
-        ShaderProgram  mMarkerProgram;
-        GLuint    mRBO;
+        ShaderProgram mPlotProgram;
+        ShaderProgram mMarkerProgram;
+        GLuint        mRBO;
         size_t        mRBOSize;
         /* shader variable index locations */
-        GLuint    mPlotMatIndex;
-        GLuint    mPlotPVCOnIndex;
-        GLuint    mPlotPVAOnIndex;
-        GLuint    mPlotUColorIndex;
-        GLuint    mPlotRangeIndex;
-        GLuint    mPlotPointIndex;
-        GLuint    mPlotColorIndex;
-        GLuint    mPlotAlphaIndex;
-
-        GLuint    mMarkerPVCOnIndex;
-        GLuint    mMarkerPVAOnIndex;
-        GLuint    mMarkerPVROnIndex;
-        GLuint    mMarkerTypeIndex;
-        GLuint    mMarkerColIndex;
-        GLuint    mMarkerMatIndex;
-        GLuint    mMarkerPSizeIndex;
-        GLuint    mMarkerPointIndex;
-        GLuint    mMarkerColorIndex;
-        GLuint    mMarkerAlphaIndex;
-        GLuint    mMarkerRadiiIndex;
+        GLuint mPlotMatIndex;
+        GLuint mPlotPVCOnIndex;
+        GLuint mPlotPVAOnIndex;
+        GLuint mPlotUColorIndex;
+        GLuint mPlotRangeIndex;
+        GLuint mPlotPointIndex;
+        GLuint mPlotColorIndex;
+        GLuint mPlotAlphaIndex;
+        GLuint mMarkerPVCOnIndex;
+        GLuint mMarkerPVAOnIndex;
+        GLuint mMarkerPVROnIndex;
+        GLuint mMarkerTypeIndex;
+        GLuint mMarkerColIndex;
+        GLuint mMarkerMatIndex;
+        GLuint mMarkerPSizeIndex;
+        GLuint mMarkerPointIndex;
+        GLuint mMarkerColorIndex;
+        GLuint mMarkerAlphaIndex;
+        GLuint mMarkerRadiiIndex;
 
         std::map<int, GLuint> mVAOMap;
 
@@ -69,35 +67,32 @@ class plot_impl : public AbstractRenderable {
         void bindResources(const int pWindowId);
         void unbindResources() const;
 
-        virtual glm::mat4 computeTransformMat(const glm::mat4 pView, const glm::mat4 pOrient);
-
-        virtual void bindDimSpecificUniforms(); // has to be called only after shaders are bound
+        // cal only after shaders are bound
+        virtual void bindDimSpecificUniforms();
 
     public:
         plot_impl(const uint pNumPoints, const forge::dtype pDataType,
-                  const forge::PlotType pPlotType, const forge::MarkerType pMarkerType,
+                  const forge::PlotType pPlotType,
+                  const forge::MarkerType pMarkerType,
                   const int pDimension=3);
         ~plot_impl();
-
         void setMarkerSize(const float pMarkerSize);
-
         uint markers();
         size_t markersSizes() const;
-
-        virtual void render(const int pWindowId,
-                            const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4 &pView, const glm::mat4 &pOrient);
+        void render(const int pWindowId, const int pX, const int pY,
+                    const int pVPW, const int pVPH,
+                    const glm::mat4 &pView, const glm::mat4 &pModel);
 };
 
 class plot2d_impl : public plot_impl {
     protected:
-        glm::mat4 computeTransformMat(const glm::mat4 pView, const glm::mat4 pOrient) override;
-
-        void bindDimSpecificUniforms() override; // has to be called only after shaders are bound
+        // cal only after shaders are bound
+        void bindDimSpecificUniforms() override;
 
     public:
         plot2d_impl(const uint pNumPoints, const forge::dtype pDataType,
-                    const forge::PlotType pPlotType, const forge::MarkerType pMarkerType)
+                    const forge::PlotType pPlotType,
+                    const forge::MarkerType pMarkerType)
             : plot_impl(pNumPoints, pDataType, pPlotType, pMarkerType, 2) {}
 };
 

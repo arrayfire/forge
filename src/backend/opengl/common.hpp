@@ -210,17 +210,17 @@ class AbstractRenderable {
             mVBOSize(0), mCBOSize(0), mABOSize(0),
             mIsPVCOn(0), mIsPVAOn(0)
         {
-            mColor[0] = 0;
-            mColor[1] = 0;
-            mColor[2] = 0;
-            mColor[3] = 0;
+            mColor[0] = 0.0f;
+            mColor[1] = 0.0f;
+            mColor[2] = 0.0f;
+            mColor[3] = 1.0f;
 
-            mRange[0] = 0;
-            mRange[1] = 0;
-            mRange[2] = 0;
-            mRange[3] = 0;
-            mRange[4] = 0;
-            mRange[5] = 0;
+            mRange[0] = -1.0f;
+            mRange[1] =  1.0f;
+            mRange[2] = -1.0f;
+            mRange[3] =  1.0f;
+            mRange[4] = -1.0f;
+            mRange[5] =  1.0f;
         }
 
     public:
@@ -275,10 +275,35 @@ class AbstractRenderable {
          */
         void setRanges(const float pMinX, const float pMaxX,
                        const float pMinY, const float pMaxY,
-                       const float pMinZ, const float pMaxZ) {
+                       const float pMinZ=-1.0f, const float pMaxZ=1.0f) {
             mRange[0] = pMinX; mRange[1] = pMaxX;
             mRange[2] = pMinY; mRange[3] = pMaxY;
             mRange[4] = pMinZ; mRange[5] = pMaxZ;
+        }
+
+        /* Compute transformation matrix for moving
+         * object coordinates into normalized model space
+         * i.e. after applying this matrix, all vertices
+         * fall inside the cube centered at origin of side length 2
+         */
+        virtual glm::mat4 getModelTransform() const {
+            const float xRange = std::ceil(mRange[1]) - std::floor(mRange[0]);
+            const float yRange = std::ceil(mRange[3]) - std::floor(mRange[2]);
+            const float zRange = std::ceil(mRange[5]) - std::floor(mRange[4]);
+            const float xScl   = std::abs(xRange) < 1.0e-3 ? 1.0f : 2.0f/xRange;
+            const float yScl   = std::abs(yRange) < 1.0e-3 ? 1.0f : 2.0f/yRange;
+            const float zScl   = std::abs(zRange) < 1.0e-3 ? 1.0f : 2.0f/zRange;
+            const float xOff   = (-1.0f - mRange[0] * xScl);
+            const float yOff   = (-1.0f - mRange[2] * yScl);
+            const float zOff   = (-1.0f - mRange[4] * zScl);
+
+            // For 2D transformations, zScl should be 1.0f
+            // and zOff be 0.0f. The inheriting class to make
+            // sure to set these range properly for such cases.
+            return glm::mat4(glm::vec4(xScl, 0.0f, 0.0f, 0.0f),
+                             glm::vec4(0.0f, yScl, 0.0f, 0.0f),
+                             glm::vec4(0.0f, 0.0f, zScl, 0.0f),
+                             glm::vec4(xOff, yOff, zOff, 1.0f));
         }
 
         /* virtual function to set colormap, a derviced class might
@@ -303,7 +328,7 @@ class AbstractRenderable {
          */
         virtual void render(const int pWindowId,
                             const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4 &pView, const glm::mat4 &pOrient) = 0;
+                            const glm::mat4 &pView, const glm::mat4 &pModel) = 0;
 };
 
 }

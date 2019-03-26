@@ -38,9 +38,9 @@ namespace forge
 namespace opengl
 {
 
-typedef std::vector<std::string>::const_iterator StringIter;
+using StringIter = std::vector<std::string>::const_iterator;
 
-static const int CHART2D_FONT_SIZE = 12;
+constexpr static const int CHART2D_FONT_SIZE = 12;
 static const std::regex PRINTF_FIXED_FLOAT_RE("%[0-9]*.[0-9]*f");
 
 const std::shared_ptr<forge::opengl::font_impl>& getChartFont()
@@ -95,7 +95,9 @@ void AbstractChart::renderTickLabels(
         int idx = int(it - pTexts.begin());
         glm::vec4 p = glm::vec4(mTickTextX[idx+pCoordsOffset],
                                 mTickTextY[idx+pCoordsOffset],
-                                (pUseZoffset ? mTickTextZ[idx+pCoordsOffset] : 0), 1);
+                                (pUseZoffset ? mTickTextZ[idx+pCoordsOffset]
+                                             : 0),
+                                1);
         glm::vec4 res = pTransformation * p;
 
         /* convert text position from [-1,1] range to
@@ -138,7 +140,7 @@ void AbstractChart::renderTickLabels(
 
 AbstractChart::AbstractChart(const float pLeftMargin, const float pRightMargin,
                              const float pTopMargin, const float pBottomMargin)
-    : mTickCount(9), mTickSize(10.0f),
+    : mTickCount(9), mTickSize(0.011f),
       mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
       mXLabelFormat("%4.1f"), mXMax(0), mXMin(0),
@@ -237,7 +239,8 @@ float AbstractChart::ymin() const { return mYMin; }
 float AbstractChart::zmax() const { return mZMax; }
 float AbstractChart::zmin() const { return mZMin; }
 
-void AbstractChart::addRenderable(const std::shared_ptr<AbstractRenderable> pRenderable)
+void AbstractChart::addRenderable(
+        const std::shared_ptr<AbstractRenderable> pRenderable)
 {
     mRenderables.emplace_back(pRenderable);
 }
@@ -259,7 +262,8 @@ void chart2d_impl::bindResources(const int pWindowId)
         glBindVertexArray(vao);
         glEnableVertexAttribArray(mBorderAttribPointIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mDecorVBO);
-        glVertexAttribPointer(mBorderAttribPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(
+                mBorderAttribPointIndex, 2, GL_FLOAT, GL_FALSE, 0, 0);
         glBindVertexArray(0);
         /* store the vertex array object corresponding to
          * the window instance in the map */
@@ -274,7 +278,8 @@ void chart2d_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-void chart2d_impl::pushTicktextCoords(const float pX, const float pY, const float pZ)
+void chart2d_impl::pushTicktextCoords(
+        const float pX, const float pY, const float pZ)
 {
     mTickTextX.push_back(pX);
     mTickTextY.push_back(pY);
@@ -453,51 +458,57 @@ chart2d_impl::chart2d_impl()
 
 void chart2d_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4& pView, const glm::mat4& pOrient)
+                          const glm::mat4& pView, const glm::mat4& pModel)
 {
     CheckGL("Begin chart2d_impl::renderChart");
 
-    float lgap     = getLeftMargin(pVPW) + getTickSize()/2.0f;
-    float bgap     = getBottomMargin(pVPH) + getTickSize()/2.0f;
+    const float halfTkSz  = getTickSize()/2.0f;
+    const float lgap      = getLeftMargin(pVPW) + halfTkSz;
+    const float bgap      = getBottomMargin(pVPH) + halfTkSz;
+    const float w         = pVPW - (lgap + getRightMargin(pVPW));
+    const float h         = pVPH - (bgap + getTopMargin(pVPH));
+    const float offset_x  = lgap / pVPW;
+    const float offset_y  = bgap / pVPH;
+    const float scale_x   = w / pVPW;
+    const float scale_y   = h / pVPH;
 
-    float offset_x = (lgap-getRightMargin(pVPW)) / pVPW;
-    float offset_y = (bgap-getTopMargin(pVPH)) / pVPH;
+    glm::vec3 offsets(offset_x, offset_y, 0);
+    glm::vec3 scales(scale_x, scale_y, 1.0f);
 
-    float w        = pVPW - (lgap + getRightMargin(pVPW));
-    float h        = pVPH - (bgap + getTopMargin(pVPH));
-    float scale_x  = w / pVPW;
-    float scale_y  = h / pVPH;
+    auto sMat = glm::scale(glm::mat4(1.0f), scales);
+    auto tMat = glm::translate(glm::mat4(1.0f), offsets);
 
-    glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
-                                                glm::vec3(scale_x, scale_y, 1)),
-                                     glm::vec3(offset_x, offset_y, 0));
+    auto gridMat = tMat * sMat;
+    auto viewMat = pView * gridMat;
 
     /* Draw grid */
     chart2d_impl::bindResources(pWindowId);
     mBorderProgram.bind();
-    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(gridMat));
     glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
     glDrawArrays(GL_LINES, 4+2*mTickCount, 8*mTickCount-16);
     mBorderProgram.unbind();
     chart2d_impl::unbindResources();
 
     glEnable(GL_SCISSOR_TEST);
-    glScissor(GLint(pX+lgap), GLint(pY+bgap), GLsizei(w), GLsizei(h));
+    glScissor(GLint(std::round((lgap+halfTkSz) * (1.0f/scale_x))),
+              GLint(std::round((bgap+halfTkSz) * (1.0f/scale_y))),
+              GLsizei(w), GLsizei(h));
 
     /* render all renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, pView * trans, pOrient);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, viewMat, pModel);
     }
 
     glDisable(GL_SCISSOR_TEST);
 
     chart2d_impl::bindResources(pWindowId);
 
-    mBorderProgram.bind();
-    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-    glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     /* Draw borders */
+    mBorderProgram.bind();
+    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(gridMat));
+    glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     glDrawArrays(GL_LINE_LOOP, 0, 4);
     mBorderProgram.unbind();
 
@@ -507,7 +518,7 @@ void chart2d_impl::render(const int pWindowId,
     mSpriteProgram.bind();
 
     glUniform4fv(mSpriteUniformTickcolorIndex, 1, BLACK);
-    glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(gridMat));
     /* Draw tick marks on y axis */
     glUniform1i(mSpriteUniformTickaxisIndex, 1);
     glDrawArrays(GL_POINTS, 4, mTickCount);
@@ -521,8 +532,8 @@ void chart2d_impl::render(const int pWindowId,
 
     const int trgtFntSize = calcTrgtFntSize(w, h);
 
-    renderTickLabels(pWindowId, int(w), int(h), mYText, trgtFntSize, trans, 0, false);
-    renderTickLabels(pWindowId, int(w), int(h), mXText, trgtFntSize, trans, mTickCount, false);
+    renderTickLabels(pWindowId, int(w), int(h), mYText, trgtFntSize, gridMat, 0, false);
+    renderTickLabels(pWindowId, int(w), int(h), mXText, trgtFntSize, gridMat, mTickCount, false);
 
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
@@ -532,7 +543,7 @@ void chart2d_impl::render(const int pWindowId,
     /* render chart axes titles */
 
     if (!mYTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 res = gridMat * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
 
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
@@ -544,7 +555,7 @@ void chart2d_impl::render(const int pWindowId,
     }
 
     if (!mXTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+        glm::vec4 res = gridMat * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
 
         pos[0] = w*(res.x+1.0f)/2.0f;
         pos[1] = h*(res.y+1.0f)/2.0f;
@@ -564,7 +575,7 @@ void chart2d_impl::render(const int pWindowId,
         renderable->getColor(lcol[0], lcol[1], lcol[2], lcol[3]);
 
         float cpos[2];
-        glm::vec4 res = trans * glm::vec4(pos[0], pos[1], 0.0f, 1.0f);
+        glm::vec4 res = gridMat * glm::vec4(pos[0], pos[1], 0.0f, 1.0f);
         cpos[0] = res.x * w;
         cpos[1] = res.y * h;
         fonter->render(pWindowId, cpos, lcol, renderable->legend().c_str(), trgtFntSize);
@@ -832,39 +843,40 @@ chart3d_impl::chart3d_impl()
 
 void chart3d_impl::render(const int pWindowId,
                           const int pX, const int pY, const int pVPW, const int pVPH,
-                          const glm::mat4& pView, const glm::mat4& pOrient)
+                          const glm::mat4& pView, const glm::mat4& pModel)
 {
-    static const glm::mat4 VIEW = glm::lookAt(glm::vec3(-1.0f,  0.5f,  1.0f),
-                                              glm::vec3( 1.0f, -1.0f, -1.0f),
-                                              glm::vec3( 0.0f,  1.0f,  0.0f));
+    static const float Ninty = glm::radians(90.0f);
+    static const glm::vec3 xAxis(1, 0, 0);
+    static const glm::vec3 yAxis(0, 1, 0);
+    static const glm::mat4 VIEW = glm::lookAt(glm::vec3( 1.0f,  0.5f,  1.0f),
+                                              glm::vec3( 0.0f,  0.0f,  0.0f), yAxis);
     static const glm::mat4 PROJECTION = glm::ortho(-1.64f, 1.64f, -1.64f, 1.64f, -0.001f, 1000.f);
-    static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
-                                   glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
+    static const glm::mat4 AboutX90(glm::rotate(glm::mat4(1.f), Ninty, xAxis));
+    static const glm::mat4 AboutY90(glm::rotate(glm::mat4(1.f), Ninty, yAxis));
+    static const glm::mat4 MODEL = AboutY90 * AboutX90; //Transform the scene into view
     static const glm::mat4 PV = PROJECTION * VIEW;
-    static const glm::mat4 PVM = PV * MODEL;
 
     CheckGL("Being chart3d_impl::renderChart");
 
-    float lgap = getLeftMargin(pVPW) + getTickSize()/2.0f;
-    float bgap = getBottomMargin(pVPH) + getTickSize()/2.0f;
-    float w    = pVPW - (lgap + getRightMargin(pVPW));
-    float h    = pVPH - (bgap + getTopMargin(pVPH));
+    float lgap      = getLeftMargin(pVPW) + getTickSize()/2.0f;
+    float bgap      = getBottomMargin(pVPH) + getTickSize()/2.0f;
+    float w         = pVPW - (lgap + getRightMargin(pVPW));
+    float h         = pVPH - (bgap + getTopMargin(pVPH));
+    float offset_x  = getLeftMargin(pVPW) / pVPW;
+    float offset_y  = getBottomMargin(pVPH) / pVPH;
+    float scale_x   = w / pVPW;
+    float scale_y   = h / pVPH;
 
-    float offset_x = getLeftMargin(pVPW) / pVPW;
-    float offset_y = getBottomMargin(pVPH) / pVPH;
-    float scale_x  = w / pVPW;
-    float scale_y  = h / pVPH;
+    glm::mat4 sMat = glm::scale(glm::mat4(1), glm::vec3(scale_x, scale_y, 1));
+    glm::mat4 tMat = glm::translate(glm::mat4(1), glm::vec3(offset_x, offset_y, 0));
 
-    glm::mat4 trans = glm::translate(glm::scale(glm::mat4(1),
-                                                glm::vec3(scale_x, scale_y, 1)),
-                                     glm::vec3(offset_x, offset_y, 0));
-
-    trans = trans*PVM;
+    auto gridMat = PV * MODEL * tMat * sMat;
+    auto viewMat = PV * pView * MODEL * tMat * sMat;
 
     /* draw grid */
     chart3d_impl::bindResources(pWindowId);
     mBorderProgram.bind();
-    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(gridMat));
     glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
     glDrawArrays(GL_LINES, 6+3*mTickCount, 3*(8*mTickCount-16));
     mBorderProgram.unbind();
@@ -873,12 +885,10 @@ void chart3d_impl::render(const int pWindowId,
     glEnable(GL_SCISSOR_TEST);
     glScissor(GLint(pX + lgap), GLint(pY + bgap), GLsizei(w), GLsizei(h));
 
-    glm::mat4 renderableMat = PROJECTION * pView * VIEW;
-
     /* render all the renderables */
     for (auto renderable : mRenderables) {
         renderable->setRanges(mXMin, mXMax, mYMin, mYMax, mZMin, mZMax);
-        renderable->render(pWindowId, pX, pY, pVPW, pVPH, renderableMat, pOrient);
+        renderable->render(pWindowId, pX, pY, pVPW, pVPH, viewMat, pModel);
     }
 
     glDisable(GL_SCISSOR_TEST);
@@ -887,7 +897,7 @@ void chart3d_impl::render(const int pWindowId,
     chart3d_impl::bindResources(pWindowId);
 
     mBorderProgram.bind();
-    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(gridMat));
     glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
     glDrawArrays(GL_LINES, 0, 6);
     mBorderProgram.unbind();
@@ -899,7 +909,7 @@ void chart3d_impl::render(const int pWindowId,
     mSpriteProgram.bind();
 
     glUniform4fv(mSpriteUniformTickcolorIndex, 1, BLACK);
-    glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(gridMat));
     /* Draw tick marks on z axis */
     glUniform1i(mSpriteUniformTickaxisIndex, 1);
     glDrawArrays(GL_POINTS, 6, mTickCount);
@@ -918,9 +928,9 @@ void chart3d_impl::render(const int pWindowId,
 
     const int trgtFntSize = calcTrgtFntSize(w, h);
 
-    renderTickLabels(pWindowId, uint(w), uint(h), mZText, trgtFntSize, trans, 0);
-    renderTickLabels(pWindowId, uint(w), uint(h), mYText, trgtFntSize, trans, mTickCount);
-    renderTickLabels(pWindowId, uint(w), uint(h), mXText, trgtFntSize, trans, 2*mTickCount);
+    renderTickLabels(pWindowId, uint(w), uint(h), mZText, trgtFntSize, gridMat, 0);
+    renderTickLabels(pWindowId, uint(w), uint(h), mYText, trgtFntSize, gridMat, mTickCount);
+    renderTickLabels(pWindowId, uint(w), uint(h), mXText, trgtFntSize, gridMat, 2*mTickCount);
 
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));
@@ -929,7 +939,7 @@ void chart3d_impl::render(const int pWindowId,
 
     /* render chart axes titles */
     if (!mZTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
+        glm::vec4 res = gridMat * glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
 
         pos[0] = float(trgtFntSize);
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
@@ -938,7 +948,7 @@ void chart3d_impl::render(const int pWindowId,
     }
 
     if (!mYTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(1.0f, 0.0f, -1.0f, 1.0f);
+        glm::vec4 res = gridMat * glm::vec4(1.0f, 0.0f, -1.0f, 1.0f);
 
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;
@@ -948,7 +958,7 @@ void chart3d_impl::render(const int pWindowId,
         fonter->render(pWindowId, pos, BLACK, mYTitle.c_str(), trgtFntSize);
     }
     if (!mXTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, -1.0f, 1.0f);
+        glm::vec4 res = gridMat * glm::vec4(0.0f, -1.0f, -1.0f, 1.0f);
 
         pos[0] = w*(res.x/res.w+1.0f)/2.0f;
         pos[1] = h*(res.y/res.w+1.0f)/2.0f;

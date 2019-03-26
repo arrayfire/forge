@@ -18,10 +18,8 @@
 
 using namespace std;
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 void plot_impl::bindResources(const int pWindowId)
 {
@@ -34,7 +32,8 @@ void plot_impl::bindResources(const int pWindowId)
         // attach vertices
         glEnableVertexAttribArray(mPlotPointIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(mPlotPointIndex, mDimension, mGLType, GL_FALSE, 0, 0);
+        glVertexAttribPointer(
+                mPlotPointIndex, mDimension, mGLType, GL_FALSE, 0, 0);
         // attach colors
         glEnableVertexAttribArray(mPlotColorIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mCBO);
@@ -61,46 +60,26 @@ void plot_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-glm::mat4 plot_impl::computeTransformMat(const glm::mat4 pView, const glm::mat4 pOrient)
-{
-    static const glm::mat4 MODEL = glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0,1,0)) *
-                                   glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1,0,0));
-
-    float xRange = mRange[1] - mRange[0];
-    float yRange = mRange[3] - mRange[2];
-    float zRange = mRange[5] - mRange[4];
-
-    float xDataScale = std::abs(xRange) < 1.0e-3 ? 1.0f : 2/(xRange);
-    float yDataScale = std::abs(yRange) < 1.0e-3 ? 1.0f : 2/(yRange);
-    float zDataScale = std::abs(zRange) < 1.0e-3 ? 1.0f : 2/(zRange);
-
-    float xDataOffset = (-mRange[0] * xDataScale);
-    float yDataOffset = (-mRange[2] * yDataScale);
-    float zDataOffset = (-mRange[4] * zDataScale);
-
-    glm::vec3 scaleVector(xDataScale, yDataScale, zDataScale);
-
-    glm::vec3 shiftVector = glm::vec3(-1 + xDataOffset, -1 + yDataOffset, -1 + zDataOffset);
-
-    return pView * pOrient * MODEL * glm::scale(glm::translate(IDENTITY, shiftVector), scaleVector);
-}
-
 void plot_impl::bindDimSpecificUniforms()
 {
     glUniform2fv(mPlotRangeIndex, 3, mRange);
 }
 
 plot_impl::plot_impl(const uint pNumPoints, const forge::dtype pDataType,
-                     const forge::PlotType pPlotType, const forge::MarkerType pMarkerType, const int pD)
-    : mDimension(pD), mMarkerSize(12), mNumPoints(pNumPoints), mDataType(pDataType),
-    mGLType(dtype2gl(mDataType)), mMarkerType(pMarkerType), mPlotType(pPlotType), mIsPVROn(false),
+                     const forge::PlotType pPlotType,
+                     const forge::MarkerType pMarkerType, const int pD)
+    : mDimension(pD), mMarkerSize(12), mNumPoints(pNumPoints),
+    mDataType(pDataType), mGLType(dtype2gl(mDataType)),
+    mMarkerType(pMarkerType), mPlotType(pPlotType), mIsPVROn(false),
     mPlotProgram(pD==2 ? glsl::marker2d_vs.c_str() : glsl::plot3_vs.c_str(),
                  pD==2 ? glsl::histogram_fs.c_str(): glsl::plot3_fs.c_str()),
-    mMarkerProgram(pD==2 ? glsl::marker2d_vs.c_str() : glsl::plot3_vs.c_str(), glsl::marker_fs.c_str()),
+    mMarkerProgram(pD==2 ? glsl::marker2d_vs.c_str() : glsl::plot3_vs.c_str(),
+                   glsl::marker_fs.c_str()),
     mRBO(-1), mPlotMatIndex(-1), mPlotPVCOnIndex(-1), mPlotPVAOnIndex(-1),
-    mPlotUColorIndex(-1), mPlotRangeIndex(-1), mPlotPointIndex(-1), mPlotColorIndex(-1),
-    mPlotAlphaIndex(-1), mMarkerPVCOnIndex(-1), mMarkerPVAOnIndex(-1), mMarkerTypeIndex(-1),
-    mMarkerColIndex(-1), mMarkerMatIndex(-1), mMarkerPointIndex(-1), mMarkerColorIndex(-1),
+    mPlotUColorIndex(-1), mPlotRangeIndex(-1), mPlotPointIndex(-1),
+    mPlotColorIndex(-1), mPlotAlphaIndex(-1), mMarkerPVCOnIndex(-1),
+    mMarkerPVAOnIndex(-1), mMarkerTypeIndex(-1), mMarkerColIndex(-1),
+    mMarkerMatIndex(-1), mMarkerPointIndex(-1), mMarkerColorIndex(-1),
     mMarkerAlphaIndex(-1), mMarkerRadiiIndex(-1)
 {
     CheckGL("Begin plot_impl::plot_impl");
@@ -119,13 +98,12 @@ plot_impl::plot_impl(const uint pNumPoints, const forge::dtype pDataType,
     mABOSize = mNumPoints;
     mRBOSize = mNumPoints;
 
-    mPlotMatIndex    = mPlotProgram.getUniformLocation("transform");
-    mPlotPVCOnIndex  = mPlotProgram.getUniformLocation("isPVCOn");
-    mPlotPVAOnIndex  = mPlotProgram.getUniformLocation("isPVAOn");
-    mPlotPointIndex  = mPlotProgram.getAttributeLocation ("point");
-    mPlotColorIndex  = mPlotProgram.getAttributeLocation ("color");
-    mPlotAlphaIndex  = mPlotProgram.getAttributeLocation ("alpha");
-
+    mPlotMatIndex     = mPlotProgram.getUniformLocation("transform");
+    mPlotPVCOnIndex   = mPlotProgram.getUniformLocation("isPVCOn");
+    mPlotPVAOnIndex   = mPlotProgram.getUniformLocation("isPVAOn");
+    mPlotPointIndex   = mPlotProgram.getAttributeLocation("point");
+    mPlotColorIndex   = mPlotProgram.getAttributeLocation("color");
+    mPlotAlphaIndex   = mPlotProgram.getAttributeLocation("alpha");
     mMarkerMatIndex   = mMarkerProgram.getUniformLocation("transform");
     mMarkerPVCOnIndex = mMarkerProgram.getUniformLocation("isPVCOn");
     mMarkerPVAOnIndex = mMarkerProgram.getUniformLocation("isPVAOn");
@@ -133,10 +111,10 @@ plot_impl::plot_impl(const uint pNumPoints, const forge::dtype pDataType,
     mMarkerTypeIndex  = mMarkerProgram.getUniformLocation("marker_type");
     mMarkerColIndex   = mMarkerProgram.getUniformLocation("marker_color");
     mMarkerPSizeIndex = mMarkerProgram.getUniformLocation("psize");
-    mMarkerPointIndex = mMarkerProgram.getAttributeLocation ("point");
-    mMarkerColorIndex = mMarkerProgram.getAttributeLocation ("color");
-    mMarkerAlphaIndex = mMarkerProgram.getAttributeLocation ("alpha");
-    mMarkerRadiiIndex = mMarkerProgram.getAttributeLocation ("pointsize");
+    mMarkerPointIndex = mMarkerProgram.getAttributeLocation("point");
+    mMarkerColorIndex = mMarkerProgram.getAttributeLocation("color");
+    mMarkerAlphaIndex = mMarkerProgram.getAttributeLocation("alpha");
+    mMarkerRadiiIndex = mMarkerProgram.getAttributeLocation("pointsize");
 
 #define PLOT_CREATE_BUFFERS(type)   \
         mVBO = createBuffer<type>(GL_ARRAY_BUFFER, mVBOSize, NULL, GL_DYNAMIC_DRAW);    \
@@ -165,9 +143,9 @@ plot_impl::~plot_impl()
 {
     for (auto it = mVAOMap.begin(); it!=mVAOMap.end(); ++it) {
         GLuint vao = it->second;
-        glDeleteVertexArrays(1, &vao);
+        if (vao) { glDeleteVertexArrays(1, &vao); }
     }
-    glDeleteBuffers(1, &mRBO);
+    if (mRBO) { glDeleteBuffers(1, &mRBO); }
 }
 
 void plot_impl::setMarkerSize(const float pMarkerSize)
@@ -186,9 +164,9 @@ size_t plot_impl::markersSizes() const
     return mRBOSize;
 }
 
-void plot_impl::render(const int pWindowId,
-                       const int pX, const int pY, const int pVPW, const int pVPH,
-                       const glm::mat4& pView, const glm::mat4& pOrient)
+void plot_impl::render(const int pWindowId, const int pX, const int pY,
+                       const int pVPW, const int pVPH,
+                       const glm::mat4& pView, const glm::mat4& pModel)
 {
     CheckGL("Begin plot_impl::render");
     if (mIsPVAOn) {
@@ -197,13 +175,16 @@ void plot_impl::render(const int pWindowId,
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    glm::mat4 viewModelMatrix = this->computeTransformMat(pView, pOrient);
+    auto modelNormMat = getModelTransform();
+
+    glm::mat4 transform = pView * pModel * modelNormMat;
 
     if (mPlotType == FG_PLOT_LINE) {
         mPlotProgram.bind();
 
         this->bindDimSpecificUniforms();
-        glUniformMatrix4fv(mPlotMatIndex, 1, GL_FALSE, glm::value_ptr(viewModelMatrix));
+        glUniformMatrix4fv(mPlotMatIndex, 1, GL_FALSE,
+                           glm::value_ptr(transform));
         glUniform1i(mPlotPVCOnIndex, mIsPVCOn);
         glUniform1i(mPlotPVAOnIndex, mIsPVAOn);
 
@@ -218,7 +199,8 @@ void plot_impl::render(const int pWindowId,
         glEnable(GL_PROGRAM_POINT_SIZE);
         mMarkerProgram.bind();
 
-        glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE, glm::value_ptr(viewModelMatrix));
+        glUniformMatrix4fv(mMarkerMatIndex, 1, GL_FALSE,
+                           glm::value_ptr(transform));
         glUniform1i(mMarkerPVCOnIndex, mIsPVCOn);
         glUniform1i(mMarkerPVAOnIndex, mIsPVAOn);
         glUniform1i(mMarkerPVROnIndex, mIsPVROn);
@@ -239,23 +221,6 @@ void plot_impl::render(const int pWindowId,
         glDepthMask(GL_TRUE);
     }
     CheckGL("End plot_impl::render");
-}
-
-glm::mat4 plot2d_impl::computeTransformMat(const glm::mat4 pView, const glm::mat4 pOrient)
-{
-    float xRange = mRange[1] - mRange[0];
-    float yRange = mRange[3] - mRange[2];
-
-    float xDataScale = std::abs(xRange) < 1.0e-3 ? 1.0f : 2/(xRange);
-    float yDataScale = std::abs(yRange) < 1.0e-3 ? 1.0f : 2/(yRange);
-
-    float xDataOffset = (-mRange[0] * xDataScale);
-    float yDataOffset = (-mRange[2] * yDataScale);
-
-    glm::vec3 scaleVector(xDataScale, yDataScale, 1);
-    glm::vec3 shiftVector = glm::vec3(-1 + xDataOffset, -1 + yDataOffset, 0);
-
-    return pView * glm::scale(glm::translate(IDENTITY, shiftVector), scaleVector);
 }
 
 void plot2d_impl::bindDimSpecificUniforms()

@@ -16,10 +16,8 @@
 #include <memory>
 #include <map>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 class surface_impl : public AbstractRenderable {
     protected:
@@ -57,17 +55,18 @@ class surface_impl : public AbstractRenderable {
          * for rendering resources */
         void bindResources(const int pWindowId);
         void unbindResources() const;
-        glm::mat4  computeTransformMat(const glm::mat4& pView, const glm::mat4& pOrient);
-        virtual void renderGraph(const int pWindowId, const glm::mat4& transform);
+        virtual void renderGraph(const int pWindowId,
+                                 const glm::mat4& transform);
 
     public:
         surface_impl(const uint pNumXpoints, const uint pNumYpoints,
-                     const forge::dtype pDataType, const forge::MarkerType pMarkerType);
+                     const forge::dtype pDataType,
+                     const forge::MarkerType pMarkerType);
         ~surface_impl();
 
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,
-                    const glm::mat4 &pView, const glm::mat4 &pOrient);
+                    const glm::mat4 &pView, const glm::mat4 &pModel);
 
         inline void usePerVertexColors(const bool pFlag=true) {
             mIsPVCOn = pFlag;
@@ -80,11 +79,12 @@ class surface_impl : public AbstractRenderable {
 
 class scatter3_impl : public surface_impl {
    private:
-        void renderGraph(const int pWindowId, const glm::mat4& transform);
-
+        void renderGraph(const int pWindowId,
+                         const glm::mat4& transform) override;
    public:
        scatter3_impl(const uint pNumXPoints, const uint pNumYPoints,
-                     const forge::dtype pDataType, const forge::MarkerType pMarkerType=FG_MARKER_NONE)
+                     const forge::dtype pDataType,
+                     const forge::MarkerType pMarkerType=FG_MARKER_NONE)
            : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType) {}
 };
 

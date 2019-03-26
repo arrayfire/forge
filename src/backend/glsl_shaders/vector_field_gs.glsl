@@ -4,8 +4,7 @@ layout(triangle_strip, max_vertices = 32) out;
 
 const float PiBy2 = 1.57079632679;
 
-uniform mat4 arrowScaleMat;
-uniform mat4 viewMat;
+uniform float ArrowSize;
 
 in VS_OUT {
     vec4 color;
@@ -14,26 +13,29 @@ in VS_OUT {
 
 out vec4 pervcol;
 
-mat4 rotationMatrix(vec3 axis, float angle)
+// Quaternion based rotation matrix
+mat3 rotate(vec3 axis, float angle)
 {
-    axis = normalize(axis);
-    float s = sin(angle);
-    float c = cos(angle);
-    float oc = 1.0 - c;
+    float t  = angle;
+    float s  = sin(t);
+    float a  = cos(t);
+    float b  = s * axis.x;
+    float c  = s * axis.y;
+    float d  = s * axis.z;
+    float as = a * a;
+    float bs = b * b;
+    float cs = c * c;
+    float ds = d * d;
+    float bc = b * c;
+    float ad = a * d;
+    float bd = b * d;
+    float ac = a * c;
+    float cd = c * d;
+    float ab = a * b;
 
-    return mat4(oc * axis.x * axis.x + c,
-                oc * axis.x * axis.y - axis.z * s,
-                oc * axis.z * axis.x + axis.y * s,
-                0.0,
-                oc * axis.x * axis.y + axis.z * s,
-                oc * axis.y * axis.y + c,
-                oc * axis.y * axis.z - axis.x * s,
-                0.0,
-                oc * axis.z * axis.x - axis.y * s,
-                oc * axis.y * axis.z + axis.x * s,
-                oc * axis.z * axis.z + c,
-                0.0,
-                0.0, 0.0, 0.0, 1.0);
+    return mat3(as+bs-cs-ds, 2*bc-2*ad, 2*bd+2*ac,
+                2*bc+2*ad, as-bs+cs-ds, 2*cd-2*ab,
+                2*bd-2*ac, 2*cd+2*ab, as-bs-cs+ds);
 }
 
 void emitQuad(vec4 a, vec4 b, vec4 c, vec4 d)
@@ -47,32 +49,33 @@ void emitQuad(vec4 a, vec4 b, vec4 c, vec4 d)
 
 void main()
 {
-    vec4 pos    = gl_in[0].gl_Position;
-    vec3 dir    = normalize(gs_in[0].dir);
+    mat3 smat = mat3(ArrowSize, 0, 0, 0, ArrowSize, 0, 0, 0, ArrowSize);
+    vec3 pos  = gl_in[0].gl_Position.xyz;
+    vec3 dir  = normalize(gs_in[0].dir);
 
-    vec3 originalAxis = vec3(0, 1, 0);
-    vec3 planeNormal = cross(originalAxis, dir);
-    float angle = acos(dot(originalAxis, dir));
-    mat4 rot = rotationMatrix(planeNormal, angle);
+    vec3 ArrowUp = vec3(0, 1, 0);
+    vec3 planeNr  = cross(ArrowUp, dir);
 
-    mat4 trans  = arrowScaleMat * rot;
+    float angle= acos(dot(ArrowUp, dir));
+    mat3 rotor = rotate(planeNr, angle);
+    mat3 trans = smat * rotor;
 
-    vec4 t  = viewMat * (pos + trans*vec4( 0.000,  0.300,  0.000, 1.000));
+    vec4 t  = vec4(pos + trans * vec3( 0.000,  0.300,  0.000), 1.0);
 
-    vec4 a  = viewMat * (pos + trans*vec4(-0.167, -1.000, -0.167, 1.000));
-    vec4 b  = viewMat * (pos + trans*vec4( 0.167, -1.000, -0.167, 1.000));
-    vec4 c  = viewMat * (pos + trans*vec4(-0.167, -1.000,  0.167, 1.000));
-    vec4 d  = viewMat * (pos + trans*vec4( 0.167, -1.000,  0.167, 1.000));
+    vec4 a  = vec4(pos + trans * vec3(-0.167, -1.000, -0.167), 1.0);
+    vec4 b  = vec4(pos + trans * vec3( 0.167, -1.000, -0.167), 1.0);
+    vec4 c  = vec4(pos + trans * vec3(-0.167, -1.000,  0.167), 1.0);
+    vec4 d  = vec4(pos + trans * vec3( 0.167, -1.000,  0.167), 1.0);
 
-    vec4 i0 = viewMat * (pos + trans*vec4(-0.167, -0.333, -0.167, 1.000));
-    vec4 i1 = viewMat * (pos + trans*vec4( 0.167, -0.333, -0.167, 1.000));
-    vec4 i2 = viewMat * (pos + trans*vec4(-0.167, -0.333,  0.167, 1.000));
-    vec4 i3 = viewMat * (pos + trans*vec4( 0.167, -0.333,  0.167, 1.000));
+    vec4 i0 = vec4(pos + trans * vec3(-0.167, -0.333, -0.167), 1.0);
+    vec4 i1 = vec4(pos + trans * vec3( 0.167, -0.333, -0.167), 1.0);
+    vec4 i2 = vec4(pos + trans * vec3(-0.167, -0.333,  0.167), 1.0);
+    vec4 i3 = vec4(pos + trans * vec3( 0.167, -0.333,  0.167), 1.0);
 
-    vec4 e  = viewMat * (pos + trans*vec4(-0.333, -0.333, -0.333, 1.000));
-    vec4 f  = viewMat * (pos + trans*vec4( 0.333, -0.333, -0.333, 1.000));
-    vec4 g  = viewMat * (pos + trans*vec4(-0.333, -0.333,  0.333, 1.000));
-    vec4 h  = viewMat * (pos + trans*vec4( 0.333, -0.333,  0.333, 1.000));
+    vec4 e  = vec4(pos + trans * vec3(-0.333, -0.333, -0.333), 1.0);
+    vec4 f  = vec4(pos + trans * vec3( 0.333, -0.333, -0.333), 1.0);
+    vec4 g  = vec4(pos + trans * vec3(-0.333, -0.333,  0.333), 1.0);
+    vec4 h  = vec4(pos + trans * vec3( 0.333, -0.333,  0.333), 1.0);
 
     pervcol = gs_in[0].color;
 

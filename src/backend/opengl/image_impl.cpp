@@ -20,10 +20,8 @@
 #include <map>
 #include <mutex>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 void image_impl::bindResources(int pWindowId) const
 {
@@ -36,7 +34,8 @@ void image_impl::unbindResources() const
 }
 
 image_impl::image_impl(const uint pWidth, const uint pHeight,
-                       const forge::ChannelFormat pFormat, const forge::dtype pDataType)
+                       const forge::ChannelFormat pFormat,
+                       const forge::dtype pDataType)
     : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat),
       mGLformat(ctype2gl(mFormat)), mGLiformat(ictype2gl(mFormat)),
       mDataType(pDataType), mGLType(dtype2gl(mDataType)), mAlpha(1.0f),
@@ -62,7 +61,8 @@ image_impl::image_impl(const uint pWidth, const uint pHeight,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, mGLiformat, mWidth, mHeight, 0, mGLformat, mGLType, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, mGLiformat, mWidth, mHeight,
+                 0, mGLformat, mGLType, NULL);
 
     CheckGL("Before PBO Initialization");
     glGenBuffers(1, &mPBO);
@@ -129,9 +129,9 @@ uint image_impl::pbo() const { return mPBO; }
 
 uint image_impl::size() const { return (uint)mPBOsize; }
 
-void image_impl::render(const int pWindowId,
-                        const int pX, const int pY, const int pVPW, const int pVPH,
-                        const glm::mat4 &pView, const glm::mat4 &pOrient)
+void image_impl::render(const int pWindowId, const int pX, const int pY,
+                        const int pVPW, const int pVPH,
+                        const glm::mat4 &pView, const glm::mat4 &pModel)
 {
     CheckGL("Begin image_impl::render");
 
@@ -169,7 +169,8 @@ void image_impl::render(const int pWindowId,
     // bind PBO to load data into texture
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, mGLformat, mGLType, 0);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight,
+                    mGLformat, mGLType, 0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     glUniformMatrix4fv(mMatIndex, 1, GL_FALSE, glm::value_ptr(strans));

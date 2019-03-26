@@ -19,15 +19,12 @@
 #include <memory>
 #include <map>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 class vector_field_impl : public AbstractRenderable {
     protected:
         GLuint    mDimension;
-        /* plot points characteristics */
         GLuint    mNumPoints;
         forge::dtype mDataType;
         GLenum    mGLType;
@@ -42,9 +39,8 @@ class vector_field_impl : public AbstractRenderable {
         GLuint    mFieldAlphaIndex;
         GLuint    mFieldDirectionIndex;
         /* geometry shader */
-        GLuint    mFieldPVMatIndex;
-        GLuint    mFieldModelMatIndex;
-        GLuint    mFieldAScaleMatIndex;
+        GLuint    mFieldTrMatIndex;
+        GLuint    mFieldArrowSizeIndex;
         /* fragment shader */
         GLuint    mFieldPVCOnIndex;
         GLuint    mFieldPVAOnIndex;
@@ -57,8 +53,6 @@ class vector_field_impl : public AbstractRenderable {
         void bindResources(const int pWindowId);
         void unbindResources() const;
 
-        virtual glm::mat4 computeModelMatrix(const glm::mat4& pOrient);
-
     public:
         vector_field_impl(const uint pNumPoints, const forge::dtype pDataType,
                           const int pDimension=3);
@@ -66,15 +60,12 @@ class vector_field_impl : public AbstractRenderable {
 
         GLuint directions();
         size_t directionsSize() const;
-
-        virtual void render(const int pWindowId,
-                            const int pX, const int pY, const int pVPW, const int pVPH,
-                            const glm::mat4 &pView, const glm::mat4 &pOrient);
+        void render(const int pWindowId, const int pX, const int pY,
+                    const int pVPW, const int pVPH, const glm::mat4 &pView,
+                    const glm::mat4 &pModel);
 };
 
 class vector_field2d_impl : public vector_field_impl {
-    protected:
-        glm::mat4 computeModelMatrix(const glm::mat4& pOrient) override;
     public:
         vector_field2d_impl(const uint pNumPoints, const forge::dtype pDataType)
             : vector_field_impl(pNumPoints, pDataType, 2) {}

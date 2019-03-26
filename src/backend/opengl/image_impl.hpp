@@ -52,10 +52,12 @@ class image_impl : public AbstractRenderable {
 
     public:
         image_impl(const uint pWidth, const uint pHeight,
-                   const forge::ChannelFormat pFormat, const forge::dtype pDataType);
+                   const forge::ChannelFormat pFormat,
+                   const forge::dtype pDataType);
         ~image_impl();
 
-        void setColorMapUBOParams(const GLuint pUBO, const GLuint pSize);
+        void setColorMapUBOParams(const GLuint pUBO,
+                                  const GLuint pSize) override;
         void setAlpha(const float pAlpha);
         void keepAspectRatio(const bool pKeep=true);
 
@@ -66,9 +68,9 @@ class image_impl : public AbstractRenderable {
         uint pbo() const;
         uint size() const;
 
-        void render(const int pWindowId,
-                    const int pX, const int pY, const int pVPW, const int pVPH,
-                    const glm::mat4 &pView, const glm::mat4 &pOrient);
+        void render(const int pWindowId, const int pX, const int pY,
+                    const int pVPW, const int pVPH,
+                    const glm::mat4 &pView, const glm::mat4 &pModel);
 };
 
 }

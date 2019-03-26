@@ -12,6 +12,7 @@
 #include <common.hpp>
 #include <glm/glm.hpp>
 
+#include <cmath>
 #include <map>
 #include <memory>
 #include <vector>
@@ -33,7 +34,7 @@ class AbstractChart : public AbstractRenderable {
         std::vector<std::string> mYText;
         std::vector<std::string> mZText;
         int     mTickCount;  /* should be an odd number always */
-        float   mTickSize;
+        float   mTickSize;   /* % of width of the */
         /* margin variables represent the % of current dimensions
          * and not the exact units of length */
         float mLeftMargin;
@@ -86,19 +87,19 @@ class AbstractChart : public AbstractRenderable {
         }
 
         inline float getLeftMargin(int pWidth) const {
-            return pWidth*mLeftMargin;
+            return std::round(pWidth*mLeftMargin);
         }
 
         inline float getRightMargin(int pWidth) const {
-            return pWidth*mRightMargin;
+            return std::round(pWidth*mRightMargin);
         }
 
         inline float getBottomMargin(int pHeight) const {
-            return pHeight*mBottomMargin;
+            return std::round(pHeight*mBottomMargin);
         }
 
         inline float getTopMargin(int pHeight) const {
-            return pHeight*mTopMargin;
+            return std::round(pHeight*mTopMargin);
         }
 
         inline float getTickSize() const {
@@ -129,7 +130,7 @@ class AbstractChart : public AbstractRenderable {
 
         void setAxesLimits(const float pXmin, const float pXmax,
                            const float pYmin, const float pYmax,
-                           const float pZmin, const float pZmax);
+                           const float pZmin=-1.0f, const float pZmax=1.0f);
 
         void setAxesLabelFormat(const std::string& pXFormat,
                                 const std::string& pYFormat,
