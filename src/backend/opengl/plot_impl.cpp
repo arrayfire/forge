@@ -7,6 +7,11 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common/err_handling.hpp>
+#include <cmath>
+#include <gl_helpers.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <plot_impl.hpp>
 #include <shader_headers/marker2d_vs.hpp>
 #include <shader_headers/marker_fs.hpp>
@@ -14,14 +19,12 @@
 #include <shader_headers/plot3_vs.hpp>
 #include <shader_headers/plot3_fs.hpp>
 
-#include <cmath>
-
+using namespace forge::common;
+using namespace glm;
 using namespace std;
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 void plot_impl::bindResources(const int pWindowId)
 {
@@ -34,7 +37,8 @@ void plot_impl::bindResources(const int pWindowId)
         // attach vertices
         glEnableVertexAttribArray(mPlotPointIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(mPlotPointIndex, mDimension, mGLType, GL_FALSE, 0, 0);
+        glVertexAttribPointer(mPlotPointIndex, mDimension, dtype2gl(mDataType),
+                              GL_FALSE, 0, 0);
         // attach colors
         glEnableVertexAttribArray(mPlotColorIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mCBO);
@@ -90,17 +94,19 @@ void plot_impl::bindDimSpecificUniforms()
     glUniform2fv(mPlotRangeIndex, 3, mRange);
 }
 
-plot_impl::plot_impl(const uint pNumPoints, const forge::dtype pDataType,
+plot_impl::plot_impl(const uint32_t pNumPoints, const forge::dtype pDataType,
                      const forge::PlotType pPlotType, const forge::MarkerType pMarkerType, const int pD)
     : mDimension(pD), mMarkerSize(12), mNumPoints(pNumPoints), mDataType(pDataType),
-    mGLType(dtype2gl(mDataType)), mMarkerType(pMarkerType), mPlotType(pPlotType), mIsPVROn(false),
+    mMarkerType(pMarkerType), mPlotType(pPlotType), mIsPVROn(false),
     mPlotProgram(pD==2 ? glsl::marker2d_vs.c_str() : glsl::plot3_vs.c_str(),
                  pD==2 ? glsl::histogram_fs.c_str(): glsl::plot3_fs.c_str()),
-    mMarkerProgram(pD==2 ? glsl::marker2d_vs.c_str() : glsl::plot3_vs.c_str(), glsl::marker_fs.c_str()),
+    mMarkerProgram(pD==2 ? glsl::marker2d_vs.c_str()
+                         : glsl::plot3_vs.c_str(), glsl::marker_fs.c_str()),
     mRBO(-1), mPlotMatIndex(-1), mPlotPVCOnIndex(-1), mPlotPVAOnIndex(-1),
-    mPlotUColorIndex(-1), mPlotRangeIndex(-1), mPlotPointIndex(-1), mPlotColorIndex(-1),
-    mPlotAlphaIndex(-1), mMarkerPVCOnIndex(-1), mMarkerPVAOnIndex(-1), mMarkerTypeIndex(-1),
-    mMarkerColIndex(-1), mMarkerMatIndex(-1), mMarkerPointIndex(-1), mMarkerColorIndex(-1),
+    mPlotUColorIndex(-1), mPlotRangeIndex(-1), mPlotPointIndex(-1),
+    mPlotColorIndex(-1), mPlotAlphaIndex(-1), mMarkerPVCOnIndex(-1),
+    mMarkerPVAOnIndex(-1), mMarkerTypeIndex(-1), mMarkerColIndex(-1),
+    mMarkerMatIndex(-1), mMarkerPointIndex(-1), mMarkerColorIndex(-1),
     mMarkerAlphaIndex(-1), mMarkerRadiiIndex(-1)
 {
     CheckGL("Begin plot_impl::plot_impl");
@@ -148,12 +154,12 @@ plot_impl::plot_impl(const uint pNumPoints, const forge::dtype pDataType,
         mABOSize *= sizeof(float);  \
         mRBOSize *= sizeof(float);
 
-        switch(mGLType) {
+        switch(dtype2gl(mDataType)) {
             case GL_FLOAT          : PLOT_CREATE_BUFFERS(float) ; break;
             case GL_INT            : PLOT_CREATE_BUFFERS(int)   ; break;
-            case GL_UNSIGNED_INT   : PLOT_CREATE_BUFFERS(uint)  ; break;
+            case GL_UNSIGNED_INT   : PLOT_CREATE_BUFFERS(uint32_t)  ; break;
             case GL_SHORT          : PLOT_CREATE_BUFFERS(short) ; break;
-            case GL_UNSIGNED_SHORT : PLOT_CREATE_BUFFERS(ushort); break;
+            case GL_UNSIGNED_SHORT : PLOT_CREATE_BUFFERS(uint16_t); break;
             case GL_UNSIGNED_BYTE  : PLOT_CREATE_BUFFERS(float) ; break;
             default: TYPE_ERROR(1, mDataType);
         }
@@ -175,7 +181,7 @@ void plot_impl::setMarkerSize(const float pMarkerSize)
     mMarkerSize = pMarkerSize;
 }
 
-GLuint plot_impl::markers()
+uint32_t plot_impl::markers()
 {
     mIsPVROn = true;
     return mRBO;

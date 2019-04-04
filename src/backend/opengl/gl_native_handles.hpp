@@ -9,10 +9,8 @@
 
 #pragma once
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 using ContextHandle = long long;
 using DisplayHandle = long long;

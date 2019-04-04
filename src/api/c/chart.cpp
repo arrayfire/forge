@@ -16,12 +16,13 @@
 #include <fg/surface.h>
 #include <fg/window.h>
 
-#include <handle.hpp>
-#include <chart.hpp>
-#include <chart_renderables.hpp>
-#include <font.hpp>
-#include <image.hpp>
-#include <window.hpp>
+#include <common/chart.hpp>
+#include <common/chart_renderables.hpp>
+#include <common/err_handling.hpp>
+#include <common/font.hpp>
+#include <common/handle.hpp>
+#include <common/image.hpp>
+#include <common/window.hpp>
 
 using namespace forge;
 using namespace forge::common;

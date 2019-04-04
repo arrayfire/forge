@@ -9,49 +9,45 @@
 
 #pragma once
 
-#include <common.hpp>
-
-#include <glm/glm.hpp>
-
-#include <memory>
+#include <abstract_renderable.hpp>
+#include <cstdint>
 #include <map>
+#include <shader_program.hpp>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 class surface_impl : public AbstractRenderable {
     protected:
         /* plot points characteristics */
-        GLuint    mNumXPoints;
-        GLuint    mNumYPoints;
-        GLenum    mDataType;
+        uint32_t    mNumXPoints;
+        uint32_t    mNumYPoints;
+        forge::dtype      mDataType;
         forge::MarkerType mMarkerType;
         /* OpenGL Objects */
-        GLuint    mIBO;
-        size_t        mIBOSize;
+        uint32_t    mIBO;
+        size_t  mIBOSize;
         ShaderProgram mMarkerProgram;
         ShaderProgram mSurfProgram;
         /* shared variable index locations */
-        GLuint    mMarkerMatIndex;
-        GLuint    mMarkerPointIndex;
-        GLuint    mMarkerColorIndex;
-        GLuint    mMarkerAlphaIndex;
-        GLuint    mMarkerPVCIndex;
-        GLuint    mMarkerPVAIndex;
-        GLuint    mMarkerTypeIndex;
-        GLuint    mMarkerColIndex;
+        uint32_t    mMarkerMatIndex;
+        uint32_t    mMarkerPointIndex;
+        uint32_t    mMarkerColorIndex;
+        uint32_t    mMarkerAlphaIndex;
+        uint32_t    mMarkerPVCIndex;
+        uint32_t    mMarkerPVAIndex;
+        uint32_t    mMarkerTypeIndex;
+        uint32_t    mMarkerColIndex;
 
-        GLuint    mSurfMatIndex;
-        GLuint    mSurfRangeIndex;
-        GLuint    mSurfPointIndex;
-        GLuint    mSurfColorIndex;
-        GLuint    mSurfAlphaIndex;
-        GLuint    mSurfPVCIndex;
-        GLuint    mSurfPVAIndex;
+        uint32_t    mSurfMatIndex;
+        uint32_t    mSurfRangeIndex;
+        uint32_t    mSurfPointIndex;
+        uint32_t    mSurfColorIndex;
+        uint32_t    mSurfAlphaIndex;
+        uint32_t    mSurfPVCIndex;
+        uint32_t    mSurfPVAIndex;
 
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, uint32_t> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
@@ -61,7 +57,7 @@ class surface_impl : public AbstractRenderable {
         virtual void renderGraph(const int pWindowId, const glm::mat4& transform);
 
     public:
-        surface_impl(const uint pNumXpoints, const uint pNumYpoints,
+        surface_impl(const uint32_t pNumXpoints, const uint32_t pNumYpoints,
                      const forge::dtype pDataType, const forge::MarkerType pMarkerType);
         ~surface_impl();
 
@@ -83,7 +79,7 @@ class scatter3_impl : public surface_impl {
         void renderGraph(const int pWindowId, const glm::mat4& transform);
 
    public:
-       scatter3_impl(const uint pNumXPoints, const uint pNumYPoints,
+       scatter3_impl(const uint32_t pNumXPoints, const uint32_t pNumYPoints,
                      const forge::dtype pDataType, const forge::MarkerType pMarkerType=FG_MARKER_NONE)
            : surface_impl(pNumXPoints, pNumYPoints, pDataType, pMarkerType) {}
 };

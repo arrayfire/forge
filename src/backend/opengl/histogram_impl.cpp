@@ -7,23 +7,19 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <common.hpp>
+#include <common/err_handling.hpp>
+#include <cmath>
 #include <histogram_impl.hpp>
+#include <gl_helpers.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <shader_headers/histogram_vs.hpp>
 #include <shader_headers/histogram_fs.hpp>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <cmath>
-
 using namespace std;
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 void histogram_impl::bindResources(const int pWindowId)
 {
@@ -41,7 +37,7 @@ void histogram_impl::bindResources(const int pWindowId)
         // attach histogram frequencies
         glEnableVertexAttribArray(mFreqIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(mFreqIndex, 1, mGLType, GL_FALSE, 0, 0);
+        glVertexAttribPointer(mFreqIndex, 1, dtype2gl(mDataType), GL_FALSE, 0, 0);
         glVertexAttribDivisor(mFreqIndex, 1);
         // attach histogram bar colors
         glEnableVertexAttribArray(mColorIndex);
@@ -68,8 +64,8 @@ void histogram_impl::unbindResources() const
     glBindVertexArray(0);
 }
 
-histogram_impl::histogram_impl(const uint pNBins, const forge::dtype pDataType)
- :  mDataType(pDataType), mGLType(dtype2gl(mDataType)), mNBins(pNBins),
+histogram_impl::histogram_impl(const uint32_t pNBins, const forge::dtype pDataType)
+ :  mDataType(pDataType), mNBins(pNBins),
     mProgram(glsl::histogram_vs.c_str(), glsl::histogram_fs.c_str()),
     mYMaxIndex(-1), mNBinsIndex(-1), mMatIndex(-1), mPointIndex(-1),
     mFreqIndex(-1), mColorIndex(-1), mAlphaIndex(-1), mPVCIndex(-1), mPVAIndex(-1),
@@ -102,12 +98,12 @@ histogram_impl::histogram_impl(const uint pNBins, const forge::dtype pDataType)
     mCBOSize *= sizeof(float);  \
     mABOSize *= sizeof(float);
 
-    switch(mGLType) {
+    switch(dtype2gl(mDataType)) {
         case GL_FLOAT          : HIST_CREATE_BUFFERS(float) ; break;
         case GL_INT            : HIST_CREATE_BUFFERS(int)   ; break;
-        case GL_UNSIGNED_INT   : HIST_CREATE_BUFFERS(uint)  ; break;
+        case GL_UNSIGNED_INT   : HIST_CREATE_BUFFERS(uint32_t)  ; break;
         case GL_SHORT          : HIST_CREATE_BUFFERS(short) ; break;
-        case GL_UNSIGNED_SHORT : HIST_CREATE_BUFFERS(ushort); break;
+        case GL_UNSIGNED_SHORT : HIST_CREATE_BUFFERS(uint16_t); break;
         case GL_UNSIGNED_BYTE  : HIST_CREATE_BUFFERS(float) ; break;
         default: TYPE_ERROR(1, mDataType);
     }

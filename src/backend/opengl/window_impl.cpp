@@ -10,17 +10,16 @@
 // Parts of this code sourced from SnopyDogy
 // https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
 
-#include <common.hpp>
+#include <algorithm>
+#include <common/err_handling.hpp>
+#include <gl_helpers.hpp>
+#include <mutex>
 #include <window_impl.hpp>
 
-#include <algorithm>
-#include <memory>
-#include <mutex>
-
 using namespace forge;
+using namespace forge::common;
 
-namespace forge
-{
+namespace forge {
 
 #ifdef USE_FREEIMAGE
 #include <FreeImage.h>
@@ -359,10 +358,10 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
         FG_ERROR("Supports only bmp and png as of now", FG_ERR_FREEIMAGE_SAVE_FAILED);
     }
 
-    uint w = mWidget->mWidth;
-    uint h = mWidget->mHeight;
-    uint c = 4;
-    uint d = c * 8;
+    uint32_t w = mWidget->mWidth;
+    uint32_t h = mWidget->mHeight;
+    uint32_t c = 4;
+    uint32_t d = c * 8;
 
     FIBITMAP* bmp = FreeImage_Allocate(w, h, d);
     if (!bmp) {
@@ -371,8 +370,8 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
 
     FI_BitmapResource bmpUnloader(bmp);
 
-    uint pitch = FreeImage_GetPitch(bmp);
-    uchar* dst = FreeImage_GetBits(bmp);
+    uint32_t pitch = FreeImage_GetPitch(bmp);
+    unsigned char* dst = FreeImage_GetBits(bmp);
 
     /* as glReadPixels was called using PBO earlier, hopefully
      * it was async call(which it should be unless vendor driver
@@ -382,14 +381,14 @@ void window_impl::saveFrameBuffer(const char* pFullPath)
     glReadBuffer(GL_FRONT);
     glReadPixels(0, 0, mWidget->mWidth, mWidget->mHeight,
                  GL_RGBA, GL_UNSIGNED_BYTE, pbuf.data());
-    uint i = 0;
+    uint32_t i = 0;
 
-    for (uint y = 0; y < h; ++y) {
-        for (uint x = 0; x < w; ++x) {
-            *(dst + x * c + FI_RGBA_RED  ) = (uchar) pbuf[4*i+0]; // r
-            *(dst + x * c + FI_RGBA_GREEN) = (uchar) pbuf[4*i+1]; // g
-            *(dst + x * c + FI_RGBA_BLUE ) = (uchar) pbuf[4*i+2]; // b
-            *(dst + x * c + FI_RGBA_ALPHA) = (uchar) pbuf[4*i+3]; // a
+    for (uint32_t y = 0; y < h; ++y) {
+        for (uint32_t x = 0; x < w; ++x) {
+            *(dst + x * c + FI_RGBA_RED  ) = (unsigned char) pbuf[4*i+0]; // r
+            *(dst + x * c + FI_RGBA_GREEN) = (unsigned char) pbuf[4*i+1]; // g
+            *(dst + x * c + FI_RGBA_BLUE ) = (unsigned char) pbuf[4*i+2]; // b
+            *(dst + x * c + FI_RGBA_ALPHA) = (unsigned char) pbuf[4*i+3]; // a
             ++i;
         }
         dst += pitch;

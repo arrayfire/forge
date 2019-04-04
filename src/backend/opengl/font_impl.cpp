@@ -7,18 +7,17 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <common.hpp>
+#include <algorithm>
+#include <cmath>
+#include <common/err_handling.hpp>
+#include <common/util.hpp>
+#include <cstring>
 #include <font_impl.hpp>
+#include <gl_helpers.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <shader_headers/font_vs.hpp>
 #include <shader_headers/font_fs.hpp>
-
-#include <cmath>
-#include <cstring>
 #include <sstream>
-#include <algorithm>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -54,10 +53,8 @@ static const struct {
 
 /* freetype library types */
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 const float MIN_FONT_SIZE = 8.0f;
 const float MAX_FONT_SIZE = 24.0f;
@@ -265,7 +262,7 @@ font_impl::~font_impl()
     mAtlas.reset();
 }
 
-void font_impl::setOthro2D(int pWidth, int pHeight)
+void font_impl::setOthro2D(size_t pWidth, size_t pHeight)
 {
     mOrthoW  = pWidth;
     mOrthoH  = pHeight;
@@ -300,7 +297,7 @@ void font_impl::loadFont(const char* const pFile)
     /* push each glyphs vertex and texture data into VBO */
     std::vector<float> vdata;
 
-    uint index = 0;
+    uint32_t index = 0;
 
     for (size_t f=0; f<mGlyphLists.size(); ++f)
     {
@@ -381,7 +378,7 @@ void font_impl::loadSystemFont(const char* const pName)
     std::vector<std::string> fontFiles;
     std::vector<std::string> matchedFontFiles;
 
-    getFontFilePaths(fontFiles, std::string(buf)+"\\Fonts\\", std::string("ttf"));
+    common::getFontFilePaths(fontFiles, std::string(buf)+"\\Fonts\\", std::string("ttf"));
     for (const auto &fontName : fontFiles) {
         if (std::regex_search(fontName, fontRegex)) {
             matchedFontFiles.push_back(fontName);

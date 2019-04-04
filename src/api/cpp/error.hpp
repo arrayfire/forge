@@ -1,5 +1,5 @@
 #include <fg/exception.h>
-#include <defines.hpp>
+#include <common/defines.hpp>
 
 #define FG_THROW(fn) do {                               \
         fg_err __err = fn;                              \
