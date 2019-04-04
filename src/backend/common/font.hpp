@@ -11,7 +11,7 @@
 
 #include <backend.hpp>
 #include <font_impl.hpp>
-
+#include <fg/defines.h>
 #include <memory>
 
 namespace forge

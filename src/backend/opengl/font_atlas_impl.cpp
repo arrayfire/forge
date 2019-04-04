@@ -51,16 +51,14 @@
  */
 
 
-#include <font_atlas_impl.hpp>
-#include <common.hpp>
-
-#include <cstring>
 #include <algorithm>
+#include <common/err_handling.hpp>
+#include <cstring>
+#include <font_atlas_impl.hpp>
+#include <gl_helpers.hpp>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 static const int BORDER_GAP = 4;
 
@@ -223,13 +221,16 @@ glm::vec4 FontAtlas::getRegion(const size_t pWidth, const size_t pHeight)
 
 bool FontAtlas::setRegion(const size_t pX, const size_t pY,
                           const size_t pWidth, const size_t pHeight,
-                          const uchar* pData, const size_t pStride)
+                          const unsigned char* pData, const size_t pStride)
 {
-    if (pX>0 && pY>0 && pX < (mWidth-BORDER_GAP) && (pX+pWidth) <= (mWidth-BORDER_GAP) &&
-          pY <(mHeight-BORDER_GAP) && (pY+pHeight) <= (mHeight-BORDER_GAP))
+    if (pX>0 && pY>0 &&
+        pX < (mWidth-BORDER_GAP) &&
+        (pX+pWidth) <= (mWidth-BORDER_GAP) &&
+        pY <(mHeight-BORDER_GAP) &&
+        (pY+pHeight) <= (mHeight-BORDER_GAP))
     {
         size_t depth = mDepth;
-        size_t charsize = sizeof(uchar);
+        size_t charsize = sizeof(unsigned char);
 
         for (size_t i=0; i<pHeight; ++i) {
             std::memcpy(mData.data() + ((pY+i)*mWidth + pX) * charsize * depth,

@@ -17,10 +17,8 @@
 #include <GL/glx.h>
 #endif
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 ContextHandle getCurrentContextHandle()
 {

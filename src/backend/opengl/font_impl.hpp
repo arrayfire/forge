@@ -9,17 +9,12 @@
 
 #pragma once
 
-#include <common.hpp>
 #include <font_atlas_impl.hpp>
-
 #include <map>
-#include <vector>
-#include <memory>
+#include <shader_program.hpp>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 typedef std::vector<Glyph*> GlyphList;
 
@@ -27,25 +22,25 @@ class font_impl {
     private:
         /* VAO map to store a vertex array object
          * for each valid window context */
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, unsigned int> mVAOMap;
 
         /* attributes */
         std::string mTTFfile;
         bool        mIsFontLoaded;
         std::unique_ptr<FontAtlas>  mAtlas;
-        GLuint  mVBO;
+        unsigned int  mVBO;
         ShaderProgram mProgram;
-        int         mOrthoW;
-        int         mOrthoH;
+        size_t         mOrthoW;
+        size_t         mOrthoH;
 
         std::vector<GlyphList> mGlyphLists;
 
         /* OpenGL Data */
         glm::mat4   mProjMat;
-        GLuint  mPMatIndex;
-        GLuint  mMMatIndex;
-        GLuint  mTexIndex;
-        GLuint  mClrIndex;
+        unsigned int  mPMatIndex;
+        unsigned int  mMMatIndex;
+        unsigned int  mTexIndex;
+        unsigned int  mClrIndex;
 
         /* load all glyphs and create character atlas */
         void loadAtlasWithGlyphs(const size_t pFontSize);
@@ -63,12 +58,12 @@ class font_impl {
         font_impl();
         ~font_impl();
 
-        void setOthro2D(int pWidth, int pHeight);
+        void setOthro2D(size_t pWidth, size_t pHeight);
         void loadFont(const char* const pFile);
         void loadSystemFont(const char* const pName);
 
-        void render(int pWindowId,
-                    const float pPos[2], const float pColor[4], const char* pText,
+        void render(int pWindowId, const float pPos[2],
+                    const float pColor[4], const char* pText,
                     size_t pFontSize, bool pIsVertical = false);
 };
 

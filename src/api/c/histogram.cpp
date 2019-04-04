@@ -7,13 +7,11 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common/chart_renderables.hpp>
+#include <common/handle.hpp>
 #include <fg/histogram.h>
 
-#include <handle.hpp>
-#include <chart_renderables.hpp>
-
 using namespace forge;
-
 using forge::common::getHistogram;
 
 fg_err fg_create_histogram(fg_histogram *pHistogram,

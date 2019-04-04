@@ -9,60 +9,53 @@
 
 #pragma once
 
+#include <abstract_renderable.hpp>
+#include <cstdint>
 #include <fg/defines.h>
-#include <common.hpp>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <memory>
 #include <map>
+#include <shader_program.hpp>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 class plot_impl : public AbstractRenderable {
     protected:
-        GLuint     mDimension;
-        GLfloat    mMarkerSize;
+        uint32_t     mDimension;
+        float        mMarkerSize;
         /* plot points characteristics */
-        GLuint     mNumPoints;
+        uint32_t     mNumPoints;
         forge::dtype      mDataType;
-        GLenum     mGLType;
         forge::MarkerType mMarkerType;
         forge::PlotType   mPlotType;
         bool           mIsPVROn;
         /* OpenGL Objects */
         ShaderProgram  mPlotProgram;
         ShaderProgram  mMarkerProgram;
-        GLuint    mRBO;
+        uint32_t    mRBO;
         size_t        mRBOSize;
         /* shader variable index locations */
-        GLuint    mPlotMatIndex;
-        GLuint    mPlotPVCOnIndex;
-        GLuint    mPlotPVAOnIndex;
-        GLuint    mPlotUColorIndex;
-        GLuint    mPlotRangeIndex;
-        GLuint    mPlotPointIndex;
-        GLuint    mPlotColorIndex;
-        GLuint    mPlotAlphaIndex;
+        uint32_t    mPlotMatIndex;
+        uint32_t    mPlotPVCOnIndex;
+        uint32_t    mPlotPVAOnIndex;
+        uint32_t    mPlotUColorIndex;
+        uint32_t    mPlotRangeIndex;
+        uint32_t    mPlotPointIndex;
+        uint32_t    mPlotColorIndex;
+        uint32_t    mPlotAlphaIndex;
 
-        GLuint    mMarkerPVCOnIndex;
-        GLuint    mMarkerPVAOnIndex;
-        GLuint    mMarkerPVROnIndex;
-        GLuint    mMarkerTypeIndex;
-        GLuint    mMarkerColIndex;
-        GLuint    mMarkerMatIndex;
-        GLuint    mMarkerPSizeIndex;
-        GLuint    mMarkerPointIndex;
-        GLuint    mMarkerColorIndex;
-        GLuint    mMarkerAlphaIndex;
-        GLuint    mMarkerRadiiIndex;
+        uint32_t    mMarkerPVCOnIndex;
+        uint32_t    mMarkerPVAOnIndex;
+        uint32_t    mMarkerPVROnIndex;
+        uint32_t    mMarkerTypeIndex;
+        uint32_t    mMarkerColIndex;
+        uint32_t    mMarkerMatIndex;
+        uint32_t    mMarkerPSizeIndex;
+        uint32_t    mMarkerPointIndex;
+        uint32_t    mMarkerColorIndex;
+        uint32_t    mMarkerAlphaIndex;
+        uint32_t    mMarkerRadiiIndex;
 
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, uint32_t> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
@@ -74,14 +67,14 @@ class plot_impl : public AbstractRenderable {
         virtual void bindDimSpecificUniforms(); // has to be called only after shaders are bound
 
     public:
-        plot_impl(const uint pNumPoints, const forge::dtype pDataType,
+        plot_impl(const uint32_t pNumPoints, const forge::dtype pDataType,
                   const forge::PlotType pPlotType, const forge::MarkerType pMarkerType,
                   const int pDimension=3);
         ~plot_impl();
 
         void setMarkerSize(const float pMarkerSize);
 
-        uint markers();
+        uint32_t markers();
         size_t markersSizes() const;
 
         virtual void render(const int pWindowId,
@@ -96,7 +89,7 @@ class plot2d_impl : public plot_impl {
         void bindDimSpecificUniforms() override; // has to be called only after shaders are bound
 
     public:
-        plot2d_impl(const uint pNumPoints, const forge::dtype pDataType,
+        plot2d_impl(const uint32_t pNumPoints, const forge::dtype pDataType,
                     const forge::PlotType pPlotType, const forge::MarkerType pMarkerType)
             : plot_impl(pNumPoints, pDataType, pPlotType, pMarkerType, 2) {}
 };

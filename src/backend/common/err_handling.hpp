@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <fg/defines.h>
-#include <defines.hpp>
+#include <fg/exception.h>
+#include <common/defines.hpp>
 
 #include <stdexcept>
 #include <string>

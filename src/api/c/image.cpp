@@ -7,15 +7,16 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common/defines.hpp>
+#include <common/err_handling.hpp>
+#include <common/handle.hpp>
+#include <common/image.hpp>
 #include <fg/image.h>
 #include <fg/window.h>
-
-#include <err_common.hpp>
-#include <handle.hpp>
-#include <image.hpp>
-#include <window.hpp>
+#include <common/window.hpp>
 
 using namespace forge;
+using namespace forge::common;
 
 using forge::common::getImage;
 using forge::common::getWindow;

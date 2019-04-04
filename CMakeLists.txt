@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
@@ -103,7 +103,7 @@ add_subdirectory(src/backend/common)
 add_subdirectory(src/backend/glsl_shaders)
 add_subdirectory(src/api/c)
 add_subdirectory(src/api/cpp)
-add_subdirectory(src/backend/opengl)
+add_subdirectory(src/backend)
 
 #--------------------------------------------------------------------
 # Install include folder, docs, examples etc.
@@ -154,7 +154,6 @@ install(EXPORT ForgeTargets
     DESTINATION ${FG_INSTALL_CMAKE_DIR}
     COMPONENT forge
 )
-
 
 # export build tree targets config file
 set(INCLUDE_DIRS "${Forge_SOURCE_DIR}/include" "${Forge_BINARY_DIR}/include")

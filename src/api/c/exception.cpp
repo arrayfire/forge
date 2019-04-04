@@ -7,12 +7,10 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/exception.h>
-
-#include <err_common.hpp>
-
-#include <string>
 #include <algorithm>
+#include <common/err_handling.hpp>
+#include <fg/exception.h>
+#include <string>
 
 const char * fg_err_to_string(const fg_err err)
 {

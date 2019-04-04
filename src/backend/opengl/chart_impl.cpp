@@ -7,9 +7,8 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <font.hpp>
-
-#include <common.hpp>
+#include <common/font.hpp>
+#include <gl_helpers.hpp>
 #include <font_impl.hpp>
 #include <chart_impl.hpp>
 #include <image_impl.hpp>
@@ -32,11 +31,10 @@
 #include <algorithm>
 
 using namespace std;
+using namespace forge::common;
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 typedef std::vector<std::string>::const_iterator StringIter;
 
@@ -82,7 +80,7 @@ int calcTrgtFntSize(const float w, const float h)
 /********************* BEGIN-AbstractChart *********************/
 
 void AbstractChart::renderTickLabels(
-        const int pWindowId, const uint pW, const uint pH,
+        const int pWindowId, const uint32_t pW, const uint32_t pH,
         const std::vector<std::string> &pTexts, const int pFontSize,
         const glm::mat4 &pTransformation, const int pCoordsOffset,
         const bool pUseZoffset) const
@@ -934,9 +932,12 @@ void chart3d_impl::render(const int pWindowId,
 
     const int trgtFntSize = calcTrgtFntSize(w, h);
 
-    renderTickLabels(pWindowId, uint(w), uint(h), mZText, trgtFntSize, trans, 0);
-    renderTickLabels(pWindowId, uint(w), uint(h), mYText, trgtFntSize, trans, mTickCount);
-    renderTickLabels(pWindowId, uint(w), uint(h), mXText, trgtFntSize, trans, 2*mTickCount);
+    renderTickLabels(pWindowId, uint32_t(w), uint32_t(h),
+                     mZText, trgtFntSize, trans, 0);
+    renderTickLabels(pWindowId, uint32_t(w), uint32_t(h),
+                     mYText, trgtFntSize, trans, mTickCount);
+    renderTickLabels(pWindowId, uint32_t(w), uint32_t(h),
+                     mXText, trgtFntSize, trans, 2*mTickCount);
 
     auto &fonter = getChartFont();
     fonter->setOthro2D(int(w), int(h));

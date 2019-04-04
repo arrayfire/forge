@@ -7,8 +7,9 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common/err_handling.hpp>
 #include <fg/update_buffer.h>
-#include <common.hpp>
+#include <gl_helpers.hpp>
 
 fg_err fg_update_vertex_buffer(const unsigned pBufferId,
                                const size_t pBufferSize,

@@ -22,16 +22,10 @@
 
 #pragma once
 
-#include <common.hpp>
+#include <common/defines.hpp>
 
-#include <glm/glm.hpp>
-
-#include <vector>
-
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 class FontAtlas {
     private:
@@ -39,9 +33,9 @@ class FontAtlas {
         size_t mHeight;
         size_t mDepth;
         size_t mUsed;
-        GLuint mId;
+        uint32_t mId;
 
-        std::vector<uchar> mData;
+        std::vector<unsigned char> mData;
         std::vector<glm::vec3> nodes;
 
         /* helper functions */
@@ -59,12 +53,12 @@ class FontAtlas {
         glm::vec4 getRegion(const size_t pWidth, const size_t pHeight);
         bool setRegion(const size_t pX, const size_t pY,
                        const size_t pWidth, const size_t pHeight,
-                       const uchar* pData, const size_t pStride);
+                       const unsigned char* pData, const size_t pStride);
 
         void upload();
         void clear();
 
-        GLuint atlasTextureId() const;
+        uint32_t atlasTextureId() const;
 };
 
 struct Glyph {

@@ -7,11 +7,10 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common/err_handling.hpp>
+#include <common/handle.hpp>
+#include <common/window.hpp>
 #include <fg/window.h>
-
-#include <err_common.hpp>
-#include <handle.hpp>
-#include <window.hpp>
 
 using namespace forge;
 

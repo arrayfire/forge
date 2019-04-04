@@ -7,24 +7,23 @@
 * http://arrayfire.com/licenses/BSD-3-Clause
 ********************************************************/
 
-#include <common.hpp>
-#include <sdl/window.hpp>
+#include <common/defines.hpp>
+#include <common/err_handling.hpp>
 #include <gl_native_handles.hpp>
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <sdl/window.hpp>
 
 using glm::rotate;
 using glm::translate;
 using glm::scale;
+using namespace forge::common;
 
 #define SDL_THROW_ERROR(msg, err) \
     FG_ERROR("Window constructor "#msg,err)
 
-namespace forge
-{
-namespace wtk
-{
+namespace forge {
+namespace wtk {
 
 void initWindowToolkit()
 {

@@ -7,25 +7,21 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <common.hpp>
+#include <common/err_handling.hpp>
+#include <cmath>
+#include <gl_helpers.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <surface_impl.hpp>
 #include <shader_headers/marker_fs.hpp>
 #include <shader_headers/plot3_vs.hpp>
 #include <shader_headers/plot3_fs.hpp>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <cmath>
-
 using namespace std;
+using namespace forge::common;
 
-
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 void generateGridIndices(std::vector<unsigned int>& indices,
                          unsigned short rows, unsigned short cols)
@@ -66,7 +62,8 @@ void surface_impl::bindResources(const int pWindowId)
         // attach plot vertices
         glEnableVertexAttribArray(mSurfPointIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(mSurfPointIndex, 3, mDataType, GL_FALSE, 0, 0);
+        glVertexAttribPointer(mSurfPointIndex, 3, dtype2gl(mDataType),
+                              GL_FALSE, 0, 0);
         glEnableVertexAttribArray(mSurfColorIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mCBO);
         glVertexAttribPointer(mSurfColorIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -153,8 +150,8 @@ void surface_impl::renderGraph(const int pWindowId, const glm::mat4& transform)
 
 surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
                            forge::dtype pDataType, forge::MarkerType pMarkerType)
-    : mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints), mDataType(dtype2gl(pDataType)),
-      mMarkerType(pMarkerType), mIBO(0), mIBOSize(0),
+    : mNumXPoints(pNumXPoints),mNumYPoints(pNumYPoints),
+      mDataType(pDataType), mMarkerType(pMarkerType), mIBO(0), mIBOSize(0),
       mMarkerProgram(glsl::plot3_vs.c_str(), glsl::marker_fs.c_str()),
       mSurfProgram(glsl::plot3_vs.c_str(), glsl::plot3_fs.c_str()),
       mMarkerMatIndex(-1), mMarkerPointIndex(-1), mMarkerColorIndex(-1), mMarkerAlphaIndex(-1),
@@ -195,12 +192,12 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
     mCBOSize *= sizeof(float);  \
     mABOSize *= sizeof(float);
 
-    switch(mDataType) {
+    switch(dtype2gl(pDataType)) {
         case GL_FLOAT          : SURF_CREATE_BUFFERS(float) ; break;
         case GL_INT            : SURF_CREATE_BUFFERS(int)   ; break;
-        case GL_UNSIGNED_INT   : SURF_CREATE_BUFFERS(uint)  ; break;
+        case GL_UNSIGNED_INT   : SURF_CREATE_BUFFERS(uint32_t)  ; break;
         case GL_SHORT          : SURF_CREATE_BUFFERS(short) ; break;
-        case GL_UNSIGNED_SHORT : SURF_CREATE_BUFFERS(ushort); break;
+        case GL_UNSIGNED_SHORT : SURF_CREATE_BUFFERS(uint16_t); break;
         case GL_UNSIGNED_BYTE  : SURF_CREATE_BUFFERS(float) ; break;
         default                : TYPE_ERROR(1, pDataType);
     }
@@ -213,7 +210,7 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
 
     mIBOSize = indices.size();
 
-    mIBO = createBuffer<uint>(GL_ELEMENT_ARRAY_BUFFER, mIBOSize, indices.data(), GL_STATIC_DRAW);
+    mIBO = createBuffer<uint32_t>(GL_ELEMENT_ARRAY_BUFFER, mIBOSize, indices.data(), GL_STATIC_DRAW);
 
     CheckGL("End surface_impl::surface_impl");
 }

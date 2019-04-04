@@ -7,10 +7,9 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common/font.hpp>
+#include <common/handle.hpp>
 #include <fg/font.h>
-
-#include <handle.hpp>
-#include <font.hpp>
 
 using namespace forge;
 
