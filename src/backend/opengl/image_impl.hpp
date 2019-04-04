@@ -9,41 +9,37 @@
 
 #pragma once
 
-#include <common.hpp>
+#include <abstract_renderable.hpp>
+#include <cstdint>
+#include <fg/defines.h>
+#include <shader_program.hpp>
 
-#include <memory>
-
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 class image_impl : public AbstractRenderable {
     private:
-        uint   mWidth;
-        uint   mHeight;
+        uint32_t mWidth;
+        uint32_t mHeight;
         forge::ChannelFormat mFormat;
-        GLenum mGLformat;
-        GLenum mGLiformat;
         forge::dtype mDataType;
-        GLenum mGLType;
         float  mAlpha;
         bool   mKeepARatio;
         size_t mFormatSize;
         /* internal resources for interop */
         size_t mPBOsize;
-        GLuint mPBO;
-        GLuint mTex;
+        uint32_t mPBO;
+        uint32_t mTex;
         ShaderProgram mProgram;
-        GLuint mMatIndex;
-        GLuint mTexIndex;
-        GLuint mNumCIndex;
-        GLuint mAlphaIndex;
-        GLuint mCMapLenIndex;
-        GLuint mCMapIndex;
+        uint32_t mMatIndex;
+        uint32_t mTexIndex;
+        uint32_t mNumCIndex;
+        uint32_t mAlphaIndex;
+        uint32_t mCMapLenIndex;
+        uint32_t mCMapIndex;
         /* color map details */
-        GLuint mColorMapUBO;
-        GLuint mUBOSize;
+        uint32_t mColorMapUBO;
+        uint32_t mUBOSize;
 
         /* helper functions to bind and unbind
          * resources for render quad primitive */
@@ -51,20 +47,20 @@ class image_impl : public AbstractRenderable {
         void unbindResources() const;
 
     public:
-        image_impl(const uint pWidth, const uint pHeight,
+        image_impl(const uint32_t pWidth, const uint32_t pHeight,
                    const forge::ChannelFormat pFormat, const forge::dtype pDataType);
         ~image_impl();
 
-        void setColorMapUBOParams(const GLuint pUBO, const GLuint pSize);
+        void setColorMapUBOParams(const uint32_t pUBO, const uint32_t pSize);
         void setAlpha(const float pAlpha);
         void keepAspectRatio(const bool pKeep=true);
 
-        uint width() const;
-        uint height() const;
+        uint32_t width() const;
+        uint32_t height() const;
         forge::ChannelFormat pixelFormat() const;
         forge::dtype channelType() const;
-        uint pbo() const;
-        uint size() const;
+        uint32_t pbo() const;
+        uint32_t size() const;
 
         void render(const int pWindowId,
                     const int pX, const int pY, const int pVPW, const int pVPH,

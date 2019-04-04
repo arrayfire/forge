@@ -10,10 +10,9 @@
 #pragma once
 
 #include <backend.hpp>
+#include <cstdint>
 #include <image_impl.hpp>
-
 #include <glm/glm.hpp>
-
 #include <memory>
 
 namespace forge
@@ -50,7 +49,7 @@ class Image {
 
         inline unsigned pbo() const { return mImage->pbo(); }
 
-        inline uint size() const { return mImage->size(); }
+        inline uint32_t size() const { return mImage->size(); }
 
         inline void render(const int pWindowId,
                            const int pX, const int pY, const int pVPW, const int pVPH,

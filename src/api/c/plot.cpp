@@ -7,10 +7,9 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common/handle.hpp>
+#include <common/chart_renderables.hpp>
 #include <fg/plot.h>
-
-#include <handle.hpp>
-#include <chart_renderables.hpp>
 
 using namespace forge;
 

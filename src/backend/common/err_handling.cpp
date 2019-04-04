@@ -7,20 +7,17 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/exception.h>
-
-#include <err_common.hpp>
-#include <util.hpp>
-
-#include <string>
-#include <sstream>
+#include <common/err_handling.hpp>
+#include <common/util.hpp>
 #include <cstdio>
 #include <cstdlib>
+#include <fg/exception.h>
+#include <string>
+#include <sstream>
 
-namespace forge
-{
-namespace common
-{
+namespace forge {
+namespace common {
+
 using std::string;
 using std::stringstream;
 

@@ -5,8 +5,11 @@ project(Forge-Examples LANGUAGES CXX)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+
+set(FORGE_BUILD_TREE OFF)
 if(Forge_BINARY_DIR AND EXISTS "${Forge_BINARY_DIR}")
   set(Forge_DIR ${Forge_BINARY_DIR})
+  set(FORGE_BUILD_TREE ON)
 endif()
 
 find_package(OpenCL 1.2 QUIET)
@@ -68,9 +71,20 @@ function(add_example target_name source backend)
             set(native_cc_flags
                 "-Xcompiler /wd4275 -Xcompiler /bigobj -Xcompiler /EHsc")
         endif ()
+        if (FORGE_BUILD_TREE)
+          CUDA_INCLUDE_DIRECTORIES(
+            ${Forge_BINARY_DIR}/include
+            ${Forge_SOURCE_DIR}/include
+          )
+        else ()
+          get_target_property(
+            FORGE_INC_DIRS Forge::forge INTERFACE_INCLUDE_DIRECTORIES)
+          CUDA_INCLUDE_DIRECTORIES(${FORGE_INC_DIRS})
+        endif ()
         cuda_add_executable(${target} ${source}
-		  OPTIONS "${native_cc_flags} -Xcudafe \"--diag_suppress=1388\""
-		)
+          OPTIONS
+            "${native_cc_flags} -D_FORCE_INLINES -Xcudafe \"--diag_suppress=1388\""
+        )
     else ()
         add_executable(${target} ${source})
     endif ()

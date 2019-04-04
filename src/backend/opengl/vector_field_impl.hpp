@@ -9,48 +9,41 @@
 
 #pragma once
 
+#include <abstract_renderable.hpp>
+#include <cstdint>
 #include <fg/defines.h>
-#include <common.hpp>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <memory>
 #include <map>
+#include <shader_program.hpp>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 class vector_field_impl : public AbstractRenderable {
     protected:
-        GLuint    mDimension;
+        uint32_t    mDimension;
         /* plot points characteristics */
-        GLuint    mNumPoints;
+        uint32_t    mNumPoints;
         forge::dtype mDataType;
-        GLenum    mGLType;
         /* OpenGL Objects */
         ShaderProgram mFieldProgram;
-        GLuint    mDBO;
+        uint32_t    mDBO;
         size_t    mDBOSize;
         /* shader variable index locations */
         /* vertex shader */
-        GLuint    mFieldPointIndex;
-        GLuint    mFieldColorIndex;
-        GLuint    mFieldAlphaIndex;
-        GLuint    mFieldDirectionIndex;
+        uint32_t    mFieldPointIndex;
+        uint32_t    mFieldColorIndex;
+        uint32_t    mFieldAlphaIndex;
+        uint32_t    mFieldDirectionIndex;
         /* geometry shader */
-        GLuint    mFieldPVMatIndex;
-        GLuint    mFieldModelMatIndex;
-        GLuint    mFieldAScaleMatIndex;
+        uint32_t    mFieldPVMatIndex;
+        uint32_t    mFieldModelMatIndex;
+        uint32_t    mFieldAScaleMatIndex;
         /* fragment shader */
-        GLuint    mFieldPVCOnIndex;
-        GLuint    mFieldPVAOnIndex;
-        GLuint    mFieldUColorIndex;
+        uint32_t    mFieldPVCOnIndex;
+        uint32_t    mFieldPVAOnIndex;
+        uint32_t    mFieldUColorIndex;
 
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, uint32_t> mVAOMap;
 
         /* bind and unbind helper functions
          * for rendering resources */
@@ -60,11 +53,11 @@ class vector_field_impl : public AbstractRenderable {
         virtual glm::mat4 computeModelMatrix(const glm::mat4& pOrient);
 
     public:
-        vector_field_impl(const uint pNumPoints, const forge::dtype pDataType,
+        vector_field_impl(const uint32_t pNumPoints, const forge::dtype pDataType,
                           const int pDimension=3);
         ~vector_field_impl();
 
-        GLuint directions();
+        uint32_t directions();
         size_t directionsSize() const;
 
         virtual void render(const int pWindowId,
@@ -76,7 +69,7 @@ class vector_field2d_impl : public vector_field_impl {
     protected:
         glm::mat4 computeModelMatrix(const glm::mat4& pOrient) override;
     public:
-        vector_field2d_impl(const uint pNumPoints, const forge::dtype pDataType)
+        vector_field2d_impl(const uint32_t pNumPoints, const forge::dtype pDataType)
             : vector_field_impl(pNumPoints, pDataType, 2) {}
 };
 

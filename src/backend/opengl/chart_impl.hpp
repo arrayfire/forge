@@ -9,18 +9,14 @@
 
 #pragma once
 
-#include <common.hpp>
-#include <glm/glm.hpp>
-
+#include <abstract_renderable.hpp>
+#include <common/defines.hpp>
+#include <cstdint>
 #include <map>
-#include <memory>
-#include <vector>
-#include <string>
+#include <shader_program.hpp>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 class AbstractChart : public AbstractRenderable {
     protected:
@@ -55,22 +51,22 @@ class AbstractChart : public AbstractRenderable {
         std::string mYTitle;
         std::string mZTitle;
         /* OpenGL Objects */
-        GLuint mDecorVBO;
+        uint32_t mDecorVBO;
         ShaderProgram mBorderProgram;
         ShaderProgram mSpriteProgram;
         /* shader uniform variable locations */
-        GLuint mBorderAttribPointIndex;
-        GLuint mBorderUniformColorIndex;
-        GLuint mBorderUniformMatIndex;
-        GLuint mSpriteUniformMatIndex;
-        GLuint mSpriteUniformTickcolorIndex;
-        GLuint mSpriteUniformTickaxisIndex;
+        uint32_t mBorderAttribPointIndex;
+        uint32_t mBorderUniformColorIndex;
+        uint32_t mBorderUniformMatIndex;
+        uint32_t mSpriteUniformMatIndex;
+        uint32_t mSpriteUniformTickcolorIndex;
+        uint32_t mSpriteUniformTickaxisIndex;
         /* Chart legend position*/
         float mLegendX;
         float mLegendY;
         /* VAO map to store a vertex array object
          * for each valid window context */
-        std::map<int, GLuint> mVAOMap;
+        std::map<int, uint32_t> mVAOMap;
         /* list of renderables to be displayed on the chart*/
         std::vector< std::shared_ptr<AbstractRenderable> > mRenderables;
 
@@ -106,7 +102,7 @@ class AbstractChart : public AbstractRenderable {
             return mTickSize;
         }
 
-        void renderTickLabels(const int pWindowId, const uint pW, const uint pH,
+        void renderTickLabels(const int pWindowId, const uint32_t pW, const uint32_t pH,
                               const std::vector<std::string> &pTexts, const int pFontSize,
                               const glm::mat4 &pTransformation, const int pCoordsOffset,
                               const bool pUseZoffset=true) const;

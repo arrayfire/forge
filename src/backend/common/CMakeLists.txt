@@ -7,8 +7,8 @@ target_sources(forge_backend_interface
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/chart_renderables.hpp>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/cmap.hpp>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/defines.hpp>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/err_common.hpp>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/err_common.cpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/err_handling.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/err_handling.cpp>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/font.hpp>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/handle.hpp>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/handle.cpp>
@@ -20,7 +20,6 @@ target_sources(forge_backend_interface
 
 target_include_directories(forge_backend_interface
     INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     )
 

@@ -9,13 +9,12 @@
 
 #pragma once
 
-#include <common.hpp>
 #include <array>
+#include <fg/defines.h>
+#include <cstdint>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 constexpr unsigned int ForgeNumColorMaps = 11;
 
@@ -34,15 +33,15 @@ class colormap_impl {
          * the size of array declared in the shaders
          * used by *_impl objects to reflect appropriate
          * size */
-        std::array<GLuint, ForgeNumColorMaps> mMapIds;
-        std::array<GLuint, ForgeNumColorMaps> mMapLens;
+        std::array<uint32_t, ForgeNumColorMaps> mMapIds;
+        std::array<uint32_t, ForgeNumColorMaps> mMapLens;
 
     public:
         colormap_impl();
         ~colormap_impl();
 
-        GLuint cmapUniformBufferId(forge::ColorMap cmap) const;
-        GLuint cmapLength(forge::ColorMap cmap) const;
+        uint32_t cmapUniformBufferId(forge::ColorMap cmap) const;
+        uint32_t cmapLength(forge::ColorMap cmap) const;
 };
 
 }

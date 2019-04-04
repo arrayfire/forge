@@ -10,18 +10,14 @@
 #pragma once
 
 #include <backend.hpp>
+#include <common/chart.hpp>
+#include <common/font.hpp>
+#include <common/image.hpp>
+#include <memory>
 #include <window_impl.hpp>
 
-#include <chart.hpp>
-#include <font.hpp>
-#include <image.hpp>
-
-#include <memory>
-
-namespace forge
-{
-namespace common
-{
+namespace forge {
+namespace common {
 
 class Window {
     private:
