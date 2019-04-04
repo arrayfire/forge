@@ -9,6 +9,9 @@
 
 #pragma once
 
-#include <common.hpp>
+namespace forge {
+namespace opengl {
+}
+}
 
 namespace detail = forge::opengl;

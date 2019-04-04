@@ -9,19 +9,16 @@
 
 #pragma once
 
-#include <chart_common.hpp>
 #include <backend.hpp>
+#include <common/chart_common.hpp>
 #include <histogram_impl.hpp>
+#include <memory>
 #include <plot_impl.hpp>
 #include <surface_impl.hpp>
 #include <vector_field_impl.hpp>
 
-#include <memory>
-
-namespace forge
-{
-namespace common
-{
+namespace forge {
+namespace common {
 
 class Histogram : public ChartRenderableBase<detail::histogram_impl> {
     public:

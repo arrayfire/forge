@@ -9,18 +9,15 @@
 
 #pragma once
 
+#include <common/window.hpp>
+#include <common/font.hpp>
+#include <common/image.hpp>
+#include <common/chart.hpp>
+#include <common/chart_renderables.hpp>
 #include <fg/exception.h>
 
-#include <window.hpp>
-#include <font.hpp>
-#include <image.hpp>
-#include <chart.hpp>
-#include <chart_renderables.hpp>
-
-namespace forge
-{
-namespace common
-{
+namespace forge {
+namespace common {
 
 fg_window getHandle(Window* pValue);
 

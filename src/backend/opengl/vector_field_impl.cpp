@@ -7,21 +7,23 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <vector_field_impl.hpp>
+#include <common/err_handling.hpp>
+#include <cmath>
+#include <gl_helpers.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <shader_headers/vector_field2d_vs.hpp>
 #include <shader_headers/vector_field2d_gs.hpp>
 #include <shader_headers/vector_field_vs.hpp>
 #include <shader_headers/vector_field_gs.hpp>
 #include <shader_headers/histogram_fs.hpp>
-
-#include <cmath>
+#include <vector_field_impl.hpp>
 
 using namespace std;
+using namespace forge::common;
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 void vector_field_impl::bindResources(const int pWindowId)
 {
@@ -34,7 +36,8 @@ void vector_field_impl::bindResources(const int pWindowId)
         // attach vertices
         glEnableVertexAttribArray(mFieldPointIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-        glVertexAttribPointer(mFieldPointIndex, mDimension, mGLType, GL_FALSE, 0, 0);
+        glVertexAttribPointer(mFieldPointIndex, mDimension,
+                              dtype2gl(mDataType), GL_FALSE, 0, 0);
         // attach colors
         glEnableVertexAttribArray(mFieldColorIndex);
         glBindBuffer(GL_ARRAY_BUFFER, mCBO);
@@ -85,9 +88,8 @@ glm::mat4 vector_field_impl::computeModelMatrix(const glm::mat4& pOrient)
     return glm::translate(glm::scale(pOrient, scaleVector), shiftVector);
 }
 
-vector_field_impl::vector_field_impl(const uint pNumPoints, const forge::dtype pDataType, const int pD)
+vector_field_impl::vector_field_impl(const uint32_t pNumPoints, const forge::dtype pDataType, const int pD)
     : mDimension(pD), mNumPoints(pNumPoints), mDataType(pDataType),
-    mGLType(dtype2gl(mDataType)),
     mFieldProgram(pD==2 ? glsl::vector_field2d_vs.c_str() : glsl::vector_field_vs.c_str(),
                   glsl::histogram_fs.c_str(),
                   pD==2 ? glsl::vector_field2d_gs.c_str() : glsl::vector_field_gs.c_str()),
@@ -134,12 +136,12 @@ vector_field_impl::vector_field_impl(const uint pNumPoints, const forge::dtype p
         mABOSize *= sizeof(float);  \
         mDBOSize *= sizeof(float);
 
-        switch(mGLType) {
+        switch(dtype2gl(mDataType)) {
             case GL_FLOAT          : PLOT_CREATE_BUFFERS(float) ; break;
             case GL_INT            : PLOT_CREATE_BUFFERS(int)   ; break;
-            case GL_UNSIGNED_INT   : PLOT_CREATE_BUFFERS(uint)  ; break;
+            case GL_UNSIGNED_INT   : PLOT_CREATE_BUFFERS(uint32_t)  ; break;
             case GL_SHORT          : PLOT_CREATE_BUFFERS(short) ; break;
-            case GL_UNSIGNED_SHORT : PLOT_CREATE_BUFFERS(ushort); break;
+            case GL_UNSIGNED_SHORT : PLOT_CREATE_BUFFERS(uint16_t); break;
             case GL_UNSIGNED_BYTE  : PLOT_CREATE_BUFFERS(float) ; break;
             default                : TYPE_ERROR(1, mDataType);
         }

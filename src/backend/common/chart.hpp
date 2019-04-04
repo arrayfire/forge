@@ -9,13 +9,11 @@
 
 #pragma once
 
-#include <fg/defines.h>
-
 #include <backend.hpp>
 #include <chart_impl.hpp>
-
+#include <common/err_handling.hpp>
+#include <fg/defines.h>
 #include <glm/glm.hpp>
-
 #include <memory>
 
 namespace forge

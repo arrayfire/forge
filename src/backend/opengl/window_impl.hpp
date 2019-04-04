@@ -9,25 +9,21 @@
 
 #pragma once
 
-#include <common.hpp>
-
 #if defined(USE_GLFW)
 #include <glfw/window.hpp>
 #elif defined(USE_SDL)
 #include <sdl/window.hpp>
 #endif
 
+#include <common/defines.hpp>
 #include <colormap_impl.hpp>
 #include <font_impl.hpp>
 #include <image_impl.hpp>
 #include <chart_impl.hpp>
-
 #include <memory>
 
-namespace forge
-{
-namespace opengl
-{
+namespace forge {
+namespace opengl {
 
 class window_impl {
     private:
@@ -39,8 +35,8 @@ class window_impl {
         std::shared_ptr<font_impl>     mFont;
         std::shared_ptr<colormap_impl> mCMap;
 
-        GLuint mColorMapUBO;
-        GLuint mUBOSize;
+        uint32_t mColorMapUBO;
+        uint32_t mUBOSize;
 
     public:
         window_impl(int pWidth, int pHeight, const char* pTitle,

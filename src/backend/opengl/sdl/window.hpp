@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include <common.hpp>
+#include <common/defines.hpp>
 #include <SDL.h>
+#include <gl_helpers.hpp>
 #include <glm/glm.hpp>
-
 #include <memory>
 
 /* the short form wtk stands for
@@ -37,23 +37,23 @@ class Widget {
         SDL_Keycode   mMod;
         glm::vec3     mLastPos;
 
-        MatrixHashMap mViewMatrices;
-        MatrixHashMap mOrientMatrices;
+        forge::common::MatrixHashMap mViewMatrices;
+        forge::common::MatrixHashMap mOrientMatrices;
 
         Widget();
 
-        const glm::mat4 findTransform(const MatrixHashMap& pMap, const float pX, const float pY);
-
+        const glm::mat4 findTransform(
+                const forge::common::MatrixHashMap& pMap,
+                const float pX, const float pY);
         const glm::mat4 getCellViewMatrix(const float pXPos, const float pYPos);
-
-        const glm::mat4 getCellOrientationMatrix(const float pXPos, const float pYPos);
-
-        void setTransform(MatrixHashMap& pMap, const float pX, const float pY, const glm::mat4 &pMat);
-
-        void setCellViewMatrix(const float pXPos, const float pYPos, const glm::mat4& pMatrix);
-
-        void setCellOrientationMatrix(const float pXPos, const float pYPos, const glm::mat4& pMatrix);
-
+        const glm::mat4 getCellOrientationMatrix(const float pXPos,
+                const float pYPos);
+        void setTransform(forge::common::MatrixHashMap& pMap,
+                const float pX, const float pY, const glm::mat4 &pMat);
+        void setCellViewMatrix(const float pXPos, const float pYPos,
+                const glm::mat4& pMatrix);
+        void setCellOrientationMatrix(const float pXPos, const float pYPos,
+                const glm::mat4& pMatrix);
     public:
         /* public variables */
         int mWidth;     // Framebuffer width
@@ -97,12 +97,11 @@ class Widget {
 
         void pollEvents();
 
-        const glm::mat4 getViewMatrix(const CellIndex& pIndex);
-
-        const glm::mat4 getOrientationMatrix(const CellIndex& pIndex);
-
+        const glm::mat4 getViewMatrix(
+                const forge::common::CellIndex& pIndex);
+        const glm::mat4 getOrientationMatrix(
+                const forge::common::CellIndex& pIndex);
         void resetViewMatrices();
-
         void resetOrientationMatrices();
 };
 

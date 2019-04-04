@@ -73,6 +73,9 @@ option(FG_USE_STATIC_CPPFLAGS
 set(FG_USE_WINDOW_TOOLKIT "glfw3" CACHE STRING "Choose Window toolkit")
 set_property(CACHE FG_USE_WINDOW_TOOLKIT PROPERTY STRINGS "glfw3" "sdl2")
 
+set(FG_RENDERING_BACKEND "OpenGL" CACHE STRING "Choose Rendering Backend")
+set_property(CACHE FG_RENDERING_BACKEND PROPERTY STRINGS "OpenGL")
+
 mark_as_advanced(
     FG_USE_STATIC_FREEIMAGE
     FG_USE_STATIC_CPPFLAGS)
@@ -89,21 +92,12 @@ if(Boost_FOUND AND NOT TARGET Boost::boost)
         PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif(Boost_FOUND AND NOT TARGET Boost::boost)
 
-if(UNIX AND FREETYPE_FOUND AND NOT TARGET Freetype::Freetype)
-    add_library(Freetype::Freetype UNKNOWN IMPORTED)
-    set_target_properties(Freetype::Freetype PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${FREETYPE_INCLUDE_DIRS}")
-    set_target_properties(Freetype::Freetype PROPERTIES
-        IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-        INTERFACE_LINK_LIBRARIES "${FREETYPE_LIBRARIES}")
-endif(UNIX AND FREETYPE_FOUND AND NOT TARGET Freetype::Freetype)
-
 add_subdirectory(extern/glad)
 add_subdirectory(src/backend/common)
 add_subdirectory(src/backend/glsl_shaders)
 add_subdirectory(src/api/c)
 add_subdirectory(src/api/cpp)
-add_subdirectory(src/backend/opengl)
+add_subdirectory(src/backend)
 
 #--------------------------------------------------------------------
 # Install include folder, docs, examples etc.
@@ -154,7 +148,6 @@ install(EXPORT ForgeTargets
     DESTINATION ${FG_INSTALL_CMAKE_DIR}
     COMPONENT forge
 )
-
 
 # export build tree targets config file
 set(INCLUDE_DIRS "${Forge_SOURCE_DIR}/include" "${Forge_BINARY_DIR}/include")
