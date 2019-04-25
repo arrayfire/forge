@@ -204,6 +204,12 @@ void AbstractChart::setAxesLabelFormat(const std::string& pXFormat,
     mXLabelFormat = std::string(pXFormat);
     mYLabelFormat = std::string(pYFormat);
     mZLabelFormat = std::string(pZFormat);
+
+    /*
+     * Re-generate tick labels since label format has
+     * been changed by the user explicitly.
+     */
+    generateTickLabels();
 }
 
 void AbstractChart::getAxesLimits(float* pXmin, float* pXmax,
