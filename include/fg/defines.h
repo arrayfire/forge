@@ -34,15 +34,31 @@
 
 #include <cstdlib>
 
+/// \brief Window handle
 typedef void* fg_window;
+
+/// \brief Font handle
 typedef void* fg_font;
+
+/// \brief Chart handle
 typedef void* fg_chart;
+
+/// \brief Image handle
 typedef void* fg_image;
+
+/// \brief Histogram handle
 typedef void* fg_histogram;
+
+/// \brief Plot handle
 typedef void* fg_plot;
+
+/// \brief Surface handle
 typedef void* fg_surface;
+
+/// \brief Vector Field handle
 typedef void* fg_vector_field;
 
+/// \brief Return Error Codes for Forge C API
 typedef enum {
     FG_ERR_NONE           = 0,              ///< Fuction returned successfully.
     /*
@@ -102,6 +118,7 @@ typedef enum {
     FG_ERR_UNKNOWN        = 9003            ///< Unkown error
 } fg_err;
 
+/// \brief Image Channel Formats
 typedef enum {
     FG_GRAYSCALE = 100,                     ///< Single channel
     FG_RG        = 200,                     ///< Three(Red, Green & Blue) channels
@@ -111,14 +128,13 @@ typedef enum {
     FG_BGRA      = 401                      ///< Four(Red, Green, Blue & Alpha) channels
 } fg_channel_format;
 
+/// \brief Chart dimensionality i.e. 2D or 3D
 typedef enum {
     FG_CHART_2D = 2,                        ///< Two dimensional charts
     FG_CHART_3D = 3                         ///< Three dimensional charts
 } fg_chart_type;
 
-/**
-   Color maps
- */
+/// \brief Color Maps
 typedef enum {
     FG_COLOR_MAP_DEFAULT  =  0,              ///< Default [0-255] grayscale colormap
     FG_COLOR_MAP_SPECTRUM =  1,              ///< Visual spectrum (390nm-830nm) in sRGB colorspace
@@ -133,6 +149,7 @@ typedef enum {
     FG_COLOR_MAP_VIRIDIS  = 10,              ///< perceptually uniform shades of blue-green-yellow
 } fg_color_map;
 
+/// \brief Color Constants
 typedef enum {
     FG_RED     = 0xFF0000FF,
     FG_GREEN   = 0x00FF00FF,
@@ -144,6 +161,7 @@ typedef enum {
     FG_BLACK   = 0x000000FF
 } fg_color;
 
+/// \brief Enum representation of internal data types
 typedef enum {
     FG_INT8    = 0,                                ///< Signed byte (8-bits)
     FG_UINT8   = 1,                                ///< Unsigned byte (8-bits)
@@ -154,12 +172,14 @@ typedef enum {
     FG_UINT16  = 6                                 ///< Unsigned integer (16-bits)
 } fg_dtype;
 
+/// \brief Plot Style
 typedef enum {
     FG_PLOT_LINE         = 0,                    ///< Line plot
     FG_PLOT_SCATTER      = 1,                    ///< Scatter plot
     FG_PLOT_SURFACE      = 2                     ///< Surface plot
 } fg_plot_type;
 
+/// \brief Markers rendered as sprites
 typedef enum {
     FG_MARKER_NONE         = 0,                    ///< No marker
     FG_MARKER_POINT        = 1,                    ///< Point marker
@@ -172,8 +192,9 @@ typedef enum {
 } fg_marker_type;
 
 #ifdef __cplusplus
-namespace forge
-{
+
+/// \brief Forge API namespace
+namespace forge {
     typedef fg_err ErrorCode;
     typedef fg_channel_format ChannelFormat;
     typedef fg_chart_type ChartType;
@@ -182,6 +203,7 @@ namespace forge
     typedef fg_plot_type PlotType;
     typedef fg_marker_type MarkerType;
 
+    /// \brief Alias Enum to \ref fg_dtype enum
     typedef enum {
         s8  = FG_INT8,
         u8  = FG_UINT8,

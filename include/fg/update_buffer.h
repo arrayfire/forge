@@ -68,6 +68,8 @@ namespace forge
     \param[in] pBufferId is the buffer identifier
     \param[in] pBufferSize is the buffer size in bytes
     \param[in] pBufferData is the pointer of the host side memory
+
+    \ingroup util_functions
  */
 FGAPI void updateVertexBuffer(const unsigned pBufferId,
                               const size_t pBufferSize,
@@ -79,6 +81,8 @@ FGAPI void updateVertexBuffer(const unsigned pBufferId,
     \param[in] pBufferId is the buffer identifier
     \param[in] pBufferSize is the buffer size in bytes
     \param[in] pBufferData is the pointer of the host side memory
+
+    \ingroup util_functions
  */
 FGAPI void updatePixelBuffer(const unsigned pBufferId,
                              const size_t pBufferSize,
@@ -86,6 +90,8 @@ FGAPI void updatePixelBuffer(const unsigned pBufferId,
 
 /**
     Sync all rendering operations till this point
+
+    \ingroup util_functions
  */
 FGAPI void finish();
 

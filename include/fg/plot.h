@@ -190,11 +190,7 @@ FGAPI fg_err fg_get_plot_radii_buffer_size(unsigned* pOut, const fg_plot pPlot);
 namespace forge
 {
 
-/**
-   \class Plot
-
-   \brief Plot is a line graph to display two dimensional data.
- */
+/// \brief Plot is a line graph to display two dimensional data.
 class Plot {
     private:
         fg_plot mValue;

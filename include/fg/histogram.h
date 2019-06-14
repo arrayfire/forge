@@ -155,11 +155,7 @@ FGAPI fg_err fg_get_histogram_alpha_buffer_size(unsigned* pOut, const fg_histogr
 namespace forge
 {
 
-/**
-   \class Histogram
-
-   \brief Histogram is a bar graph to display data frequencey.
- */
+/// \brief Histogram is a bar graph to display data frequencey.
 class Histogram {
     private:
         fg_histogram mValue;

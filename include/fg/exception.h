@@ -18,6 +18,7 @@
 namespace forge
 {
 
+/// \brief Error is exception object thrown by forge for internal errors
 class FGAPI Error : public std::exception
 {
 private:
@@ -59,7 +60,18 @@ public:
 extern "C" {
 #endif
 
+/**
+    Fetch the last error's error code
+
+    \ingroup util_functions
+ */
 FGAPI void fg_get_last_error(char **msg, int *len);
+
+/**
+    Fetch the string message associated to given error code
+
+    \ingroup util_functions
+ */
 FGAPI const char * fg_err_to_string(const fg_err err);
 
 #ifdef __cplusplus

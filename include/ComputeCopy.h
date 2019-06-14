@@ -49,17 +49,20 @@ extern "C" {
 #endif
 
 
-/** A backend-agnostic handle to a compute memory resource originating from an OpenGL resource.
-
-    - cudaGraphicsResource in CUDA
-    - cl_mem in OpenCL
-    - unsigned from standard cpu
-  */
+/// A backend-agnostic handle to a compute memory resource originating
+/// from an OpenGL resource.
+///
+/// - cudaGraphicsResource in CUDA
+/// - cl_mem in OpenCL
+/// - unsigned from standard cpu
 #if defined(USE_FORGE_CPU_COPY_HELPERS)
+/// OpenGL interop with CPU uses regular OpenGL buffer
 typedef unsigned GfxResourceHandle;
 #elif defined(USE_FORGE_CUDA_COPY_HELPERS)
+/// OpenGL interop with CUDA uses an opaque CUDA object
 typedef cudaGraphicsResource* GfxResourceHandle;
 #elif defined(USE_FORGE_OPENCL_COPY_HELPERS)
+/// OpenGL interop with OpenCL uses cl_mem object
 typedef cl_mem GfxResourceHandle;
 #endif
 
@@ -72,11 +75,13 @@ typedef cl_mem GfxResourceHandle;
   */
 typedef void* ComputeResourceHandle;
 
+/// Enum to indicate if OpenCL buffer is a PBO or VBO
 typedef enum {
     FORGE_IMAGE_BUFFER  = 0,     ///< OpenGL Pixel Buffer Object
     FORGE_VERTEX_BUFFER = 1      ///< OpenGL Vertex Buffer Object
 } BufferType;
 
+/// A tuple object of GfxResourceHandle and \ref BufferType
 typedef struct {
     GfxResourceHandle mId;
     BufferType mTarget;

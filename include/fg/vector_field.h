@@ -172,11 +172,7 @@ FGAPI fg_err fg_get_vector_field_direction_buffer_size(unsigned* pOut, const fg_
 namespace forge
 {
 
-/**
-   \class VectorField
-
-   \brief VectorField is a line graph to display two dimensional data.
- */
+/// \brief VectorField is a line graph to display two dimensional data.
 class VectorField {
     private:
         fg_vector_field mValue;
