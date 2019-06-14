@@ -166,11 +166,7 @@ namespace forge
 
 class Window;
 
-/**
-   \class Image
-
-   \brief Image is plain rendering of an image over the window or sub-region of it.
- */
+/// \brief Image helps rendering an image in a window
 class Image {
     private:
         fg_image mValue;

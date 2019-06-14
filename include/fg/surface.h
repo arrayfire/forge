@@ -155,11 +155,7 @@ FGAPI fg_err fg_get_surface_alpha_buffer_size(unsigned* pOut, const fg_surface p
 namespace forge
 {
 
-/**
-   \class Surface
-
-   \brief Surface is a graph to display three dimensional data.
- */
+/// \brief Surface is a graph to display three dimensional data.
 class Surface {
     private:
         fg_surface mValue;

@@ -78,11 +78,7 @@ FGAPI fg_err fg_load_system_font(fg_font pFont, const char* const pFontName);
 namespace forge
 {
 
-/**
-   \class Font
-
-   \brief Font object is essentially a resource handler for the specific font you want to use
- */
+/// \brief Font object is a resource handler for the font you want to use
 class Font {
     private:
         fg_font mValue;
