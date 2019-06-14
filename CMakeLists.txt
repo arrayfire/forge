@@ -51,13 +51,14 @@ endif()
 
 #packages not available via hunter
 find_package(Doxygen    QUIET)
+find_package(Sphinx     QUIET)
 find_package(FreeImage  QUIET)
 if(UNIX)
     find_package(FontConfig REQUIRED)
 endif()
 
 option(FG_BUILD_DOCS
-    "Build Documentation" ${DOXYGEN_FOUND})
+    "Build Documentation" $<AND:${DOXYGEN_FOUND},${Sphinx_FOUND}>)
 option(FG_BUILD_EXAMPLES
     "Build Examples" ON)
 option(FG_WITH_FREEIMAGE

@@ -757,10 +757,9 @@ WARN_LOGFILE           =
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ${DOCS_DIR}/pages \
+INPUT                  = ${DOCS_DIR}/markdown \
                          ${INCLUDE_DIR}/ \
-                         ${INCLUDE_DIR}/fg/ \
-                         ${DOCS_DIR}/details
+                         ${INCLUDE_DIR}/fg/
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -898,7 +897,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE = ${DOCS_DIR}/pages/README.md
+#USE_MDFILE_AS_MAINPAGE = ${DOCS_DIR}/markdown/README.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -1019,7 +1018,7 @@ IGNORE_PREFIX          =
 # If the GENERATE_HTML tag is set to YES doxygen will generate HTML output
 # The default value is: YES.
 
-GENERATE_HTML          = YES
+GENERATE_HTML          = NO
 
 # The HTML_OUTPUT tag is used to specify where the HTML docs will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
@@ -1054,7 +1053,7 @@ HTML_FILE_EXTENSION    = .htm
 # of the possible markers and block names see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_HEADER            = ${DOCS_DIR}/header.html
+#HTML_HEADER            = ${DOCS_DIR}/header.html
 
 # The HTML_FOOTER tag can be used to specify a user-defined HTML footer for each
 # generated HTML page. If the tag is left blank doxygen will generate a standard
@@ -1064,7 +1063,7 @@ HTML_HEADER            = ${DOCS_DIR}/header.html
 # that doxygen normally uses.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_FOOTER            = ${DOCS_DIR}/footer.html
+#HTML_FOOTER            = ${DOCS_DIR}/footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading style
 # sheet that is used by each HTML page. It can be used to fine-tune the look of
@@ -1810,7 +1809,7 @@ MAN_LINKS              = NO
 # captures the structure of the code including all documentation.
 # The default value is: NO.
 
-GENERATE_XML           = NO
+GENERATE_XML           = YES
 
 # The XML_OUTPUT tag is used to specify where the XML pages will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
