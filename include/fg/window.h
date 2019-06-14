@@ -292,11 +292,7 @@ FGAPI fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window p
 namespace forge
 {
 
-/**
-   \class Window
-
-   \brief Window is where other objects such as Images, Plots etc. are rendered.
- */
+/// \brief Window is where objects such as Images, Plots etc. are rendered.
 class Window {
     private:
         fg_window mValue;

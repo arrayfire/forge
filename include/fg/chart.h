@@ -80,8 +80,6 @@ FGAPI fg_err fg_set_chart_axes_titles(fg_chart pHandle,
    \param[in] pYmax is y-axis maximum data value
    \param[in] pZmin is z-axis minimum data value
    \param[in] pZmax is z-axis maximum data value
-
-   \ingroup chart_functions
  */
 FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle,
                                       const float pXmin, const float pXmax,
@@ -111,8 +109,6 @@ FGAPI fg_err fg_set_chart_label_format(fg_chart pHandle, const char* pXFormat,
    \param[out] pZmin is z-axis minimum data value
    \param[out] pZmax is z-axis maximum data value
    \param[in] pHandle is chart handle
-
-   \ingroup chart_functions
  */
 FGAPI fg_err fg_get_chart_axes_limits(float* pXmin, float* pXmax,
                                       float* pYmin, float* pYmax,
@@ -305,8 +301,6 @@ namespace forge
 {
 
 /**
-   \class Chart
-
    \brief Chart is base canvas where other plottable objects are rendered.
 
    Charts come in two types:

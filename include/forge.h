@@ -14,8 +14,9 @@
 \defgroup c_api_functions C API functions
 Categorically divided into groups based on the renderable
 they are related to.
-@{
 
+\addtogroup c_api_functions
+@{
     \defgroup chart_functions Chart
     \defgroup font_functions Font
     \defgroup hist_functions Histogram
