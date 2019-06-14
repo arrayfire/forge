@@ -1,8 +1,6 @@
 Overview {#mainpage}
 ========
 
-[TOC]
-
 ## About Forge
 A prototype of the OpenGL interop library that can be used with
 [ArrayFire](https://github.com/arrayfire/arrayfire). The

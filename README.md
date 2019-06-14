@@ -9,7 +9,7 @@ An OpenGL interop library that can be used with ArrayFire or any other applicati
 
 ### Documentation
 
-You can find the most recent and updated documentation [here](http://arrayfire.org/forge/index.htm).
+You can find the latest documentation [here](http://arrayfire.org/forge/index.htm).
 
 ### Dependencies
 
@@ -18,6 +18,9 @@ You can find the most recent and updated documentation [here](http://arrayfire.o
 - [boost](https://www.boost.org/) - not a runtime dependency.
 - [FreeImage](http://freeimage.sourceforge.net/) (optional).
 - [fontconfig](http://www.freedesktop.org/wiki/Software/fontconfig/) on Linux and OSX.
+- Documentation Generation (preferred & recommended version of python is 3.\*)
+    * [Doxygen](http://doxygen.nl/)
+    * [Sphinx](http://www.sphinx-doc.org/) with extensions: [Breathe](https://breathe.readthedocs.io/en/latest/), [recommonmark](https://recommonmark.readthedocs.io/en/latest/)
 
 **Linux/Unix**: Dependencies should be available via respective package managers.
 **Windows**: We recommend [vcpkg](https://github.com/Microsoft/vcpkg).
