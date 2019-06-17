@@ -1,0 +1,674 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>C API Enums &mdash; Forge 1.0.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/arrayfire.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="C API typdefs" href="typedefs.html" />
+    <link rel="prev" title="Namespaces" href="forge.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #073763" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Forge
+          
+
+          
+            
+            <img src="../_static/arrayfire_icon.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown/README.html">Overview {#mainpage}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="samples.html">Sample Renderings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="forge.html">Namespaces</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">C API Enums</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#error-code">Error Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#image-channel-format">Image Channel Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#chart-dimensionality">Chart Dimensionality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#color-maps">Color Maps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#color-codes">Color Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-type">Data Type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plots">Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#point-marker-shapes">Point Marker Shapes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="typedefs.html">C API typdefs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macros.html">Macros</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extras.html">Interop Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Forge</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>C API Enums</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/rst/enums.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="c-api-enums">
+<h1>C API Enums<a class="headerlink" href="#c-api-enums" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="error-code">
+<h2>Error Code<a class="headerlink" href="#error-code" title="Permalink to this headline">¶</a></h2>
+<dl class="enum">
+<dt id="_CPPv46fg_err">
+<span id="_CPPv36fg_err"></span><span id="_CPPv26fg_err"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0"></span><em class="property">enum </em><code class="sig-name descname">fg_err</code><a class="headerlink" href="#_CPPv46fg_err" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return Error Codes for Forge C API. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv411FG_ERR_NONE">
+<span id="_CPPv311FG_ERR_NONE"></span><span id="_CPPv211FG_ERR_NONE"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a7750412da6e35ad92ca3149dca8478e2"></span><code class="sig-name descname">FG_ERR_NONE</code> = 0<a class="headerlink" href="#_CPPv411FG_ERR_NONE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Fuction returned successfully. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv411FG_ERR_SIZE">
+<span id="_CPPv311FG_ERR_SIZE"></span><span id="_CPPv211FG_ERR_SIZE"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0adf898ed2a3770b5837e03f5df97a5a10"></span><code class="sig-name descname">FG_ERR_SIZE</code> = 1001<a class="headerlink" href="#_CPPv411FG_ERR_SIZE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Invalid size argument. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv419FG_ERR_INVALID_TYPE">
+<span id="_CPPv319FG_ERR_INVALID_TYPE"></span><span id="_CPPv219FG_ERR_INVALID_TYPE"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0ab8a6759d49e026becbc79576e714dc80"></span><code class="sig-name descname">FG_ERR_INVALID_TYPE</code> = 1002<a class="headerlink" href="#_CPPv419FG_ERR_INVALID_TYPE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Invalid type argument. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv418FG_ERR_INVALID_ARG">
+<span id="_CPPv318FG_ERR_INVALID_ARG"></span><span id="_CPPv218FG_ERR_INVALID_ARG"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0aa9a93a6bd304c75cf5a20daae722fe2a"></span><code class="sig-name descname">FG_ERR_INVALID_ARG</code> = 1003<a class="headerlink" href="#_CPPv418FG_ERR_INVALID_ARG" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Invalid argument. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv415FG_ERR_GL_ERROR">
+<span id="_CPPv315FG_ERR_GL_ERROR"></span><span id="_CPPv215FG_ERR_GL_ERROR"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0ae3a705a7e107701a0c5a7d159958a354"></span><code class="sig-name descname">FG_ERR_GL_ERROR</code> = 2001<a class="headerlink" href="#_CPPv415FG_ERR_GL_ERROR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>OpenGL error. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421FG_ERR_FREETYPE_ERROR">
+<span id="_CPPv321FG_ERR_FREETYPE_ERROR"></span><span id="_CPPv221FG_ERR_FREETYPE_ERROR"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a571660ba9c38e4ad2eec4a7706314146"></span><code class="sig-name descname">FG_ERR_FREETYPE_ERROR</code> = 3001<a class="headerlink" href="#_CPPv421FG_ERR_FREETYPE_ERROR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Freetype library error. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421FG_ERR_FILE_NOT_FOUND">
+<span id="_CPPv321FG_ERR_FILE_NOT_FOUND"></span><span id="_CPPv221FG_ERR_FILE_NOT_FOUND"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a15e8a0d5c278e6efcb7c8fee53fe4758"></span><code class="sig-name descname">FG_ERR_FILE_NOT_FOUND</code> = 4001<a class="headerlink" href="#_CPPv421FG_ERR_FILE_NOT_FOUND" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>File IO errors. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420FG_ERR_NOT_SUPPORTED">
+<span id="_CPPv320FG_ERR_NOT_SUPPORTED"></span><span id="_CPPv220FG_ERR_NOT_SUPPORTED"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a03345287adeda24a6663838945a3930e"></span><code class="sig-name descname">FG_ERR_NOT_SUPPORTED</code> = 5001<a class="headerlink" href="#_CPPv420FG_ERR_NOT_SUPPORTED" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Feature not supported. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421FG_ERR_NOT_CONFIGURED">
+<span id="_CPPv321FG_ERR_NOT_CONFIGURED"></span><span id="_CPPv221FG_ERR_NOT_CONFIGURED"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a80c92bfbbac52951ad50014612e4fd5b"></span><code class="sig-name descname">FG_ERR_NOT_CONFIGURED</code> = 5002<a class="headerlink" href="#_CPPv421FG_ERR_NOT_CONFIGURED" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Library configuration mismatch. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv423FG_ERR_FONTCONFIG_ERROR">
+<span id="_CPPv323FG_ERR_FONTCONFIG_ERROR"></span><span id="_CPPv223FG_ERR_FONTCONFIG_ERROR"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a72e14e2460f8fcaafc5ecc327a566fbc"></span><code class="sig-name descname">FG_ERR_FONTCONFIG_ERROR</code> = 6001<a class="headerlink" href="#_CPPv423FG_ERR_FONTCONFIG_ERROR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Fontconfig related error. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv431FG_ERR_FREEIMAGE_UNKNOWN_FORMAT">
+<span id="_CPPv331FG_ERR_FREEIMAGE_UNKNOWN_FORMAT"></span><span id="_CPPv231FG_ERR_FREEIMAGE_UNKNOWN_FORMAT"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a3a6b42a93abf019bb28297f0d5d1ac44"></span><code class="sig-name descname">FG_ERR_FREEIMAGE_UNKNOWN_FORMAT</code> = 7001<a class="headerlink" href="#_CPPv431FG_ERR_FREEIMAGE_UNKNOWN_FORMAT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unknown format, not supported by freeimage. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv426FG_ERR_FREEIMAGE_BAD_ALLOC">
+<span id="_CPPv326FG_ERR_FREEIMAGE_BAD_ALLOC"></span><span id="_CPPv226FG_ERR_FREEIMAGE_BAD_ALLOC"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a7adafe7300dcda756f211cda543ff599"></span><code class="sig-name descname">FG_ERR_FREEIMAGE_BAD_ALLOC</code> = 7002<a class="headerlink" href="#_CPPv426FG_ERR_FREEIMAGE_BAD_ALLOC" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>freeimage memory allocation failed </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv428FG_ERR_FREEIMAGE_SAVE_FAILED">
+<span id="_CPPv328FG_ERR_FREEIMAGE_SAVE_FAILED"></span><span id="_CPPv228FG_ERR_FREEIMAGE_SAVE_FAILED"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0affaac7c3f782d7af8489a0fa887bdbbd"></span><code class="sig-name descname">FG_ERR_FREEIMAGE_SAVE_FAILED</code> = 7003<a class="headerlink" href="#_CPPv428FG_ERR_FREEIMAGE_SAVE_FAILED" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>freeimage file save failed </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv415FG_ERR_INTERNAL">
+<span id="_CPPv315FG_ERR_INTERNAL"></span><span id="_CPPv215FG_ERR_INTERNAL"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a03b29dabe918cd42a5df88161649f555"></span><code class="sig-name descname">FG_ERR_INTERNAL</code> = 9001<a class="headerlink" href="#_CPPv415FG_ERR_INTERNAL" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Internal error. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv414FG_ERR_RUNTIME">
+<span id="_CPPv314FG_ERR_RUNTIME"></span><span id="_CPPv214FG_ERR_RUNTIME"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0a5654304d748d9188ef91932d96e6f578"></span><code class="sig-name descname">FG_ERR_RUNTIME</code> = 9002<a class="headerlink" href="#_CPPv414FG_ERR_RUNTIME" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Runtime error. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv414FG_ERR_UNKNOWN">
+<span id="_CPPv314FG_ERR_UNKNOWN"></span><span id="_CPPv214FG_ERR_UNKNOWN"></span><span class="target" id="defines_8h_1a4ee782f922694c98a5d10822dedeabf0aa0204ca5abf11624451339ff97f147f3"></span><code class="sig-name descname">FG_ERR_UNKNOWN</code> = 9003<a class="headerlink" href="#_CPPv414FG_ERR_UNKNOWN" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unkown error. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="image-channel-format">
+<h2>Image Channel Format<a class="headerlink" href="#image-channel-format" title="Permalink to this headline">¶</a></h2>
+<dl class="enum">
+<dt id="_CPPv417fg_channel_format">
+<span id="_CPPv317fg_channel_format"></span><span id="_CPPv217fg_channel_format"></span><span class="target" id="defines_8h_1a162f1d98558c931a93638df47cb412db"></span><em class="property">enum </em><code class="sig-name descname">fg_channel_format</code><a class="headerlink" href="#_CPPv417fg_channel_format" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Image Channel Formats. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv412FG_GRAYSCALE">
+<span id="_CPPv312FG_GRAYSCALE"></span><span id="_CPPv212FG_GRAYSCALE"></span><span class="target" id="defines_8h_1a162f1d98558c931a93638df47cb412dbaded373e3c56a2b07c4d8ff0ea8defb32"></span><code class="sig-name descname">FG_GRAYSCALE</code> = 100<a class="headerlink" href="#_CPPv412FG_GRAYSCALE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Single channel. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv45FG_RG">
+<span id="_CPPv35FG_RG"></span><span id="_CPPv25FG_RG"></span><span class="target" id="defines_8h_1a162f1d98558c931a93638df47cb412dba352c6a8278d16b80aff5380b9529c6ec"></span><code class="sig-name descname">FG_RG</code> = 200<a class="headerlink" href="#_CPPv45FG_RG" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Three(Red, Green &amp; Blue) channels. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv46FG_RGB">
+<span id="_CPPv36FG_RGB"></span><span id="_CPPv26FG_RGB"></span><span class="target" id="defines_8h_1a162f1d98558c931a93638df47cb412dbae6b2b3061b67b1baf548d05b97bdeaa9"></span><code class="sig-name descname">FG_RGB</code> = 300<a class="headerlink" href="#_CPPv46FG_RGB" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Three(Red, Green &amp; Blue) channels. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv46FG_BGR">
+<span id="_CPPv36FG_BGR"></span><span id="_CPPv26FG_BGR"></span><span class="target" id="defines_8h_1a162f1d98558c931a93638df47cb412dbad2fd7544e70d213523a8078ebf2ec6ef"></span><code class="sig-name descname">FG_BGR</code> = 301<a class="headerlink" href="#_CPPv46FG_BGR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Three(Red, Green &amp; Blue) channels. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv47FG_RGBA">
+<span id="_CPPv37FG_RGBA"></span><span id="_CPPv27FG_RGBA"></span><span class="target" id="defines_8h_1a162f1d98558c931a93638df47cb412dba550d4ebc7407669a35a87057ac44c5e4"></span><code class="sig-name descname">FG_RGBA</code> = 400<a class="headerlink" href="#_CPPv47FG_RGBA" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Four(Red, Green, Blue &amp; Alpha) channels. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv47FG_BGRA">
+<span id="_CPPv37FG_BGRA"></span><span id="_CPPv27FG_BGRA"></span><span class="target" id="defines_8h_1a162f1d98558c931a93638df47cb412dbac0ae5d456baceeacfab4fac6ec95f4f7"></span><code class="sig-name descname">FG_BGRA</code> = 401<a class="headerlink" href="#_CPPv47FG_BGRA" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Four(Red, Green, Blue &amp; Alpha) channels. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="chart-dimensionality">
+<h2>Chart Dimensionality<a class="headerlink" href="#chart-dimensionality" title="Permalink to this headline">¶</a></h2>
+<dl class="enum">
+<dt id="_CPPv413fg_chart_type">
+<span id="_CPPv313fg_chart_type"></span><span id="_CPPv213fg_chart_type"></span><span class="target" id="defines_8h_1af4e160ad397b0c0d8271fab83e2441db"></span><em class="property">enum </em><code class="sig-name descname">fg_chart_type</code><a class="headerlink" href="#_CPPv413fg_chart_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Chart dimensionality i.e. 2D or 3D. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv411FG_CHART_2D">
+<span id="_CPPv311FG_CHART_2D"></span><span id="_CPPv211FG_CHART_2D"></span><span class="target" id="defines_8h_1af4e160ad397b0c0d8271fab83e2441dbab26b9da5cbdafc88a47bbe067b74924c"></span><code class="sig-name descname">FG_CHART_2D</code> = 2<a class="headerlink" href="#_CPPv411FG_CHART_2D" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Two dimensional charts. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv411FG_CHART_3D">
+<span id="_CPPv311FG_CHART_3D"></span><span id="_CPPv211FG_CHART_3D"></span><span class="target" id="defines_8h_1af4e160ad397b0c0d8271fab83e2441dba5209ecc54f589ec8cf18f2ffd750648c"></span><code class="sig-name descname">FG_CHART_3D</code> = 3<a class="headerlink" href="#_CPPv411FG_CHART_3D" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Three dimensional charts. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="color-maps">
+<h2>Color Maps<a class="headerlink" href="#color-maps" title="Permalink to this headline">¶</a></h2>
+<dl class="enum">
+<dt id="_CPPv412fg_color_map">
+<span id="_CPPv312fg_color_map"></span><span id="_CPPv212fg_color_map"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461"></span><em class="property">enum </em><code class="sig-name descname">fg_color_map</code><a class="headerlink" href="#_CPPv412fg_color_map" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Color Maps. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv420FG_COLOR_MAP_DEFAULT">
+<span id="_CPPv320FG_COLOR_MAP_DEFAULT"></span><span id="_CPPv220FG_COLOR_MAP_DEFAULT"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461a14da1dff78a4a098cd4a17bcfae47a7e"></span><code class="sig-name descname">FG_COLOR_MAP_DEFAULT</code> = 0<a class="headerlink" href="#_CPPv420FG_COLOR_MAP_DEFAULT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Default [0-255] grayscale colormap. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv421FG_COLOR_MAP_SPECTRUM">
+<span id="_CPPv321FG_COLOR_MAP_SPECTRUM"></span><span id="_CPPv221FG_COLOR_MAP_SPECTRUM"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461a1ef8ab3efad8e654a92bda80a80986cc"></span><code class="sig-name descname">FG_COLOR_MAP_SPECTRUM</code> = 1<a class="headerlink" href="#_CPPv421FG_COLOR_MAP_SPECTRUM" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Visual spectrum (390nm-830nm) in sRGB colorspace. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420FG_COLOR_MAP_RAINBOW">
+<span id="_CPPv320FG_COLOR_MAP_RAINBOW"></span><span id="_CPPv220FG_COLOR_MAP_RAINBOW"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461ac874751b61a4948ac420f9e4c7808af5"></span><code class="sig-name descname">FG_COLOR_MAP_RAINBOW</code> = 2<a class="headerlink" href="#_CPPv420FG_COLOR_MAP_RAINBOW" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Rainbow color map. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv416FG_COLOR_MAP_RED">
+<span id="_CPPv316FG_COLOR_MAP_RED"></span><span id="_CPPv216FG_COLOR_MAP_RED"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461a339c7946701bc0b00e0716216a41d2b9"></span><code class="sig-name descname">FG_COLOR_MAP_RED</code> = 3<a class="headerlink" href="#_CPPv416FG_COLOR_MAP_RED" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Red color map. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv417FG_COLOR_MAP_MOOD">
+<span id="_CPPv317FG_COLOR_MAP_MOOD"></span><span id="_CPPv217FG_COLOR_MAP_MOOD"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461a977da85c11fbe90854b22b13a59d0bb4"></span><code class="sig-name descname">FG_COLOR_MAP_MOOD</code> = 4<a class="headerlink" href="#_CPPv417FG_COLOR_MAP_MOOD" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Mood color map. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv417FG_COLOR_MAP_HEAT">
+<span id="_CPPv317FG_COLOR_MAP_HEAT"></span><span id="_CPPv217FG_COLOR_MAP_HEAT"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461acb7ff24fa0f98d0c6534a66f0d81ef61"></span><code class="sig-name descname">FG_COLOR_MAP_HEAT</code> = 5<a class="headerlink" href="#_CPPv417FG_COLOR_MAP_HEAT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Heat color map. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv417FG_COLOR_MAP_BLUE">
+<span id="_CPPv317FG_COLOR_MAP_BLUE"></span><span id="_CPPv217FG_COLOR_MAP_BLUE"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461a8dd43873a47aaa8f0695687ee39e28c3"></span><code class="sig-name descname">FG_COLOR_MAP_BLUE</code> = 6<a class="headerlink" href="#_CPPv417FG_COLOR_MAP_BLUE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Blue color map. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420FG_COLOR_MAP_INFERNO">
+<span id="_CPPv320FG_COLOR_MAP_INFERNO"></span><span id="_CPPv220FG_COLOR_MAP_INFERNO"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461a31cbaec733d2c514fb030e04271e3832"></span><code class="sig-name descname">FG_COLOR_MAP_INFERNO</code> = 7<a class="headerlink" href="#_CPPv420FG_COLOR_MAP_INFERNO" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>perceptually uniform shades of black-red-yellow </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv418FG_COLOR_MAP_MAGMA">
+<span id="_CPPv318FG_COLOR_MAP_MAGMA"></span><span id="_CPPv218FG_COLOR_MAP_MAGMA"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461a01e90803d0d2797e46185c3bb822b6a1"></span><code class="sig-name descname">FG_COLOR_MAP_MAGMA</code> = 8<a class="headerlink" href="#_CPPv418FG_COLOR_MAP_MAGMA" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>perceptually uniform shades of black-red-white </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv419FG_COLOR_MAP_PLASMA">
+<span id="_CPPv319FG_COLOR_MAP_PLASMA"></span><span id="_CPPv219FG_COLOR_MAP_PLASMA"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461a1f30b0722bac5c81ec8b8edfe59078f5"></span><code class="sig-name descname">FG_COLOR_MAP_PLASMA</code> = 9<a class="headerlink" href="#_CPPv419FG_COLOR_MAP_PLASMA" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>perceptually uniform shades of blue-red-yellow </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv420FG_COLOR_MAP_VIRIDIS">
+<span id="_CPPv320FG_COLOR_MAP_VIRIDIS"></span><span id="_CPPv220FG_COLOR_MAP_VIRIDIS"></span><span class="target" id="defines_8h_1a3c25187db6a9805731a4fd67959ab461a3aa3103f3333e57177dc930ff082e625"></span><code class="sig-name descname">FG_COLOR_MAP_VIRIDIS</code> = 10<a class="headerlink" href="#_CPPv420FG_COLOR_MAP_VIRIDIS" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>perceptually uniform shades of blue-green-yellow </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="color-codes">
+<h2>Color Codes<a class="headerlink" href="#color-codes" title="Permalink to this headline">¶</a></h2>
+<dl class="enum">
+<dt id="_CPPv48fg_color">
+<span id="_CPPv38fg_color"></span><span id="_CPPv28fg_color"></span><span class="target" id="defines_8h_1aa65cea65b505b5bb5946acdcb3e6bc38"></span><em class="property">enum </em><code class="sig-name descname">fg_color</code><a class="headerlink" href="#_CPPv48fg_color" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Color Constants. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv46FG_RED">
+<span id="_CPPv36FG_RED"></span><span id="_CPPv26FG_RED"></span><span class="target" id="defines_8h_1aa65cea65b505b5bb5946acdcb3e6bc38aa2cf8cb5bc8e973e30ac349a20b3e965"></span><code class="sig-name descname">FG_RED</code> = 0xFF0000FF<a class="headerlink" href="#_CPPv46FG_RED" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv48FG_GREEN">
+<span id="_CPPv38FG_GREEN"></span><span id="_CPPv28FG_GREEN"></span><span class="target" id="defines_8h_1aa65cea65b505b5bb5946acdcb3e6bc38a2d9fc9319228a105fbd300d9b73f9f2e"></span><code class="sig-name descname">FG_GREEN</code> = 0x00FF00FF<a class="headerlink" href="#_CPPv48FG_GREEN" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv47FG_BLUE">
+<span id="_CPPv37FG_BLUE"></span><span id="_CPPv27FG_BLUE"></span><span class="target" id="defines_8h_1aa65cea65b505b5bb5946acdcb3e6bc38aaf559ecdf155138ce18d1e2d008b7b9c"></span><code class="sig-name descname">FG_BLUE</code> = 0x0000FFFF<a class="headerlink" href="#_CPPv47FG_BLUE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv49FG_YELLOW">
+<span id="_CPPv39FG_YELLOW"></span><span id="_CPPv29FG_YELLOW"></span><span class="target" id="defines_8h_1aa65cea65b505b5bb5946acdcb3e6bc38adb4ad5c8d9213ad8901d48c166d780bd"></span><code class="sig-name descname">FG_YELLOW</code> = 0xFFFF00FF<a class="headerlink" href="#_CPPv49FG_YELLOW" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv47FG_CYAN">
+<span id="_CPPv37FG_CYAN"></span><span id="_CPPv27FG_CYAN"></span><span class="target" id="defines_8h_1aa65cea65b505b5bb5946acdcb3e6bc38a4081526d57cbc79e685a2234d0158135"></span><code class="sig-name descname">FG_CYAN</code> = 0x00FFFFFF<a class="headerlink" href="#_CPPv47FG_CYAN" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv410FG_MAGENTA">
+<span id="_CPPv310FG_MAGENTA"></span><span id="_CPPv210FG_MAGENTA"></span><span class="target" id="defines_8h_1aa65cea65b505b5bb5946acdcb3e6bc38a425069dfb91122ee18dd7a8e8f1b5cc2"></span><code class="sig-name descname">FG_MAGENTA</code> = 0xFF00FFFF<a class="headerlink" href="#_CPPv410FG_MAGENTA" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv48FG_WHITE">
+<span id="_CPPv38FG_WHITE"></span><span id="_CPPv28FG_WHITE"></span><span class="target" id="defines_8h_1aa65cea65b505b5bb5946acdcb3e6bc38a17343f487cc9c0acbea73e85cd6c0fd6"></span><code class="sig-name descname">FG_WHITE</code> = 0xFFFFFFFF<a class="headerlink" href="#_CPPv48FG_WHITE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv48FG_BLACK">
+<span id="_CPPv38FG_BLACK"></span><span id="_CPPv28FG_BLACK"></span><span class="target" id="defines_8h_1aa65cea65b505b5bb5946acdcb3e6bc38a4d96567df68528c808c8fca495e08098"></span><code class="sig-name descname">FG_BLACK</code> = 0x000000FF<a class="headerlink" href="#_CPPv48FG_BLACK" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="data-type">
+<h2>Data Type<a class="headerlink" href="#data-type" title="Permalink to this headline">¶</a></h2>
+<dl class="enum">
+<dt id="_CPPv48fg_dtype">
+<span id="_CPPv38fg_dtype"></span><span id="_CPPv28fg_dtype"></span><span class="target" id="defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"></span><em class="property">enum </em><code class="sig-name descname">fg_dtype</code><a class="headerlink" href="#_CPPv48fg_dtype" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Enum representation of internal data types. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv47FG_INT8">
+<span id="_CPPv37FG_INT8"></span><span id="_CPPv27FG_INT8"></span><span class="target" id="defines_8h_1a8490c7b8ea074ec5825112776b16a9d7a2b9b6afa95857563af98d137636e2e41"></span><code class="sig-name descname">FG_INT8</code> = 0<a class="headerlink" href="#_CPPv47FG_INT8" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Signed byte (8-bits) </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv48FG_UINT8">
+<span id="_CPPv38FG_UINT8"></span><span id="_CPPv28FG_UINT8"></span><span class="target" id="defines_8h_1a8490c7b8ea074ec5825112776b16a9d7a5595d5c942127e7ee52936da93ea8ef9"></span><code class="sig-name descname">FG_UINT8</code> = 1<a class="headerlink" href="#_CPPv48FG_UINT8" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unsigned byte (8-bits) </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv48FG_INT32">
+<span id="_CPPv38FG_INT32"></span><span id="_CPPv28FG_INT32"></span><span class="target" id="defines_8h_1a8490c7b8ea074ec5825112776b16a9d7a254fdd07d707e22abc3c07c54cef7a14"></span><code class="sig-name descname">FG_INT32</code> = 2<a class="headerlink" href="#_CPPv48FG_INT32" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Signed integer (32-bits) </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv49FG_UINT32">
+<span id="_CPPv39FG_UINT32"></span><span id="_CPPv29FG_UINT32"></span><span class="target" id="defines_8h_1a8490c7b8ea074ec5825112776b16a9d7a8c8cd4d7fd243946905548e8886827fd"></span><code class="sig-name descname">FG_UINT32</code> = 3<a class="headerlink" href="#_CPPv49FG_UINT32" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unsigned integer (32-bits) </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv410FG_FLOAT32">
+<span id="_CPPv310FG_FLOAT32"></span><span id="_CPPv210FG_FLOAT32"></span><span class="target" id="defines_8h_1a8490c7b8ea074ec5825112776b16a9d7a11ae9c359610e178417d2442eab8ad81"></span><code class="sig-name descname">FG_FLOAT32</code> = 4<a class="headerlink" href="#_CPPv410FG_FLOAT32" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Float (32-bits) </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv48FG_INT16">
+<span id="_CPPv38FG_INT16"></span><span id="_CPPv28FG_INT16"></span><span class="target" id="defines_8h_1a8490c7b8ea074ec5825112776b16a9d7aa14965dfc2a147cceccd8dcb8254ed09"></span><code class="sig-name descname">FG_INT16</code> = 5<a class="headerlink" href="#_CPPv48FG_INT16" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Signed integer (16-bits) </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv49FG_UINT16">
+<span id="_CPPv39FG_UINT16"></span><span id="_CPPv29FG_UINT16"></span><span class="target" id="defines_8h_1a8490c7b8ea074ec5825112776b16a9d7a343c82c7ecb6263fe93335ce5a4c0b70"></span><code class="sig-name descname">FG_UINT16</code> = 6<a class="headerlink" href="#_CPPv49FG_UINT16" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unsigned integer (16-bits) </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="plots">
+<h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
+<dl class="enum">
+<dt id="_CPPv412fg_plot_type">
+<span id="_CPPv312fg_plot_type"></span><span id="_CPPv212fg_plot_type"></span><span class="target" id="defines_8h_1a3bc618792ca52006bf96800b9bd4050d"></span><em class="property">enum </em><code class="sig-name descname">fg_plot_type</code><a class="headerlink" href="#_CPPv412fg_plot_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Plot Style. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv412FG_PLOT_LINE">
+<span id="_CPPv312FG_PLOT_LINE"></span><span id="_CPPv212FG_PLOT_LINE"></span><span class="target" id="defines_8h_1a3bc618792ca52006bf96800b9bd4050daf73d0173ca8c7039427474c4dbbb7dec"></span><code class="sig-name descname">FG_PLOT_LINE</code> = 0<a class="headerlink" href="#_CPPv412FG_PLOT_LINE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Line plot. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv415FG_PLOT_SCATTER">
+<span id="_CPPv315FG_PLOT_SCATTER"></span><span id="_CPPv215FG_PLOT_SCATTER"></span><span class="target" id="defines_8h_1a3bc618792ca52006bf96800b9bd4050da20bb0cf35cb4efe48747b561224e799f"></span><code class="sig-name descname">FG_PLOT_SCATTER</code> = 1<a class="headerlink" href="#_CPPv415FG_PLOT_SCATTER" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Scatter plot. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv415FG_PLOT_SURFACE">
+<span id="_CPPv315FG_PLOT_SURFACE"></span><span id="_CPPv215FG_PLOT_SURFACE"></span><span class="target" id="defines_8h_1a3bc618792ca52006bf96800b9bd4050da872a3be01c14432ab20bd6751a5c811f"></span><code class="sig-name descname">FG_PLOT_SURFACE</code> = 2<a class="headerlink" href="#_CPPv415FG_PLOT_SURFACE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Surface plot. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="point-marker-shapes">
+<h2>Point Marker Shapes<a class="headerlink" href="#point-marker-shapes" title="Permalink to this headline">¶</a></h2>
+<dl class="enum">
+<dt id="_CPPv414fg_marker_type">
+<span id="_CPPv314fg_marker_type"></span><span id="_CPPv214fg_marker_type"></span><span class="target" id="defines_8h_1a4e31a5f495100699e2478393e158d971"></span><em class="property">enum </em><code class="sig-name descname">fg_marker_type</code><a class="headerlink" href="#_CPPv414fg_marker_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Markers rendered as sprites. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv414FG_MARKER_NONE">
+<span id="_CPPv314FG_MARKER_NONE"></span><span id="_CPPv214FG_MARKER_NONE"></span><span class="target" id="defines_8h_1a4e31a5f495100699e2478393e158d971a8cfe97478dc1f9f7412f7cbbedc7c59d"></span><code class="sig-name descname">FG_MARKER_NONE</code> = 0<a class="headerlink" href="#_CPPv414FG_MARKER_NONE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>No marker. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv415FG_MARKER_POINT">
+<span id="_CPPv315FG_MARKER_POINT"></span><span id="_CPPv215FG_MARKER_POINT"></span><span class="target" id="defines_8h_1a4e31a5f495100699e2478393e158d971a98ea15039df1ff77eabb9b7a833efb07"></span><code class="sig-name descname">FG_MARKER_POINT</code> = 1<a class="headerlink" href="#_CPPv415FG_MARKER_POINT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Point marker. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv416FG_MARKER_CIRCLE">
+<span id="_CPPv316FG_MARKER_CIRCLE"></span><span id="_CPPv216FG_MARKER_CIRCLE"></span><span class="target" id="defines_8h_1a4e31a5f495100699e2478393e158d971a69eb2b5b6ebb3f139a17b9195606327c"></span><code class="sig-name descname">FG_MARKER_CIRCLE</code> = 2<a class="headerlink" href="#_CPPv416FG_MARKER_CIRCLE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Circle marker. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv416FG_MARKER_SQUARE">
+<span id="_CPPv316FG_MARKER_SQUARE"></span><span id="_CPPv216FG_MARKER_SQUARE"></span><span class="target" id="defines_8h_1a4e31a5f495100699e2478393e158d971af94b7a1768b565172f69db29bfdba535"></span><code class="sig-name descname">FG_MARKER_SQUARE</code> = 3<a class="headerlink" href="#_CPPv416FG_MARKER_SQUARE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Square marker. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv418FG_MARKER_TRIANGLE">
+<span id="_CPPv318FG_MARKER_TRIANGLE"></span><span id="_CPPv218FG_MARKER_TRIANGLE"></span><span class="target" id="defines_8h_1a4e31a5f495100699e2478393e158d971ab0caed65a273eff83028976846adf44b"></span><code class="sig-name descname">FG_MARKER_TRIANGLE</code> = 4<a class="headerlink" href="#_CPPv418FG_MARKER_TRIANGLE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Triangle marker. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv415FG_MARKER_CROSS">
+<span id="_CPPv315FG_MARKER_CROSS"></span><span id="_CPPv215FG_MARKER_CROSS"></span><span class="target" id="defines_8h_1a4e31a5f495100699e2478393e158d971acdf4f46884ec2d3ff6ac8bdd9ad4e374"></span><code class="sig-name descname">FG_MARKER_CROSS</code> = 5<a class="headerlink" href="#_CPPv415FG_MARKER_CROSS" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Cross-hair marker. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv414FG_MARKER_PLUS">
+<span id="_CPPv314FG_MARKER_PLUS"></span><span id="_CPPv214FG_MARKER_PLUS"></span><span class="target" id="defines_8h_1a4e31a5f495100699e2478393e158d971ad3da2e3b1a7fe70c49ed04d8e6ba3981"></span><code class="sig-name descname">FG_MARKER_PLUS</code> = 6<a class="headerlink" href="#_CPPv414FG_MARKER_PLUS" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Plus symbol marker. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv414FG_MARKER_STAR">
+<span id="_CPPv314FG_MARKER_STAR"></span><span id="_CPPv214FG_MARKER_STAR"></span><span class="target" id="defines_8h_1a4e31a5f495100699e2478393e158d971ae9dbc514d78425274188e91705cdf866"></span><code class="sig-name descname">FG_MARKER_STAR</code> = 7<a class="headerlink" href="#_CPPv414FG_MARKER_STAR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Star symbol marker. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="typedefs.html" class="btn btn-neutral float-right" title="C API typdefs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="forge.html" class="btn btn-neutral float-left" title="Namespaces" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 ArrayFire
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

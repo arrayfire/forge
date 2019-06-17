@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Interop Helpers &mdash; Forge 1.0.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/arrayfire.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Macros" href="macros.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #073763" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Forge
+          
+
+          
+            
+            <img src="../_static/arrayfire_icon.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown/README.html">Overview {#mainpage}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="samples.html">Sample Renderings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="forge.html">Namespaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enums.html">C API Enums</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typedefs.html">C API typdefs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macros.html">Macros</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extras</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interop Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Forge</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Interop Helpers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/rst/extras.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="interop-helpers">
+<h1>Interop Helpers<a class="headerlink" href="#interop-helpers" title="Permalink to this headline">¶</a></h1>
+<p>The user can include <cite>ComputeCopy.h</cite> header to avoid writing necessary
+compute backend’s OpenGL interoperation code themselves.</p>
+<p>Following defines should be declared prior to inclusion of this header
+to use respective compute backend helpers.</p>
+<ul class="simple">
+<li><p><cite>USE_FORGE_CPU_COPY_HELPERS</cite></p></li>
+<li><p><cite>USE_FORGE_CUDA_COPY_HELPERS</cite></p></li>
+<li><p><cite>USE_FORGE_OPENCL_COPY_HELPERS</cite></p></li>
+</ul>
+<dl class="class">
+<dt id="_CPPv49GfxHandle">
+<span id="_CPPv39GfxHandle"></span><span id="_CPPv29GfxHandle"></span><span id="GfxHandle"></span><span class="target" id="structGfxHandle"></span><em class="property">struct </em><code class="sig-name descname">GfxHandle</code><a class="headerlink" href="#_CPPv49GfxHandle" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A tuple object of GfxResourceHandle and <a class="reference internal" href="#ComputeCopy_8h_1adf8e136713c0691010d2bec6ba63e9cf"><span class="std std-ref">BufferType</span></a>. </p>
+</dd></dl>
+
+<dl class="enum">
+<dt id="_CPPv410BufferType">
+<span id="_CPPv310BufferType"></span><span id="_CPPv210BufferType"></span><span class="target" id="ComputeCopy_8h_1adf8e136713c0691010d2bec6ba63e9cf"></span><em class="property">enum </em><code class="sig-name descname">BufferType</code><a class="headerlink" href="#_CPPv410BufferType" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Enum to indicate if OpenCL buffer is a PBO or VBO. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv418FORGE_IMAGE_BUFFER">
+<span id="_CPPv318FORGE_IMAGE_BUFFER"></span><span id="_CPPv218FORGE_IMAGE_BUFFER"></span><span class="target" id="ComputeCopy_8h_1adf8e136713c0691010d2bec6ba63e9cfa11ea1ee65fc38c2123afa0a33c6ef04a"></span><code class="sig-name descname">FORGE_IMAGE_BUFFER</code> = 0<a class="headerlink" href="#_CPPv418FORGE_IMAGE_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>OpenGL Pixel Buffer Object. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv419FORGE_VERTEX_BUFFER">
+<span id="_CPPv319FORGE_VERTEX_BUFFER"></span><span id="_CPPv219FORGE_VERTEX_BUFFER"></span><span class="target" id="ComputeCopy_8h_1adf8e136713c0691010d2bec6ba63e9cfa08d078104055dceac893e4a14c153b2c"></span><code class="sig-name descname">FORGE_VERTEX_BUFFER</code> = 1<a class="headerlink" href="#_CPPv419FORGE_VERTEX_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>OpenGL Vertex Buffer Object. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv421ComputeResourceHandle">
+<span id="_CPPv321ComputeResourceHandle"></span><span id="_CPPv221ComputeResourceHandle"></span><span id="ComputeResourceHandle"></span><span class="target" id="ComputeCopy_8h_1a160b6c9800d06caf50586d67439790c3"></span><em class="property">typedef </em>void *<code class="sig-name descname">ComputeResourceHandle</code><a class="headerlink" href="#_CPPv421ComputeResourceHandle" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A backend-agnostic handle to a compute memory resource originating from an OpenGL resource. </p>
+<p><ul class="simple">
+<li><p>cudaGraphicsResource in CUDA</p></li>
+<li><p>cl_mem in OpenCL</p></li>
+<li><p>unsigned from standard cpu A backend-agnostic handle to a compute memory resource.</p></li>
+</ul>
+</p>
+<p>For example: CUDA device pointer, like float*, int* from cudaMalloc. A cl_mem* from OpenCL’s clCreateBuffer </p>
+</dd></dl>
+
+<p>The following are the helper functions defined in this header. Dependending on which
+<cite>USE_FORGE_&lt;compute&gt;_COPY_HELPERS</cite> macro is defined, the right set of helpers are chosen
+at compile time.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">createGLBuffer</span><span class="p">(</span><span class="n">GfxHandle</span><span class="o">**</span> <span class="n">pOut</span><span class="p">,</span>
+                    <span class="k">const</span> <span class="kt">unsigned</span> <span class="n">pResourceId</span><span class="p">,</span>
+                    <span class="k">const</span> <span class="n">BufferType</span> <span class="n">pTarget</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">releaseGLBuffer</span><span class="p">(</span><span class="n">GfxHandle</span><span class="o">*</span> <span class="n">pHandle</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="n">copyToGLBuffer</span><span class="p">(</span><span class="n">GfxHandle</span><span class="o">*</span> <span class="n">pGLDestination</span><span class="p">,</span>
+                    <span class="n">ComputeResourceHandle</span>  <span class="n">pSource</span><span class="p">,</span>
+                    <span class="k">const</span> <span class="kt">size_t</span> <span class="n">pSize</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can find the exact usage details of this header in the examples section.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="macros.html" class="btn btn-neutral float-left" title="Macros" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 ArrayFire
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

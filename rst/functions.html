@@ -1,0 +1,2237 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Functions &mdash; Forge 1.0.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/arrayfire.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Macros" href="macros.html" />
+    <link rel="prev" title="C API typdefs" href="typedefs.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #073763" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Forge
+          
+
+          
+            
+            <img src="../_static/arrayfire_icon.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown/README.html">Overview {#mainpage}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="samples.html">Sample Renderings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="forge.html">Namespaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enums.html">C API Enums</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typedefs.html">C API typdefs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#chart-functions">Chart Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#font-functions">Font Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#histogram-functions">Histogram Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#image-functions">Image Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plot-functions">Plot Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#surface-functions">Surface Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vector-field-functions">Vector Field Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#window-functions">Window Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="macros.html">Macros</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extras.html">Interop Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Forge</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Functions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/rst/functions.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<p>Most of the functions listed under this section form the core C API
+of forge library. Forge’s C++ API is built on top of this C API.</p>
+<div class="section" id="chart-functions">
+<h2>Chart Functions<a class="headerlink" href="#chart-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="group">
+<dt>
+<span class="target" id="group__chart__functions"></span><em>group</em> <code class="sig-name descname">chart_functions</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1gae1fe8e0b411f7c721f8974b65f2c9d2f"></span><code class="sig-name descname">FGAPI fg_err fg_create_chart(fg_chart  * pHandle, const  fg_chart_type pChartType)</code></dt>
+<dd><p>Create a Chart object with given dimensional property. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pHandle</span></code>: will be set to point to the chart object in memory </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChartType</span></code>: is chart dimension property</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga72d39706b47f6e0c70f32749941f7b21"></span><code class="sig-name descname">FGAPI fg_err fg_retain_chart(fg_chart  * pOut, fg_chart pChart)</code></dt>
+<dd><p>Increase reference count for the chart resource. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: is new reference to existing resource </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is the existing chart resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga768e43bbb4f6f09afbc89d79f42d2194"></span><code class="sig-name descname">FGAPI fg_err fg_release_chart(fg_chart pHandle)</code></dt>
+<dd><p>Destroy the chart object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga3bbd2143ac3411a1506db3a385d795e4"></span><code class="sig-name descname">FGAPI fg_err fg_set_chart_axes_titles(fg_chart pHandle, const char * pX, const char * pY, const char * pZ)</code></dt>
+<dd><p>Set axes titles for the chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is x-axis title label </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is y-axis title label </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pZ</span></code>: is z-axis title label</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga56e5ebe48d9a12ea144ca5d9e877de4a"></span><code class="sig-name descname">FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle, const float pXmin, const float pXmax, const float pYmin, const float pYmax, const float pZmin, const float pZmax)</code></dt>
+<dd><p>Set axes data ranges. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pXmin</span></code>: is x-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pXmax</span></code>: is x-axis maximum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pYmin</span></code>: is y-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pYmax</span></code>: is y-axis maximum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pZmin</span></code>: is z-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pZmax</span></code>: is z-axis maximum data value </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1gaad6eb8e263d9fdf2f367d4cf0270b3e5"></span><code class="sig-name descname">FGAPI fg_err fg_set_chart_label_format(fg_chart pHandle, const char * pXFormat, const char * pYFormat, const char * pZFormat)</code></dt>
+<dd><p>Set the format for display of axes labels in a chart. </p>
+<p><p>Display format string follows printf style formating for numbers </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pXFormat</span></code>: sets the display format for numbers of X axis </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pYFormat</span></code>: sets the display format for numbers of Y axis </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pZFormat</span></code>: sets the display format for numbers of Z axis</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga73ad91fed9606354f17e212c154cb47c"></span><code class="sig-name descname">FGAPI fg_err fg_get_chart_axes_limits(float * pXmin, float * pXmax, float * pYmin, float * pYmax, float * pZmin, float * pZmax, const  fg_chart pHandle)</code></dt>
+<dd><p>Get axes data ranges. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pXmin</span></code>: is x-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pXmax</span></code>: is x-axis maximum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pYmin</span></code>: is y-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pYmax</span></code>: is y-axis maximum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pZmin</span></code>: is z-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pZmax</span></code>: is z-axis maximum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga2f3d24e869176566d5443677b005c555"></span><code class="sig-name descname">FGAPI fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const float pY)</code></dt>
+<dd><p>Set legend position for Chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code</p>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>By normalized coordinates, the range of these coordinates is expected to be [0-1]. (0,0) is the bottom hand left corner. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is horizontal position in normalized coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is vertical position in normalized coordinates</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1gaa98b3156ca539bad66b7b2bdc84f4aa7"></span><code class="sig-name descname">FGAPI fg_err fg_append_image_to_chart(fg_chart pChart, fg_image pImage)</code></dt>
+<dd><p>Add an existing image object to chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is the chart to which image has to be added </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image to be added to the chart</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1gaccda3d70881a171f781b5c4d901983db"></span><code class="sig-name descname">FGAPI fg_err fg_append_histogram_to_chart(fg_chart pChart, fg_histogram pHistogram)</code></dt>
+<dd><p>Add an existing histogram object to chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is the chart to which histogram has to be added </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram to be added to the chart</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga05dbe6e4c0cf1fb3b2134d0516d216ad"></span><code class="sig-name descname">FGAPI fg_err fg_append_plot_to_chart(fg_chart pChart, fg_plot pPlot)</code></dt>
+<dd><p>Add an existing plot object to chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is the chart to which plot has to be added </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot to be added to the chart</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga89119aba2c7f57e2bf7c87fb5bb0611d"></span><code class="sig-name descname">FGAPI fg_err fg_append_surface_to_chart(fg_chart pChart, fg_surface pSurface)</code></dt>
+<dd><p>Add an existing surface object to chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is the chart to which surface has to be added </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface to be added to the chart</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga86701141703bce75e609894fc3172ea6"></span><code class="sig-name descname">FGAPI fg_err fg_append_vector_field_to_chart(fg_chart pChart, fg_vector_field pField)</code></dt>
+<dd><p>Add an existing vector field object to chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is the chart to which vector field has to be added </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field to be added to the chart</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga53f3e8c2287a4c10cd915bb3576d79f8"></span><code class="sig-name descname">FGAPI fg_err fg_add_image_to_chart(fg_image  * pImage, fg_chart pHandle, const unsigned pWidth, const unsigned pHeight, const  fg_channel_format pFormat, const  fg_dtype pType)</code></dt>
+<dd><p>Create and add an Image object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pImage</span></code>: is the handle of the image object created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle to which image object will be added. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: Width of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: Height of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFormat</span></code>: Color channel format of image, uses one of the values of <a class="reference internal" href="enums.html#defines_8h_1a162f1d98558c931a93638df47cb412db"><span class="std std-ref">fg_channel_format</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of histogram data</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga55ea9205ae88fac37b603f8530ee9279"></span><code class="sig-name descname">FGAPI fg_err fg_add_histogram_to_chart(fg_histogram  * pHistogram, fg_chart pHandle, const unsigned pNBins, const  fg_dtype pType)</code></dt>
+<dd><p>Create and add an Histogram object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pHistogram</span></code>: is the handle of the histogram object created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNBins</span></code>: is number of bins the data is sorted out </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of histogram data</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga0521fbe605fb661c5bd40df5fedaecc9"></span><code class="sig-name descname">FGAPI fg_err fg_add_plot_to_chart(fg_plot  * pPlot, fg_chart pHandle, const unsigned pNPoints, const  fg_dtype pType, const  fg_plot_type pPlotType, const  fg_marker_type pMarkerType)</code></dt>
+<dd><p>Create and add an Plot object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pPlot</span></code>: is the handle of the plot object created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNPoints</span></code>: is number of data points to display </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of plot data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlotType</span></code>: dictates the type of plot/graph, it can take one of the values of <a class="reference internal" href="enums.html#defines_8h_1a3bc618792ca52006bf96800b9bd4050d"><span class="std std-ref">fg_plot_type</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerType</span></code>: indicates which symbol is rendered as marker. It can take one of the values of <a class="reference internal" href="enums.html#defines_8h_1a4e31a5f495100699e2478393e158d971"><span class="std std-ref">fg_marker_type</span></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1gacff0057f33285880a5e72c46f15f6a06"></span><code class="sig-name descname">FGAPI fg_err fg_add_surface_to_chart(fg_surface  * pSurface, fg_chart pHandle, const unsigned pXPoints, const unsigned pYPoints, const  fg_dtype pType, const  fg_plot_type pPlotType, const  fg_marker_type pMarkerType)</code></dt>
+<dd><p>Create and add an Plot object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pSurface</span></code>: is the handle of the surface object created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pXPoints</span></code>: is number of data points along X dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pYPoints</span></code>: is number of data points along Y dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of plot data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlotType</span></code>: is the render type which can be one of <a class="reference internal" href="enums.html#defines_8h_1a3bc618792ca52006bf96800b9bd4050d"><span class="std std-ref">fg_plot_type</span></a> (valid choices are FG_PLOT_SURFACE and FG_PLOT_SCATTER) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerType</span></code>: is the type of <a class="reference internal" href="enums.html#defines_8h_1a4e31a5f495100699e2478393e158d971"><span class="std std-ref">fg_marker_type</span></a> to draw for <a class="reference internal" href="enums.html#defines_8h_1a3bc618792ca52006bf96800b9bd4050da20bb0cf35cb4efe48747b561224e799f"><span class="std std-ref">FG_PLOT_SCATTER</span></a> plot type</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1gaeb7137a74760446fcd4ddf7ef7c564c5"></span><code class="sig-name descname">FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field  * pField, fg_chart pHandle, const unsigned pNPoints, const  fg_dtype pType)</code></dt>
+<dd><p>Create and add an Vector Field object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pField</span></code>: is the handle of the Vector Field object created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNPoints</span></code>: is number of data points to display </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of vector field data</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1gaf41b9a3479dcdcc8ba0f0dd17693e2c1"></span><code class="sig-name descname">FGAPI fg_err fg_render_chart(const  fg_window pWindow, const  fg_chart pChart, const int pX, const int pY, const int pWidth, const int pHeight)</code></dt>
+<dd><p>Render the chart to given window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is target window to where chart will be rendered </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is x coordinate of origin of viewport in window coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is y coordinate of origin of viewport in window coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: is the width of the viewport </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: is the height of the viewport</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__chart__functions_1ga95ccb4af965dcd04fd7b094e78281d52"></span><code class="sig-name descname">FGAPI fg_err fg_get_chart_type(fg_chart_type  * pChartType, const  fg_chart pChart)</code></dt>
+<dd><p>Render the type of a chart. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pChartType</span></code>: return the type of the chart </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is chart handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="font-functions">
+<h2>Font Functions<a class="headerlink" href="#font-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="group">
+<dt>
+<span class="target" id="group__font__functions"></span><em>group</em> <code class="sig-name descname">font_functions</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt>
+<span class="target" id="group__font__functions_1gab4fd5c0e224cde413fbd33d1f506cbaf"></span><code class="sig-name descname">FGAPI fg_err fg_create_font(fg_font  * pFont)</code></dt>
+<dd><p>Create a Font object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pFont</span></code>: will point to the font object created after this function returns</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__font__functions_1ga796b1afd5d03c91043e485d4b24d7f00"></span><code class="sig-name descname">FGAPI fg_err fg_retain_font(fg_font  * pOut, fg_font pIn)</code></dt>
+<dd><p>Increase reference count of the resource. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: is the new handle to existing resource </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pIn</span></code>: is the existing resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__font__functions_1gaaf85efc3e423c25d0e5a9363c8c43ec2"></span><code class="sig-name descname">FGAPI fg_err fg_release_font(fg_font pFont)</code></dt>
+<dd><p>Destroy font object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFont</span></code>: is the font handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__font__functions_1ga7c71ca2ce6c6f0d74d4600e0562d4f9d"></span><code class="sig-name descname">FGAPI fg_err fg_load_font_file(fg_font pFont, const char *const pFileFullPath)</code></dt>
+<dd><p>Load a given font file. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFont</span></code>: is the font handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFileFullPath</span></code>: True Type Font file path</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__font__functions_1gaebe6b54dcfcb33571e002081f5a21a7f"></span><code class="sig-name descname">FGAPI fg_err fg_load_system_font(fg_font pFont, const char *const pFontName)</code></dt>
+<dd><p>Load a system font based on the name. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFont</span></code>: is the font handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFontName</span></code>: True Type Font name</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="histogram-functions">
+<h2>Histogram Functions<a class="headerlink" href="#histogram-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="group">
+<dt>
+<span class="target" id="group__hist__functions"></span><em>group</em> <code class="sig-name descname">hist_functions</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1ga65b8bf8fa60c2e2569e977427bfb492c"></span><code class="sig-name descname">FGAPI fg_err fg_create_histogram(fg_histogram  * pHistogram, const unsigned pNBins, const  fg_dtype pDataType)</code></dt>
+<dd><p>Creates a Histogram object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pHistogram</span></code>: will point to the histogram object created after this function call </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNBins</span></code>: is number of bins the data is sorted out </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of histogram data</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1ga6c0d84b42b53ede77d6820cfe8d18154"></span><code class="sig-name descname">FGAPI fg_err fg_retain_histogram(fg_histogram  * pOut, fg_histogram pIn)</code></dt>
+<dd><p>Increase reference count of the resource. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: is the new handle to existing resource </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pIn</span></code>: is the existing resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1ga36fa7fcf28c673a6d6e74058129fc5d8"></span><code class="sig-name descname">FGAPI fg_err fg_release_histogram(fg_histogram pHistogram)</code></dt>
+<dd><p>Destroy Histogram object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1ga967a76cfbf41cc46a43bd9349e11a8b9"></span><code class="sig-name descname">FGAPI fg_err fg_set_histogram_color(fg_histogram pHistogram, const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<dd><p>Set the color of bar in the bar graph(histogram) </p>
+<p>This is global alpha value for the histogram rendering that takes effect if individual bar alphas are not set by calling the following member functions<ul class="simple">
+<li><p>Histogram::alphas()</p></li>
+<li><p>Histogram::alphasSize()</p></li>
+</ul>
+</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRed</span></code>: is Red component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pGreen</span></code>: is Green component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBlue</span></code>: is Blue component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pAlpha</span></code>: is Alpha component in range [0, 1]</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1ga0dce330773da81cd714e7b113930fbd1"></span><code class="sig-name descname">FGAPI fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char * pLegend)</code></dt>
+<dd><p>Set legend for histogram plot. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pLegend</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1ga01b34f7a7de5d66840d19d6da3a37066"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_vertex_buffer(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<dd><p>Get the resource identifier for vertices buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1gaafc0bcccf09af5fbfea7fb22463b4de7"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_color_buffer(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<dd><p>Get the resource identifier for colors buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1ga5574b44a0a8ac799053dc8e41e0b8b68"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_alpha_buffer(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<dd><p>Get the resource identifier for alpha values buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1ga4dcc07c2f609ad05bbe65cd9ec161deb"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_vertex_buffer_size(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<dd><p>Get the vertices buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1gaa0676cabd971bc0ac80f03d9963017e5"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_color_buffer_size(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<dd><p>Get the colors buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__hist__functions_1ga5a3d84d84918a9a8ed8236679cc5ebb0"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_alpha_buffer_size(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<dd><p>Get the alpha values buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the histogram handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="image-functions">
+<h2>Image Functions<a class="headerlink" href="#image-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="group">
+<dt>
+<span class="target" id="group__image__functions"></span><em>group</em> <code class="sig-name descname">image_functions</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1ga96a5b5f6f8033a04f8ff3b8d35a6ef6d"></span><code class="sig-name descname">FGAPI fg_err fg_create_image(fg_image  * pImage, const unsigned pWidth, const unsigned pHeight, const  fg_channel_format pFormat, const  fg_dtype pType)</code></dt>
+<dd><p>Create a Image object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pImage</span></code>: will be set to created Image object </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: Width of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: Height of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFormat</span></code>: Color channel format of image, uses one of the values of <a class="reference internal" href="enums.html#defines_8h_1a162f1d98558c931a93638df47cb412db"><span class="std std-ref">fg_channel_format</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of histogram data</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1ga2370e2fab2884223061b093413b63979"></span><code class="sig-name descname">FGAPI fg_err fg_retain_image(fg_image  * pOut, fg_image pImage)</code></dt>
+<dd><p>Increment the internal reference counter for image resource. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: is new reference to existing image resource </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the input image resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1ga6a625ac14f9dae788042841d02de73e1"></span><code class="sig-name descname">FGAPI fg_err fg_release_image(fg_image pImage)</code></dt>
+<dd><p>Destroy image object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1ga7cc53bb04467bf6adac606ae36daebfe"></span><code class="sig-name descname">FGAPI fg_err fg_set_image_alpha(fg_image pImage, const float pAlpha)</code></dt>
+<dd><p>Set a global alpha value for rendering the image. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pAlpha</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1ga38ee70f9a95d3eee9ad7b6d722db4cc4"></span><code class="sig-name descname">FGAPI fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio)</code></dt>
+<dd><p>Set option to inform whether to maintain aspect ratio of original image. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pKeepRatio</span></code>: informs the image object if original aspect ratio has to be maintained</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1gaa901be2f89f1e38afda3838aba6acc48"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_width(unsigned * pOut, const  fg_image pImage)</code></dt>
+<dd><p>Get the width of the image. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will be set to the width of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1ga92f5e5990d268ce8bfa1ed5aed00e69a"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_height(unsigned * pOut, const  fg_image pImage)</code></dt>
+<dd><p>Get the height of the image. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will be set to the height of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1gadf1bdb5e66281e49cd6b98ef2d4dfd58"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_pixelformat(fg_channel_format  * pOut, const  fg_image pImage)</code></dt>
+<dd><p>Get the channel format of the image. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will be set to the channel format of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1gab5a02f3bceaec6b2be6bfe8ab615d7db"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_type(fg_dtype  * pOut, const  fg_image pImage)</code></dt>
+<dd><p>Get the pixel data type of the image. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will be set to the pixel data type of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1gada4d0d584fdf9f362cba1d01b61eb6b9"></span><code class="sig-name descname">FGAPI fg_err fg_get_pixel_buffer(unsigned * pOut, const  fg_image pImage)</code></dt>
+<dd><p>Get the image buffer resource identifier. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will be set to the image resource identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1gacd9454d2c848440fa15b0f0a0af9f400"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_size(unsigned * pOut, const  fg_image pImage)</code></dt>
+<dd><p>Get the image buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will be set to the image buffer size in bytes </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__image__functions_1gaa192b1595f21acb3fc140223344049ab"></span><code class="sig-name descname">FGAPI fg_err fg_render_image(const  fg_window pWindow, const  fg_image pImage, const int pX, const int pY, const int pWidth, const int pHeight)</code></dt>
+<dd><p>Render the image to given window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is target window to where image will be rendered </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the image handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is x coordinate of origin of viewport in window coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is y coordinate of origin of viewport in window coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: is the width of the viewport </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: is the height of the viewport</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="plot-functions">
+<h2>Plot Functions<a class="headerlink" href="#plot-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="group">
+<dt>
+<span class="target" id="group__plot__functions"></span><em>group</em> <code class="sig-name descname">plot_functions</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1gaffa0499614393c088aebb973e28b95b2"></span><code class="sig-name descname">FGAPI fg_err fg_create_plot(fg_plot  * pPlot, const unsigned pNPoints, const  fg_dtype pType, const  fg_chart_type pChartType, const  fg_plot_type pPlotType, const  fg_marker_type pMarkerType)</code></dt>
+<dd><p>Create a Plot object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pPlot</span></code>: will be set to plot handle upon creating the plot object </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNPoints</span></code>: is number of data points to display </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of plot data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChartType</span></code>: dictates the dimensionality of the chart </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlotType</span></code>: dictates the type of plot/graph, it can take one of the values of <a class="reference internal" href="enums.html#defines_8h_1a3bc618792ca52006bf96800b9bd4050d"><span class="std std-ref">fg_plot_type</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerType</span></code>: indicates which symbol is rendered as marker. It can take one of the values of <a class="reference internal" href="enums.html#defines_8h_1a4e31a5f495100699e2478393e158d971"><span class="std std-ref">fg_marker_type</span></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1gaa03c29b5d6b80ce2e2a1ac138fca8c3a"></span><code class="sig-name descname">FGAPI fg_err fg_retain_plot(fg_plot  * pOut, fg_plot pIn)</code></dt>
+<dd><p>Increase reference count of the resource. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: is the new handle to existing resource </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pIn</span></code>: is the existing resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1gafe78b77407cd80f8b546bd59f5e2633c"></span><code class="sig-name descname">FGAPI fg_err fg_release_plot(fg_plot pPlot)</code></dt>
+<dd><p>Destroy plot object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1ga0a884cc68f6d1d829d3657d689f5a12a"></span><code class="sig-name descname">FGAPI fg_err fg_set_plot_color(fg_plot pPlot, const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<dd><p>Set the color of line graph(plot) </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRed</span></code>: is Red component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pGreen</span></code>: is Green component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBlue</span></code>: is Blue component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pAlpha</span></code>: is Blue component in range [0, 1]</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1ga0307e6fb1fdc358a1c097ec6eb568aed"></span><code class="sig-name descname">FGAPI fg_err fg_set_plot_legend(fg_plot pPlot, const char * pLegend)</code></dt>
+<dd><p>Set plot legend. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pLegend</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1ga7988d5ebd327350e1c42ac773219d655"></span><code class="sig-name descname">FGAPI fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize)</code></dt>
+<dd><p>Set global marker size. </p>
+<p>This size will be used for rendering markers if no per vertex marker sizes are provided. This value defaults to 10</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerSize</span></code>: is the target marker size for scatter plots or line plots with markers</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1ga65255ddeb22d8dc44c4ddfad3dcc001c"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_vertex_buffer(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<dd><p>Get the resource identifier for vertices buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1gaf885a4b0109bb50cad30d3e127a4c458"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_color_buffer(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<dd><p>Get the resource identifier for colors buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1ga76c63f4c418c340c23bc454557f6adf9"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_alpha_buffer(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<dd><p>Get the resource identifier for alpha values buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1gac0a0420d8b02bb04978b33d6a3dba4f2"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_radii_buffer(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<dd><p>Get the resource identifier for markers radii buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1ga87d05602861e08b58f6d49f29feaeea4"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_vertex_buffer_size(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<dd><p>Get the vertices buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1ga4dd623edea423baf0060e54bc8122a52"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_color_buffer_size(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<dd><p>Get the colors buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1gad3ff811f6821ce8cecc9cecfb6968851"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_alpha_buffer_size(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<dd><p>Get the alpha values buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__plot__functions_1ga10d0d43c29ac5a4db19886d661eb29a2"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_radii_buffer_size(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<dd><p>Get the markers buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the plot handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="surface-functions">
+<h2>Surface Functions<a class="headerlink" href="#surface-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="group">
+<dt>
+<span class="target" id="group__surf__functions"></span><em>group</em> <code class="sig-name descname">surf_functions</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1ga1aa96efbe12f60ee5240da45d7cf83ab"></span><code class="sig-name descname">FGAPI fg_err fg_create_surface(fg_surface  * pSurface, const unsigned pXPoints, const unsigned pYPoints, const  fg_dtype pType, const  fg_plot_type pPlotType, const  fg_marker_type pMarkerType)</code></dt>
+<dd><p>Create a Surface object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pSurface</span></code>: will be set to surface handle upon creating the surface object </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pXPoints</span></code>: is number of data points along X dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pYPoints</span></code>: is number of data points along Y dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of surface data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlotType</span></code>: dictates the type of surface/graph, it can take one of the values of <a class="reference internal" href="enums.html#defines_8h_1a3bc618792ca52006bf96800b9bd4050d"><span class="std std-ref">fg_plot_type</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerType</span></code>: indicates which symbol is rendered as marker. It can take one of the values of <a class="reference internal" href="enums.html#defines_8h_1a4e31a5f495100699e2478393e158d971"><span class="std std-ref">fg_marker_type</span></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1gad3b729c28ac2425c396186deafa392f1"></span><code class="sig-name descname">FGAPI fg_err fg_retain_surface(fg_surface  * pOut, fg_surface pIn)</code></dt>
+<dd><p>Increase reference count of the resource. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: is the new handle to existing resource </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pIn</span></code>: is the existing resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1ga0dd9ec44628624555ef6f6c815de6325"></span><code class="sig-name descname">FGAPI fg_err fg_release_surface(fg_surface pSurface)</code></dt>
+<dd><p>Destroy surface object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1ga07485f9baf7058ab08a8df9108880a4b"></span><code class="sig-name descname">FGAPI fg_err fg_set_surface_color(fg_surface pSurface, const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<dd><p>Set the color of surface. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRed</span></code>: is Red component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pGreen</span></code>: is Green component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBlue</span></code>: is Blue component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pAlpha</span></code>: is Blue component in range [0, 1]</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1gae40dd79a4cf4b072a1e96db1d74483c5"></span><code class="sig-name descname">FGAPI fg_err fg_set_surface_legend(fg_surface pSurface, const char * pLegend)</code></dt>
+<dd><p>Set surface legend. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pLegend</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1ga1b524434b28e223e22e8a7d8275fef0d"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_vertex_buffer(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<dd><p>Get the resource identifier for vertices buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1gaa0a7dc2fdf21db567ce7c26682b32390"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_color_buffer(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<dd><p>Get the resource identifier for colors buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1gab310a49edd0dab0d56d436846545ac7c"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_alpha_buffer(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<dd><p>Get the resource identifier for alpha values buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1ga7e72cd9174bab308c8df4e9594192e00"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_vertex_buffer_size(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<dd><p>Get the vertices buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1ga7faf1881724c2e8cc0c3d7d341b1365f"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_color_buffer_size(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<dd><p>Get the colors buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__surf__functions_1ga36155cd2b8edd5bda5a1f3ecdaa285b8"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_alpha_buffer_size(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<dd><p>Get the alpha values buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the surface handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="vector-field-functions">
+<h2>Vector Field Functions<a class="headerlink" href="#vector-field-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="group">
+<dt>
+<span class="target" id="group__vfield__functions"></span><em>group</em> <code class="sig-name descname">vfield_functions</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1gac6bfde9209925e211e7fbbe3b2a6fc3f"></span><code class="sig-name descname">FGAPI fg_err fg_create_vector_field(fg_vector_field  * pField, const unsigned pNPoints, const  fg_dtype pType, const  fg_chart_type pChartType)</code></dt>
+<dd><p>Create a Vector field object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pField</span></code>: will be set to surface handle upon creating the surface object </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNPoints</span></code>: is number of data points </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of surface data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChartType</span></code>: dictates the dimensionality of the chart</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1ga1d010e91dfe57decb96ff1a740a92e39"></span><code class="sig-name descname">FGAPI fg_err fg_retain_vector_field(fg_vector_field  * pOut, fg_vector_field pIn)</code></dt>
+<dd><p>Increase reference count of the resource. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: is the new handle to existing resource </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pIn</span></code>: is the existing resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1ga11f9c084ceef8efa4add1e1a92c07770"></span><code class="sig-name descname">FGAPI fg_err fg_release_vector_field(fg_vector_field pField)</code></dt>
+<dd><p>Destroy vector field object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the surface handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1ga787b766f81c00dbf101d26291d8fb048"></span><code class="sig-name descname">FGAPI fg_err fg_set_vector_field_color(fg_vector_field pField, const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<dd><p>Set the color of vector field. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the surface handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRed</span></code>: is Red component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pGreen</span></code>: is Green component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBlue</span></code>: is Blue component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pAlpha</span></code>: is Blue component in range [0, 1]</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1ga24c5012238ce7736b21c69e235287e90"></span><code class="sig-name descname">FGAPI fg_err fg_set_vector_field_legend(fg_vector_field pField, const char * pLegend)</code></dt>
+<dd><p>Set vector field legend. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pLegend</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1ga3ba17a8d91e66773febb8a0f65a6ece3"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_vertex_buffer(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<dd><p>Get the resource identifier for vertices buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1gaaa4694ba1e9b063fc6db549bf4f41440"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_color_buffer(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<dd><p>Get the resource identifier for colors buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1gabb991edfe780383f4c74c1e23198f3a1"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_alpha_buffer(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<dd><p>Get the resource identifier for alpha values buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1ga8d3b14e81c1f1b88052189e759f6a451"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_direction_buffer(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<dd><p>Get the resource identifier for directions buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer identifier after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1gac3cbe1afe4376e956909a33967695aa2"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_vertex_buffer_size(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<dd><p>Get the vertices buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1ga02a1ab6afad24d535f8c2d9c6493a1ee"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_color_buffer_size(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<dd><p>Get the colors buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1ga893d2112b0d0e2cac4f856a1183845f0"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_alpha_buffer_size(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<dd><p>Get the alpha values buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__vfield__functions_1ga4f2ba1303b612c540062c2e76085e1d8"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_direction_buffer_size(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<dd><p>Get the directions buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: will have the buffer size in bytes after this function is called </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pField</span></code>: is the vector field handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="window-functions">
+<h2>Window Functions<a class="headerlink" href="#window-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="group">
+<dt>
+<span class="target" id="group__win__functions"></span><em>group</em> <code class="sig-name descname">win_functions</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga3e658dbc45e6c0a2e7588014e02a0b53"></span><code class="sig-name descname">FGAPI fg_err fg_create_window(fg_window  * pWindow, const int pWidth, const int pHeight, const char * pTitle, const  fg_window pShareWindow, const bool pInvisible)</code></dt>
+<dd><p>Create a Window object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pWindow</span></code>: is set to the window created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: Width of the display window </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: Height of the display window </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pTitle</span></code>: window Title </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pShareWindow</span></code>: is an already existing window with which the window to be created should share the rendering context. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pInvisible</span></code>: indicates if the window is created in invisible mode.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga792869c2709d1793a47a6c97eb8e0387"></span><code class="sig-name descname">FGAPI fg_err fg_retain_window(fg_window  * pOut, fg_window pWindow)</code></dt>
+<dd><p>Increment the internal reference count for Window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pOut</span></code>: is the new window handle pointing to existing window </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is the original window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gafe2f94bad6c3b1971eece047284bb39e"></span><code class="sig-name descname">FGAPI fg_err fg_release_window(fg_window pWindow)</code></dt>
+<dd><p>Destroy Window Object. </p>
+<p>Decrements the reference count to the shared window object.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gafc60abec8097b16c74269c924ffe347b"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_font(fg_window pWindow, const  fg_font pFont)</code></dt>
+<dd><p>Set font object to be used by Window Object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFont</span></code>: is Font handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gabe594e9d3dd275b3a80d510a96d72c8b"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_title(fg_window pWindow, const char * pTitle)</code></dt>
+<dd><p>Set the title of Window Object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pTitle</span></code>: is the window tile</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gad50c051a15e13876956d102537f88760"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY)</code></dt>
+<dd><p>Set the window origin of Window Object w.r.t screen origin. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is the x coordinate of window top left corner </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is the y coordinate of window top left corner</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gac3d066b2f5fc7aa19256bc5b047986ea"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const unsigned pHeight)</code></dt>
+<dd><p>Set the window dimensions of Window Object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: is the width of window </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: is the height of window</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga3f55573ddec8e8981c8de43aafac9374"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_colormap(fg_window pWindow, const  fg_color_map pColorMap)</code></dt>
+<dd><p>Set the colormap to be used by the Window Object. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pColorMap</span></code>: takes one of the values of enum <a class="reference internal" href="enums.html#defines_8h_1a3c25187db6a9805731a4fd67959ab461"><span class="std std-ref">fg_color_map</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga805617678f5dc01bafb8bac8da0dc657"></span><code class="sig-name descname">FGAPI fg_err fg_get_window_context_handle(long long * pContext, const  fg_window pWindow)</code></dt>
+<dd><p>Get the backend specific context handle of Window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pContext</span></code>: is set to the backend specific context handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gab10730dec8a60624e91bb1013f218c93"></span><code class="sig-name descname">FGAPI fg_err fg_get_window_display_handle(long long * pDisplay, const  fg_window pWindow)</code></dt>
+<dd><p>Get the display device handle of Window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pDisplay</span></code>: is set to the display device handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga1d6e1ce37f3e3e30f06c8af46429e447"></span><code class="sig-name descname">FGAPI fg_err fg_get_window_width(int * pWidth, const  fg_window pWindow)</code></dt>
+<dd><p>Get the width of Window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pWidth</span></code>: is set to the width of the Window </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gae791094a195f197551743fb5560d1868"></span><code class="sig-name descname">FGAPI fg_err fg_get_window_height(int * pHeight, const  fg_window pWindow)</code></dt>
+<dd><p>Get the height of Window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pHeight</span></code>: is set to the height of the Window </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga4c83e16832fabcd1ee98b2c90387a209"></span><code class="sig-name descname">FGAPI fg_err fg_make_window_current(const  fg_window pWindow)</code></dt>
+<dd><p>Make the window’s backend specific context the active context in given thread. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gae5297426a910bf775cc695405fac7289"></span><code class="sig-name descname">FGAPI fg_err fg_hide_window(const  fg_window pWindow)</code></dt>
+<dd><p>Hide the Window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga6728e9f4384b93e2d43a789525cb1066"></span><code class="sig-name descname">FGAPI fg_err fg_show_window(const  fg_window pWindow)</code></dt>
+<dd><p>Show the Window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga478e108fe8612075467f0c55c57e58cd"></span><code class="sig-name descname">FGAPI fg_err fg_close_window(bool * pIsClosed, const  fg_window pWindow)</code></dt>
+<dd><p>Check if the Window is closed. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pIsClosed</span></code>: is set to boolean value if the window is closed </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gae1f0287666d57005c26c32f1106ed656"></span><code class="sig-name descname">FGAPI fg_err fg_draw_image(const  fg_window pWindow, const  fg_image pImage, const bool pKeepAspectRatio)</code></dt>
+<dd><p>Render given image to Window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is Image handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pKeepAspectRatio</span></code>: is boolean indicating if the image aspect ratio has to be maintained while rendering the image</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga61211cc484b0bf8ca217b8b2d02343c7"></span><code class="sig-name descname">FGAPI fg_err fg_draw_chart(const  fg_window pWindow, const  fg_chart pChart)</code></dt>
+<dd><p>Render given chart to Window. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is chart handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gab01edfd22cb1e2df0d269666be4f642c"></span><code class="sig-name descname">FGAPI fg_err fg_draw_image_to_cell(const  fg_window pWindow, const int pRows, const int pCols, const int pIndex, const  fg_image pImage, const char * pTitle, const bool pKeepAspectRatio)</code></dt>
+<dd><p>Render given image to Window’s particular sub-view. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code</p>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>this draw call doesn’t automatically swap back buffer with front buffer (double buffering mechanism) since it doesn’t have the knowledge of which sub-regions already got rendered. We should call fg_swap_window_buffers once all draw calls corresponding to all sub-regions are called when in multiview mode. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRows</span></code>: indicates the number of rows in grid layout </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pCols</span></code>: indicates the number of columns in grid layout </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pIndex</span></code>: indicates the index of cell in the layout represented by <code class="docutils literal notranslate"><span class="pre">pRows</span></code> and <code class="docutils literal notranslate"><span class="pre">pCols</span></code> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is image handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pTitle</span></code>: is the title of the sub-view </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pKeepAspectRatio</span></code>: is boolean indicating if the image aspect ratio has to be maintained while rendering the image</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga3e3582c40488cf127ac3132f7bc6db03"></span><code class="sig-name descname">FGAPI fg_err fg_draw_chart_to_cell(const  fg_window pWindow, const int pRows, const int pCols, const int pIndex, const  fg_chart pChart, const char * pTitle)</code></dt>
+<dd><p>Render given chart to Window’s particular sub-view. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code</p>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>this draw call doesn’t automatically swap back buffer with front buffer (double buffering mechanism) since it doesn’t have the knowledge of which sub-regions already got rendered. We should call fg_swap_window_buffers once all draw calls corresponding to all sub-regions are called when in multiview mode. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRows</span></code>: indicates the number of rows in grid layout </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pCols</span></code>: indicates the number of columns in grid layout </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pIndex</span></code>: indicates the index of cell in the layout represented by <code class="docutils literal notranslate"><span class="pre">pRows</span></code> and <code class="docutils literal notranslate"><span class="pre">pCols</span></code> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is chart handle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pTitle</span></code>: is the title of the sub-view</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1gab72f93dadcde7ce021c0d777895f9aa3"></span><code class="sig-name descname">FGAPI fg_err fg_swap_window_buffers(const  fg_window pWindow)</code></dt>
+<dd><p>Swap back buffer with front buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__win__functions_1ga5bed7d67d5f777aa220c7af87333468d"></span><code class="sig-name descname">FGAPI fg_err fg_save_window_framebuffer(const char * pFullPath, const  fg_window pWindow)</code></dt>
+<dd><p>Save the current frame buffer to a file at provided path. </p>
+<p>The frame buffer stored to the disk is saved in the image format based on the extension provided in the full file path string.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFullPath</span></code>: is the path at which frame buffer is stored. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is Window handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="utility-functions">
+<h2>Utility Functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="group">
+<dt>
+<span class="target" id="group__util__functions"></span><em>group</em> <code class="sig-name descname">util_functions</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt>
+<span class="target" id="group__util__functions_1gab03b5979fac90230276f4d5f0c3cc013"></span><code class="sig-name descname">FGAPI void fg_get_last_error(char ** msg, int * len)</code></dt>
+<dd><p>Fetch the last error’s error code. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__util__functions_1gae497e3d834f5865d14fcef6743af5c18"></span><code class="sig-name descname">FGAPI const char* fg_err_to_string(const  fg_err err)</code></dt>
+<dd><p>Fetch the string message associated to given error code. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__util__functions_1ga94e9af1762f3102ba4c2f3cea2540aea"></span><code class="sig-name descname">FGAPI fg_err fg_update_vertex_buffer(const unsigned pBufferId, const size_t pBufferSize, const void * pBufferData)</code></dt>
+<dd><p>Update backend specific vertex buffer from given host side memory. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferId</span></code>: is the buffer identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferSize</span></code>: is the buffer size in bytes </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferData</span></code>: is the pointer of the host side memory</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__util__functions_1gabdbef8d2b1d49718baafd6ef374007e9"></span><code class="sig-name descname">FGAPI fg_err fg_update_pixel_buffer(const unsigned pBufferId, const size_t pBufferSize, const void * pBufferData)</code></dt>
+<dd><p>Update backend specific pixel buffer from given host side memory. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferId</span></code>: is the buffer identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferSize</span></code>: is the buffer size in bytes </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferData</span></code>: is the pointer of the host side memory</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__util__functions_1gae06c0e84df206dcbb06916b004fca3b9"></span><code class="sig-name descname">FGAPI fg_err fg_finish()</code></dt>
+<dd><p>Sync all rendering operations till this point. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__util__functions_1ga91ff0e16d91df9f1c5f33d0a60fe5e03"></span><code class="sig-name descname">FGAPI void forge::updateVertexBuffer(const unsigned pBufferId, const size_t pBufferSize, const void * pBufferData)</code></dt>
+<dd><p>Update backend specific vertex buffer from given host side memory. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferId</span></code>: is the buffer identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferSize</span></code>: is the buffer size in bytes </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferData</span></code>: is the pointer of the host side memory </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__util__functions_1gaf00cea8807116812f82c738d32d7fdb0"></span><code class="sig-name descname">FGAPI void forge::updatePixelBuffer(const unsigned pBufferId, const size_t pBufferSize, const void * pBufferData)</code></dt>
+<dd><p>Update backend specific pixel buffer from given host side memory. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferId</span></code>: is the buffer identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferSize</span></code>: is the buffer size in bytes </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBufferData</span></code>: is the pointer of the host side memory </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="group__util__functions_1ga72dafd0af9b2db19e2aa754f76fcc786"></span><code class="sig-name descname">FGAPI void forge::finish()</code></dt>
+<dd><p>Sync all rendering operations till this point. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="macros.html" class="btn btn-neutral float-right" title="Macros" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="typedefs.html" class="btn btn-neutral float-left" title="C API typdefs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 ArrayFire
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

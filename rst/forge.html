@@ -1,0 +1,1744 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Namespaces &mdash; Forge 1.0.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/arrayfire.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="C API Enums" href="enums.html" />
+    <link rel="prev" title="Sample Renderings" href="samples.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #073763" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Forge
+          
+
+          
+            
+            <img src="../_static/arrayfire_icon.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../markdown/README.html">Overview {#mainpage}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="samples.html">Sample Renderings</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Namespaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#forge"><cite>forge</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">Classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chart">Chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#error">Error</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#font">Font</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#histogram">Histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image">Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plot">Plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#surface">Surface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#window">Window</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enums.html">C API Enums</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typedefs.html">C API typdefs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macros.html">Macros</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extras.html">Interop Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Forge</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Namespaces</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/rst/forge.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="namespaces">
+<h1>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this headline">¶</a></h1>
+<p>All objects and utility functions mentioned in this section
+have to be qualified by the namespace <cite>forge</cite>.</p>
+<div class="section" id="forge">
+<h2><cite>forge</cite><a class="headerlink" href="#forge" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="chart">
+<h4>Chart<a class="headerlink" href="#chart" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="_CPPv4N5forge5ChartE">
+<span id="_CPPv3N5forge5ChartE"></span><span id="_CPPv2N5forge5ChartE"></span><span id="forge::Chart"></span><span class="target" id="classforge_1_1Chart"></span><em class="property">class </em><code class="sig-name descname">Chart</code><a class="headerlink" href="#_CPPv4N5forge5ChartE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Chart"><span class="std std-ref">Chart</span></a> is base canvas where other plottable objects are rendered. </p>
+<p>Charts come in two types:<ul class="simple">
+<li><p><a class="reference internal" href="enums.html#defines_8h_1af4e160ad397b0c0d8271fab83e2441dbab26b9da5cbdafc88a47bbe067b74924c"><span class="std std-ref">FG_CHART_2D</span></a> - Two dimensional charts</p></li>
+<li><p><a class="reference internal" href="enums.html#defines_8h_1af4e160ad397b0c0d8271fab83e2441dba5209ecc54f589ec8cf18f2ffd750648c"><span class="std std-ref">FG_CHART_3D</span></a> - Three dimensional charts </p></li>
+</ul>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv45ChartK9ChartType">
+<span id="_CPPv35ChartK9ChartType"></span><span id="_CPPv25ChartK9ChartType"></span><span id="Chart__ChartTypeC"></span><span class="target" id="classforge_1_1Chart_1aa665bf2a69011d8db5504950a0ac7878"></span>FGAPI <code class="sig-name descname">Chart</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv49ChartType" title="ChartType">ChartType</a> <em>cType</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45ChartK9ChartType" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a <a class="reference internal" href="#classforge_1_1Chart"><span class="std std-ref">Chart</span></a> object with given dimensional property. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">cType</span></code>: is chart dimension property </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv45ChartRK5Chart">
+<span id="_CPPv35ChartRK5Chart"></span><span id="_CPPv25ChartRK5Chart"></span><span id="Chart__ChartCR"></span><span class="target" id="classforge_1_1Chart_1a8edf027a67adbdde0028ac322d2d455d"></span>FGAPI <code class="sig-name descname">Chart</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv45ChartK9ChartType" title="Chart">Chart</a> &amp;<em>pOther</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45ChartRK5Chart" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Chart"><span class="std std-ref">Chart</span></a> copy constructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4D0v">
+<span id="_CPPv3D0v"></span><span id="_CPPv2D0v"></span><span id="~Chart"></span><span class="target" id="classforge_1_1Chart_1a24fab297f9af605060aefb10e94a542d"></span>FGAPI <code class="sig-name descname">~Chart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4D0v" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Chart"><span class="std std-ref">Chart</span></a> destructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1aa0fe71ff5413a2e8a4bcfc64538ef074"></span><code class="sig-name descname">FGAPI void setAxesTitles(const char * pX, const char * pY, const char * pZ = NULL)</code></dt>
+<dd><p>Set axes titles for the chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is x-axis title label </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is y-axis title label </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pZ</span></code>: is z-axis title label </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a88e6960288c03aecbc6d47ef92cbec02"></span><code class="sig-name descname">FGAPI void setAxesLimits(const float pXmin, const float pXmax, const float pYmin, const float pYmax, const float pZmin = 0, const float pZmax = 0)</code></dt>
+<dd><p>Set axes data ranges. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pXmin</span></code>: is x-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pXmax</span></code>: is x-axis maximum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pYmin</span></code>: is y-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pYmax</span></code>: is y-axis maximum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pZmin</span></code>: is z-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pZmax</span></code>: is z-axis maximum data value </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1ac06e37addad02ef99b9b65c32cf993a0"></span><code class="sig-name descname">FGAPI void setAxesLabelFormat(const char * pXFormat, const char * pYFormat = &quot;%4.1f&quot;, const char * pZFormat = &quot;%4.1f&quot;)</code></dt>
+<dd><p>Set the format for display of axes labels. </p>
+<p><p>Display format string follows printf style formating for numbers </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pXFormat</span></code>: sets the display format for numbers of X axis </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pYFormat</span></code>: sets the display format for numbers of Y axis </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pZFormat</span></code>: sets the display format for numbers of Z axis</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a4ac38acc4eb7459307170d05b47274fc"></span><code class="sig-name descname">FGAPI void getAxesLimits(float * pXmin, float * pXmax, float * pYmin, float * pYmax, float * pZmin = NULL, float * pZmax = NULL)</code></dt>
+<dd><p>Get axes data ranges. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pXmin</span></code>: is x-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pXmax</span></code>: is x-axis maximum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pYmin</span></code>: is y-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pYmax</span></code>: is y-axis maximum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pZmin</span></code>: is z-axis minimum data value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">pZmax</span></code>: is z-axis maximum data value </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a8c03b892a0a3c1a989e2c9b4d12f4367"></span><code class="sig-name descname">FGAPI void setLegendPosition(const float pX, const float pY)</code></dt>
+<dd><p>Set legend position for <a class="reference internal" href="#classforge_1_1Chart"><span class="std std-ref">Chart</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>By normalized coordinates, the range of these coordinates is expected to be [0-1]. (0,0) is the bottom hand left corner. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is horizontal position in normalized coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is vertical position in normalized coordinates</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1ad49651b0aebb65bfb4b1cf870ac367b1"></span><code class="sig-name descname">FGAPI void add(const  Image  &amp; pImage)</code></dt>
+<dd><p>Add an existing <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is the <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> to render on the chart </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1aba83d8a3481f96419e4ff770670da9d3"></span><code class="sig-name descname">FGAPI void add(const  Histogram  &amp; pHistogram)</code></dt>
+<dd><p>Add an existing <a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a> object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHistogram</span></code>: is the <a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a> to render on the chart </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1af94280e037e51ab24ad7b1a9d5741264"></span><code class="sig-name descname">FGAPI void add(const  Plot  &amp; pPlot)</code></dt>
+<dd><p>Add an existing <a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlot</span></code>: is the <a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> to render on the chart </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1ad3f132f6e8fe7f237533011db1e9da56"></span><code class="sig-name descname">FGAPI void add(const  Surface  &amp; pSurface)</code></dt>
+<dd><p>Add an existing <a class="reference internal" href="#classforge_1_1Surface"><span class="std std-ref">Surface</span></a> object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pSurface</span></code>: is the <a class="reference internal" href="#classforge_1_1Surface"><span class="std std-ref">Surface</span></a> to render on the chart </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1aabdefeac2a7e59ee824afef4e566bbb6"></span><code class="sig-name descname">FGAPI void add(const  VectorField  &amp; pVectorField)</code></dt>
+<dd><p>Add an existing vector field object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pVectorField</span></code>: is the <a class="reference internal" href="#classforge_1_1Surface"><span class="std std-ref">Surface</span></a> to render on the chart </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a7d0a34f959a67a33ba7f4a1b79b96fc3"></span><code class="sig-name descname">FGAPI Image image(const unsigned pWidth, const unsigned pHeight, const  ChannelFormat pFormat = FG_RGBA, const  dtype pDataType = f32)</code></dt>
+<dd><p>Create and add an <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: Width of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: Height of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFormat</span></code>: Color channel format of image, uses one of the values of <a class="reference internal" href="#namespaceforge_1ad77462d6460b60001e1ff156df960f1a"><span class="std std-ref">ChannelFormat</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="#namespaceforge_1acfe99d230e216901bd782cc580e4e815"><span class="std std-ref">dtype</span></a> that indicates the integral data type of histogram data </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1ad020b4df2f68ddfb4057ab1cc9dc41bc"></span><code class="sig-name descname">FGAPI Histogram histogram(const unsigned pNBins, const  dtype pDataType)</code></dt>
+<dd><p>Create and add an <a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a> object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNBins</span></code>: is number of bins the data is sorted out </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="#namespaceforge_1acfe99d230e216901bd782cc580e4e815"><span class="std std-ref">dtype</span></a> that indicates the integral data type of histogram data </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a8e7caa3cd226b829bd4c1ca5a938bec6"></span><code class="sig-name descname">FGAPI Plot plot(const unsigned pNumPoints, const  dtype pDataType, const  PlotType pPlotType = FG_PLOT_LINE, const  MarkerType pMarkerType = FG_MARKER_NONE)</code></dt>
+<dd><p>Create and add an <a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNumPoints</span></code>: is number of data points to display </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="#namespaceforge_1acfe99d230e216901bd782cc580e4e815"><span class="std std-ref">dtype</span></a> that indicates the integral data type of plot data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlotType</span></code>: dictates the type of plot/graph, it can take one of the values of <a class="reference internal" href="#namespaceforge_1ad8f025d22cb27f4d47a65d5e84cc5c27"><span class="std std-ref">PlotType</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerType</span></code>: indicates which symbol is rendered as marker. It can take one of the values of <a class="reference internal" href="#namespaceforge_1a9020a9622bd6b0e958a9c006bf726c2a"><span class="std std-ref">MarkerType</span></a>. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a360551677aab492011650112d6b31ea7"></span><code class="sig-name descname">FGAPI Surface surface(const unsigned pNumXPoints, const unsigned pNumYPoints, const  dtype pDataType, const  PlotType pPlotType = FG_PLOT_SURFACE, const  MarkerType pMarkerType = FG_MARKER_NONE)</code></dt>
+<dd><p>Create and add an <a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNumXPoints</span></code>: is number of data points along X dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNumYPoints</span></code>: is number of data points along Y dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="#namespaceforge_1acfe99d230e216901bd782cc580e4e815"><span class="std std-ref">dtype</span></a> that indicates the integral data type of plot data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlotType</span></code>: is the render type which can be one of <a class="reference internal" href="#namespaceforge_1ad8f025d22cb27f4d47a65d5e84cc5c27"><span class="std std-ref">PlotType</span></a> (valid choices are FG_PLOT_SURFACE and FG_PLOT_SCATTER) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerType</span></code>: is the type of <a class="reference internal" href="#namespaceforge_1a9020a9622bd6b0e958a9c006bf726c2a"><span class="std std-ref">MarkerType</span></a> to draw for <a class="reference internal" href="enums.html#defines_8h_1a3bc618792ca52006bf96800b9bd4050da20bb0cf35cb4efe48747b561224e799f"><span class="std std-ref">FG_PLOT_SCATTER</span></a> plot type </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a56d43faa368874b2e13f718546882e32"></span><code class="sig-name descname">FGAPI VectorField vectorField(const unsigned pNumPoints, const  dtype pDataType)</code></dt>
+<dd><p>Create and add an Vector Field object to the current chart. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNumPoints</span></code>: is number of data points to display </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="#namespaceforge_1acfe99d230e216901bd782cc580e4e815"><span class="std std-ref">dtype</span></a> that indicates the integral data type of vector field data </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a0f520c8aebac2f0f891ce8fa727e1714"></span><code class="sig-name descname">FGAPI void render(const  Window  &amp; pWindow, const int pX, const int pY, const int pVPW, const int pVPH) const</code></dt>
+<dd><p>Render the chart to given window. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is target window to where chart will be rendered </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is x coordinate of origin of viewport in window coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is y coordinate of origin of viewport in window coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pVPW</span></code>: is the width of the viewport </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pVPH</span></code>: is the height of the viewport </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a1978336a92b9e23c7a14ff1369a37090"></span><code class="sig-name descname">FGAPI fg_chart get() const</code></dt>
+<dd><p>Get the handle to internal implementation of <a class="reference internal" href="#classforge_1_1Chart"><span class="std std-ref">Chart</span></a>. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Chart_1a8dc4c3c502a6db3f7734375f6852ed4b"></span><code class="sig-name descname">FGAPI ChartType getChartType() const</code></dt>
+<dd><p>Get the type of the chart. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="error">
+<h4>Error<a class="headerlink" href="#error" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="_CPPv4N5forge5ErrorE">
+<span id="_CPPv3N5forge5ErrorE"></span><span id="_CPPv2N5forge5ErrorE"></span><span id="forge::Error"></span><span class="target" id="classforge_1_1Error"></span><em class="property">class </em><code class="sig-name descname">Error</code> : <em class="property">public</em> exception<a class="headerlink" href="#_CPPv4N5forge5ErrorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Error"><span class="std std-ref">Error</span></a> is exception object thrown by forge for internal errors. </p>
+</dd></dl>
+
+</div>
+<div class="section" id="font">
+<h4>Font<a class="headerlink" href="#font" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="_CPPv4N5forge4FontE">
+<span id="_CPPv3N5forge4FontE"></span><span id="_CPPv2N5forge4FontE"></span><span id="forge::Font"></span><span class="target" id="classforge_1_1Font"></span><em class="property">class </em><code class="sig-name descname">Font</code><a class="headerlink" href="#_CPPv4N5forge4FontE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Font"><span class="std std-ref">Font</span></a> object is a resource handler for the font you want to use. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv44Fontv">
+<span id="_CPPv34Fontv"></span><span id="_CPPv24Fontv"></span><span id="Font"></span><span class="target" id="classforge_1_1Font_1a02aec9321012a73c76b1b5b1d3b339a3"></span>FGAPI <code class="sig-name descname">Font</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv44Fontv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates <a class="reference internal" href="#classforge_1_1Font"><span class="std std-ref">Font</span></a> object. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv44FontRK4Font">
+<span id="_CPPv34FontRK4Font"></span><span id="_CPPv24FontRK4Font"></span><span id="Font__FontCR"></span><span class="target" id="classforge_1_1Font_1a9d37e5a5862b610aefdccd853e7032be"></span>FGAPI <code class="sig-name descname">Font</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv44Fontv" title="Font">Font</a> &amp;<em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv44FontRK4Font" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy constructor for <a class="reference internal" href="#classforge_1_1Font"><span class="std std-ref">Font</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">other</span></code>: is the <a class="reference internal" href="#classforge_1_1Font"><span class="std std-ref">Font</span></a> object of which we make a copy of, this is not a deep copy. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4D0v">
+<span id="_CPPv3D0v"></span><span id="_CPPv2D0v"></span><span id="~Font"></span><span class="target" id="classforge_1_1Font_1ad92a466a98bd6d6e1b3581ca1b7b0d02"></span>FGAPI <code class="sig-name descname">~Font</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4D0v" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Font"><span class="std std-ref">Font</span></a> Destructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Font_1a1d0e86f4846a1fa5373f0e6ca6b6c5e2"></span><code class="sig-name descname">FGAPI void loadFontFile(const char *const pFile)</code></dt>
+<dd><p>Load a given font file. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFile</span></code>: True Type <a class="reference internal" href="#classforge_1_1Font"><span class="std std-ref">Font</span></a> file path </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Font_1aaea2d8bc7c2ecb7575ae1a800a016331"></span><code class="sig-name descname">FGAPI void loadSystemFont(const char *const pName)</code></dt>
+<dd><p>Load a system font based on the name. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pName</span></code>: True Type <a class="reference internal" href="#classforge_1_1Font"><span class="std std-ref">Font</span></a> name </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Font_1a6fcc4ca740614916170e46263e91057a"></span><code class="sig-name descname">FGAPI fg_font get() const</code></dt>
+<dd><p>Get handle for internal implementation of <a class="reference internal" href="#classforge_1_1Font"><span class="std std-ref">Font</span></a> object. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="histogram">
+<h4>Histogram<a class="headerlink" href="#histogram" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="_CPPv4N5forge9HistogramE">
+<span id="_CPPv3N5forge9HistogramE"></span><span id="_CPPv2N5forge9HistogramE"></span><span id="forge::Histogram"></span><span class="target" id="classforge_1_1Histogram"></span><em class="property">class </em><code class="sig-name descname">Histogram</code><a class="headerlink" href="#_CPPv4N5forge9HistogramE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a> is a bar graph to display data frequencey. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv49HistogramKjK5dtype">
+<span id="_CPPv39HistogramKjK5dtype"></span><span id="_CPPv29HistogramKjK5dtype"></span><span id="Histogram__unsignedC.dtypeC"></span><span class="target" id="classforge_1_1Histogram_1a8a56250d1471d85d6e82cb13fafd1cf3"></span>FGAPI <code class="sig-name descname">Histogram</code><span class="sig-paren">(</span><em class="property">const</em> unsigned <em>pNBins</em>, <em class="property">const</em> dtype <em>pDataType</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HistogramKjK5dtype" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a <a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a> object. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNBins</span></code>: is number of bins the data is sorted out </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> that indicates the integral data type of histogram data </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv49HistogramRK9Histogram">
+<span id="_CPPv39HistogramRK9Histogram"></span><span id="_CPPv29HistogramRK9Histogram"></span><span id="Histogram__HistogramCR"></span><span class="target" id="classforge_1_1Histogram_1aeec8b1d47263e8f26db87d0bd45f9686"></span>FGAPI <code class="sig-name descname">Histogram</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv49HistogramKjK5dtype" title="Histogram">Histogram</a> &amp;<em>pOther</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HistogramRK9Histogram" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy constructor for <a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pOther</span></code>: is the <a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a> of which we make a copy of. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv49HistogramK12fg_histogram">
+<span id="_CPPv39HistogramK12fg_histogram"></span><span id="_CPPv29HistogramK12fg_histogram"></span><span id="Histogram__fg_histogramC"></span><span class="target" id="classforge_1_1Histogram_1a84deb9f140c2baaa6eedb459bfbe07e1"></span>FGAPI <code class="sig-name descname">Histogram</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="typedefs.html#_CPPv412fg_histogram" title="fg_histogram">fg_histogram</a> <em>pHandle</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49HistogramK12fg_histogram" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Construct <a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a> ojbect from fg_histogram resource handle. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>This kind of construction assumes ownership of the resource handle is released during the <a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a> object’s destruction. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is the input fg_histogram resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4D0v">
+<span id="_CPPv3D0v"></span><span id="_CPPv2D0v"></span><span id="~Histogram"></span><span class="target" id="classforge_1_1Histogram_1a4768fd035ecd222e12769c6a21cce831"></span>FGAPI <code class="sig-name descname">~Histogram</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4D0v" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a> Destructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1a4223cf126e117578e63c8fd29059c78d"></span><code class="sig-name descname">FGAPI void setColor(const  Color pColor)</code></dt>
+<dd><p>Set the color of bar in the bar graph(histogram) </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pColor</span></code>: takes values of type <a class="reference internal" href="#namespaceforge_1a09d6984cf49403aa83e309e7ede0a61e"><span class="std std-ref">forge::Color</span></a> to define bar color </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1a271035707dc73d59303b43c0654167a2"></span><code class="sig-name descname">FGAPI void setColor(const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<dd><p>Set the color of bar in the bar graph(histogram) </p>
+<p>This is global alpha value for the histogram rendering that takes effect if individual bar alphas are not set by calling the following member functions<ul class="simple">
+<li><p><a class="reference internal" href="#classforge_1_1Histogram_1acce1129878218e8da269bc1149a184ac"><span class="std std-ref">Histogram::alphas()</span></a></p></li>
+<li><p><a class="reference internal" href="#classforge_1_1Histogram_1ac248736a53c7fc199a24e5e30f3197fa"><span class="std std-ref">Histogram::alphasSize()</span></a></p></li>
+</ul>
+</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRed</span></code>: is Red component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pGreen</span></code>: is Green component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBlue</span></code>: is Blue component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pAlpha</span></code>: is Alpha component in range [0, 1] </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1a841659a9bd508773863b33efaa4e2cf5"></span><code class="sig-name descname">FGAPI void setLegend(const char * pLegend)</code></dt>
+<dd><p>Set legend for histogram plot. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pLegend</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1a0489cb338aeeb4a051689d4d08f6aa52"></span><code class="sig-name descname">FGAPI unsigned vertices() const</code></dt>
+<dd><p>Get the buffer identifier for vertices. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>vertex buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1ad3170bfaae56062c20b4b840e89b6c18"></span><code class="sig-name descname">FGAPI unsigned colors() const</code></dt>
+<dd><p>Get the buffer identifier for color values per vertex. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>colors buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1acce1129878218e8da269bc1149a184ac"></span><code class="sig-name descname">FGAPI unsigned alphas() const</code></dt>
+<dd><p>Get the buffer identifier for alpha values per vertex. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>alpha values buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1a45c0b02d22ed759e90b7819883c57821"></span><code class="sig-name descname">FGAPI unsigned verticesSize() const</code></dt>
+<dd><p>Get the vertex buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>vertex buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1ac5e4d2faad5a4b77e3c2233d680e65c1"></span><code class="sig-name descname">FGAPI unsigned colorsSize() const</code></dt>
+<dd><p>Get the colors buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>colors buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1ac248736a53c7fc199a24e5e30f3197fa"></span><code class="sig-name descname">FGAPI unsigned alphasSize() const</code></dt>
+<dd><p>Get the alpha values buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>alpha buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Histogram_1a273675d18ae742844459c709246207d5"></span><code class="sig-name descname">FGAPI fg_histogram get() const</code></dt>
+<dd><p>Get the handle to internal implementation of <a class="reference internal" href="#classforge_1_1Histogram"><span class="std std-ref">Histogram</span></a>. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="image">
+<h4>Image<a class="headerlink" href="#image" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="_CPPv4N5forge5ImageE">
+<span id="_CPPv3N5forge5ImageE"></span><span id="_CPPv2N5forge5ImageE"></span><span id="forge::Image"></span><span class="target" id="classforge_1_1Image"></span><em class="property">class </em><code class="sig-name descname">Image</code><a class="headerlink" href="#_CPPv4N5forge5ImageE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> helps rendering an image in a window. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv45ImageKjKjK13ChannelFormatK5dtype">
+<span id="_CPPv35ImageKjKjK13ChannelFormatK5dtype"></span><span id="_CPPv25ImageKjKjK13ChannelFormatK5dtype"></span><span id="Image__unsignedC.unsignedC.ChannelFormatC.dtypeC"></span><span class="target" id="classforge_1_1Image_1aa8b557a830848c689b9618d096090330"></span>FGAPI <code class="sig-name descname">Image</code><span class="sig-paren">(</span><em class="property">const</em> unsigned <em>pWidth</em>, <em class="property">const</em> unsigned <em>pHeight</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv413ChannelFormat" title="ChannelFormat">ChannelFormat</a> <em>pFormat</em> = <a class="reference internal" href="enums.html#_CPPv47FG_RGBA" title="FG_RGBA">FG_RGBA</a>, <em class="property">const</em> dtype <em>pDataType</em> = f32<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45ImageKjKjK13ChannelFormatK5dtype" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> object. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: Width of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: Height of the image </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFormat</span></code>: Color channel format of image, uses one of the values of <a class="reference internal" href="#namespaceforge_1ad77462d6460b60001e1ff156df960f1a"><span class="std std-ref">ChannelFormat</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="#namespaceforge_1acfe99d230e216901bd782cc580e4e815"><span class="std std-ref">dtype</span></a> that indicates the integral data type of histogram data </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv45ImageRK5Image">
+<span id="_CPPv35ImageRK5Image"></span><span id="_CPPv25ImageRK5Image"></span><span id="Image__ImageCR"></span><span class="target" id="classforge_1_1Image_1a2e71400f28fd43b3adc978bdd8dab57b"></span>FGAPI <code class="sig-name descname">Image</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv45ImageKjKjK13ChannelFormatK5dtype" title="Image">Image</a> &amp;<em>pOther</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45ImageRK5Image" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy constructor of <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pOther</span></code>: is the <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> of which we make a copy of. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv45ImageK8fg_image">
+<span id="_CPPv35ImageK8fg_image"></span><span id="_CPPv25ImageK8fg_image"></span><span id="Image__fg_imageC"></span><span class="target" id="classforge_1_1Image_1a6789f27d9575b22b6cb27864c0f73f5f"></span>FGAPI <code class="sig-name descname">Image</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="typedefs.html#_CPPv48fg_image" title="fg_image">fg_image</a> <em>pHandle</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45ImageK8fg_image" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Construct <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> ojbect from fg_image resource handle. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>This kind of construction assumes ownership of the resource handle is released during the <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> object’s destruction. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is the input fg_image resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4D0v">
+<span id="_CPPv3D0v"></span><span id="_CPPv2D0v"></span><span id="~Image"></span><span class="target" id="classforge_1_1Image_1a938f49fb6665a9330f9eeb8dffaa5790"></span>FGAPI <code class="sig-name descname">~Image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4D0v" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> Destructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1aa1c7030b322db3cd00682e40e4b2f978"></span><code class="sig-name descname">FGAPI void setAlpha(const float pAlpha)</code></dt>
+<dd><p>Set a global alpha value for rendering the image. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pAlpha</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1a23797c43207b8472c9c01b362a36f7a3"></span><code class="sig-name descname">FGAPI void keepAspectRatio(const bool pKeep)</code></dt>
+<dd><p>Set option to inform whether to maintain aspect ratio of original image. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pKeep</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1aab6a4c56aed8de3403e9ca768bb38593"></span><code class="sig-name descname">FGAPI unsigned width() const</code></dt>
+<dd><p>Get <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> width. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>image width </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1a8220354cf700f056a63e20bce7ba2ee9"></span><code class="sig-name descname">FGAPI unsigned height() const</code></dt>
+<dd><p>Get <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> height. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>image width </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1a46cb2af636bed18ad169247928ea12c9"></span><code class="sig-name descname">FGAPI ChannelFormat pixelFormat() const</code></dt>
+<dd><p>Get <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a>’s channel format. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#namespaceforge_1ad77462d6460b60001e1ff156df960f1a"><span class="std std-ref">ChannelFormat</span></a> value of <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1aaa2284f4a38b932e377493a67dabda5a"></span><code class="sig-name descname">FGAPI dtype channelType() const</code></dt>
+<dd><p>Get <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a>’s integral data type. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#namespaceforge_1acfe99d230e216901bd782cc580e4e815"><span class="std std-ref">dtype</span></a> value of <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1a1f9852a3777516f9033625996f704b83"></span><code class="sig-name descname">FGAPI unsigned pixels() const</code></dt>
+<dd><p>Get the resource id of image buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>image buffer id </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1a69fc84360dae572161495eaa99271b06"></span><code class="sig-name descname">FGAPI unsigned size() const</code></dt>
+<dd><p>Get the image data size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>image buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1a0f520c8aebac2f0f891ce8fa727e1714"></span><code class="sig-name descname">FGAPI void render(const  Window  &amp; pWindow, const int pX, const int pY, const int pVPW, const int pVPH) const</code></dt>
+<dd><p>Render the image to given window. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: is target window to where image will be rendered </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is x coordinate of origin of viewport in window coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is y coordinate of origin of viewport in window coordinates </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pVPW</span></code>: is the width of the viewport </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pVPH</span></code>: is the height of the viewport </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Image_1a63c3cdb3ebabf043497800e487881ad1"></span><code class="sig-name descname">FGAPI fg_image get() const</code></dt>
+<dd><p>Get the handle to internal implementation of <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a>. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="plot">
+<h4>Plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="_CPPv4N5forge4PlotE">
+<span id="_CPPv3N5forge4PlotE"></span><span id="_CPPv2N5forge4PlotE"></span><span id="forge::Plot"></span><span class="target" id="classforge_1_1Plot"></span><em class="property">class </em><code class="sig-name descname">Plot</code><a class="headerlink" href="#_CPPv4N5forge4PlotE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> is a line graph to display two dimensional data. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv44PlotKjK5dtypeK9ChartTypeK8PlotTypeK10MarkerType">
+<span id="_CPPv34PlotKjK5dtypeK9ChartTypeK8PlotTypeK10MarkerType"></span><span id="_CPPv24PlotKjK5dtypeK9ChartTypeK8PlotTypeK10MarkerType"></span><span id="Plot__unsignedC.dtypeC.ChartTypeC.PlotTypeC.MarkerTypeC"></span><span class="target" id="classforge_1_1Plot_1a855b1938229806de2e775e4e3c62edd6"></span>FGAPI <code class="sig-name descname">Plot</code><span class="sig-paren">(</span><em class="property">const</em> unsigned <em>pNumPoints</em>, <em class="property">const</em> dtype <em>pDataType</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv49ChartType" title="ChartType">ChartType</a> <em>pChartType</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv48PlotType" title="PlotType">PlotType</a> <em>pPlotType</em> = <a class="reference internal" href="enums.html#_CPPv412FG_PLOT_LINE" title="FG_PLOT_LINE">FG_PLOT_LINE</a>, <em class="property">const</em> <a class="reference internal" href="#_CPPv410MarkerType" title="MarkerType">MarkerType</a> <em>pMarkerType</em> = <a class="reference internal" href="enums.html#_CPPv414FG_MARKER_NONE" title="FG_MARKER_NONE">FG_MARKER_NONE</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv44PlotKjK5dtypeK9ChartTypeK8PlotTypeK10MarkerType" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a <a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> object. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNumPoints</span></code>: is number of data points to display </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="#namespaceforge_1acfe99d230e216901bd782cc580e4e815"><span class="std std-ref">dtype</span></a> that indicates the integral data type of plot data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChartType</span></code>: dictates the dimensionality of the chart </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlotType</span></code>: dictates the type of plot/graph, it can take one of the values of <a class="reference internal" href="#namespaceforge_1ad8f025d22cb27f4d47a65d5e84cc5c27"><span class="std std-ref">PlotType</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerType</span></code>: indicates which symbol is rendered as marker. It can take one of the values of <a class="reference internal" href="#namespaceforge_1a9020a9622bd6b0e958a9c006bf726c2a"><span class="std std-ref">MarkerType</span></a>. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv44PlotRK4Plot">
+<span id="_CPPv34PlotRK4Plot"></span><span id="_CPPv24PlotRK4Plot"></span><span id="Plot__PlotCR"></span><span class="target" id="classforge_1_1Plot_1ab690b2f1e09affaaceab9074d25ca872"></span>FGAPI <code class="sig-name descname">Plot</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv44PlotKjK5dtypeK9ChartTypeK8PlotTypeK10MarkerType" title="Plot">Plot</a> &amp;<em>pOther</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv44PlotRK4Plot" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy constructor for <a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pOther</span></code>: is the <a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> of which we make a copy of. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv44PlotK7fg_plot">
+<span id="_CPPv34PlotK7fg_plot"></span><span id="_CPPv24PlotK7fg_plot"></span><span id="Plot__fg_plotC"></span><span class="target" id="classforge_1_1Plot_1a104801283317e9f6fdc9d36894c516dc"></span>FGAPI <code class="sig-name descname">Plot</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="typedefs.html#_CPPv47fg_plot" title="fg_plot">fg_plot</a> <em>pHandle</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv44PlotK7fg_plot" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Construct <a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> ojbect from fg_plot resource handle. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>This kind of construction assumes ownership of the resource handle is released during the <a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> object’s destruction. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is the input fg_plot resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4D0v">
+<span id="_CPPv3D0v"></span><span id="_CPPv2D0v"></span><span id="~Plot"></span><span class="target" id="classforge_1_1Plot_1a96133e108822b91cbf71421900205b28"></span>FGAPI <code class="sig-name descname">~Plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4D0v" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Plot"><span class="std std-ref">Plot</span></a> Destructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1a8e14e7f09511e4042e65b78e5b0ba0fc"></span><code class="sig-name descname">FGAPI void setColor(const  forge::Color pColor)</code></dt>
+<dd><p>Set the color of line graph(plot) </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pColor</span></code>: takes values of <a class="reference internal" href="#namespaceforge_1a09d6984cf49403aa83e309e7ede0a61e"><span class="std std-ref">forge::Color</span></a> to define plot color </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1a271035707dc73d59303b43c0654167a2"></span><code class="sig-name descname">FGAPI void setColor(const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<dd><p>Set the color of line graph(plot) </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRed</span></code>: is Red component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pGreen</span></code>: is Green component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBlue</span></code>: is Blue component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pAlpha</span></code>: is Blue component in range [0, 1] </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1a841659a9bd508773863b33efaa4e2cf5"></span><code class="sig-name descname">FGAPI void setLegend(const char * pLegend)</code></dt>
+<dd><p>Set plot legend. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pLegend</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1a8e8008385b6d430b4defe1d5082dbd7d"></span><code class="sig-name descname">FGAPI void setMarkerSize(const float pMarkerSize)</code></dt>
+<dd><p>Set global marker size. </p>
+<p>This size will be used for rendering markers if no per vertex marker sizes are provided. This value defaults to 10</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerSize</span></code>: is the target marker size for scatter plots or line plots with markers </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1a0489cb338aeeb4a051689d4d08f6aa52"></span><code class="sig-name descname">FGAPI unsigned vertices() const</code></dt>
+<dd><p>Get the buffer identifier for vertices. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>vertex buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1ad3170bfaae56062c20b4b840e89b6c18"></span><code class="sig-name descname">FGAPI unsigned colors() const</code></dt>
+<dd><p>Get the buffer identifier for color values per vertex. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>colors buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1acce1129878218e8da269bc1149a184ac"></span><code class="sig-name descname">FGAPI unsigned alphas() const</code></dt>
+<dd><p>Get the buffer identifier for alpha values per vertex. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>alpha values buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1ac2ce0483608ce361ab0c452feb042c74"></span><code class="sig-name descname">FGAPI unsigned radii() const</code></dt>
+<dd><p>Get the buffer identifier for per vertex marker sizes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>marker sizes buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1a45c0b02d22ed759e90b7819883c57821"></span><code class="sig-name descname">FGAPI unsigned verticesSize() const</code></dt>
+<dd><p>Get the vertex buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>vertex buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1ac5e4d2faad5a4b77e3c2233d680e65c1"></span><code class="sig-name descname">FGAPI unsigned colorsSize() const</code></dt>
+<dd><p>Get the colors buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>colors buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1ac248736a53c7fc199a24e5e30f3197fa"></span><code class="sig-name descname">FGAPI unsigned alphasSize() const</code></dt>
+<dd><p>Get the alpha values buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>alpha buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1a93db2b82d83c1dd4ca1bd21fca9c86a7"></span><code class="sig-name descname">FGAPI unsigned radiiSize() const</code></dt>
+<dd><p>Get the marker sizes buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>marker sizes buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Plot_1af6a9390251ce2cb84fdf99361772681f"></span><code class="sig-name descname">FGAPI fg_plot get() const</code></dt>
+<dd><p>Get the handle to internal implementation of plot. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="surface">
+<h4>Surface<a class="headerlink" href="#surface" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="_CPPv4N5forge7SurfaceE">
+<span id="_CPPv3N5forge7SurfaceE"></span><span id="_CPPv2N5forge7SurfaceE"></span><span id="forge::Surface"></span><span class="target" id="classforge_1_1Surface"></span><em class="property">class </em><code class="sig-name descname">Surface</code><a class="headerlink" href="#_CPPv4N5forge7SurfaceE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Surface"><span class="std std-ref">Surface</span></a> is a graph to display three dimensional data. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv47SurfaceKjKjK5dtypeK8PlotTypeK10MarkerType">
+<span id="_CPPv37SurfaceKjKjK5dtypeK8PlotTypeK10MarkerType"></span><span id="_CPPv27SurfaceKjKjK5dtypeK8PlotTypeK10MarkerType"></span><span id="Surface__unsignedC.unsignedC.dtypeC.PlotTypeC.MarkerTypeC"></span><span class="target" id="classforge_1_1Surface_1a9df677ac558dc952ef2f26d6d66a1a0f"></span>FGAPI <code class="sig-name descname">Surface</code><span class="sig-paren">(</span><em class="property">const</em> unsigned <em>pNumXPoints</em>, <em class="property">const</em> unsigned <em>pNumYPoints</em>, <em class="property">const</em> dtype <em>pDataType</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv48PlotType" title="PlotType">PlotType</a> <em>pPlotType</em> = <a class="reference internal" href="enums.html#_CPPv415FG_PLOT_SURFACE" title="FG_PLOT_SURFACE">FG_PLOT_SURFACE</a>, <em class="property">const</em> <a class="reference internal" href="#_CPPv410MarkerType" title="MarkerType">MarkerType</a> <em>pMarkerType</em> = <a class="reference internal" href="enums.html#_CPPv414FG_MARKER_NONE" title="FG_MARKER_NONE">FG_MARKER_NONE</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47SurfaceKjKjK5dtypeK8PlotTypeK10MarkerType" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a <a class="reference internal" href="#classforge_1_1Surface"><span class="std std-ref">Surface</span></a> object. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNumXPoints</span></code>: is number of data points along X dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pNumYPoints</span></code>: is number of data points along Y dimension </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pDataType</span></code>: takes one of the values of <a class="reference internal" href="#namespaceforge_1acfe99d230e216901bd782cc580e4e815"><span class="std std-ref">dtype</span></a> that indicates the integral data type of surface data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pPlotType</span></code>: is the render type which can be one of <a class="reference internal" href="#namespaceforge_1ad8f025d22cb27f4d47a65d5e84cc5c27"><span class="std std-ref">PlotType</span></a> (valid choices are FG_PLOT_SURFACE and FG_PLOT_SCATTER) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pMarkerType</span></code>: is the type of <a class="reference internal" href="#namespaceforge_1a9020a9622bd6b0e958a9c006bf726c2a"><span class="std std-ref">MarkerType</span></a> to draw for <a class="reference internal" href="enums.html#defines_8h_1a3bc618792ca52006bf96800b9bd4050da20bb0cf35cb4efe48747b561224e799f"><span class="std std-ref">FG_PLOT_SCATTER</span></a> plot type </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv47SurfaceRK7Surface">
+<span id="_CPPv37SurfaceRK7Surface"></span><span id="_CPPv27SurfaceRK7Surface"></span><span id="Surface__SurfaceCR"></span><span class="target" id="classforge_1_1Surface_1abdaddd9b2ceccef52ba64157efdfa8bf"></span>FGAPI <code class="sig-name descname">Surface</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv47SurfaceKjKjK5dtypeK8PlotTypeK10MarkerType" title="Surface">Surface</a> &amp;<em>pOther</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47SurfaceRK7Surface" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy constructor for surface. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pOther</span></code>: is the surface of which we make a copy of. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv47SurfaceK10fg_surface">
+<span id="_CPPv37SurfaceK10fg_surface"></span><span id="_CPPv27SurfaceK10fg_surface"></span><span id="Surface__fg_surfaceC"></span><span class="target" id="classforge_1_1Surface_1ae3211208a46580fec223900f3d502f47"></span>FGAPI <code class="sig-name descname">Surface</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="typedefs.html#_CPPv410fg_surface" title="fg_surface">fg_surface</a> <em>pHandle</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47SurfaceK10fg_surface" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Construct <a class="reference internal" href="#classforge_1_1Surface"><span class="std std-ref">Surface</span></a> ojbect from fg_surface resource handle. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>This kind of construction assumes ownership of the resource handle is released during the <a class="reference internal" href="#classforge_1_1Surface"><span class="std std-ref">Surface</span></a> object’s destruction. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHandle</span></code>: is the input fg_surface resource handle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4D0v">
+<span id="_CPPv3D0v"></span><span id="_CPPv2D0v"></span><span id="~Surface"></span><span class="target" id="classforge_1_1Surface_1a999478ecc7b13b0a9254a24356079d54"></span>FGAPI <code class="sig-name descname">~Surface</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4D0v" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>surface Destructor </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1a8e14e7f09511e4042e65b78e5b0ba0fc"></span><code class="sig-name descname">FGAPI void setColor(const  forge::Color pColor)</code></dt>
+<dd><p>Set the color of line graph(surface) </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pColor</span></code>: takes values of <a class="reference internal" href="#namespaceforge_1a09d6984cf49403aa83e309e7ede0a61e"><span class="std std-ref">forge::Color</span></a> to define surface color </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1a271035707dc73d59303b43c0654167a2"></span><code class="sig-name descname">FGAPI void setColor(const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<dd><p>Set the color of line graph(surface) </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRed</span></code>: is Red component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pGreen</span></code>: is Green component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pBlue</span></code>: is Blue component in range [0, 1] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pAlpha</span></code>: is Blue component in range [0, 1] </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1a841659a9bd508773863b33efaa4e2cf5"></span><code class="sig-name descname">FGAPI void setLegend(const char * pLegend)</code></dt>
+<dd><p>Set surface legend. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pLegend</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1a0489cb338aeeb4a051689d4d08f6aa52"></span><code class="sig-name descname">FGAPI unsigned vertices() const</code></dt>
+<dd><p>Get the buffer identifier for vertices. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>vertex buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1ad3170bfaae56062c20b4b840e89b6c18"></span><code class="sig-name descname">FGAPI unsigned colors() const</code></dt>
+<dd><p>Get the buffer identifier for color values per vertex. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>colors buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1acce1129878218e8da269bc1149a184ac"></span><code class="sig-name descname">FGAPI unsigned alphas() const</code></dt>
+<dd><p>Get the buffer identifier for alpha values per vertex. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>alpha values buffer resource id. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1a45c0b02d22ed759e90b7819883c57821"></span><code class="sig-name descname">FGAPI unsigned verticesSize() const</code></dt>
+<dd><p>Get the vertex buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>vertex buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1ac5e4d2faad5a4b77e3c2233d680e65c1"></span><code class="sig-name descname">FGAPI unsigned colorsSize() const</code></dt>
+<dd><p>Get the colors buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>colors buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1ac248736a53c7fc199a24e5e30f3197fa"></span><code class="sig-name descname">FGAPI unsigned alphasSize() const</code></dt>
+<dd><p>Get the alpha values buffer size in bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>alpha buffer size in bytes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Surface_1af8136bd6905286c4776a8974a38d5d7b"></span><code class="sig-name descname">FGAPI fg_surface get() const</code></dt>
+<dd><p>Get the handle to internal implementation of surface. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="window">
+<h4>Window<a class="headerlink" href="#window" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="_CPPv4N5forge6WindowE">
+<span id="_CPPv3N5forge6WindowE"></span><span id="_CPPv2N5forge6WindowE"></span><span id="forge::Window"></span><span class="target" id="classforge_1_1Window"></span><em class="property">class </em><code class="sig-name descname">Window</code><a class="headerlink" href="#_CPPv4N5forge6WindowE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Window"><span class="std std-ref">Window</span></a> is where objects such as Images, Plots etc. are rendered. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv46WindowKiKiPKcPK6WindowKb">
+<span id="_CPPv36WindowKiKiPKcPK6WindowKb"></span><span id="_CPPv26WindowKiKiPKcPK6WindowKb"></span><span id="Window__iC.iC.cCP.WindowCP.bC"></span><span class="target" id="classforge_1_1Window_1af92f7575fb88e9acb15306513e91b91c"></span>FGAPI <code class="sig-name descname">Window</code><span class="sig-paren">(</span><em class="property">const</em> int <em>pWidth</em>, <em class="property">const</em> int <em>pHeight</em>, <em class="property">const</em> char *<em>pTitle</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv46WindowKiKiPKcPK6WindowKb" title="Window">Window</a> *<em>pWindow</em> = 0, <em class="property">const</em> bool <em>invisible</em> = false<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46WindowKiKiPKcPK6WindowKb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a <a class="reference internal" href="#classforge_1_1Window"><span class="std std-ref">Window</span></a> object. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: Width of the display window </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: Height of the display window </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pTitle</span></code>: window Title </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWindow</span></code>: An already existing window with which the window to be created should share the rendering context. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">invisible</span></code>: window is created in invisible mode. User has to call <a class="reference internal" href="#classforge_1_1Window_1ae852a84127e1cf6eaae8c91d90357045"><span class="std std-ref">Window::show()</span></a> when they decide to actually display the window </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv46WindowRK6Window">
+<span id="_CPPv36WindowRK6Window"></span><span id="_CPPv26WindowRK6Window"></span><span id="Window__WindowCR"></span><span class="target" id="classforge_1_1Window_1aa48c3aee1280cde2731d9cb006e09eda"></span>FGAPI <code class="sig-name descname">Window</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv46WindowKiKiPKcPK6WindowKb" title="Window">Window</a> &amp;<em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv46WindowRK6Window" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy constructor for <a class="reference internal" href="#classforge_1_1Window"><span class="std std-ref">Window</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">other</span></code>: is the <a class="reference internal" href="#classforge_1_1Window"><span class="std std-ref">Window</span></a> of which we make a copy of. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4D0v">
+<span id="_CPPv3D0v"></span><span id="_CPPv2D0v"></span><span id="~Window"></span><span class="target" id="classforge_1_1Window_1a53df16f75e4cbb53420818f5fa234c94"></span>FGAPI <code class="sig-name descname">~Window</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4D0v" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classforge_1_1Window"><span class="std std-ref">Window</span></a> Destructor. </p>
+<p>Decrements the reference count to the shared window object. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a668a0e04a09d0c6d68590dbb22c8c51d"></span><code class="sig-name descname">FGAPI void setFont(Font  * pFont)</code></dt>
+<dd><p>Set font to be used by the window to draw text. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFont</span></code>: <a class="reference internal" href="#classforge_1_1Font"><span class="std std-ref">Font</span></a> object pointer </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a54a2404b9994c6e3ec4712a4358bda0b"></span><code class="sig-name descname">FGAPI void setTitle(const char * pTitle)</code></dt>
+<dd><p>Set the window title. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pTitle</span></code>: is the window title </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1af7ac242c7c9ad29cc37dfcbd2cffe3f5"></span><code class="sig-name descname">FGAPI void setPos(const int pX, const int pY)</code></dt>
+<dd><p>Set the start position where the window will appear. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pX</span></code>: is horizontal coordinate </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pY</span></code>: is vertical coordinate </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1aab80bb9f311a3d6bd2421b6871279ba9"></span><code class="sig-name descname">FGAPI void setSize(const unsigned pWidth, const unsigned pHeight)</code></dt>
+<dd><p>Set the size of the window programmatically. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pWidth</span></code>: target width </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pHeight</span></code>: target height </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a16bb77d4c22a627e316299c06389e274"></span><code class="sig-name descname">FGAPI void setColorMap(const  ColorMap cmap)</code></dt>
+<dd><p>Set the colormap to be used for subsequent rendering calls. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">cmap</span></code>: should be one of the enum values from <a class="reference internal" href="#namespaceforge_1af04e68934546749d9ca2bdee4ba28066"><span class="std std-ref">ColorMap</span></a> </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1aab312e27415c776ada2d7e16df1db873"></span><code class="sig-name descname">FGAPI long long context() const</code></dt>
+<dd><p>Get rendering backend context handle. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Context handle for the window’s rendering context </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1ac43a5cafab9b50383c6514cbf7d1bfff"></span><code class="sig-name descname">FGAPI long long display() const</code></dt>
+<dd><p>Get Native <a class="reference internal" href="#classforge_1_1Window"><span class="std std-ref">Window</span></a> display handle. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Display handle of the native window implemenation of <a class="reference internal" href="#classforge_1_1Window"><span class="std std-ref">Window</span></a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a367ffd8c63b2a031aa0a3c704ce8e3ed"></span><code class="sig-name descname">FGAPI int width() const</code></dt>
+<dd><p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>window width </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a90557d976e2143de4e914019ce88a5ca"></span><code class="sig-name descname">FGAPI int height() const</code></dt>
+<dd><p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>window height </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1aa448783bd8ee9138f41d93d8bf67f5cf"></span><code class="sig-name descname">FGAPI fg_window get() const</code></dt>
+<dd><p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>internal handle for window implementation </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1afdc06d5b1652d4ae491be94d3edc5a6f"></span><code class="sig-name descname">FGAPI void makeCurrent()</code></dt>
+<dd><p>Make the current window’s rendering context active context. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a505fdb047ae9fb4e3a844a979512ff93"></span><code class="sig-name descname">FGAPI void hide()</code></dt>
+<dd><p>Hide the window. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1ae852a84127e1cf6eaae8c91d90357045"></span><code class="sig-name descname">FGAPI void show()</code></dt>
+<dd><p>Show the window if hidden, otherwise no effect. </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a800cef45e6604024ba71700cf036baae"></span><code class="sig-name descname">FGAPI bool close()</code></dt>
+<dd><p>Check if the window is ready for close. </p>
+<p>This happens when an user presses <code class="docutils literal notranslate"><span class="pre">ESC</span></code> key while the window is in focus or clicks on the close button of the window</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>true | false </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a5d3ed7b3fed2fb9d0f8ce0a44b487755"></span><code class="sig-name descname">FGAPI void draw(const  Image  &amp; pImage, const bool pKeepAspectRatio = true)</code></dt>
+<dd><p>Render an <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> to <a class="reference internal" href="#classforge_1_1Window"><span class="std std-ref">Window</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>this draw call automatically swaps back buffer with front buffer (double buffering mechanism). </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is an object of class <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pKeepAspectRatio</span></code>: when set to true keeps the aspect ratio of the input image constant.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a6ed095429857c36e4d5805eb7c782b7c"></span><code class="sig-name descname">FGAPI void draw(const  Chart  &amp; pChart)</code></dt>
+<dd><p>Render a chart to <a class="reference internal" href="#classforge_1_1Window"><span class="std std-ref">Window</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>this draw call automatically swaps back buffer with front buffer (double buffering mechanism). </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is an chart object</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a97f8b92672898722c06c31f776dea0de"></span><code class="sig-name descname">FGAPI void draw(const int pRows, const int pCols, const int pIndex, const  Image  &amp; pImage, const char * pTitle = 0, const bool pKeepAspectRatio = true)</code></dt>
+<dd><p>Render <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> to given sub-region of the window in multiview mode. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>this draw call doesn’t automatically swap back buffer with front buffer (double buffering mechanism) since it doesn’t have the knowledge of which sub-regions already got rendered. We should call <a class="reference internal" href="#classforge_1_1Window_1a5d3ed7b3fed2fb9d0f8ce0a44b487755"><span class="std std-ref">Window::draw()</span></a> once all draw calls corresponding to all sub-regions are called when in multiview mode. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRows</span></code>: indicates the number of rows in grid layout </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pCols</span></code>: indicates the number of columns in grid layout </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pIndex</span></code>: indicates the index of cell in the layout represented by <code class="docutils literal notranslate"><span class="pre">pRows</span></code> and <code class="docutils literal notranslate"><span class="pre">pCols</span></code> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pImage</span></code>: is an object of class <a class="reference internal" href="#classforge_1_1Image"><span class="std std-ref">Image</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pTitle</span></code>: is the title that will be displayed for the cell represented by <code class="docutils literal notranslate"><span class="pre">pColId</span></code> and <code class="docutils literal notranslate"><span class="pre">pRowId</span></code> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pKeepAspectRatio</span></code>: when set to true keeps the aspect ratio of the input image constant.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1aba1b5017a003871f194987fd7eedcf7d"></span><code class="sig-name descname">FGAPI void draw(const int pRows, const int pCols, const int pIndex, const  Chart  &amp; pChart, const char * pTitle = 0)</code></dt>
+<dd><p>Render the chart to given sub-region of the window in multiview mode. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>this draw call doesn’t automatically swap back buffer with front buffer (double buffering mechanism) since it doesn’t have the knowledge of which sub-regions already got rendered. We should call <a class="reference internal" href="#classforge_1_1Window_1a5d3ed7b3fed2fb9d0f8ce0a44b487755"><span class="std std-ref">Window::draw()</span></a> once all draw calls corresponding to all sub-regions are called when in multiview mode. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pRows</span></code>: indicates the number of rows in grid layout </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pCols</span></code>: indicates the number of columns in grid layout </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pIndex</span></code>: indicates the index of cell in the layout represented by <code class="docutils literal notranslate"><span class="pre">pRows</span></code> and <code class="docutils literal notranslate"><span class="pre">pCols</span></code> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pChart</span></code>: is a <a class="reference internal" href="#classforge_1_1Chart"><span class="std std-ref">Chart</span></a> with one or more plottable renderables </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pTitle</span></code>: is the title that will be displayed for the cell represented by <code class="docutils literal notranslate"><span class="pre">pColId</span></code> and <code class="docutils literal notranslate"><span class="pre">pRowId</span></code> </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1ac236527803a9ed5b5a908d2014f9e1ab"></span><code class="sig-name descname">FGAPI void swapBuffers()</code></dt>
+<dd><p>Swaps background buffer with front buffer. </p>
+<p>This draw call should only be used when the window is displaying something in multiview mode </p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<span class="target" id="classforge_1_1Window_1a7b42bb1b6fe76015118491ca1c9f7e84"></span><code class="sig-name descname">FGAPI void saveFrameBuffer(const char * pFullPath)</code></dt>
+<dd><p>Save window frame buffer to give location in provided image format. </p>
+<p>The image format to be saved in is inferred from the file extension provided in the path string.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">pFullPath</span></code>: should be the absolute path of the target location where the framebuffer should be stored. The target image format is inferred from the file extension. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="typedefs">
+<h3>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h3>
+<dl class="type">
+<dt id="_CPPv49ErrorCode">
+<span id="_CPPv39ErrorCode"></span><span id="_CPPv29ErrorCode"></span><span id="ErrorCode"></span><span class="target" id="namespaceforge_1a1f58a4f507d7f7041517cdcd2d641bb3"></span><em class="property">typedef </em><a class="reference internal" href="enums.html#_CPPv46fg_err" title="fg_err">fg_err</a> <code class="sig-name descname">ErrorCode</code><a class="headerlink" href="#_CPPv49ErrorCode" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv413ChannelFormat">
+<span id="_CPPv313ChannelFormat"></span><span id="_CPPv213ChannelFormat"></span><span id="ChannelFormat"></span><span class="target" id="namespaceforge_1ad77462d6460b60001e1ff156df960f1a"></span><em class="property">typedef </em><a class="reference internal" href="enums.html#_CPPv417fg_channel_format" title="fg_channel_format">fg_channel_format</a> <code class="sig-name descname">ChannelFormat</code><a class="headerlink" href="#_CPPv413ChannelFormat" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv49ChartType">
+<span id="_CPPv39ChartType"></span><span id="_CPPv29ChartType"></span><span id="ChartType"></span><span class="target" id="namespaceforge_1a0dd9058dafc9d463c5bd9d188a12fe32"></span><em class="property">typedef </em><a class="reference internal" href="enums.html#_CPPv413fg_chart_type" title="fg_chart_type">fg_chart_type</a> <code class="sig-name descname">ChartType</code><a class="headerlink" href="#_CPPv49ChartType" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv48ColorMap">
+<span id="_CPPv38ColorMap"></span><span id="_CPPv28ColorMap"></span><span id="ColorMap"></span><span class="target" id="namespaceforge_1af04e68934546749d9ca2bdee4ba28066"></span><em class="property">typedef </em><a class="reference internal" href="enums.html#_CPPv412fg_color_map" title="fg_color_map">fg_color_map</a> <code class="sig-name descname">ColorMap</code><a class="headerlink" href="#_CPPv48ColorMap" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv45Color">
+<span id="_CPPv35Color"></span><span id="_CPPv25Color"></span><span id="Color"></span><span class="target" id="namespaceforge_1a09d6984cf49403aa83e309e7ede0a61e"></span><em class="property">typedef </em><a class="reference internal" href="enums.html#_CPPv48fg_color" title="fg_color">fg_color</a> <code class="sig-name descname">Color</code><a class="headerlink" href="#_CPPv45Color" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv48PlotType">
+<span id="_CPPv38PlotType"></span><span id="_CPPv28PlotType"></span><span id="PlotType"></span><span class="target" id="namespaceforge_1ad8f025d22cb27f4d47a65d5e84cc5c27"></span><em class="property">typedef </em><a class="reference internal" href="enums.html#_CPPv412fg_plot_type" title="fg_plot_type">fg_plot_type</a> <code class="sig-name descname">PlotType</code><a class="headerlink" href="#_CPPv48PlotType" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv410MarkerType">
+<span id="_CPPv310MarkerType"></span><span id="_CPPv210MarkerType"></span><span id="MarkerType"></span><span class="target" id="namespaceforge_1a9020a9622bd6b0e958a9c006bf726c2a"></span><em class="property">typedef </em><a class="reference internal" href="enums.html#_CPPv414fg_marker_type" title="fg_marker_type">fg_marker_type</a> <code class="sig-name descname">MarkerType</code><a class="headerlink" href="#_CPPv410MarkerType" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="enums">
+<h3>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="_CPPv4N5forge5dtypeE">
+<span id="_CPPv3N5forge5dtypeE"></span><span id="_CPPv2N5forge5dtypeE"></span><span class="target" id="namespaceforge_1acfe99d230e216901bd782cc580e4e815"></span><em class="property">enum </em><code class="sig-prename descclassname">forge<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">dtype</code><a class="headerlink" href="#_CPPv4N5forge5dtypeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Alias Enum to <a class="reference internal" href="enums.html#defines_8h_1a8490c7b8ea074ec5825112776b16a9d7"><span class="std std-ref">fg_dtype</span></a> enum. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv4N5forge2s8E">
+<span id="_CPPv3N5forge2s8E"></span><span id="_CPPv2N5forge2s8E"></span><span class="target" id="namespaceforge_1acfe99d230e216901bd782cc580e4e815aa517f4eed54b18c1cd8b7740f27b9670"></span><code class="sig-name descname">s8</code> = <a class="reference internal" href="enums.html#_CPPv47FG_INT8" title="FG_INT8">FG_INT8</a><a class="headerlink" href="#_CPPv4N5forge2s8E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N5forge2u8E">
+<span id="_CPPv3N5forge2u8E"></span><span id="_CPPv2N5forge2u8E"></span><span class="target" id="namespaceforge_1acfe99d230e216901bd782cc580e4e815afa33d5748ff04bcd920280e5a3b790c0"></span><code class="sig-name descname">u8</code> = <a class="reference internal" href="enums.html#_CPPv48FG_UINT8" title="FG_UINT8">FG_UINT8</a><a class="headerlink" href="#_CPPv4N5forge2u8E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N5forge3s32E">
+<span id="_CPPv3N5forge3s32E"></span><span id="_CPPv2N5forge3s32E"></span><span class="target" id="namespaceforge_1acfe99d230e216901bd782cc580e4e815a1bd64190677c261a61c640017dbaddf1"></span><code class="sig-name descname">s32</code> = <a class="reference internal" href="enums.html#_CPPv48FG_INT32" title="FG_INT32">FG_INT32</a><a class="headerlink" href="#_CPPv4N5forge3s32E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N5forge3u32E">
+<span id="_CPPv3N5forge3u32E"></span><span id="_CPPv2N5forge3u32E"></span><span class="target" id="namespaceforge_1acfe99d230e216901bd782cc580e4e815a05ef7b967bac0eef5d9712a6803b9f1a"></span><code class="sig-name descname">u32</code> = <a class="reference internal" href="enums.html#_CPPv49FG_UINT32" title="FG_UINT32">FG_UINT32</a><a class="headerlink" href="#_CPPv4N5forge3u32E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N5forge3f32E">
+<span id="_CPPv3N5forge3f32E"></span><span id="_CPPv2N5forge3f32E"></span><span class="target" id="namespaceforge_1acfe99d230e216901bd782cc580e4e815a82ea90203678bdd0b547068f0a76524b"></span><code class="sig-name descname">f32</code> = <a class="reference internal" href="enums.html#_CPPv410FG_FLOAT32" title="FG_FLOAT32">FG_FLOAT32</a><a class="headerlink" href="#_CPPv4N5forge3f32E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N5forge3s16E">
+<span id="_CPPv3N5forge3s16E"></span><span id="_CPPv2N5forge3s16E"></span><span class="target" id="namespaceforge_1acfe99d230e216901bd782cc580e4e815a98085990ff18bf438d3c839ea4c80bb4"></span><code class="sig-name descname">s16</code> = <a class="reference internal" href="enums.html#_CPPv48FG_INT16" title="FG_INT16">FG_INT16</a><a class="headerlink" href="#_CPPv4N5forge3s16E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N5forge3u16E">
+<span id="_CPPv3N5forge3u16E"></span><span id="_CPPv2N5forge3u16E"></span><span class="target" id="namespaceforge_1acfe99d230e216901bd782cc580e4e815ae817c8a85914a5f150f2739df6b76c57"></span><code class="sig-name descname">u16</code> = <a class="reference internal" href="enums.html#_CPPv49FG_UINT16" title="FG_UINT16">FG_UINT16</a><a class="headerlink" href="#_CPPv4N5forge3u16E" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="enums.html" class="btn btn-neutral float-right" title="C API Enums" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="samples.html" class="btn btn-neutral float-left" title="Sample Renderings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 ArrayFire
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
