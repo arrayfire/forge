@@ -10,7 +10,7 @@ An OpenGL interop library that can be used with ArrayFire or any other applicati
 
 ### Documentation
 
-You can find the latest documentation [here](http://arrayfire.org/forge/index.htm).
+You can find the latest documentation [here](http://arrayfire.org/forge/index.html).
 
 ### Dependencies
 
