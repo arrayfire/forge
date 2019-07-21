@@ -29,6 +29,8 @@ fg_chart getHandle(Chart* pValue);
 
 fg_histogram getHandle(Histogram* pValue);
 
+fg_pie getHandle(Pie* pValue);
+
 fg_plot getHandle(Plot* pValue);
 
 fg_surface getHandle(Surface* pValue);
@@ -44,6 +46,8 @@ Image* getImage(const fg_image& pValue);
 Chart* getChart(const fg_chart& pValue);
 
 Histogram* getHistogram(const fg_histogram& pValue);
+
+Pie* getPie(const fg_pie& pValue);
 
 Plot* getPlot(const fg_plot& pValue);
 

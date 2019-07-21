@@ -12,6 +12,7 @@
 #include <backend.hpp>
 #include <common/chart_common.hpp>
 #include <histogram_impl.hpp>
+#include <pie_impl.hpp>
 #include <plot_impl.hpp>
 #include <surface_impl.hpp>
 #include <vector_field_impl.hpp>
@@ -30,6 +31,17 @@ class Histogram : public ChartRenderableBase<detail::histogram_impl> {
     Histogram(const fg_histogram pOther)
         : ChartRenderableBase<detail::histogram_impl>(
               reinterpret_cast<Histogram*>(pOther)->impl()) {}
+};
+
+class Pie : public ChartRenderableBase<detail::pie_impl> {
+   public:
+    Pie(unsigned pNSectors, forge::dtype pDataType)
+        : ChartRenderableBase<detail::pie_impl>(
+              std::make_shared<detail::pie_impl>(pNSectors, pDataType)) {}
+
+    Pie(const fg_pie pOther)
+        : ChartRenderableBase<detail::pie_impl>(
+              reinterpret_cast<Pie*>(pOther)->impl()) {}
 };
 
 class Plot : public ChartRenderableBase<detail::plot_impl> {

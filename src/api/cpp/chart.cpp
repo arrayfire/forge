@@ -68,6 +68,10 @@ void Chart::add(const Histogram& pHistogram) {
     FG_THROW(fg_append_histogram_to_chart(get(), pHistogram.get()));
 }
 
+void Chart::add(const Pie& pPie) {
+    FG_THROW(fg_append_pie_to_chart(get(), pPie.get()));
+}
+
 void Chart::add(const Plot& pPlot) {
     FG_THROW(fg_append_plot_to_chart(get(), pPlot.get()));
 }
@@ -114,6 +118,12 @@ Histogram Chart::histogram(const unsigned pNBins, const dtype pDataType) {
     FG_THROW(
         fg_add_histogram_to_chart(&temp, get(), pNBins, (fg_dtype)pDataType));
     return Histogram(temp);
+}
+
+Pie Chart::pie(const unsigned pNSectors, const dtype pDataType) {
+    fg_pie temp = 0;
+    FG_THROW(fg_add_pie_to_chart(&temp, get(), pNSectors, (fg_dtype)pDataType));
+    return Pie(temp);
 }
 
 Plot Chart::plot(const unsigned pNumPoints, const dtype pDataType,
