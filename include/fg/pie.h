@@ -52,13 +52,13 @@ FGAPI fg_err fg_retain_pie(fg_pie *pOut, fg_pie pIn);
 FGAPI fg_err fg_release_pie(fg_pie pPie);
 
 /**
-   Set the color of bar in the bar graph(pie)
+   Set the color of all sectors in the pie chart
 
    This is global alpha value for the pie rendering that takes
-   effect if individual bar alphas are not set by calling the following
-   member functions
-       - Pie::alphas()
-       - Pie::alphasSize()
+   effect if individual sector alphas are not set in the buffer
+   obtained by the following functions
+      - fg_get_pie_alpha_buffer
+      - fg_get_pie_alpha_buffer_size
 
    \param[in] pPie is the pie handle
    \param[in] pRed is Red component in range [0, 1]
@@ -189,17 +189,17 @@ public:
   FGAPI ~Pie();
 
   /**
-     Set the color of bar in the bar graph(pie)
+     Set the color of all sectors in the pie chart
 
-     \param[in] pColor takes values of type forge::Color to define bar color
-  **/
+     \param[in] pColor takes values of type forge::Color to define sector color
+   */
   FGAPI void setColor(const Color pColor);
 
   /**
-     Set the color of bar in the bar graph(pie)
+     Set the color of all sectors in the pie chart
 
      This is global alpha value for the pie rendering that takes
-     effect if individual bar alphas are not set by calling the following
+     effect if individual sector alphas are not set by calling the following
      member functions
          - Pie::alphas()
          - Pie::alphasSize()
