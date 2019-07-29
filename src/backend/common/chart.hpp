@@ -53,6 +53,10 @@ class Chart {
             return mChart;
         }
 
+        void setAxesVisibility(const bool isVisible=true) {
+            mChart->setAxesVisibility(isVisible);
+        }
+
         inline void setAxesTitles(const char* pX,
                                   const char* pY,
                                   const char* pZ) {

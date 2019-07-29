@@ -41,6 +41,7 @@ class AbstractChart : public AbstractRenderable {
         float mTopMargin;
         float mBottomMargin;
         /* chart axes ranges and titles */
+        bool  mRenderAxes;
         std::string  mXLabelFormat;
         float mXMax;
         float mXMin;
@@ -122,6 +123,8 @@ class AbstractChart : public AbstractRenderable {
         AbstractChart(const float pLeftMargin, const float pRightMargin,
                       const float pTopMargin, const float pBottomMargin);
         virtual ~AbstractChart();
+
+        void setAxesVisibility(const bool isVisible=true);
 
         void setAxesTitles(const char* pXTitle,
                            const char* pYTitle,
