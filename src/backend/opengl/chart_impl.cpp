@@ -141,6 +141,7 @@ AbstractChart::AbstractChart(const float pLeftMargin, const float pRightMargin,
     : mTickCount(9), mTickSize(10.0f),
       mLeftMargin(pLeftMargin), mRightMargin(pRightMargin),
       mTopMargin(pTopMargin), mBottomMargin(pBottomMargin),
+      mRenderAxes(true),
       mXLabelFormat("%4.1f"), mXMax(0), mXMin(0),
       mYLabelFormat("%4.1f"), mYMax(0), mYMin(0),
       mZLabelFormat("%4.1f"), mZMax(0), mZMin(0),
@@ -178,6 +179,10 @@ AbstractChart::~AbstractChart()
         glDeleteVertexArrays(1, &vao);
     }
     glDeleteBuffers(1, &mDecorVBO);
+}
+
+void AbstractChart::setAxesVisibility(const bool isVisible) {
+    mRenderAxes = isVisible;
 }
 
 void AbstractChart::setAxesLimits(const float pXmin, const float pXmax,
@@ -478,14 +483,17 @@ void chart2d_impl::render(const int pWindowId,
                                                 glm::vec3(scale_x, scale_y, 1)),
                                      glm::vec3(offset_x, offset_y, 0));
 
-    /* Draw grid */
-    chart2d_impl::bindResources(pWindowId);
-    mBorderProgram.bind();
-    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-    glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
-    glDrawArrays(GL_LINES, 4+2*mTickCount, 8*mTickCount-16);
-    mBorderProgram.unbind();
-    chart2d_impl::unbindResources();
+    if (mRenderAxes) {
+        /* Draw grid */
+        chart2d_impl::bindResources(pWindowId);
+        mBorderProgram.bind();
+        glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE,
+                           glm::value_ptr(trans));
+        glUniform4fv(mBorderUniformColorIndex, 1, GRAY);
+        glDrawArrays(GL_LINES, 4+2*mTickCount, 8*mTickCount-16);
+        mBorderProgram.unbind();
+        chart2d_impl::unbindResources();
+    }
 
     glEnable(GL_SCISSOR_TEST);
     glScissor(GLint(pX+lgap), GLint(pY+bgap), GLsizei(w), GLsizei(h));
@@ -498,72 +506,74 @@ void chart2d_impl::render(const int pWindowId,
 
     glDisable(GL_SCISSOR_TEST);
 
-    chart2d_impl::bindResources(pWindowId);
-
-    mBorderProgram.bind();
-    glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-    glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
-    /* Draw borders */
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
-    mBorderProgram.unbind();
-
-    /* bind the sprite shader program to
-     * draw ticks on x and y axes */
-    glPointSize((GLfloat)getTickSize());
-    mSpriteProgram.bind();
-
-    glUniform4fv(mSpriteUniformTickcolorIndex, 1, BLACK);
-    glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE, glm::value_ptr(trans));
-    /* Draw tick marks on y axis */
-    glUniform1i(mSpriteUniformTickaxisIndex, 1);
-    glDrawArrays(GL_POINTS, 4, mTickCount);
-    /* Draw tick marks on x axis */
-    glUniform1i(mSpriteUniformTickaxisIndex, 0);
-    glDrawArrays(GL_POINTS, 4+mTickCount, mTickCount);
-
-    mSpriteProgram.unbind();
-    glPointSize(1);
-    chart2d_impl::unbindResources();
-
     const int trgtFntSize = calcTrgtFntSize(w, h);
-
-    renderTickLabels(pWindowId, int(w), int(h), mYText, trgtFntSize, trans, 0, false);
-    renderTickLabels(pWindowId, int(w), int(h), mXText, trgtFntSize, trans, mTickCount, false);
-
     auto &fonter = getChartFont();
-    fonter->setOthro2D(int(w), int(h));
 
-    float pos[2];
+    if (mRenderAxes) {
+        chart2d_impl::bindResources(pWindowId);
 
-    /* render chart axes titles */
+        mBorderProgram.bind();
+        glUniformMatrix4fv(mBorderUniformMatIndex, 1, GL_FALSE,
+                           glm::value_ptr(trans));
+        glUniform4fv(mBorderUniformColorIndex, 1, BLACK);
+        /* Draw borders */
+        glDrawArrays(GL_LINE_LOOP, 0, 4);
+        mBorderProgram.unbind();
 
-    if (!mYTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
+        /* bind the sprite shader program to
+         * draw ticks on x and y axes */
+        glPointSize((GLfloat)getTickSize());
+        mSpriteProgram.bind();
 
-        pos[0] = w*(res.x+1.0f)/2.0f;
-        pos[1] = h*(res.y+1.0f)/2.0f;
+        glUniform4fv(mSpriteUniformTickcolorIndex, 1, BLACK);
+        glUniformMatrix4fv(mSpriteUniformMatIndex, 1, GL_FALSE,
+                           glm::value_ptr(trans));
+        /* Draw tick marks on y axis */
+        glUniform1i(mSpriteUniformTickaxisIndex, 1);
+        glDrawArrays(GL_POINTS, 4, mTickCount);
+        /* Draw tick marks on x axis */
+        glUniform1i(mSpriteUniformTickaxisIndex, 0);
+        glDrawArrays(GL_POINTS, 4+mTickCount, mTickCount);
 
-        pos[0] -= (5.0f*trgtFntSize);
-        pos[1] += (trgtFntSize);
+        mSpriteProgram.unbind();
+        glPointSize(1);
+        chart2d_impl::unbindResources();
 
-        fonter->render(pWindowId, pos, BLACK, mYTitle.c_str(), trgtFntSize, true);
-    }
+        renderTickLabels(pWindowId, int(w), int(h), mYText, trgtFntSize,
+                         trans, 0, false);
+        renderTickLabels(pWindowId, int(w), int(h), mXText, trgtFntSize,
+                         trans, mTickCount, false);
 
-    if (!mXTitle.empty()) {
-        glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+        fonter->setOthro2D(int(w), int(h));
 
-        pos[0] = w*(res.x+1.0f)/2.0f;
-        pos[1] = h*(res.y+1.0f)/2.0f;
+        float pos[2];
 
-        pos[1] -= (2.5f*trgtFntSize);
+        /* render chart axes titles */
+        if (!mYTitle.empty()) {
+            glm::vec4 res = trans * glm::vec4(-1.0f, 0.0f, 0.0f, 1.0f);
 
-        fonter->render(pWindowId, pos, BLACK, mXTitle.c_str(), trgtFntSize);
+            pos[0] = w*(res.x+1.0f)/2.0f;
+            pos[1] = h*(res.y+1.0f)/2.0f;
+
+            pos[0] -= (5.0f*trgtFntSize);
+            pos[1] += (trgtFntSize);
+
+            fonter->render(pWindowId, pos, BLACK, mYTitle.c_str(), trgtFntSize, true);
+        }
+        if (!mXTitle.empty()) {
+            glm::vec4 res = trans * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+
+            pos[0] = w*(res.x+1.0f)/2.0f;
+            pos[1] = h*(res.y+1.0f)/2.0f;
+
+            pos[1] -= (2.5f*trgtFntSize);
+
+            fonter->render(pWindowId, pos, BLACK, mXTitle.c_str(), trgtFntSize);
+        }
     }
 
     /* render all legends of the respective renderables */
-    pos[0] = mLegendX;
-    pos[1] = mLegendY;
-
+    float pos[2] = {mLegendX,  mLegendY};
     float lcol[4];
 
     for (auto renderable : mRenderables) {
