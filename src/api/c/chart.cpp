@@ -168,6 +168,7 @@ fg_err fg_append_pie_to_chart(fg_chart pChart, fg_pie pPie) {
         ARG_ASSERT(1, (pPie != 0));
 
         getChart(pChart)->addRenderable(getPie(pPie)->impl());
+        getChart(pChart)->setAxesVisibility(false);
     }
     CATCHALL
 
@@ -264,6 +265,7 @@ fg_err fg_add_pie_to_chart(fg_pie* pPie, fg_chart pChart,
 
         common::Pie* pie = new common::Pie(pNSectors, (forge::dtype)pType);
         chrt->addRenderable(pie->impl());
+        chrt->setAxesVisibility(false);
         *pPie = getHandle(pie);
     }
     CATCHALL
