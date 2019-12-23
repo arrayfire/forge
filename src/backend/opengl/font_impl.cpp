@@ -18,29 +18,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include FT_FREETYPE_H
 #include FT_STROKER_H
+#include FT_ERRORS_H
+#if !defined(OS_WIN)
+#include <fontconfig/fontconfig.h>
+#endif
 
 #include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <sstream>
-
-#undef __FTERRORS_H__
-#define FT_ERRORDEF(e, v, s) {e, s},
-#define FT_ERROR_START_LIST {
-#define FT_ERROR_END_LIST \
-    { 0, 0 }              \
-    }                     \
-    ;
-static const struct {
-    int code;
-    const char* message;
-} FT_Errors[] =
-#include FT_ERRORS_H
-
-#if !defined(OS_WIN)
-#include <fontconfig/fontconfig.h>
-#endif
-
 #if defined(OS_WIN)
 #include <windows.h>
 #include <regex>
@@ -70,13 +56,11 @@ static const struct {
 
 #else
 /* Debug Mode */
-#define FT_THROW_ERROR(msg, err)                                \
-    do {                                                        \
-        std::ostringstream ss;                                  \
-        ss << "FT_Error (0x" << std::hex << FT_Errors[err].code \
-           << ") : " << FT_Errors[err].message << std::endl     \
-           << msg << std::endl;                                 \
-        FG_ERROR(ss.str().c_str(), err);                        \
+#define FT_THROW_ERROR(msg, err)                        \
+    do {                                                \
+        std::ostringstream ss;                          \
+        ss << msg << FT_Error_String(err) << std::endl; \
+        FG_ERROR(ss.str().c_str(), err);                \
     } while (0)
 
 #endif
