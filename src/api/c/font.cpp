@@ -15,8 +15,7 @@ using namespace forge;
 
 using forge::common::getFont;
 
-fg_err fg_create_font(fg_font* pFont)
-{
+fg_err fg_create_font(fg_font* pFont) {
     try {
         *pFont = getHandle(new common::Font());
     }
@@ -25,19 +24,17 @@ fg_err fg_create_font(fg_font* pFont)
     return FG_ERR_NONE;
 }
 
-fg_err fg_retain_font(fg_font* pOut, fg_font pIn)
-{
+fg_err fg_retain_font(fg_font* pOut, fg_font pIn) {
     try {
         common::Font* temp = new common::Font(getFont(pIn));
-        *pOut = getHandle(temp);
+        *pOut              = getHandle(temp);
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_release_font(fg_font pFont)
-{
+fg_err fg_release_font(fg_font pFont) {
     try {
         delete getFont(pFont);
     }
@@ -46,8 +43,7 @@ fg_err fg_release_font(fg_font pFont)
     return FG_ERR_NONE;
 }
 
-fg_err fg_load_font_file(fg_font pFont, const char* const pFileFullPath)
-{
+fg_err fg_load_font_file(fg_font pFont, const char* const pFileFullPath) {
     try {
         getFont(pFont)->loadFont(pFileFullPath);
     }
@@ -56,8 +52,7 @@ fg_err fg_load_font_file(fg_font pFont, const char* const pFileFullPath)
     return FG_ERR_NONE;
 }
 
-fg_err fg_load_system_font(fg_font pFont, const char* const pFontName)
-{
+fg_err fg_load_system_font(fg_font pFont, const char* const pFontName) {
     try {
         getFont(pFont)->loadSystemFont(pFontName);
     }

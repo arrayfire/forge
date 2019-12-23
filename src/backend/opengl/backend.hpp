@@ -10,8 +10,7 @@
 #pragma once
 
 namespace forge {
-namespace opengl {
-}
-}
+namespace opengl {}
+}  // namespace forge
 
 namespace detail = forge::opengl;
