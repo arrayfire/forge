@@ -8,13 +8,14 @@
  ********************************************************/
 
 #include <forge.h>
+
 #include "cl_helpers.h"
-#include <mutex>
-#include <vector>
-#include <sstream>
+
+#include <algorithm>
 #include <iostream>
 #include <iterator>
-#include <algorithm>
+#include <mutex>
+#include <sstream>
 
 using namespace cl;
 using namespace std;
@@ -22,49 +23,44 @@ using namespace std;
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
-const float    dx = 0.1f;
-const float    FRANGE_START = 0.f;
-const float    FRANGE_END = 2 * 3.141592f;
-const unsigned DATA_SIZE = (unsigned)(( FRANGE_END - FRANGE_START ) / dx);
+const float dx           = 0.1f;
+const float FRANGE_START = 0.f;
+const float FRANGE_END   = 2 * 3.141592f;
+const unsigned DATA_SIZE = (unsigned)((FRANGE_END - FRANGE_START) / dx);
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
 #include <ComputeCopy.h>
 
-static const std::string sinf_ocl_kernel = R"(
-kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE, int fnCode)
-{
+// clang-format off
+static const std::string sinf_ocl_kernel =
+R"EOK(
+kernel void sinf(global float* out, const float dx, const unsigned DATA_SIZE,
+                 int fnCode) {
     unsigned x = get_global_id(0);
-    if(x < DATA_SIZE) {
-        out[2 * x] = x * dx ;
-        switch(fnCode) {
-            case 0:
-                out[ 2 * x + 1 ] = sin(x*dx);
-                break;
-            case 1:
-                out[ 2 * x + 1 ] = cos(x*dx);
-                break;
-            case 2:
-                out[ 2 * x + 1 ] = tan(x*dx);
-                break;
-            case 3:
-                out[ 2 * x + 1 ] = log10(x*dx);
-                break;
+    if (x < DATA_SIZE) {
+        out[2 * x] = x * dx;
+        switch (fnCode) {
+            case 0: out[2 * x + 1] = sin(x * dx); break;
+            case 1: out[2 * x + 1] = cos(x * dx); break;
+            case 2: out[2 * x + 1] = tan(x * dx); break;
+            case 3: out[2 * x + 1] = log10(x * dx); break;
         }
     }
 }
-)";
+)EOK";
+// clang-format on
 
 void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, int fnCode)
 {
-    static std::once_flag   compileFlag;
-    static cl::Program      prog;
-    static cl::Kernel       kern;
+    static std::once_flag compileFlag;
+    static cl::Program prog;
+    static cl::Kernel kern;
 
-    std::call_once(compileFlag,
-        [queue]() {
-        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), sinf_ocl_kernel, true);
-            kern = cl::Kernel(prog, "sinf");
-        });
+    std::call_once(compileFlag, [queue]() {
+        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), sinf_ocl_kernel,
+                           true);
+        kern = cl::Kernel(prog, "sinf");
+    });
 
     static const NDRange global(DATA_SIZE * 2);
 
@@ -75,15 +71,13 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, int fnCode)
     queue.enqueueNDRangeKernel(kern, cl::NullRange, global);
 }
 
-int main(void)
-{
+int main(void) {
     try {
-
         /*
-        * First Forge call should be a window creation call
-        * so that necessary OpenGL context is created for any
-        * other forge::* object to be created successfully
-        */
+         * First Forge call should be a window creation call
+         * so that necessary OpenGL context is created for any
+         * other forge::* object to be created successfully
+         */
         forge::Window wnd(DIMX, DIMY, "Plotting Demo");
         wnd.makeCurrent();
 
@@ -93,18 +87,24 @@ int main(void)
         /* Create several plot objects which creates the necessary
          * vertex buffer objects to hold the different plot types
          */
-        forge::Plot plt0 = chart.plot(DATA_SIZE, forge::f32);                                 //create a default plot
-        forge::Plot plt1 = chart.plot(DATA_SIZE, forge::f32, FG_PLOT_LINE, FG_MARKER_NONE);       //or specify a specific plot type
-        forge::Plot plt2 = chart.plot(DATA_SIZE, forge::f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE);   //last parameter specifies marker shape
-        forge::Plot plt3 = chart.plot(DATA_SIZE, forge::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
+        forge::Plot plt0 =
+            chart.plot(DATA_SIZE, forge::f32);  // create a default plot
+        forge::Plot plt1 =
+            chart.plot(DATA_SIZE, forge::f32, FG_PLOT_LINE,
+                       FG_MARKER_NONE);  // or specify a specific plot type
+        forge::Plot plt2 = chart.plot(
+            DATA_SIZE, forge::f32, FG_PLOT_LINE,
+            FG_MARKER_TRIANGLE);  // last parameter specifies marker shape
+        forge::Plot plt3 =
+            chart.plot(DATA_SIZE, forge::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
 
         /*
          * Set plot colors
          */
         plt0.setColor(FG_RED);
         plt1.setColor(FG_BLUE);
-        plt2.setColor(FG_YELLOW);            //use a forge predefined color
-        plt3.setColor((forge::Color) 0x257973FF);  //or any hex-valued color
+        plt2.setColor(FG_YELLOW);  // use a forge predefined color
+        plt3.setColor((forge::Color)0x257973FF);  // or any hex-valued color
         /*
          * Set plot legends
          */
@@ -119,14 +119,18 @@ int main(void)
          * and creates the context on the appropriate device.
          * Note: context and queue are defined in cl_helpers.h
          */
-        context = createCLGLContext(wnd);
+        context       = createCLGLContext(wnd);
         Device device = context.getInfo<CL_CONTEXT_DEVICES>()[0];
-        queue = CommandQueue(context, device);
+        queue         = CommandQueue(context, device);
 
-        cl::Buffer sinOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
-        cl::Buffer cosOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
-        cl::Buffer tanOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
-        cl::Buffer logOut(context, CL_MEM_READ_WRITE, sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer sinOut(context, CL_MEM_READ_WRITE,
+                          sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer cosOut(context, CL_MEM_READ_WRITE,
+                          sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer tanOut(context, CL_MEM_READ_WRITE,
+                          sizeof(float) * DATA_SIZE * 2);
+        cl::Buffer logOut(context, CL_MEM_READ_WRITE,
+                          sizeof(float) * DATA_SIZE * 2);
         kernel(sinOut, queue, 0);
         kernel(cosOut, queue, 1);
         kernel(tanOut, queue, 2);
@@ -143,21 +147,23 @@ int main(void)
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        copyToGLBuffer(handles[0], (ComputeResourceHandle)sinOut(), plt0.verticesSize());
-        copyToGLBuffer(handles[1], (ComputeResourceHandle)cosOut(), plt1.verticesSize());
-        copyToGLBuffer(handles[2], (ComputeResourceHandle)tanOut(), plt2.verticesSize());
-        copyToGLBuffer(handles[3], (ComputeResourceHandle)logOut(), plt3.verticesSize());
+        copyToGLBuffer(handles[0], (ComputeResourceHandle)sinOut(),
+                       plt0.verticesSize());
+        copyToGLBuffer(handles[1], (ComputeResourceHandle)cosOut(),
+                       plt1.verticesSize());
+        copyToGLBuffer(handles[2], (ComputeResourceHandle)tanOut(),
+                       plt2.verticesSize());
+        copyToGLBuffer(handles[3], (ComputeResourceHandle)logOut(),
+                       plt3.verticesSize());
 
-        do {
-            wnd.draw(chart);
-        } while(!wnd.close());
+        do { wnd.draw(chart); } while (!wnd.close());
 
         releaseGLBuffer(handles[0]);
         releaseGLBuffer(handles[1]);
         releaseGLBuffer(handles[2]);
         releaseGLBuffer(handles[3]);
 
-    }catch (forge::Error err) {
+    } catch (forge::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;

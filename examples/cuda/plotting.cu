@@ -7,9 +7,9 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <forge.h>
-#include <cuda_runtime.h>
 #include <cuComplex.h>
+#include <cuda_runtime.h>
+#include <forge.h>
 #define USE_FORGE_CUDA_COPY_HELPERS
 #include <ComputeCopy.h>
 #include <cstdio>
@@ -18,19 +18,18 @@
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
-static const float    dx = 0.1f;
-static const float    FRANGE_START = 0.f;
-static const float    FRANGE_END = 2 * 3.141592f;
-static const size_t   DATA_SIZE = (size_t)(( FRANGE_END - FRANGE_START ) / dx);
+static const float dx           = 0.1f;
+static const float FRANGE_START = 0.f;
+static const float FRANGE_END   = 2 * 3.141592f;
+static const size_t DATA_SIZE   = (size_t)((FRANGE_END - FRANGE_START) / dx);
 
 void kernel(float* dev_out, int functionCode);
 
-int main(void)
-{
-    float *sin_out;
-    float *cos_out;
-    float *tan_out;
-    float *log_out;
+int main(void) {
+    float* sin_out;
+    float* cos_out;
+    float* tan_out;
+    float* log_out;
 
     /*
      * First Forge call should be a window creation call
@@ -46,18 +45,24 @@ int main(void)
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    forge::Plot plt0 = chart.plot( DATA_SIZE, forge::f32);                                 //create a default plot
-    forge::Plot plt1 = chart.plot( DATA_SIZE, forge::f32, FG_PLOT_LINE, FG_MARKER_NONE);       //or specify a specific plot type
-    forge::Plot plt2 = chart.plot( DATA_SIZE, forge::f32, FG_PLOT_LINE, FG_MARKER_TRIANGLE);   //last parameter specifies marker shape
-    forge::Plot plt3 = chart.plot( DATA_SIZE, forge::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
+    forge::Plot plt0 =
+        chart.plot(DATA_SIZE, forge::f32);  // create a default plot
+    forge::Plot plt1 =
+        chart.plot(DATA_SIZE, forge::f32, FG_PLOT_LINE,
+                   FG_MARKER_NONE);  // or specify a specific plot type
+    forge::Plot plt2 = chart.plot(
+        DATA_SIZE, forge::f32, FG_PLOT_LINE,
+        FG_MARKER_TRIANGLE);  // last parameter specifies marker shape
+    forge::Plot plt3 =
+        chart.plot(DATA_SIZE, forge::f32, FG_PLOT_SCATTER, FG_MARKER_CROSS);
 
     /*
      * Set plot colors
      */
     plt0.setColor(FG_RED);
     plt1.setColor(FG_BLUE);
-    plt2.setColor(FG_YELLOW);            //use a forge predefined color
-    plt3.setColor((forge::Color) 0x257973FF);  //or any hex-valued color
+    plt2.setColor(FG_YELLOW);                 // use a forge predefined color
+    plt3.setColor((forge::Color)0x257973FF);  // or any hex-valued color
     /*
      * Set plot legends
      */
@@ -66,10 +71,14 @@ int main(void)
     plt2.setLegend("Tangent");
     plt3.setLegend("Log base 10");
 
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&sin_out, sizeof(float) * DATA_SIZE * 2));
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&cos_out, sizeof(float) * DATA_SIZE * 2));
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&tan_out, sizeof(float) * DATA_SIZE * 2));
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&log_out, sizeof(float) * DATA_SIZE * 2));
+    FORGE_CUDA_CHECK(
+        cudaMalloc((void**)&sin_out, sizeof(float) * DATA_SIZE * 2));
+    FORGE_CUDA_CHECK(
+        cudaMalloc((void**)&cos_out, sizeof(float) * DATA_SIZE * 2));
+    FORGE_CUDA_CHECK(
+        cudaMalloc((void**)&tan_out, sizeof(float) * DATA_SIZE * 2));
+    FORGE_CUDA_CHECK(
+        cudaMalloc((void**)&log_out, sizeof(float) * DATA_SIZE * 2));
 
     kernel(sin_out, 0);
     kernel(cos_out, 1);
@@ -88,14 +97,16 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copyToGLBuffer(handles[0], (ComputeResourceHandle)sin_out, plt0.verticesSize());
-    copyToGLBuffer(handles[1], (ComputeResourceHandle)cos_out, plt1.verticesSize());
-    copyToGLBuffer(handles[2], (ComputeResourceHandle)tan_out, plt2.verticesSize());
-    copyToGLBuffer(handles[3], (ComputeResourceHandle)log_out, plt3.verticesSize());
+    copyToGLBuffer(handles[0], (ComputeResourceHandle)sin_out,
+                   plt0.verticesSize());
+    copyToGLBuffer(handles[1], (ComputeResourceHandle)cos_out,
+                   plt1.verticesSize());
+    copyToGLBuffer(handles[2], (ComputeResourceHandle)tan_out,
+                   plt2.verticesSize());
+    copyToGLBuffer(handles[3], (ComputeResourceHandle)log_out,
+                   plt3.verticesSize());
 
-    do {
-        wnd.draw(chart);
-    } while(!wnd.close());
+    do { wnd.draw(chart); } while (!wnd.close());
 
     FORGE_CUDA_CHECK(cudaFree(sin_out));
     FORGE_CUDA_CHECK(cudaFree(cos_out));
@@ -109,42 +120,30 @@ int main(void)
     return 0;
 }
 
-__global__
-void simple_sinf(float* out, const size_t _data_size, int fnCode, const float _dx, const float _frange_start)
-{
-    int i = blockIdx.x * blockDim.x  + threadIdx.x;
+__global__ void simple_sinf(float* out, const size_t _data_size, int fnCode,
+                            const float _dx, const float _frange_start) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (i < _data_size) {
         float x  = _frange_start + i * _dx;
         int idx  = 2 * i;
         out[idx] = x;
 
-        switch(fnCode) {
-            case 0:
-                out[ idx + 1 ] = sinf(x);
-                break;
-            case 1:
-                out[ idx + 1 ] = cosf(x);
-                break;
-            case 2:
-                out[ idx + 1 ] = tanf(x);
-                break;
-            case 3:
-                out[ idx + 1 ] = log10f(x);
-                break;
+        switch (fnCode) {
+            case 0: out[idx + 1] = sinf(x); break;
+            case 1: out[idx + 1] = cosf(x); break;
+            case 2: out[idx + 1] = tanf(x); break;
+            case 3: out[idx + 1] = log10f(x); break;
         }
     }
 }
 
-inline int divup(int a, int b)
-{
-    return (a+b-1)/b;
-}
+inline int divup(int a, int b) { return (a + b - 1) / b; }
 
-void kernel(float* dev_out, int functionCode)
-{
+void kernel(float* dev_out, int functionCode) {
     static const dim3 threads(1024);
     dim3 blocks(divup(DATA_SIZE, 1024));
 
-    simple_sinf << < blocks, threads >> >(dev_out, DATA_SIZE, functionCode, dx, FRANGE_START);
+    simple_sinf<<<blocks, threads>>>(dev_out, DATA_SIZE, functionCode, dx,
+                                     FRANGE_START);
 }

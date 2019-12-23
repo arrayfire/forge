@@ -8,14 +8,16 @@
  ********************************************************/
 
 #include <forge.h>
+
 #include "cl_helpers.h"
+
+#include <algorithm>
 #include <cmath>
 #include <ctime>
-#include <vector>
-#include <sstream>
 #include <iostream>
 #include <iterator>
-#include <algorithm>
+#include <sstream>
+#include <vector>
 
 using namespace cl;
 using namespace std;
@@ -25,79 +27,77 @@ const unsigned DIMY = 480;
 const float MINIMUM = 1.0f;
 const float MAXIMUM = 20.f;
 const float STEP    = 2.0f;
-const int NELEMS    = (int)((MAXIMUM-MINIMUM+1)/STEP);
+const int NELEMS    = (int)((MAXIMUM - MINIMUM + 1) / STEP);
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
 #include <ComputeCopy.h>
 
+// clang-format off
 static const std::string streamKernel =
 R"EOK(
-constant float AF_BLUE[4] = {0.0588f , 0.1137f , 0.2745f , 1.0f};
-constant float AF_ORANGE[4] = {0.8588f , 0.6137f , 0.0745f , 1.0f};
+constant float AF_BLUE[4]         = {0.0588f, 0.1137f, 0.2745f, 1.0f};
+constant float AF_ORANGE[4]           = {0.8588f, 0.6137f, 0.0745f, 1.0f};
 
-kernel
-void genColorsKernel(global float* colors, int NELEMS)
-{
+kernel void genColorsKernel(global float* colors, int NELEMS) {
     const size_t nelems = NELEMS * NELEMS * NELEMS;
 
     int i = get_global_id(0);
 
-    if (i<nelems) {
-        if (i%2==0) {
-            colors[3*i+0] = AF_ORANGE[0];
-            colors[3*i+1] = AF_ORANGE[1];
-            colors[3*i+2] = AF_ORANGE[2];
+    if (i < nelems) {
+        if (i % 2 == 0) {
+            colors[3 * i + 0] = AF_ORANGE[0];
+            colors[3 * i + 1] = AF_ORANGE[1];
+            colors[3 * i + 2] = AF_ORANGE[2];
         } else {
-            colors[3*i+0] = AF_BLUE[0];
-            colors[3*i+1] = AF_BLUE[1];
-            colors[3*i+2] = AF_BLUE[2];
+            colors[3 * i + 0] = AF_BLUE[0];
+            colors[3 * i + 1] = AF_BLUE[1];
+            colors[3 * i + 2] = AF_BLUE[2];
         }
     }
 }
 
-kernel
-void pointGenKernel(global float* points, global float* dirs, int nBBS0,
-                    int NELEMS, float MINIMUM, float STEP)
-{
+kernel void pointGenKernel(global float* points, global float* dirs, int nBBS0,
+                           int NELEMS, float MINIMUM, float STEP) {
     int k = get_group_id(0) / nBBS0;
-    int i = get_local_size(0) * (get_group_id(0)-k*nBBS0) + get_local_id(0);
+    int i = get_local_size(0) * (get_group_id(0) - k * nBBS0) + get_local_id(0);
     int j = get_global_id(1);
 
-    if (i<NELEMS && j<NELEMS && k<NELEMS) {
-        float x = MINIMUM + i*STEP;
-        float y = MINIMUM + j*STEP;
-        float z = MINIMUM + k*STEP;
+    if (i < NELEMS && j < NELEMS && k < NELEMS) {
+        float x = MINIMUM + i * STEP;
+        float y = MINIMUM + j * STEP;
+        float z = MINIMUM + k * STEP;
 
-        int id = i + j * NELEMS + k * NELEMS*NELEMS;
+        int id = i + j * NELEMS + k * NELEMS * NELEMS;
 
-        points[3*id+0] = x;
-        points[3*id+1] = y;
-        points[3*id+2] = z;
+        points[3 * id + 0] = x;
+        points[3 * id + 1] = y;
+        points[3 * id + 2] = z;
 
-        dirs[3*id+0] = x-10.f;
-        dirs[3*id+1] = y-10.f;
-        dirs[3*id+2] = z-10.f;
+        dirs[3 * id + 0] = x - 10.f;
+        dirs[3 * id + 1] = y - 10.f;
+        dirs[3 * id + 2] = z - 10.f;
     }
 }
 )EOK";
+// clang-format on
 
 inline int divup(int a, int b)
 {
-    return (a+b-1)/b;
+    return (a + b - 1) / b;
 }
 
-void generatePoints(Buffer& points, Buffer &dirs, Buffer& colors,
-                    CommandQueue& queue, Device& device)
-{
+void generatePoints(Buffer& points, Buffer& dirs, Buffer& colors,
+                    CommandQueue& queue, Device& device) {
     static bool compileFlag = true;
 
     static cl::Program prog;
-    static cl::Kernel  pointGenKernel;
-    static cl::Kernel  colorsKernel;
+    static cl::Kernel pointGenKernel;
+    static cl::Kernel colorsKernel;
 
     if (compileFlag) {
         try {
-            prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), streamKernel, false);
+            prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), streamKernel,
+                               false);
 
             std::vector<cl::Device> devs;
             devs.push_back(device);
@@ -108,10 +108,11 @@ void generatePoints(Buffer& points, Buffer &dirs, Buffer& colors,
         } catch (cl::Error err) {
             std::cout << "Compile Errors: " << std::endl;
             std::cout << err.what() << err.err() << std::endl;
-            std::cout << prog.getBuildInfo<CL_PROGRAM_BUILD_LOG>(device) << std::endl;
+            std::cout << prog.getBuildInfo<CL_PROGRAM_BUILD_LOG>(device)
+                      << std::endl;
             exit(255);
         }
-        std::cout<< "Kernels compiled successfully" << std::endl;
+        std::cout << "Kernels compiled successfully" << std::endl;
         compileFlag = false;
     }
 
@@ -128,7 +129,7 @@ void generatePoints(Buffer& points, Buffer &dirs, Buffer& colors,
     pointGenKernel.setArg(4, MINIMUM);
     pointGenKernel.setArg(5, STEP);
     queue.enqueueNDRangeKernel(pointGenKernel, cl::NullRange, global, local);
-    const int numElems = NELEMS*NELEMS*NELEMS;
+    const int numElems = NELEMS * NELEMS * NELEMS;
     static const NDRange thrds(64, 1);
     NDRange glob(thrds[0] * divup(numElems, (int)(thrds[0])), (int)(thrds[1]));
 
@@ -137,8 +138,7 @@ void generatePoints(Buffer& points, Buffer &dirs, Buffer& colors,
     queue.enqueueNDRangeKernel(colorsKernel, cl::NullRange, glob, thrds);
 }
 
-int main(void)
-{
+int main(void) {
     try {
         /*
          * First Forge call should be a window creation call
@@ -149,12 +149,11 @@ int main(void)
         wnd.makeCurrent();
 
         forge::Chart chart(FG_CHART_3D);
-        chart.setAxesLimits(MINIMUM-1.0f, MAXIMUM,
-                            MINIMUM-1.0f, MAXIMUM,
-                            MINIMUM-1.0f, MAXIMUM);
+        chart.setAxesLimits(MINIMUM - 1.0f, MAXIMUM, MINIMUM - 1.0f, MAXIMUM,
+                            MINIMUM - 1.0f, MAXIMUM);
         chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
-        int numElems = NELEMS*NELEMS*NELEMS;
+        int numElems             = NELEMS * NELEMS * NELEMS;
         forge::VectorField field = chart.vectorField(numElems, forge::f32);
         field.setColor(0.f, 1.f, 0.f, 1.f);
 
@@ -164,13 +163,16 @@ int main(void)
          * and creates the context on the appropriate device.
          * Note: context and queue are defined in cl_helpers.h
          */
-        context = createCLGLContext(wnd);
+        context       = createCLGLContext(wnd);
         Device device = context.getInfo<CL_CONTEXT_DEVICES>()[0];
-        queue = CommandQueue(context, device);
+        queue         = CommandQueue(context, device);
 
-        cl::Buffer points(context, CL_MEM_READ_WRITE, sizeof(float)*3*numElems);
-        cl::Buffer colors(context, CL_MEM_READ_WRITE, sizeof(float)*3*numElems);
-        cl::Buffer dirs(context, CL_MEM_READ_WRITE, sizeof(float)*3*numElems);
+        cl::Buffer points(context, CL_MEM_READ_WRITE,
+                          sizeof(float) * 3 * numElems);
+        cl::Buffer colors(context, CL_MEM_READ_WRITE,
+                          sizeof(float) * 3 * numElems);
+        cl::Buffer dirs(context, CL_MEM_READ_WRITE,
+                        sizeof(float) * 3 * numElems);
 
         GfxHandle* handles[3];
         createGLBuffer(&handles[0], field.vertices(), FORGE_VERTEX_BUFFER);
@@ -179,13 +181,14 @@ int main(void)
 
         generatePoints(points, dirs, colors, queue, device);
 
-        copyToGLBuffer(handles[0], (ComputeResourceHandle)points(), field.verticesSize());
-        copyToGLBuffer(handles[1], (ComputeResourceHandle)colors(),   field.colorsSize());
-        copyToGLBuffer(handles[2], (ComputeResourceHandle)dirs(), field.directionsSize());
+        copyToGLBuffer(handles[0], (ComputeResourceHandle)points(),
+                       field.verticesSize());
+        copyToGLBuffer(handles[1], (ComputeResourceHandle)colors(),
+                       field.colorsSize());
+        copyToGLBuffer(handles[2], (ComputeResourceHandle)dirs(),
+                       field.directionsSize());
 
-        do {
-            wnd.draw(chart);
-        } while(!wnd.close());
+        do { wnd.draw(chart); } while (!wnd.close());
 
         releaseGLBuffer(handles[0]);
         releaseGLBuffer(handles[1]);

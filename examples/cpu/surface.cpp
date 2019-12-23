@@ -10,37 +10,35 @@
 #include <forge.h>
 #define USE_FORGE_CPU_COPY_HELPERS
 #include <ComputeCopy.h>
-#include <complex>
 #include <cmath>
-#include <vector>
+#include <complex>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
 static const float XMIN = -32.0f;
-static const float XMAX =  32.0f;
+static const float XMAX = 32.0f;
 static const float YMIN = -32.0f;
-static const float YMAX =  32.0f;
+static const float YMAX = 32.0f;
 
-const float DX = 0.25;
-const size_t XSIZE = (size_t)((XMAX-XMIN)/DX);
-const size_t YSIZE = (size_t)((YMAX-YMIN)/DX);
+const float DX     = 0.25;
+const size_t XSIZE = (size_t)((XMAX - XMIN) / DX);
+const size_t YSIZE = (size_t)((YMAX - YMIN) / DX);
 
-void genSurface(float dx, std::vector<float> &vec )
-{
+void genSurface(float dx, std::vector<float>& vec) {
     vec.clear();
-    for(float x=XMIN; x < XMAX; x+=dx) {
-        for(float y=YMIN; y < YMAX; y+=dx) {
+    for (float x = XMIN; x < XMAX; x += dx) {
+        for (float y = YMIN; y < YMAX; y += dx) {
             vec.push_back(x);
             vec.push_back(y);
-            float z = sqrt(x*x+y*y) + 2.2204e-16f;
-            vec.push_back(sin(z)/z);
+            float z = sqrt(x * x + y * y) + 2.2204e-16f;
+            vec.push_back(sin(z) / z);
         }
     }
 }
 
-int main(void)
-{
+int main(void) {
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
@@ -50,13 +48,14 @@ int main(void)
     wnd.makeCurrent();
 
     forge::Chart chart(FG_CHART_3D);
-    chart.setAxesLimits(XMIN-2.0f, XMAX+2.0f, YMIN-2.0f, YMAX+2.0f, -0.5f, 1.f);
+    chart.setAxesLimits(XMIN - 2.0f, XMAX + 2.0f, YMIN - 2.0f, YMAX + 2.0f,
+                        -0.5f, 1.f);
     chart.setAxesTitles("x-axis", "y-axis", "z-axis");
 
     forge::Surface surf = chart.surface(XSIZE, YSIZE, forge::f32);
     surf.setColor(FG_YELLOW);
 
-    //generate a surface
+    // generate a surface
     std::vector<float> function;
 
     genSurface(DX, function);
@@ -70,11 +69,10 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), surf.verticesSize());
+    copyToGLBuffer(handle, (ComputeResourceHandle)function.data(),
+                   surf.verticesSize());
 
-    do {
-        wnd.draw(chart);
-    } while(!wnd.close());
+    do { wnd.draw(chart); } while (!wnd.close());
 
     releaseGLBuffer(handle);
 

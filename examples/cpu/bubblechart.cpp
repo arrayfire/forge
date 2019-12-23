@@ -10,35 +10,32 @@
 #include <forge.h>
 #define USE_FORGE_CPU_COPY_HELPERS
 #include <ComputeCopy.h>
-#include <complex>
-#include <cmath>
-#include <vector>
-#include <iostream>
-#include <random>
 #include <algorithm>
+#include <cmath>
+#include <complex>
 #include <functional>
+#include <iostream>
 #include <iterator>
+#include <random>
+#include <vector>
 
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
 
 const float FRANGE_START = 0.f;
-const float FRANGE_END = 2.f * 3.1415926f;
+const float FRANGE_END   = 2.f * 3.1415926f;
 
 using namespace std;
 void map_range_to_vec_vbo(float range_start, float range_end, float dx,
-                          std::vector<float> &vec,
-                          float (*map) (float))
-{
-    if(range_start > range_end && dx > 0) return;
-    for(float i=range_start; i < range_end; i+=dx){
+                          std::vector<float>& vec, float (*map)(float)) {
+    if (range_start > range_end && dx > 0) return;
+    for (float i = range_start; i < range_end; i += dx) {
         vec.push_back(i);
         vec.push_back((*map)(i));
     }
 }
 
-int main(void)
-{
+int main(void) {
     std::vector<float> cosData;
     std::vector<float> tanData;
 
@@ -58,7 +55,7 @@ int main(void)
     auto rnd = std::bind(nDist, e1);
     auto alp = std::bind(fDist, gen);
 
-    std::vector<float> colors(3*tanData.size());
+    std::vector<float> colors(3 * tanData.size());
     std::vector<float> alphas(tanData.size());
     std::vector<float> radii(tanData.size());
 
@@ -80,14 +77,16 @@ int main(void)
     /* Create several plot objects which creates the necessary
      * vertex buffer objects to hold the different plot types
      */
-    forge::Plot plt1 = chart.plot((unsigned)(cosData.size()/2), forge::f32,
-                               FG_PLOT_LINE, FG_MARKER_TRIANGLE); //or specify a specific plot type
-    forge::Plot plt2 = chart.plot((unsigned)(tanData.size()/2), forge::f32,
-                               FG_PLOT_LINE, FG_MARKER_CIRCLE); //last parameter specifies marker shape
+    forge::Plot plt1 =
+        chart.plot((unsigned)(cosData.size() / 2), forge::f32, FG_PLOT_LINE,
+                   FG_MARKER_TRIANGLE);  // or specify a specific plot type
+    forge::Plot plt2 =
+        chart.plot((unsigned)(tanData.size() / 2), forge::f32, FG_PLOT_LINE,
+                   FG_MARKER_CIRCLE);  // last parameter specifies marker shape
 
     /* Set plot colors */
     plt1.setColor(FG_RED);
-    plt2.setColor(FG_GREEN);            //use a forge predefined color
+    plt2.setColor(FG_GREEN);  // use a forge predefined color
     /* Set plot legends */
     plt1.setLegend("Cosine");
     plt2.setLegend("Tangent");
@@ -110,19 +109,22 @@ int main(void)
     createGLBuffer(&handles[4], plt2.radii(), FORGE_VERTEX_BUFFER);
 
     // copy the data from compute buffer to graphics buffer
-    copyToGLBuffer(handles[0], (ComputeResourceHandle)cosData.data(), plt1.verticesSize());
-    copyToGLBuffer(handles[1], (ComputeResourceHandle)tanData.data(), plt2.verticesSize());
+    copyToGLBuffer(handles[0], (ComputeResourceHandle)cosData.data(),
+                   plt1.verticesSize());
+    copyToGLBuffer(handles[1], (ComputeResourceHandle)tanData.data(),
+                   plt2.verticesSize());
 
     /* update color value for tan graph */
-    copyToGLBuffer(handles[2], (ComputeResourceHandle)colors.data(), plt2.colorsSize());
+    copyToGLBuffer(handles[2], (ComputeResourceHandle)colors.data(),
+                   plt2.colorsSize());
     /* update alpha values for tan graph */
-    copyToGLBuffer(handles[3], (ComputeResourceHandle)alphas.data(), plt2.alphasSize());
+    copyToGLBuffer(handles[3], (ComputeResourceHandle)alphas.data(),
+                   plt2.alphasSize());
     /* update marker sizes for tan graph markers */
-    copyToGLBuffer(handles[4], (ComputeResourceHandle)radii.data(), plt2.radiiSize());
+    copyToGLBuffer(handles[4], (ComputeResourceHandle)radii.data(),
+                   plt2.radiiSize());
 
-    do {
-        wnd.draw(chart);
-    } while(!wnd.close());
+    do { wnd.draw(chart); } while (!wnd.close());
 
     // destroy GL-CPU Interop buffer
     releaseGLBuffer(handles[0]);

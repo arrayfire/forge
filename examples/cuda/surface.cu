@@ -7,9 +7,9 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <forge.h>
-#include <cuda_runtime.h>
 #include <cuComplex.h>
+#include <cuda_runtime.h>
+#include <forge.h>
 #define USE_FORGE_CUDA_COPY_HELPERS
 #include <ComputeCopy.h>
 #include <cstdio>
@@ -20,15 +20,14 @@ const float XMAX = 8.f;
 const float YMIN = -8.0f;
 const float YMAX = 8.f;
 
-const float DX = 0.5;
-const size_t XSIZE = (size_t)((XMAX-XMIN)/DX);
-const size_t YSIZE = (size_t)((YMAX-YMIN)/DX);
+const float DX     = 0.5;
+const size_t XSIZE = (size_t)((XMAX - XMIN) / DX);
+const size_t YSIZE = (size_t)((YMAX - YMIN) / DX);
 
 void kernel(float dx, float* dev_out);
 
-int main(void)
-{
-    float *dev_out;
+int main(void) {
+    float* dev_out;
 
     /*
      * First Forge call should be a window creation call
@@ -45,7 +44,8 @@ int main(void)
     forge::Surface surf = chart.surface(XSIZE, YSIZE, forge::f32);
     surf.setColor(FG_YELLOW);
 
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float) ));
+    FORGE_CUDA_CHECK(
+        cudaMalloc((void**)&dev_out, XSIZE * YSIZE * 3 * sizeof(float)));
     kernel(DX, dev_out);
 
     GfxHandle* handle;
@@ -58,46 +58,35 @@ int main(void)
      */
     copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, surf.verticesSize());
 
-    do {
-        wnd.draw(chart);
-    } while(!wnd.close());
+    do { wnd.draw(chart); } while (!wnd.close());
 
     FORGE_CUDA_CHECK(cudaFree(dev_out));
     releaseGLBuffer(handle);
     return 0;
 }
 
+__global__ void sincos_surf(float dx, float* out, const float XMIN,
+                            const float YMIN, const size_t XSIZE,
+                            const size_t YSIZE) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
 
-    __global__
-void sincos_surf(float dx, float* out,
-        const float XMIN, const float YMIN,
-        const size_t XSIZE, const size_t YSIZE)
-{
-    int i = blockIdx.x * blockDim.x  + threadIdx.x;
-    int j = blockIdx.y * blockDim.y  + threadIdx.y;
-
-    float x= XMIN + i*dx;
-    float y= YMIN + j*dx;
-    if (i<XSIZE && j<YSIZE) {
-        int offset = j + i * YSIZE;
-        out[ 3 * offset     ] = x;
-        out[ 3 * offset + 1 ] = y;
-        float z = sqrt(x*x+y*y) + 2.2204e-16;
-        out[ 3 * offset + 2 ] = sinf(z)/z;
+    float x = XMIN + i * dx;
+    float y = YMIN + j * dx;
+    if (i < XSIZE && j < YSIZE) {
+        int offset          = j + i * YSIZE;
+        out[3 * offset]     = x;
+        out[3 * offset + 1] = y;
+        float z             = sqrt(x * x + y * y) + 2.2204e-16;
+        out[3 * offset + 2] = sinf(z) / z;
     }
 }
 
-    inline
-int divup(int a, int b)
-{
-    return (a+b-1)/b;
-}
+inline int divup(int a, int b) { return (a + b - 1) / b; }
 
-void kernel(float dx, float* dev_out)
-{
+void kernel(float dx, float* dev_out) {
     static const dim3 threads(8, 8);
-    dim3 blocks(divup(XSIZE, threads.x),
-            divup(YSIZE, threads.y));
+    dim3 blocks(divup(XSIZE, threads.x), divup(YSIZE, threads.y));
 
-    sincos_surf<<< blocks, threads >>>(dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
+    sincos_surf<<<blocks, threads>>>(dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
 }

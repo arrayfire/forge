@@ -7,9 +7,9 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <forge.h>
-#include <cuda_runtime.h>
 #include <cuComplex.h>
+#include <cuda_runtime.h>
+#include <forge.h>
 #define USE_FORGE_CUDA_COPY_HELPERS
 #include <ComputeCopy.h>
 #include <cstdio>
@@ -21,14 +21,13 @@ const unsigned DIMY = 800;
 static const float ZMIN = 0.1f;
 static const float ZMAX = 10.f;
 
-const float DX = 0.005f;
-const size_t ZSIZE = (size_t)((ZMAX-ZMIN)/DX+1);
+const float DX     = 0.005f;
+const size_t ZSIZE = (size_t)((ZMAX - ZMIN) / DX + 1);
 
 void kernel(float t, float dx, float* dev_out);
 
-int main(void)
-{
-    float *dev_out;
+int main(void) {
+    float* dev_out;
 
     /*
      * First Forge call should be a window creation call
@@ -48,8 +47,8 @@ int main(void)
 
     forge::Plot plot3 = chart.plot(ZSIZE, forge::f32);
 
-    static float t=0;
-    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, ZSIZE * 3 * sizeof(float) ));
+    static float t = 0;
+    FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, ZSIZE * 3 * sizeof(float)));
     kernel(t, DX, dev_out);
 
     GfxHandle* handle;
@@ -61,43 +60,39 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, plot3.verticesSize());
+    copyToGLBuffer(handle, (ComputeResourceHandle)dev_out,
+                   plot3.verticesSize());
 
     do {
-        t+=0.01f;
+        t += 0.01f;
         kernel(t, DX, dev_out);
-        copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, plot3.verticesSize());
+        copyToGLBuffer(handle, (ComputeResourceHandle)dev_out,
+                       plot3.verticesSize());
         wnd.draw(chart);
-    } while(!wnd.close());
+    } while (!wnd.close());
 
     FORGE_CUDA_CHECK(cudaFree(dev_out));
     releaseGLBuffer(handle);
     return 0;
 }
 
+__global__ void generateCurve(float t, float dx, float* out, const float ZMIN,
+                              const size_t ZSIZE) {
+    int offset = blockIdx.x * blockDim.x + threadIdx.x;
 
-__global__
-void generateCurve(float t, float dx, float* out, const float ZMIN, const size_t ZSIZE)
-{
-    int offset = blockIdx.x * blockDim.x  + threadIdx.x;
-
-    float z = ZMIN + offset*dx;
-    if(offset < ZSIZE) {
-        out[ 3 * offset     ] = cos(z*t+t)/z;
-        out[ 3 * offset + 1 ] = sin(z*t+t)/z;
-        out[ 3 * offset + 2 ] = z + 0.1*sin(t);
+    float z = ZMIN + offset * dx;
+    if (offset < ZSIZE) {
+        out[3 * offset]     = cos(z * t + t) / z;
+        out[3 * offset + 1] = sin(z * t + t) / z;
+        out[3 * offset + 2] = z + 0.1 * sin(t);
     }
 }
 
-inline int divup(int a, int b)
-{
-    return (a+b-1)/b;
-}
+inline int divup(int a, int b) { return (a + b - 1) / b; }
 
-void kernel(float t, float dx, float* dev_out)
-{
+void kernel(float t, float dx, float* dev_out) {
     static const dim3 threads(1024);
     dim3 blocks(divup(ZSIZE, 1024));
 
-    generateCurve<<< blocks, threads >>>(t, dx, dev_out, ZMIN, ZSIZE);
+    generateCurve<<<blocks, threads>>>(t, dx, dev_out, ZMIN, ZSIZE);
 }
