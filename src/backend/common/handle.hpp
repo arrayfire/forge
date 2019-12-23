@@ -1,19 +1,19 @@
 /*******************************************************
-* Copyright (c) 2015-2019, ArrayFire
-* All rights reserved.
-*
-* This file is distributed under 3-clause BSD license.
-* The complete license agreement can be obtained at:
-* http://arrayfire.com/licenses/BSD-3-Clause
-********************************************************/
+ * Copyright (c) 2015-2019, ArrayFire
+ * All rights reserved.
+ *
+ * This file is distributed under 3-clause BSD license.
+ * The complete license agreement can be obtained at:
+ * http://arrayfire.com/licenses/BSD-3-Clause
+ ********************************************************/
 
 #pragma once
 
-#include <common/window.hpp>
-#include <common/font.hpp>
-#include <common/image.hpp>
 #include <common/chart.hpp>
 #include <common/chart_renderables.hpp>
+#include <common/font.hpp>
+#include <common/image.hpp>
+#include <common/window.hpp>
 #include <fg/exception.h>
 
 namespace forge {
@@ -51,5 +51,5 @@ Surface* getSurface(const fg_surface& pValue);
 
 VectorField* getVectorField(const fg_vector_field& pValue);
 
-}
-}
+}  // namespace common
+}  // namespace forge

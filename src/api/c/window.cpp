@@ -14,27 +14,26 @@
 
 using namespace forge;
 
-using forge::common::getWindow;
+using forge::common::getChart;
 using forge::common::getFont;
 using forge::common::getImage;
-using forge::common::getChart;
+using forge::common::getWindow;
 
-fg_err fg_create_window(fg_window *pWindow,
-                        const int pWidth, const int pHeight,
-                        const char* pTitle,
-                        const fg_window pShareWindow,
-                        const bool pInvisible)
-{
+fg_err fg_create_window(fg_window* pWindow, const int pWidth, const int pHeight,
+                        const char* pTitle, const fg_window pShareWindow,
+                        const bool pInvisible) {
     try {
-        ARG_ASSERT(1, (pWidth>0));
-        ARG_ASSERT(2, (pHeight>0));
+        ARG_ASSERT(1, (pWidth > 0));
+        ARG_ASSERT(2, (pHeight > 0));
 
         common::Window* shrdWnd = getWindow(pShareWindow);
-        common::Window* temp = nullptr;
+        common::Window* temp    = nullptr;
         if (shrdWnd == nullptr) {
-            temp = new common::Window(pWidth, pHeight, pTitle, nullptr, pInvisible);
+            temp = new common::Window(pWidth, pHeight, pTitle, nullptr,
+                                      pInvisible);
         } else {
-            temp = new common::Window(pWidth, pHeight, pTitle, shrdWnd, pInvisible);
+            temp = new common::Window(pWidth, pHeight, pTitle, shrdWnd,
+                                      pInvisible);
         }
         *pWindow = getHandle(temp);
     }
@@ -43,23 +42,21 @@ fg_err fg_create_window(fg_window *pWindow,
     return FG_ERR_NONE;
 }
 
-fg_err fg_retain_window(fg_window *pOut, fg_window pWindow)
-{
+fg_err fg_retain_window(fg_window* pOut, fg_window pWindow) {
     try {
-        ARG_ASSERT(1, (pWindow!=0));
+        ARG_ASSERT(1, (pWindow != 0));
 
         common::Window* temp = new common::Window(pWindow);
-        *pOut = getHandle(temp);
+        *pOut                = getHandle(temp);
     }
     CATCHALL
 
     return FG_ERR_NONE;
 }
 
-fg_err fg_release_window(fg_window pWindow)
-{
+fg_err fg_release_window(fg_window pWindow) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(0, (pWindow != 0));
 
         delete getWindow(pWindow);
     }
@@ -68,11 +65,10 @@ fg_err fg_release_window(fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_window_font(fg_window pWindow, const fg_font pFont)
-{
+fg_err fg_set_window_font(fg_window pWindow, const fg_font pFont) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pFont!=0));
+        ARG_ASSERT(0, (pWindow != 0));
+        ARG_ASSERT(1, (pFont != 0));
 
         getWindow(pWindow)->setFont(getFont(pFont));
     }
@@ -80,11 +76,10 @@ fg_err fg_set_window_font(fg_window pWindow, const fg_font pFont)
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_window_title(fg_window pWindow, const char* pTitle)
-{
+fg_err fg_set_window_title(fg_window pWindow, const char* pTitle) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pTitle!=0));
+        ARG_ASSERT(0, (pWindow != 0));
+        ARG_ASSERT(1, (pTitle != 0));
 
         getWindow(pWindow)->setTitle(pTitle);
     }
@@ -92,12 +87,11 @@ fg_err fg_set_window_title(fg_window pWindow, const char* pTitle)
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY)
-{
+fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pX>=0));
-        ARG_ASSERT(2, (pY>=0));
+        ARG_ASSERT(0, (pWindow != 0));
+        ARG_ASSERT(1, (pX >= 0));
+        ARG_ASSERT(2, (pY >= 0));
 
         getWindow(pWindow)->setPos(pX, pY);
     }
@@ -105,12 +99,12 @@ fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY)
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const unsigned pHeight)
-{
+fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth,
+                          const unsigned pHeight) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pWidth>0));
-        ARG_ASSERT(2, (pHeight>0));
+        ARG_ASSERT(0, (pWindow != 0));
+        ARG_ASSERT(1, (pWidth > 0));
+        ARG_ASSERT(2, (pHeight > 0));
 
         getWindow(pWindow)->setSize(pWidth, pHeight);
     }
@@ -118,10 +112,9 @@ fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const unsign
     return FG_ERR_NONE;
 }
 
-fg_err fg_set_window_colormap(fg_window pWindow, const fg_color_map pColorMap)
-{
+fg_err fg_set_window_colormap(fg_window pWindow, const fg_color_map pColorMap) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(0, (pWindow != 0));
 
         getWindow(pWindow)->setColorMap(pColorMap);
     }
@@ -129,10 +122,10 @@ fg_err fg_set_window_colormap(fg_window pWindow, const fg_color_map pColorMap)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_window_context_handle(long long *pContext, const fg_window pWindow)
-{
+fg_err fg_get_window_context_handle(long long* pContext,
+                                    const fg_window pWindow) {
     try {
-        ARG_ASSERT(1, (pWindow!=0));
+        ARG_ASSERT(1, (pWindow != 0));
 
         *pContext = getWindow(pWindow)->context();
     }
@@ -140,10 +133,10 @@ fg_err fg_get_window_context_handle(long long *pContext, const fg_window pWindow
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_window_display_handle(long long *pDisplay, const fg_window pWindow)
-{
+fg_err fg_get_window_display_handle(long long* pDisplay,
+                                    const fg_window pWindow) {
     try {
-        ARG_ASSERT(1, (pWindow!=0));
+        ARG_ASSERT(1, (pWindow != 0));
 
         *pDisplay = getWindow(pWindow)->display();
     }
@@ -151,10 +144,9 @@ fg_err fg_get_window_display_handle(long long *pDisplay, const fg_window pWindow
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_window_width(int *pWidth, const fg_window pWindow)
-{
+fg_err fg_get_window_width(int* pWidth, const fg_window pWindow) {
     try {
-        ARG_ASSERT(1, (pWindow!=0));
+        ARG_ASSERT(1, (pWindow != 0));
 
         *pWidth = getWindow(pWindow)->width();
     }
@@ -162,10 +154,9 @@ fg_err fg_get_window_width(int *pWidth, const fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_get_window_height(int *pHeight, const fg_window pWindow)
-{
+fg_err fg_get_window_height(int* pHeight, const fg_window pWindow) {
     try {
-        ARG_ASSERT(1, (pWindow!=0));
+        ARG_ASSERT(1, (pWindow != 0));
 
         *pHeight = getWindow(pWindow)->height();
     }
@@ -173,10 +164,9 @@ fg_err fg_get_window_height(int *pHeight, const fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_make_window_current(const fg_window pWindow)
-{
+fg_err fg_make_window_current(const fg_window pWindow) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(0, (pWindow != 0));
 
         getWindow(pWindow)->makeCurrent();
     }
@@ -184,10 +174,9 @@ fg_err fg_make_window_current(const fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_hide_window(const fg_window pWindow)
-{
+fg_err fg_hide_window(const fg_window pWindow) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(0, (pWindow != 0));
 
         getWindow(pWindow)->hide();
     }
@@ -195,10 +184,9 @@ fg_err fg_hide_window(const fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_show_window(const fg_window pWindow)
-{
+fg_err fg_show_window(const fg_window pWindow) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(0, (pWindow != 0));
 
         getWindow(pWindow)->show();
     }
@@ -206,10 +194,9 @@ fg_err fg_show_window(const fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow)
-{
+fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow) {
     try {
-        ARG_ASSERT(1, (pWindow!=0));
+        ARG_ASSERT(1, (pWindow != 0));
 
         *pIsClosed = getWindow(pWindow)->close();
     }
@@ -217,11 +204,11 @@ fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage, const bool pKeepAspectRatio)
-{
+fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage,
+                     const bool pKeepAspectRatio) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pImage!=0));
+        ARG_ASSERT(0, (pWindow != 0));
+        ARG_ASSERT(1, (pImage != 0));
 
         getWindow(pWindow)->draw(getImage(pImage), pKeepAspectRatio);
     }
@@ -229,11 +216,10 @@ fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage, const bool 
     return FG_ERR_NONE;
 }
 
-fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart)
-{
+fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pChart!=0));
+        ARG_ASSERT(0, (pWindow != 0));
+        ARG_ASSERT(1, (pChart != 0));
 
         getWindow(pWindow)->draw(getChart(pChart));
     }
@@ -241,42 +227,44 @@ fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart)
     return FG_ERR_NONE;
 }
 
-fg_err fg_draw_image_to_cell(const fg_window pWindow, const int pRows, const int pCols, const int pIndex,
-                             const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio)
-{
+fg_err fg_draw_image_to_cell(const fg_window pWindow, const int pRows,
+                             const int pCols, const int pIndex,
+                             const fg_image pImage, const char* pTitle,
+                             const bool pKeepAspectRatio) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pRows>0));
-        ARG_ASSERT(2, (pCols>0));
-        ARG_ASSERT(3, (pIndex>=0));
-        ARG_ASSERT(4, (pImage!=0));
+        ARG_ASSERT(0, (pWindow != 0));
+        ARG_ASSERT(1, (pRows > 0));
+        ARG_ASSERT(2, (pCols > 0));
+        ARG_ASSERT(3, (pIndex >= 0));
+        ARG_ASSERT(4, (pImage != 0));
 
-        getWindow(pWindow)->draw(pRows, pCols, pIndex, getImage(pImage), pTitle, pKeepAspectRatio);
+        getWindow(pWindow)->draw(pRows, pCols, pIndex, getImage(pImage), pTitle,
+                                 pKeepAspectRatio);
     }
     CATCHALL
     return FG_ERR_NONE;
 }
 
-fg_err fg_draw_chart_to_cell(const fg_window pWindow, const int pRows, const int pCols, const int pIndex,
-                             const fg_chart pChart, const char* pTitle)
-{
+fg_err fg_draw_chart_to_cell(const fg_window pWindow, const int pRows,
+                             const int pCols, const int pIndex,
+                             const fg_chart pChart, const char* pTitle) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
-        ARG_ASSERT(1, (pRows>0));
-        ARG_ASSERT(2, (pCols>0));
-        ARG_ASSERT(3, (pIndex>=0));
-        ARG_ASSERT(4, (pChart!=0));
+        ARG_ASSERT(0, (pWindow != 0));
+        ARG_ASSERT(1, (pRows > 0));
+        ARG_ASSERT(2, (pCols > 0));
+        ARG_ASSERT(3, (pIndex >= 0));
+        ARG_ASSERT(4, (pChart != 0));
 
-        getWindow(pWindow)->draw(pRows, pCols, pIndex, getChart(pChart), pTitle);
+        getWindow(pWindow)->draw(pRows, pCols, pIndex, getChart(pChart),
+                                 pTitle);
     }
     CATCHALL
     return FG_ERR_NONE;
 }
 
-fg_err fg_swap_window_buffers(const fg_window pWindow)
-{
+fg_err fg_swap_window_buffers(const fg_window pWindow) {
     try {
-        ARG_ASSERT(0, (pWindow!=0));
+        ARG_ASSERT(0, (pWindow != 0));
 
         getWindow(pWindow)->swapBuffers();
     }
@@ -284,11 +272,11 @@ fg_err fg_swap_window_buffers(const fg_window pWindow)
     return FG_ERR_NONE;
 }
 
-fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window pWindow)
-{
+fg_err fg_save_window_framebuffer(const char* pFullPath,
+                                  const fg_window pWindow) {
     try {
         ARG_ASSERT(0, pFullPath != NULL);
-        ARG_ASSERT(1, (pWindow!=0));
+        ARG_ASSERT(1, (pWindow != 0));
 
         getWindow(pWindow)->saveFrameBuffer(pFullPath);
     }

@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <glad/glad.h>
 #include <fg/defines.h>
+#include <glad/glad.h>
 
 namespace forge {
 namespace opengl {
@@ -23,7 +23,8 @@ namespace opengl {
  */
 GLenum dtype2gl(const forge::dtype pValue);
 
-/* Convert forge channel format enum to OpenGL enum to indicate color component layout
+/* Convert forge channel format enum to OpenGL enum to indicate color component
+ * layout
  *
  * @pValue is the forge type enum
  *
@@ -31,7 +32,8 @@ GLenum dtype2gl(const forge::dtype pValue);
  */
 GLenum ctype2gl(const forge::ChannelFormat pMode);
 
-/* Convert forge channel format enum to OpenGL enum to indicate color component layout
+/* Convert forge channel format enum to OpenGL enum to indicate color component
+ * layout
  *
  * This function is used to group color component layout formats based
  * on number of components.
@@ -52,12 +54,12 @@ GLenum ictype2gl(const forge::ChannelFormat pMode);
  * @return OpenGL buffer object identifier
  */
 template<typename T>
-GLuint createBuffer(GLenum pTarget, size_t pSize, const T* pPtr, GLenum pUsage)
-{
+GLuint createBuffer(GLenum pTarget, size_t pSize, const T* pPtr,
+                    GLenum pUsage) {
     GLuint retVal = 0;
     glGenBuffers(1, &retVal);
     glBindBuffer(pTarget, retVal);
-    glBufferData(pTarget, pSize*sizeof(T), pPtr, pUsage);
+    glBufferData(pTarget, pSize * sizeof(T), pPtr, pUsage);
     glBindBuffer(pTarget, 0);
     return retVal;
 }
@@ -76,9 +78,9 @@ GLuint screenQuadVBO(const int pWindowId);
  */
 GLuint screenQuadVAO(const int pWindowId);
 
-void glErrorCheck(const char *pMsg, const char* pFile, int pLine);
+void glErrorCheck(const char* pMsg, const char* pFile, int pLine);
 
-}
-}
+}  // namespace opengl
+}  // namespace forge
 
 #define CheckGL(msg) glErrorCheck(msg, __FILE__, __LINE__)

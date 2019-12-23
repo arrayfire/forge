@@ -1,11 +1,11 @@
 /*******************************************************
-* Copyright (c) 2015-2019, ArrayFire
-* All rights reserved.
-*
-* This file is distributed under 3-clause BSD license.
-* The complete license agreement can be obtained at:
-* http://arrayfire.com/licenses/BSD-3-Clause
-********************************************************/
+ * Copyright (c) 2015-2019, ArrayFire
+ * All rights reserved.
+ *
+ * This file is distributed under 3-clause BSD license.
+ * The complete license agreement can be obtained at:
+ * http://arrayfire.com/licenses/BSD-3-Clause
+ ********************************************************/
 
 /**
  * @author Pradeep Garigipati (pradeep@arrayfire.com)
@@ -28,37 +28,37 @@ namespace forge {
 namespace opengl {
 
 class FontAtlas {
-    private:
-        size_t mWidth;
-        size_t mHeight;
-        size_t mDepth;
-        size_t mUsed;
-        uint32_t mId;
+   private:
+    size_t mWidth;
+    size_t mHeight;
+    size_t mDepth;
+    size_t mUsed;
+    uint32_t mId;
 
-        std::vector<unsigned char> mData;
-        std::vector<glm::vec3> nodes;
+    std::vector<unsigned char> mData;
+    std::vector<glm::vec3> nodes;
 
-        /* helper functions */
-        int fit(const size_t pIndex, const size_t pWidth, const size_t pHeight);
-        void merge();
+    /* helper functions */
+    int fit(const size_t pIndex, const size_t pWidth, const size_t pHeight);
+    void merge();
 
-    public:
-        FontAtlas(const size_t pWidth, const size_t pHeight, const size_t pDepth);
-        ~FontAtlas();
+   public:
+    FontAtlas(const size_t pWidth, const size_t pHeight, const size_t pDepth);
+    ~FontAtlas();
 
-        size_t width() const;
-        size_t height() const;
-        size_t depth() const;
+    size_t width() const;
+    size_t height() const;
+    size_t depth() const;
 
-        glm::vec4 getRegion(const size_t pWidth, const size_t pHeight);
-        bool setRegion(const size_t pX, const size_t pY,
-                       const size_t pWidth, const size_t pHeight,
-                       const unsigned char* pData, const size_t pStride);
+    glm::vec4 getRegion(const size_t pWidth, const size_t pHeight);
+    bool setRegion(const size_t pX, const size_t pY, const size_t pWidth,
+                   const size_t pHeight, const unsigned char* pData,
+                   const size_t pStride);
 
-        void upload();
-        void clear();
+    void upload();
+    void clear();
 
-        uint32_t atlasTextureId() const;
+    uint32_t atlasTextureId() const;
 };
 
 struct Glyph {
@@ -68,18 +68,18 @@ struct Glyph {
     int mBearingX;
     int mBearingY;
 
-    float  mAdvanceX;
-    float  mAdvanceY;
+    float mAdvanceX;
+    float mAdvanceY;
 
     /* normalized texture coordinate (x) of top-left corner */
-    float  mS0, mT0;
+    float mS0, mT0;
 
-     /* First normalized texture coordinate (x) of bottom-right corner */
-    float  mS1, mT1;
+    /* First normalized texture coordinate (x) of bottom-right corner */
+    float mS1, mT1;
 
     /* render quad vbo offset */
     size_t mOffset;
 };
 
-}
-}
+}  // namespace opengl
+}  // namespace forge

@@ -1,11 +1,11 @@
 /*******************************************************
-* Copyright (c) 2015-2019, ArrayFire
-* All rights reserved.
-*
-* This file is distributed under 3-clause BSD license.
-* The complete license agreement can be obtained at:
-* http://arrayfire.com/licenses/BSD-3-Clause
-********************************************************/
+ * Copyright (c) 2015-2019, ArrayFire
+ * All rights reserved.
+ *
+ * This file is distributed under 3-clause BSD license.
+ * The complete license agreement can be obtained at:
+ * http://arrayfire.com/licenses/BSD-3-Clause
+ ********************************************************/
 
 #include <gl_native_handles.hpp>
 
@@ -20,8 +20,7 @@
 namespace forge {
 namespace opengl {
 
-ContextHandle getCurrentContextHandle()
-{
+ContextHandle getCurrentContextHandle() {
     auto id = ContextHandle{0};
 
 #if defined(OS_WIN)
@@ -29,15 +28,14 @@ ContextHandle getCurrentContextHandle()
 #elif defined(OS_LNX)
     const auto context = glXGetCurrentContext();
 #else
-    const auto context = CGLGetCurrentContext();
+    const auto context          = CGLGetCurrentContext();
 #endif
     id = reinterpret_cast<ContextHandle>(context);
 
     return id;
 }
 
-DisplayHandle getCurrentDisplayHandle()
-{
+DisplayHandle getCurrentDisplayHandle() {
     auto id = DisplayHandle{0};
 
 #if defined(OS_WIN)
@@ -52,5 +50,5 @@ DisplayHandle getCurrentDisplayHandle()
     return id;
 }
 
-}
-}
+}  // namespace opengl
+}  // namespace forge
