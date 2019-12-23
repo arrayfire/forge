@@ -13,8 +13,7 @@
 
 fg_err fg_update_vertex_buffer(const unsigned pBufferId,
                                const size_t pBufferSize,
-                               const void* pBufferData)
-{
+                               const void* pBufferData) {
     try {
         glBindBuffer(GL_ARRAY_BUFFER, pBufferId);
         glBufferSubData(GL_ARRAY_BUFFER, 0, pBufferSize, pBufferData);
@@ -27,8 +26,7 @@ fg_err fg_update_vertex_buffer(const unsigned pBufferId,
 
 fg_err fg_update_pixel_buffer(const unsigned pBufferId,
                               const size_t pBufferSize,
-                              const void* pBufferData)
-{
+                              const void* pBufferData) {
     try {
         glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pBufferId);
         glBufferSubData(GL_PIXEL_UNPACK_BUFFER, 0, pBufferSize, pBufferData);
@@ -39,8 +37,7 @@ fg_err fg_update_pixel_buffer(const unsigned pBufferId,
     return FG_ERR_NONE;
 }
 
-fg_err fg_finish()
-{
+fg_err fg_finish() {
     try {
         glFinish();
     }
@@ -49,30 +46,21 @@ fg_err fg_finish()
     return FG_ERR_NONE;
 }
 
-namespace forge
-{
-void updateVertexBuffer(const unsigned pBufferId,
-                        const size_t pBufferSize,
-                        const void* pBufferData)
-{
+namespace forge {
+void updateVertexBuffer(const unsigned pBufferId, const size_t pBufferSize,
+                        const void* pBufferData) {
     fg_err val = fg_update_vertex_buffer(pBufferId, pBufferSize, pBufferData);
-    if (val!=FG_ERR_NONE)
-        FG_ERROR("Vertex Buffer Object update failed", val);
+    if (val != FG_ERR_NONE) FG_ERROR("Vertex Buffer Object update failed", val);
 }
 
-void updatePixelBuffer(const unsigned pBufferId,
-                       const size_t pBufferSize,
-                       const void* pBufferData)
-{
+void updatePixelBuffer(const unsigned pBufferId, const size_t pBufferSize,
+                       const void* pBufferData) {
     fg_err val = fg_update_pixel_buffer(pBufferId, pBufferSize, pBufferData);
-    if (val!=FG_ERR_NONE)
-        FG_ERROR("Pixel Buffer Object update failed", val);
+    if (val != FG_ERR_NONE) FG_ERROR("Pixel Buffer Object update failed", val);
 }
 
-void finish()
-{
+void finish() {
     fg_err val = fg_finish();
-    if (val!=FG_ERR_NONE)
-        FG_ERROR("glFinish failed", val);
+    if (val != FG_ERR_NONE) FG_ERROR("glFinish failed", val);
 }
-}
+}  // namespace forge

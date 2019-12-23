@@ -9,32 +9,31 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace forge {
 namespace opengl {
 
 class ShaderProgram {
-    private:
-        uint32_t mVertex;
-        uint32_t mFragment;
-        uint32_t mGeometry;
-        uint32_t mProgram;
+   private:
+    uint32_t mVertex;
+    uint32_t mFragment;
+    uint32_t mGeometry;
+    uint32_t mProgram;
 
-    public:
-        ShaderProgram(const char* pVertShaderSrc,
-                      const char* pFragShaderSrc,
-                      const char* pGeomShaderSrc=NULL);
-        ~ShaderProgram();
+   public:
+    ShaderProgram(const char* pVertShaderSrc, const char* pFragShaderSrc,
+                  const char* pGeomShaderSrc = NULL);
+    ~ShaderProgram();
 
-        uint32_t getProgramId() const;
-        uint32_t getUniformLocation(const char* pAttributeName);
-        uint32_t getUniformBlockIndex(const char* pAttributeName);
-        uint32_t getAttributeLocation(const char* pAttributeName);
+    uint32_t getProgramId() const;
+    uint32_t getUniformLocation(const char* pAttributeName);
+    uint32_t getUniformBlockIndex(const char* pAttributeName);
+    uint32_t getAttributeLocation(const char* pAttributeName);
 
-        void bind();
-        void unbind();
+    void bind();
+    void unbind();
 };
 
-}
-}
+}  // namespace opengl
+}  // namespace forge

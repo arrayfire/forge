@@ -9,35 +9,43 @@
 
 #include <common/err_handling.hpp>
 #include <gl_helpers.hpp>
+#include <image_impl.hpp>
+#include <shader_headers/image_fs.hpp>
+#include <shader_headers/image_vs.hpp>
+#include <window_impl.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <image_impl.hpp>
-#include <shader_headers/image_vs.hpp>
-#include <shader_headers/image_fs.hpp>
-#include <window_impl.hpp>
 
 namespace forge {
 namespace opengl {
 
-void image_impl::bindResources(int pWindowId) const
-{
+void image_impl::bindResources(int pWindowId) const {
     glBindVertexArray(screenQuadVAO(pWindowId));
 }
 
-void image_impl::unbindResources() const
-{
-    glBindVertexArray(0);
-}
+void image_impl::unbindResources() const { glBindVertexArray(0); }
 
 image_impl::image_impl(const uint32_t pWidth, const uint32_t pHeight,
-                       const forge::ChannelFormat pFormat, const forge::dtype pDataType)
-    : mWidth(pWidth), mHeight(pHeight), mFormat(pFormat), mDataType(pDataType),
-      mAlpha(1.0f), mKeepARatio(true), mFormatSize(1),
-      mPBOsize(1), mPBO(0), mTex(0),
-      mProgram(glsl::image_vs.c_str(), glsl::image_fs.c_str()),
-      mMatIndex(-1), mTexIndex(-1), mNumCIndex(-1),
-      mAlphaIndex(-1), mCMapLenIndex(-1), mCMapIndex(-1)
-{
+                       const forge::ChannelFormat pFormat,
+                       const forge::dtype pDataType)
+    : mWidth(pWidth)
+    , mHeight(pHeight)
+    , mFormat(pFormat)
+    , mDataType(pDataType)
+    , mAlpha(1.0f)
+    , mKeepARatio(true)
+    , mFormatSize(1)
+    , mPBOsize(1)
+    , mPBO(0)
+    , mTex(0)
+    , mProgram(glsl::image_vs.c_str(), glsl::image_fs.c_str())
+    , mMatIndex(-1)
+    , mTexIndex(-1)
+    , mNumCIndex(-1)
+    , mAlphaIndex(-1)
+    , mCMapLenIndex(-1)
+    , mCMapIndex(-1) {
     CheckGL("Begin image_impl::image_impl");
 
     mMatIndex     = mProgram.getUniformLocation("matrix");
@@ -62,22 +70,22 @@ image_impl::image_impl(const uint32_t pWidth, const uint32_t pHeight,
     glGenBuffers(1, &mPBO);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     size_t typeSize = 0;
-    switch(dtype2gl(mDataType)) {
-        case GL_INT:            typeSize = sizeof(int   ); break;
-        case GL_UNSIGNED_INT:   typeSize = sizeof(uint32_t  ); break;
-        case GL_SHORT:          typeSize = sizeof(short ); break;
+    switch (dtype2gl(mDataType)) {
+        case GL_INT: typeSize = sizeof(int); break;
+        case GL_UNSIGNED_INT: typeSize = sizeof(uint32_t); break;
+        case GL_SHORT: typeSize = sizeof(short); break;
         case GL_UNSIGNED_SHORT: typeSize = sizeof(uint16_t); break;
-        case GL_BYTE:           typeSize = sizeof(char  ); break;
-        case GL_UNSIGNED_BYTE:  typeSize = sizeof(unsigned char); break;
+        case GL_BYTE: typeSize = sizeof(char); break;
+        case GL_UNSIGNED_BYTE: typeSize = sizeof(unsigned char); break;
         default: typeSize = sizeof(float); break;
     }
-    switch(mFormat) {
-        case FG_GRAYSCALE: mFormatSize = 1;   break;
-        case FG_RG:        mFormatSize = 2;   break;
-        case FG_RGB:       mFormatSize = 3;   break;
-        case FG_BGR:       mFormatSize = 3;   break;
-        case FG_RGBA:      mFormatSize = 4;   break;
-        case FG_BGRA:      mFormatSize = 4;   break;
+    switch (mFormat) {
+        case FG_GRAYSCALE: mFormatSize = 1; break;
+        case FG_RG: mFormatSize = 2; break;
+        case FG_RGB: mFormatSize = 3; break;
+        case FG_BGR: mFormatSize = 3; break;
+        case FG_RGBA: mFormatSize = 4; break;
+        case FG_BGRA: mFormatSize = 4; break;
         default: mFormatSize = 1; break;
     }
     mPBOsize = mWidth * mHeight * mFormatSize * typeSize;
@@ -89,27 +97,20 @@ image_impl::image_impl(const uint32_t pWidth, const uint32_t pHeight,
     CheckGL("End image_impl::image_impl");
 }
 
-image_impl::~image_impl()
-{
+image_impl::~image_impl() {
     glDeleteBuffers(1, &mPBO);
     glDeleteTextures(1, &mTex);
 }
 
-void image_impl::setColorMapUBOParams(const uint32_t pUBO, const uint32_t pSize)
-{
+void image_impl::setColorMapUBOParams(const uint32_t pUBO,
+                                      const uint32_t pSize) {
     mColorMapUBO = pUBO;
-    mUBOSize = pSize;
+    mUBOSize     = pSize;
 }
 
-void image_impl::setAlpha(const float pAlpha)
-{
-    mAlpha = pAlpha;
-}
+void image_impl::setAlpha(const float pAlpha) { mAlpha = pAlpha; }
 
-void image_impl::keepAspectRatio(const bool pKeep)
-{
-    mKeepARatio = pKeep;
-}
+void image_impl::keepAspectRatio(const bool pKeep) { mKeepARatio = pKeep; }
 
 uint32_t image_impl::width() const { return mWidth; }
 
@@ -123,25 +124,24 @@ uint32_t image_impl::pbo() const { return mPBO; }
 
 uint32_t image_impl::size() const { return (uint32_t)mPBOsize; }
 
-void image_impl::render(const int pWindowId,
-                        const int pX, const int pY, const int pVPW, const int pVPH,
-                        const glm::mat4 &pView, const glm::mat4 &pOrient)
-{
+void image_impl::render(const int pWindowId, const int pX, const int pY,
+                        const int pVPW, const int pVPH, const glm::mat4 &pView,
+                        const glm::mat4 &pOrient) {
     CheckGL("Begin image_impl::render");
 
     float xscale = 1.f;
     float yscale = 1.f;
     if (mKeepARatio) {
         if (mWidth > mHeight) {
-            float trgtH = pVPW * float(mHeight)/float(mWidth);
-            float trgtW = trgtH * float(mWidth)/float(mHeight);
-            xscale = trgtW/pVPW;
-            yscale = trgtH/pVPH;
+            float trgtH = pVPW * float(mHeight) / float(mWidth);
+            float trgtW = trgtH * float(mWidth) / float(mHeight);
+            xscale      = trgtW / pVPW;
+            yscale      = trgtH / pVPH;
         } else {
-            float trgtW = pVPH * float(mWidth)/float(mHeight);
-            float trgtH = trgtW * float(mHeight)/float(mWidth);
-            xscale = trgtW/pVPW;
-            yscale = trgtH/pVPH;
+            float trgtW = pVPH * float(mWidth) / float(mHeight);
+            float trgtH = trgtW * float(mHeight) / float(mWidth);
+            xscale      = trgtW / pVPW;
+            yscale      = trgtH / pVPH;
         }
     }
 
@@ -163,8 +163,8 @@ void image_impl::render(const int pWindowId,
     // bind PBO to load data into texture
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mPBO);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight,
-                    ctype2gl(mFormat), dtype2gl(mDataType), 0);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mWidth, mHeight, ctype2gl(mFormat),
+                    dtype2gl(mDataType), 0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     glUniformMatrix4fv(mMatIndex, 1, GL_FALSE, glm::value_ptr(strans));
@@ -190,5 +190,5 @@ void image_impl::render(const int pWindowId,
     CheckGL("End image_impl::render");
 }
 
-}
-}
+}  // namespace opengl
+}  // namespace forge

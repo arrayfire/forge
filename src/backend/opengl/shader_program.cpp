@@ -9,8 +9,9 @@
 
 #include <common/err_handling.hpp>
 #include <gl_helpers.hpp>
-#include <iostream>
 #include <shader_program.hpp>
+
+#include <iostream>
 
 using namespace std;
 
@@ -20,30 +21,27 @@ typedef struct {
     uint32_t geometry;
 } Shaders;
 
-#define FG_COMPILE_LINK_ERROR(pArg, PTYPE)                               \
-do {                                                                     \
-    int infoLogLen = 0;                                                  \
-    int charsWritten = 0;                                                \
-    GLchar *infoLog;                                                     \
-                                                                         \
-    glGet##PTYPE##iv(pArg, GL_INFO_LOG_LENGTH, &infoLogLen);             \
-                                                                         \
-    if (infoLogLen > 1) {                                                \
-        infoLog = new GLchar[infoLogLen];                                \
-        glGet##PTYPE##InfoLog(pArg, infoLogLen, &charsWritten, infoLog); \
-        std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;    \
-        delete [] infoLog;                                               \
-        FG_ERROR("OpenGL "#PTYPE" Compilation Failed", FG_ERR_GL_ERROR); \
-    }                                                                    \
-} while(0)
+#define FG_COMPILE_LINK_ERROR(pArg, PTYPE)                                     \
+    do {                                                                       \
+        int infoLogLen   = 0;                                                  \
+        int charsWritten = 0;                                                  \
+        GLchar* infoLog;                                                       \
+                                                                               \
+        glGet##PTYPE##iv(pArg, GL_INFO_LOG_LENGTH, &infoLogLen);               \
+                                                                               \
+        if (infoLogLen > 1) {                                                  \
+            infoLog = new GLchar[infoLogLen];                                  \
+            glGet##PTYPE##InfoLog(pArg, infoLogLen, &charsWritten, infoLog);   \
+            std::cerr << "InfoLog:" << std::endl << infoLog << std::endl;      \
+            delete[] infoLog;                                                  \
+            FG_ERROR("OpenGL " #PTYPE " Compilation Failed", FG_ERR_GL_ERROR); \
+        }                                                                      \
+    } while (0)
 
-void attachAndLinkProgram(uint32_t pProgram, Shaders pShaders)
-{
+void attachAndLinkProgram(uint32_t pProgram, Shaders pShaders) {
     glAttachShader(pProgram, pShaders.vertex);
     glAttachShader(pProgram, pShaders.fragment);
-    if (pShaders.geometry>0) {
-        glAttachShader(pProgram, pShaders.geometry);
-    }
+    if (pShaders.geometry > 0) { glAttachShader(pProgram, pShaders.geometry); }
 
     glLinkProgram(pProgram);
     int32_t linked;
@@ -56,8 +54,7 @@ void attachAndLinkProgram(uint32_t pProgram, Shaders pShaders)
 
 Shaders loadShaders(const char* pVertexShaderSrc,
                     const char* pFragmentShaderSrc,
-                    const char* pGeometryShaderSrc)
-{
+                    const char* pGeometryShaderSrc) {
     uint32_t f, v;
 
     v = glCreateShader(GL_VERTEX_SHADER);
@@ -108,7 +105,10 @@ Shaders loadShaders(const char* pVertexShaderSrc,
         }
     }
 
-    Shaders out; out.vertex = v; out.fragment = f; out.geometry = g;
+    Shaders out;
+    out.vertex   = v;
+    out.fragment = f;
+    out.geometry = g;
 
     return out;
 }
@@ -119,53 +119,39 @@ namespace opengl {
 ShaderProgram::ShaderProgram(const char* pVertShaderSrc,
                              const char* pFragShaderSrc,
                              const char* pGeomShaderSrc)
-    : mVertex(0), mFragment(0), mGeometry(0), mProgram(0)
-{
+    : mVertex(0), mFragment(0), mGeometry(0), mProgram(0) {
     Shaders shrds = loadShaders(pVertShaderSrc, pFragShaderSrc, pGeomShaderSrc);
-    mProgram = glCreateProgram();
+    mProgram      = glCreateProgram();
     attachAndLinkProgram(mProgram, shrds);
-    mVertex = shrds.vertex;
+    mVertex   = shrds.vertex;
     mFragment = shrds.fragment;
     mGeometry = shrds.geometry;
 }
 
-ShaderProgram::~ShaderProgram()
-{
-    if (mVertex  ) glDeleteShader ( mVertex  );
-    if (mFragment) glDeleteShader ( mFragment);
-    if (mGeometry) glDeleteShader ( mGeometry);
-    if (mProgram ) glDeleteProgram( mProgram );
+ShaderProgram::~ShaderProgram() {
+    if (mVertex) glDeleteShader(mVertex);
+    if (mFragment) glDeleteShader(mFragment);
+    if (mGeometry) glDeleteShader(mGeometry);
+    if (mProgram) glDeleteProgram(mProgram);
 }
 
-uint32_t ShaderProgram::getProgramId() const
-{
-    return mProgram;
-}
+uint32_t ShaderProgram::getProgramId() const { return mProgram; }
 
-uint32_t ShaderProgram::getUniformLocation(const char* pAttributeName)
-{
+uint32_t ShaderProgram::getUniformLocation(const char* pAttributeName) {
     return glGetUniformLocation(mProgram, pAttributeName);
 }
 
-uint32_t ShaderProgram::getUniformBlockIndex(const char* pAttributeName)
-{
+uint32_t ShaderProgram::getUniformBlockIndex(const char* pAttributeName) {
     return glGetUniformBlockIndex(mProgram, pAttributeName);
 }
 
-uint32_t ShaderProgram::getAttributeLocation(const char* pAttributeName)
-{
+uint32_t ShaderProgram::getAttributeLocation(const char* pAttributeName) {
     return glGetAttribLocation(mProgram, pAttributeName);
 }
 
-void ShaderProgram::bind()
-{
-    glUseProgram(mProgram);
-}
+void ShaderProgram::bind() { glUseProgram(mProgram); }
 
-void ShaderProgram::unbind()
-{
-    glUseProgram(0);
-}
+void ShaderProgram::unbind() { glUseProgram(0); }
 
-}
-}
+}  // namespace opengl
+}  // namespace forge

@@ -13,6 +13,7 @@
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -33,14 +34,13 @@ float clampTo01(const float pValue);
  * @pDir is the directory from which font files are looked up
  * @pExt is the target font file extension we are looking for.
  */
-void getFontFilePaths(std::vector<std::string>& pFiles,
-                      const std::string& pDir,
+void getFontFilePaths(std::vector<std::string>& pFiles, const std::string& pDir,
                       const std::string& pExt);
 #endif
 
 std::string clipPath(std::string path, std::string str);
 
-std::string getEnvVar(const std::string &key);
+std::string getEnvVar(const std::string& key);
 
 /* Convert float value to string with given precision
  *
@@ -55,8 +55,8 @@ std::string toString(const float pVal, const std::string pFormat);
 std::ostream& operator<<(std::ostream&, const glm::mat4&);
 
 /* get the point of the surface of track ball */
-glm::vec3 trackballPoint(const float pX, const float pY,
-                         const float pWidth, const float pHeight);
+glm::vec3 trackballPoint(const float pX, const float pY, const float pWidth,
+                         const float pHeight);
 
-}
-}
+}  // namespace common
+}  // namespace forge
