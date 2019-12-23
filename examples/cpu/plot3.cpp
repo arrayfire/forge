@@ -10,10 +10,10 @@
 #include <forge.h>
 #define USE_FORGE_CPU_COPY_HELPERS
 #include <ComputeCopy.h>
-#include <complex>
 #include <cmath>
-#include <vector>
+#include <complex>
 #include <iostream>
+#include <vector>
 
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
@@ -21,24 +21,22 @@ const unsigned DIMY = 800;
 static const float ZMIN = 0.1f;
 static const float ZMAX = 10.f;
 
-const float DX = 0.005f;
-const size_t ZSIZE = (size_t)((ZMAX-ZMIN)/DX+1);
+const float DX     = 0.005f;
+const size_t ZSIZE = (size_t)((ZMAX - ZMIN) / DX + 1);
 
 using namespace std;
 
-void generateCurve(float t, float dx, std::vector<float> &vec )
-{
+void generateCurve(float t, float dx, std::vector<float>& vec) {
     vec.clear();
-    for (int i=0; i < (int)ZSIZE; ++i) {
-        float z = ZMIN + i*dx;
-        vec.push_back((float)(cos(z*t+t)/z));
-        vec.push_back((float)(sin(z*t+t)/z));
-        vec.push_back((float)(z+0.1*sin(t)));
+    for (int i = 0; i < (int)ZSIZE; ++i) {
+        float z = ZMIN + i * dx;
+        vec.push_back((float)(cos(z * t + t) / z));
+        vec.push_back((float)(sin(z * t + t) / z));
+        vec.push_back((float)(z + 0.1 * sin(t)));
     }
 }
 
-int main(void)
-{
+int main(void) {
     /*
      * First Forge call should be a window creation call
      * so that necessary OpenGL context is created for any
@@ -57,9 +55,9 @@ int main(void)
 
     forge::Plot plot3 = chart.plot(ZSIZE, forge::f32);
 
-    //generate a surface
+    // generate a surface
     std::vector<float> function;
-    static float t=0;
+    static float t = 0;
     generateCurve(t, DX, function);
 
     GfxHandle* handle;
@@ -71,14 +69,16 @@ int main(void)
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
      */
-    copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), plot3.verticesSize());
+    copyToGLBuffer(handle, (ComputeResourceHandle)function.data(),
+                   plot3.verticesSize());
 
     do {
-        t+=0.01f;
+        t += 0.01f;
         generateCurve(t, DX, function);
-        copyToGLBuffer(handle, (ComputeResourceHandle)function.data(), plot3.verticesSize());
+        copyToGLBuffer(handle, (ComputeResourceHandle)function.data(),
+                       plot3.verticesSize());
         wnd.draw(chart);
-    } while(!wnd.close());
+    } while (!wnd.close());
 
     releaseGLBuffer(handle);
 

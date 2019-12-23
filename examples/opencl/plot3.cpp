@@ -8,14 +8,16 @@
  ********************************************************/
 
 #include <forge.h>
+
 #include "cl_helpers.h"
-#include <mutex>
-#include <complex>
+
+#include <algorithm>
 #include <cmath>
-#include <vector>
+#include <complex>
 #include <iostream>
 #include <iterator>
-#include <algorithm>
+#include <mutex>
+#include <vector>
 
 const unsigned DIMX = 1000;
 const unsigned DIMY = 800;
@@ -23,43 +25,44 @@ const unsigned DIMY = 800;
 static const float ZMIN = 0.1f;
 static const float ZMAX = 10.f;
 
-const float DX = 0.005f;
-static const unsigned ZSIZE = (unsigned)((ZMAX-ZMIN)/DX+1);
+const float DX              = 0.005f;
+static const unsigned ZSIZE = (unsigned)((ZMAX - ZMIN) / DX + 1);
 
 using namespace std;
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
 #include <ComputeCopy.h>
 
+// clang-format off
 static const std::string sincos_surf_kernel =
-"kernel void generateCurve(global float* out, const float t, const float dx, const float zmin, const unsigned SIZE)\n"
-"{\n"
-"    int offset = get_global_id(0);\n"
-"\n"
-"    float z = zmin + offset*dx;\n"
-"    if (offset < SIZE) {\n"
-"       out[offset*3 + 0] = cos(z*t+t)/z;\n"
-"       out[offset*3 + 1] = sin(z*t+t)/z;\n"
-"       out[offset*3 + 2] = z + 0.1*sin(t);\n"
-"    }\n"
-"}\n";
-
-inline int divup(int a, int b)
-{
-    return (a+b-1)/b;
+R"EOK(
+kernel
+void generateCurve(global float* out, const float t,
+                   const float dx, const float zmin,
+                   const unsigned SIZE) {
+    int offset = get_global_id(0);
+    float z = zmin + offset * dx;
+    if (offset < SIZE) {
+       out[offset*3 + 0] = cos(z*t+t)/z;
+       out[offset*3 + 1] = sin(z*t+t)/z;
+       out[offset*3 + 2] = z + 0.1*sin(t);
+    }
 }
+)EOK";
+// clang-format on
 
-void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, float t)
-{
-    static std::once_flag   compileFlag;
-    static cl::Program      prog;
-    static cl::Kernel       kern;
+inline int divup(int a, int b) { return (a + b - 1) / b; }
 
-    std::call_once(compileFlag,
-        [queue]() {
-        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(), sincos_surf_kernel, true);
-            kern = cl::Kernel(prog, "generateCurve");
-        });
+void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, float t) {
+    static std::once_flag compileFlag;
+    static cl::Program prog;
+    static cl::Kernel kern;
+
+    std::call_once(compileFlag, [queue]() {
+        prog = cl::Program(queue.getInfo<CL_QUEUE_CONTEXT>(),
+                           sincos_surf_kernel, true);
+        kern = cl::Kernel(prog, "generateCurve");
+    });
 
     NDRange global(ZSIZE);
 
@@ -71,10 +74,8 @@ void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, float t)
     queue.enqueueNDRangeKernel(kern, cl::NullRange, global);
 }
 
-int main(void)
-{
+int main(void) {
     try {
-
         /*
          * First Forge call should be a window creation call
          * so that necessary OpenGL context is created for any
@@ -99,12 +100,13 @@ int main(void)
          * and creates the context on the appropriate device.
          * Note: context and queue are defined in cl_helpers.h
          */
-        context = createCLGLContext(wnd);
+        context       = createCLGLContext(wnd);
         Device device = context.getInfo<CL_CONTEXT_DEVICES>()[0];
-        queue = CommandQueue(context, device);
+        queue         = CommandQueue(context, device);
 
-        cl::Buffer devOut(context, CL_MEM_READ_WRITE, sizeof(float) * ZSIZE * 3);
-        static float t=0;
+        cl::Buffer devOut(context, CL_MEM_READ_WRITE,
+                          sizeof(float) * ZSIZE * 3);
+        static float t = 0;
         kernel(devOut, queue, t);
 
         GfxHandle* handle;
@@ -115,18 +117,20 @@ int main(void)
          * memory to display memory, Forge provides copy headers
          * along with the library to help with this task
          */
-        copyToGLBuffer(handle, (ComputeResourceHandle)devOut(), plot3.verticesSize());
+        copyToGLBuffer(handle, (ComputeResourceHandle)devOut(),
+                       plot3.verticesSize());
 
         do {
-            t+=0.01f;
+            t += 0.01f;
             kernel(devOut, queue, t);
-            copyToGLBuffer(handle, (ComputeResourceHandle)devOut(), plot3.verticesSize());
+            copyToGLBuffer(handle, (ComputeResourceHandle)devOut(),
+                           plot3.verticesSize());
             wnd.draw(chart);
-        } while(!wnd.close());
+        } while (!wnd.close());
 
         releaseGLBuffer(handle);
 
-    }catch (forge::Error err) {
+    } catch (forge::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
