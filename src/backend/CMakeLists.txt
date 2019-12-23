@@ -3,7 +3,12 @@
 # source files and set target properties
 string(TOLOWER ${PROJECT_NAME} BkndTargetName)
 
-add_library(${BkndTargetName} "")
+# Until we move up minimum cmake version to 3.14
+# add_library and target_link_libraryies have to be
+# at same level or one level above in cmakelists-file-tree
+add_subdirectory(opengl)
+
+add_dependencies(${BkndTargetName} ${glsl_shader_targets})
 
 set_target_properties(${BkndTargetName}
   PROPERTIES
@@ -29,15 +34,6 @@ else(WIN32)
   target_compile_definitions(${BkndTargetName} PRIVATE OS_LNX)
 endif(WIN32)
 
-if(FG_WITH_FREEIMAGE)
-  target_compile_definitions(${BkndTargetName} PRIVATE USE_FREEIMAGE)
-  if (FG_USE_STATIC_FREEIMAGE)
-    target_link_libraries(${BkndTargetName} PRIVATE FreeImage::FreeImage_STATIC)
-  else ()
-    target_link_libraries(${BkndTargetName} PRIVATE FreeImage::FreeImage)
-  endif ()
-endif()
-
 target_include_directories(${BkndTargetName}
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -48,6 +44,15 @@ target_include_directories(${BkndTargetName}
   SYSTEM PRIVATE
     ${PROJECT_SOURCE_DIR}/extern/glm
   )
+
+if(FG_WITH_FREEIMAGE)
+  target_compile_definitions(${BkndTargetName} PRIVATE USE_FREEIMAGE)
+  if (FG_USE_STATIC_FREEIMAGE)
+    target_link_libraries(${BkndTargetName} PRIVATE FreeImage::FreeImage_STATIC)
+  else ()
+    target_link_libraries(${BkndTargetName} PRIVATE FreeImage::FreeImage)
+  endif ()
+endif()
 
 target_link_libraries(${BkndTargetName}
   PRIVATE
@@ -73,14 +78,6 @@ if(UNIX)
   )
 endif(UNIX)
 
-if (WIN32)
-  # C4275: Warnings about using non-exported classes as base class of an
-  # exported class
-  target_compile_options(${BkndTargetName} PUBLIC /wd4275)
-endif ()
-
-add_dependencies(${BkndTargetName} ${glsl_shader_targets})
-
 source_group(include
   REGULAR_EXPRESSION ${PROJECT_SOURCE_DIR}/include/*)
 source_group("api\\cpp"
@@ -91,8 +88,6 @@ source_group("backend"
   REGULAR_EXPRESSION ${PROJECT_SOURCE_DIR}/src/backend/common/*)
 source_group("backend\\shaders"
   REGULAR_EXPRESSION ${PROJECT_SOURCE_DIR}/src/backend/glsl_shaders/*)
-
-add_subdirectory(opengl)
 
 #--------------------------------------------------------------------
 # Install forge target

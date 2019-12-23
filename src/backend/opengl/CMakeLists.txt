@@ -1,5 +1,7 @@
 find_package(OpenGL REQUIRED)
 
+add_library(${BkndTargetName} "")
+
 target_sources(${BkndTargetName}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/abstract_renderable.hpp
@@ -44,11 +46,12 @@ endif()
 target_include_directories(${BkndTargetName}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${OPENGL_INCLUDE_DIR}
   )
 
 target_link_libraries(${BkndTargetName}
   PUBLIC
-    OpenGL::GL
+    ${OPENGL_gl_LIBRARY}
   PRIVATE
     forge_wtk_interface
   )
