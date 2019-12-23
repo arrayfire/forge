@@ -7,22 +7,21 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <forge.h>
-#include <cuda_runtime.h>
 #include <cuComplex.h>
+#include <cuda_runtime.h>
+#include <forge.h>
 #define USE_FORGE_CUDA_COPY_HELPERS
 #include <ComputeCopy.h>
 #include <cstdio>
 
-const unsigned DIMX = 512;
-const unsigned DIMY = 512;
-const size_t   TOT_SIZE = DIMX*DIMY*4;
+const unsigned DIMX   = 512;
+const unsigned DIMY   = 512;
+const size_t TOT_SIZE = DIMX * DIMY * 4;
 
 void kernel(unsigned char* dev_out);
 
-int main(void)
-{
-    unsigned char *dev_out;
+int main(void) {
+    unsigned char* dev_out;
 
     /*
      * First Forge call should be a window creation call
@@ -54,9 +53,7 @@ int main(void)
     // copy the data from compute buffer to graphics buffer
     copyToGLBuffer(handle, (ComputeResourceHandle)dev_out, img.size());
 
-    do {
-        wnd.draw(img);
-    } while(!wnd.close());
+    do { wnd.draw(img); } while (!wnd.close());
 
     // destroy GL-CPU Interop buffer
     releaseGLBuffer(handle);
@@ -64,54 +61,43 @@ int main(void)
     return 0;
 }
 
-__device__
-int julia(int x, int y)
-{
-
+__device__ int julia(int x, int y) {
     const float scale = 1.5;
-    float jx = scale * (float)(DIMX/2.0f - x)/(DIMX/2.0f);
-    float jy = scale * (float)(DIMY/2.0f - y)/(DIMY/2.0f);
+    float jx          = scale * (float)(DIMX / 2.0f - x) / (DIMX / 2.0f);
+    float jy          = scale * (float)(DIMY / 2.0f - y) / (DIMY / 2.0f);
 
     cuFloatComplex c = make_cuFloatComplex(-0.8f, 0.156f);
     cuFloatComplex a = make_cuFloatComplex(jx, jy);
 
-    for (int i=0; i<200; i++) {
+    for (int i = 0; i < 200; i++) {
         a = cuCaddf(cuCmulf(a, a), c);
-        if (cuCabsf(a) > 1000.0f)
-            return 0;
+        if (cuCabsf(a) > 1000.0f) return 0;
     }
 
     return 1;
 }
 
-__global__
-void julia(unsigned char* out)
-{
-    int x = blockIdx.x * blockDim.x  + threadIdx.x;
-    int y = blockIdx.y * blockDim.y  + threadIdx.y;
+__global__ void julia(unsigned char* out) {
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
 
-    if (x<DIMX && y<DIMY) {
+    if (x < DIMX && y < DIMY) {
         int offset = x + y * DIMX;
         // now calculate the value at that position
         int juliaValue = julia(x, y);
 
-        out[offset*4 + 2] = 255 * juliaValue;
-        out[offset*4 + 0] = 0;
-        out[offset*4 + 1] = 0;
-        out[offset*4 + 3] = 255;
+        out[offset * 4 + 2] = 255 * juliaValue;
+        out[offset * 4 + 0] = 0;
+        out[offset * 4 + 1] = 0;
+        out[offset * 4 + 3] = 255;
     }
 }
 
-inline int divup(int a, int b)
-{
-    return (a+b-1)/b;
-}
+inline int divup(int a, int b) { return (a + b - 1) / b; }
 
-void kernel(unsigned char* dev_out)
-{
+void kernel(unsigned char* dev_out) {
     static const dim3 threads(8, 8);
-    dim3 blocks(divup(DIMX, threads.x),
-                divup(DIMY, threads.y));
+    dim3 blocks(divup(DIMX, threads.x), divup(DIMY, threads.y));
 
-    julia<<< blocks, threads >>>(dev_out);
+    julia<<<blocks, threads>>>(dev_out);
 }
