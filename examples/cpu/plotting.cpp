@@ -12,6 +12,7 @@
 #include <ComputeCopy.h>
 #include <cmath>
 #include <complex>
+#include <cstdio>
 #include <iostream>
 #include <vector>
 
@@ -46,7 +47,7 @@ int main(void) {
      * so that necessary OpenGL context is created for any
      * other forge::* object to be created successfully
      */
-    forge::Window wnd(DIMX, DIMY, "Plotting Demo");
+    forge::Window wnd(DIMX, DIMY, "Chart with Sin, Cos, Tan and Log10 Plots");
     wnd.makeCurrent();
 
     forge::Chart chart(FG_CHART_2D);
@@ -104,10 +105,17 @@ int main(void) {
 
     do { wnd.draw(chart); } while (!wnd.close());
 
+    printf("Removed Log base 10 plot from chart\n");
+    chart.remove(plt3);
+    releaseGLBuffer(handles[3]);
+
+    printf("Rendering Sine, Cosine and Tangent Again ...\n");
+    wnd.setTitle("Chart with Sin, Cos and Tan Plots");
+    do { wnd.draw(chart); } while (!wnd.close());
+
     releaseGLBuffer(handles[0]);
     releaseGLBuffer(handles[1]);
     releaseGLBuffer(handles[2]);
-    releaseGLBuffer(handles[3]);
 
     return 0;
 }
