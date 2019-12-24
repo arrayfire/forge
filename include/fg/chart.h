@@ -309,6 +309,16 @@ FGAPI fg_err fg_remove_histogram_from_chart(fg_chart pHandle,
                                             fg_histogram pHistogram);
 
 /**
+Remove a Pie object from the current chart
+
+\param[in] pHandle is chart handle
+\param[in] pPie is the handle of the pie object to remove
+
+\return \ref fg_err error code
+*/
+FGAPI fg_err fg_remove_pie_from_chart(fg_chart pHandle, fg_pie pPie);
+
+/**
 Remove a Plot object from the current chart
 
 \param[in] pHandle is chart handle
@@ -525,6 +535,13 @@ class Chart {
         \param[in] pHistogram is the Histogram to remove from the chart
         */
         FGAPI void remove(const Histogram &pHistogram);
+
+        /**
+        Remove an existing Pie object to the current chart
+
+        \param[in] pPie is the Pie to remove from the chart
+        */
+        FGAPI void remove(const Pie &pPie);
 
         /**
         Remove an existing Plot object to the current chart

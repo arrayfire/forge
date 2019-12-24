@@ -92,6 +92,10 @@ void Chart::remove(const Histogram& pHistogram) {
     FG_THROW(fg_remove_histogram_from_chart(get(), pHistogram.get()));
 }
 
+void Chart::remove(const Pie& pPie) {
+    FG_THROW(fg_remove_pie_from_chart(get(), pPie.get()));
+}
+
 void Chart::remove(const Plot& pPlot) {
     FG_THROW(fg_remove_plot_from_chart(get(), pPlot.get()));
 }

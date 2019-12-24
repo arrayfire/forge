@@ -375,6 +375,21 @@ fg_err fg_remove_histogram_from_chart(fg_chart pChart,
     return FG_ERR_NONE;
 }
 
+fg_err fg_remove_pie_from_chart(fg_chart pChart, fg_pie pPie) {
+    try {
+        ARG_ASSERT(0, (pPie != 0));
+        ARG_ASSERT(1, (pChart != 0));
+
+        common::Chart* chrt = getChart(pChart);
+
+        common::Pie* pie = getPie(pPie);
+        chrt->removeRenderable(pie->impl());
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
 fg_err fg_remove_plot_from_chart(fg_chart pChart, fg_plot pPlot) {
     try {
         ARG_ASSERT(0, (pPlot != 0));
