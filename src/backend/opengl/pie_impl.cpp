@@ -102,7 +102,7 @@ pie_impl::pie_impl(const uint32_t pNSectors, const forge::dtype pDataType)
         case GL_INT: PLOT_CREATE_BUFFERS(int); break;
         case GL_UNSIGNED_INT: PLOT_CREATE_BUFFERS(uint32_t); break;
         case GL_SHORT: PLOT_CREATE_BUFFERS(short); break;
-        case GL_UNSIGNED_SHORT: PLOT_CREATE_BUFFERS(ushort); break;
+        case GL_UNSIGNED_SHORT: PLOT_CREATE_BUFFERS(uint16_t); break;
         case GL_UNSIGNED_BYTE: PLOT_CREATE_BUFFERS(float); break;
         default: TYPE_ERROR(1, mDataType);
     }
