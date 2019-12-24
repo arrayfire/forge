@@ -48,7 +48,7 @@ class pie_impl : public AbstractRenderable {
     void unbindResources() const;
 
    public:
-    pie_impl(const uint pNSectors, const forge::dtype pDataType);
+    pie_impl(const uint32_t pNSectors, const forge::dtype pDataType);
     ~pie_impl();
 
     virtual void render(const int pWindowId, const int pX, const int pY,

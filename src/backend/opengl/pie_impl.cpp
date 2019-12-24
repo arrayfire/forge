@@ -56,7 +56,7 @@ void pie_impl::bindResources(const int pWindowId) {
 
 void pie_impl::unbindResources() const { glBindVertexArray(0); }
 
-pie_impl::pie_impl(const uint pNSectors, const forge::dtype pDataType)
+pie_impl::pie_impl(const uint32_t pNSectors, const forge::dtype pDataType)
     : mNSectors(pNSectors)
     , mDataType(pDataType)
     , mSectorProgram(glsl::pie_vs.c_str(), glsl::histogram_fs.c_str(),
@@ -100,7 +100,7 @@ pie_impl::pie_impl(const uint pNSectors, const forge::dtype pDataType)
     switch (dtype2gl(mDataType)) {
         case GL_FLOAT: PLOT_CREATE_BUFFERS(float); break;
         case GL_INT: PLOT_CREATE_BUFFERS(int); break;
-        case GL_UNSIGNED_INT: PLOT_CREATE_BUFFERS(uint); break;
+        case GL_UNSIGNED_INT: PLOT_CREATE_BUFFERS(uint32_t); break;
         case GL_SHORT: PLOT_CREATE_BUFFERS(short); break;
         case GL_UNSIGNED_SHORT: PLOT_CREATE_BUFFERS(ushort); break;
         case GL_UNSIGNED_BYTE: PLOT_CREATE_BUFFERS(float); break;
