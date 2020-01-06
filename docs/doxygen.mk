@@ -2035,8 +2035,6 @@ EXTERNAL_PAGES         = YES
 # interpreter (i.e. the result of 'which perl').
 # The default file (with absolute path) is: /usr/bin/perl.
 
-PERL_PATH              = /usr/bin/perl
-
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool
 #---------------------------------------------------------------------------
@@ -2056,8 +2054,6 @@ CLASS_DIAGRAMS         = YES
 # documentation. The MSCGEN_PATH tag allows you to specify the directory where
 # the mscgen tool resides. If left empty the tool is assumed to be found in the
 # default search path.
-
-MSCGEN_PATH            =
 
 # You can include diagrams made with dia in doxygen documentation. Doxygen will
 # then run dia to produce the diagram and insert it in the documentation. The
