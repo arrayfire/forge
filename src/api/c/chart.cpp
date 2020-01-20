@@ -7,14 +7,6 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
-#include <fg/chart.h>
-#include <fg/exception.h>
-#include <fg/font.h>
-#include <fg/histogram.h>
-#include <fg/image.h>
-#include <fg/plot.h>
-#include <fg/surface.h>
-#include <fg/window.h>
 #include <common/chart.hpp>
 #include <common/chart_renderables.hpp>
 #include <common/err_handling.hpp>
@@ -22,6 +14,15 @@
 #include <common/handle.hpp>
 #include <common/image.hpp>
 #include <common/window.hpp>
+#include <fg/chart.h>
+#include <fg/exception.h>
+#include <fg/font.h>
+#include <fg/histogram.h>
+#include <fg/image.h>
+#include <fg/pie.h>
+#include <fg/plot.h>
+#include <fg/surface.h>
+#include <fg/window.h>
 
 using namespace forge;
 using namespace forge::common;
@@ -161,6 +162,19 @@ fg_err fg_append_histogram_to_chart(fg_chart pChart, fg_histogram pHistogram) {
     return FG_ERR_NONE;
 }
 
+fg_err fg_append_pie_to_chart(fg_chart pChart, fg_pie pPie) {
+    try {
+        ARG_ASSERT(0, (pChart != 0));
+        ARG_ASSERT(1, (pPie != 0));
+
+        getChart(pChart)->addRenderable(getPie(pPie)->impl());
+        getChart(pChart)->setAxesVisibility(false);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
 fg_err fg_append_plot_to_chart(fg_chart pChart, fg_plot pPlot) {
     try {
         ARG_ASSERT(0, (pChart != 0));
@@ -232,6 +246,27 @@ fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pChart,
             new common::Histogram(pNBins, (forge::dtype)pType);
         chrt->addRenderable(hist->impl());
         *pHistogram = getHandle(hist);
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_add_pie_to_chart(fg_pie* pPie, fg_chart pChart,
+                           const unsigned pNSectors, const fg_dtype pType) {
+    try {
+        ARG_ASSERT(1, (pChart != 0));
+        ARG_ASSERT(2, (pNSectors > 0));
+
+        common::Chart* chrt = getChart(pChart);
+
+        // Pie is only allowed in FG_CHART_2D
+        ARG_ASSERT(5, chrt->chartType() == FG_CHART_2D);
+
+        common::Pie* pie = new common::Pie(pNSectors, (forge::dtype)pType);
+        chrt->addRenderable(pie->impl());
+        chrt->setAxesVisibility(false);
+        *pPie = getHandle(pie);
     }
     CATCHALL
 
@@ -334,6 +369,21 @@ fg_err fg_remove_histogram_from_chart(fg_chart pChart,
 
         common::Histogram* hist = getHistogram(pHistogram);
         chrt->removeRenderable(hist->impl());
+    }
+    CATCHALL
+
+    return FG_ERR_NONE;
+}
+
+fg_err fg_remove_pie_from_chart(fg_chart pChart, fg_pie pPie) {
+    try {
+        ARG_ASSERT(0, (pPie != 0));
+        ARG_ASSERT(1, (pChart != 0));
+
+        common::Chart* chrt = getChart(pChart);
+
+        common::Pie* pie = getPie(pPie);
+        chrt->removeRenderable(pie->impl());
     }
     CATCHALL
 

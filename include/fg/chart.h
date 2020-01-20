@@ -10,12 +10,12 @@
 #pragma once
 
 #include <fg/defines.h>
+#include <fg/histogram.h>
 #include <fg/image.h>
+#include <fg/pie.h>
 #include <fg/plot.h>
 #include <fg/surface.h>
 #include <fg/vector_field.h>
-#include <fg/histogram.h>
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -149,6 +149,16 @@ FGAPI fg_err fg_append_image_to_chart(fg_chart pChart, fg_image pImage);
 FGAPI fg_err fg_append_histogram_to_chart(fg_chart pChart, fg_histogram pHistogram);
 
 /**
+   Add an existing pie object to chart
+
+   \param[in] pChart is the chart to which pie has to be added
+   \param[in] pPie is the pie to be added to the chart
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_append_pie_to_chart(fg_chart pChart, fg_pie pPie);
+
+/**
    Add an existing plot object to chart
 
    \param[in] pChart is the chart to which plot has to be added
@@ -210,6 +220,21 @@ FGAPI fg_err fg_add_image_to_chart(fg_image* pImage, fg_chart pHandle,
  */
 FGAPI fg_err fg_add_histogram_to_chart(fg_histogram* pHistogram, fg_chart pHandle,
                                        const unsigned pNBins, const fg_dtype pType);
+
+/**
+   Create and add a Pie object to the current chart
+
+   \param[out] pPie is the handle of the pie object created
+   \param[in] pHandle is chart handle
+   \param[in] pNSectors is number of sectors the data is sorted out
+   \param[in] pType takes one of the values of \ref fg_dtype that indicates
+              the integral data type of pie data
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_add_pie_to_chart(fg_pie *pPie, fg_chart pHandle,
+                                 const unsigned pNSectors,
+                                 const fg_dtype pType);
 
 /**
    Create and add an Plot object to the current chart
@@ -282,6 +307,16 @@ Remove a Histogram object from the current chart
 */
 FGAPI fg_err fg_remove_histogram_from_chart(fg_chart pHandle,
                                             fg_histogram pHistogram);
+
+/**
+Remove a Pie object from the current chart
+
+\param[in] pHandle is chart handle
+\param[in] pPie is the handle of the pie object to remove
+
+\return \ref fg_err error code
+*/
+FGAPI fg_err fg_remove_pie_from_chart(fg_chart pHandle, fg_pie pPie);
 
 /**
 Remove a Plot object from the current chart
@@ -460,6 +495,13 @@ class Chart {
         FGAPI void add(const Histogram& pHistogram);
 
         /**
+           Add an existing Pie object to the current chart
+
+           \param[in] pPie is the Pie to render on the chart
+         */
+        FGAPI void add(const Pie &pPie);
+
+        /**
            Add an existing Plot object to the current chart
 
            \param[in] pPlot is the Plot to render on the chart
@@ -493,6 +535,13 @@ class Chart {
         \param[in] pHistogram is the Histogram to remove from the chart
         */
         FGAPI void remove(const Histogram &pHistogram);
+
+        /**
+        Remove an existing Pie object to the current chart
+
+        \param[in] pPie is the Pie to remove from the chart
+        */
+        FGAPI void remove(const Pie &pPie);
 
         /**
         Remove an existing Plot object to the current chart
@@ -536,6 +585,15 @@ class Chart {
                       the integral data type of histogram data
          */
         FGAPI Histogram histogram(const unsigned pNBins, const dtype pDataType);
+
+        /**
+           Create and add a Pie object to the current chart
+
+           \param[in] pNSectors is number of sectors the data is sorted out
+           \param[in] pDataType takes one of the values of \ref dtype that
+           indicates the integral data type of pie data
+         */
+        FGAPI Pie pie(const unsigned pNSectors, const dtype pDataType);
 
         /**
            Create and add an Plot object to the current chart

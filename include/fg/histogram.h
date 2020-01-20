@@ -58,8 +58,8 @@ FGAPI fg_err fg_release_histogram(fg_histogram pHistogram);
    This is global alpha value for the histogram rendering that takes
    effect if individual bar alphas are not set by calling the following
    member functions
-       - Histogram::alphas()
-       - Histogram::alphasSize()
+       - fg_get_histogram_alpha_buffer
+       - fg_get_histogram_alpha_buffer_size
 
    \param[in] pHistogram is the histogram handle
    \param[in] pRed is Red component in range [0, 1]

@@ -20,6 +20,8 @@ target_sources(${BkndTargetName}
     ${CMAKE_CURRENT_SOURCE_DIR}/histogram_impl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/image_impl.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/image_impl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/pie_impl.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/pie_impl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/plot_impl.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/plot_impl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/shader_program.hpp

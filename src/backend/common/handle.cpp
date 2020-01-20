@@ -29,6 +29,8 @@ fg_histogram getHandle(Histogram* pValue) {
 
 fg_plot getHandle(Plot* pValue) { return reinterpret_cast<fg_plot>(pValue); }
 
+fg_pie getHandle(Pie* pValue) { return reinterpret_cast<fg_pie>(pValue); }
+
 fg_surface getHandle(Surface* pValue) {
     return reinterpret_cast<fg_surface>(pValue);
 }
@@ -55,6 +57,10 @@ Chart* getChart(const fg_chart& pValue) {
 
 Histogram* getHistogram(const fg_histogram& pValue) {
     return reinterpret_cast<common::Histogram*>(pValue);
+}
+
+Pie* getPie(const fg_pie& pValue) {
+    return reinterpret_cast<common::Pie*>(pValue);
 }
 
 Plot* getPlot(const fg_plot& pValue) {

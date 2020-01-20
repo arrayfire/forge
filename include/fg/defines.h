@@ -49,6 +49,9 @@ typedef void* fg_image;
 /// \brief Histogram handle
 typedef void* fg_histogram;
 
+/// \brief Pie handle
+typedef void *fg_pie;
+
 /// \brief Plot handle
 typedef void* fg_plot;
 
