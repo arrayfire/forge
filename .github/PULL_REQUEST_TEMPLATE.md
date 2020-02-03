@@ -1,24 +1,22 @@
-**What kind of change does this PR introduce? (Bug fix, feature, documentation update, new examples etc.)**
+**Change(s)**
 
 
-**What is the current behavior? (You can also link to an open issue here)**
+**Current Behavior**
+
+You can also link to an open issue here
+
+**New Behavior**
 
 
-**What is the new behavior (if this is a feature change)?**
-
-
-**Does this PR ensure that key events handling across different window toolkits is identical if it
-has changes related to window toolkits?**
-
-
-**Does this PR introduce a breaking change?**
+**Breaking Change(s)**
 
 
 **Please check if the PR fulfills these requirements**
-- [ ] The commit message following the [guidelines](https://github.com/arrayfire/forge/blob/devel/CONTRIBUTING.md#commit-message-format)
-- [ ] Examples for all compute backends, CUDA & OpenCL, have been added (for new examples)
-- [ ] Docs have been added / updated (for bug fixes / features)
-- [ ] Change compiles and executes on Linux, OSX and Windows (for window toolkit changes as CI
-  builds don't check for this yet).
+- [ ] [Guidelines](https://github.com/arrayfire/forge/blob/master/.github/CONTRIBUTING.md#contributing-to-forge)
+- [ ] Relevant Examples are added/modified
+- [ ] Relevant Documentation has been added/updated
 
-**Other information**:
+**Conditional Checks**
+- [ ] Please make sure SDL toolkit changes are tested as CI right now uses GLFW only.
+
+**Other Information**
