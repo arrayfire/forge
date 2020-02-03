@@ -10,7 +10,7 @@
 #include <cuda_runtime.h>
 #include <forge.h>
 #define USE_FORGE_CUDA_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 
 const unsigned DIMX = 640;
 const unsigned DIMY = 480;

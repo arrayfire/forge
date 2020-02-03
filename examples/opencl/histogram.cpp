@@ -29,7 +29,7 @@ const unsigned NBINS    = 256;
 const float PERSISTENCE = 0.5f;
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 
 // clang-format off
 static const std::string perlinKernels =

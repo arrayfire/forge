@@ -31,7 +31,7 @@ const float NELEMS       = (MAXIMUM - MINIMUM + 1) / STEP;
 const unsigned DPOINTS[] = {5, 5, 5, 15, 15, 5, 15, 15};
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 
 // clang-format off
 static const std::string fieldKernel =
