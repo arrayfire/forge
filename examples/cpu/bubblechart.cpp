@@ -9,7 +9,7 @@
 
 #include <forge.h>
 #define USE_FORGE_CPU_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 #include <algorithm>
 #include <cmath>
 #include <complex>

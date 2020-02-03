@@ -30,7 +30,7 @@ const float STEP    = 2.0f;
 const int NELEMS    = (int)((MAXIMUM - MINIMUM + 1) / STEP);
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 
 // clang-format off
 static const std::string streamKernel =

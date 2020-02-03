@@ -24,7 +24,7 @@ const unsigned DIMY     = 512;
 const unsigned IMG_SIZE = DIMX * DIMY * 4;
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 
 // clang-format off
 static const std::string fractal_ocl_kernel =
