@@ -1,17 +1,29 @@
-# Created using code snippet at https://blog.kitware.com/cmake-and-the-default-build-type/
-
-# Set a default build type if none was specified
-
-set(default_build_type "Release")
-if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
-  set(default_build_type "Debug")
+# CMake 3.9 or later provides a global property to whether we are multi-config
+# or single-config generator. Before 3.9, the defintion of
+# CMAKE_CONFIGURATION_TYPES variable indicated multi-config, but developers
+# might modify.
+if(NOT CMAKE_VERSION VERSION_LESS 3.9)
+  get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+elseif(CMAKE_CONFIGURATION_TYPES)
+  # CMAKE_CONFIGURATION_TYPES is set by project() call
+  set(_isMultiConfig True)
+else()
+  set(_isMultiConfig False)
 endif()
 
-if(NOT CMAKE_BUILD_TYPE)
-  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
-  set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
-      STRING "Choose the type of build." FORCE)
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
-    "MinSizeRel" "RelWithDebInfo")
+
+if(_isMultiConfig)
+  set(CMAKE_CONFIGURATION_TYPES "Debug;MinSizeRel;Release;RelWithDebInfo"
+    CACHE STRING "Configurations for Multi-Config CMake Generator" FORCE)
+else()
+  set(default_build_type "Release")
+  if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+    set(default_build_type "Debug")
+  endif()
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE ${default_build_type} CACHE STRING "Build Type" FORCE)
+  endif()
+  set_property(CACHE CMAKE_BUILD_TYPE
+    PROPERTY
+      STRINGS "Debug" "MinSizeRel" "Release" "RelWithDebInfo")
 endif()
