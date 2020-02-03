@@ -1,15 +1,20 @@
 cmake_minimum_required(VERSION 3.5)
 
+project(Forge VERSION 1.0.4 LANGUAGES C CXX)
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
 
 include(ForgeBuildType)
+include(ForgeVersion)
 include(FGInstallDirs)
 include(ForgeInternalUtils)
 include(ForgePlatformSetup)
 
-option(BUILD_SHARED_LIBS        "Build shared/static library" ON)
-option(FG_ENABLE_HUNTER         "Use Hunter cmake package handler" OFF)
+option(BUILD_SHARED_LIBS "Build shared/static library" ON)
+option(FG_ENABLE_HUNTER  "Use Hunter cmake package handler" OFF)
 
 if(FG_ENABLE_HUNTER)
     set(HUNTER_TLS_VERIFY OFF)
@@ -22,23 +27,7 @@ if(FG_ENABLE_HUNTER)
     )
     mark_as_advanced(HUNTER_TLS_VERIFY)
     mark_as_advanced(HUNTER_BUILD_SHARED_LIBS)
-endif()
 
-project(Forge VERSION 1.0.4 LANGUAGES C CXX)
-
-include(ForgeVersion)
-
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-# Set a default build type if none was specified
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-    # Set the possible values of build type for cmake-gui
-    set_property(CACHE CMAKE_BUILD_TYPE
-        PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
-
-if(FG_ENABLE_HUNTER)
     hunter_add_package(freetype)
     hunter_add_package(Boost)
 
