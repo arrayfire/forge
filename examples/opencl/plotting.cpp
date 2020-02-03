@@ -29,7 +29,7 @@ const float FRANGE_END   = 2 * 3.141592f;
 const unsigned DATA_SIZE = (unsigned)((FRANGE_END - FRANGE_START) / dx);
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 
 // clang-format off
 static const std::string sinf_ocl_kernel =

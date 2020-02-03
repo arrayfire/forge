@@ -31,7 +31,7 @@ const unsigned YSIZE = (unsigned)((YMAX - YMIN) / DX);
 using namespace std;
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 
 // clang-format off
 static const std::string sin_surf_kernel =

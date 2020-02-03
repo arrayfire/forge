@@ -30,7 +30,7 @@ static const float FRANGE_END   = 2 * 3.141592f;
 static const int DATA_SIZE      = (int)((FRANGE_END - FRANGE_START) / DX);
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 
 // clang-format off
 static const std::string chartKernels =

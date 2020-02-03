@@ -31,7 +31,7 @@ static const unsigned ZSIZE = (unsigned)((ZMAX - ZMIN) / DX + 1);
 using namespace std;
 
 #define USE_FORGE_OPENCL_COPY_HELPERS
-#include <ComputeCopy.h>
+#include <fg/compute_copy.h>
 
 // clang-format off
 static const std::string sincos_surf_kernel =
