@@ -49,3 +49,12 @@ mark_as_advanced(
     CUDA_TOOLKIT_ROOT_DIR
     CUDA_USE_STATIC_CUDA_RUNTIME
     CUDA_rt_LIBRARY)
+
+macro(set_policies)
+    cmake_parse_arguments(SP "" "TYPE" "POLICIES" ${ARGN})
+    foreach(_policy ${SP_POLICIES})
+        if(POLICY ${_policy})
+            cmake_policy(SET ${_policy} ${SP_TYPE})
+        endif()
+    endforeach()
+endmacro()

@@ -13,6 +13,10 @@ include(FGInstallDirs)
 include(ForgeInternalUtils)
 include(ForgePlatformSetup)
 
+set_policies(
+  TYPE NEW
+  POLICIES CMP0072)
+
 option(BUILD_SHARED_LIBS "Build shared/static library" ON)
 option(FG_ENABLE_HUNTER  "Use Hunter cmake package handler" OFF)
 
