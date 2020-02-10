@@ -23,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -172,7 +172,7 @@
             
   <div class="section" id="interop-helpers">
 <h1>Interop Helpers<a class="headerlink" href="#interop-helpers" title="Permalink to this headline">¶</a></h1>
-<p>The user can include <cite>ComputeCopy.h</cite> header to avoid writing necessary
+<p>The user can include <cite>fg/compute_copy.h</cite> header to avoid writing necessary
 compute backend’s OpenGL interoperation code themselves.</p>
 <p>Following defines should be declared prior to inclusion of this header
 to use respective compute backend helpers.</p>
@@ -184,23 +184,23 @@ to use respective compute backend helpers.</p>
 <dl class="class">
 <dt id="_CPPv49GfxHandle">
 <span id="_CPPv39GfxHandle"></span><span id="_CPPv29GfxHandle"></span><span id="GfxHandle"></span><span class="target" id="structGfxHandle"></span><em class="property">struct </em><code class="sig-name descname">GfxHandle</code><a class="headerlink" href="#_CPPv49GfxHandle" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>A tuple object of GfxResourceHandle and <a class="reference internal" href="#ComputeCopy_8h_1adf8e136713c0691010d2bec6ba63e9cf"><span class="std std-ref">BufferType</span></a>. </p>
+<dd><p>A tuple object of GfxResourceHandle and <a class="reference internal" href="#compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cf"><span class="std std-ref">BufferType</span></a>. </p>
 </dd></dl>
 
 <dl class="enum">
 <dt id="_CPPv410BufferType">
-<span id="_CPPv310BufferType"></span><span id="_CPPv210BufferType"></span><span class="target" id="ComputeCopy_8h_1adf8e136713c0691010d2bec6ba63e9cf"></span><em class="property">enum </em><code class="sig-name descname">BufferType</code><a class="headerlink" href="#_CPPv410BufferType" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv310BufferType"></span><span id="_CPPv210BufferType"></span><span class="target" id="compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cf"></span><em class="property">enum </em><code class="sig-name descname">BufferType</code><a class="headerlink" href="#_CPPv410BufferType" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enum to indicate if OpenCL buffer is a PBO or VBO. </p>
 <p><em>Values:</em></p>
 <dl class="enumerator">
 <dt id="_CPPv418FORGE_IMAGE_BUFFER">
-<span id="_CPPv318FORGE_IMAGE_BUFFER"></span><span id="_CPPv218FORGE_IMAGE_BUFFER"></span><span class="target" id="ComputeCopy_8h_1adf8e136713c0691010d2bec6ba63e9cfa11ea1ee65fc38c2123afa0a33c6ef04a"></span><code class="sig-name descname">FORGE_IMAGE_BUFFER</code> = 0<a class="headerlink" href="#_CPPv418FORGE_IMAGE_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv318FORGE_IMAGE_BUFFER"></span><span id="_CPPv218FORGE_IMAGE_BUFFER"></span><span class="target" id="compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cfa11ea1ee65fc38c2123afa0a33c6ef04a"></span><code class="sig-name descname">FORGE_IMAGE_BUFFER</code> = 0<a class="headerlink" href="#_CPPv418FORGE_IMAGE_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>OpenGL Pixel Buffer Object. </p>
 </dd></dl>
 
 <dl class="enumerator">
 <dt id="_CPPv419FORGE_VERTEX_BUFFER">
-<span id="_CPPv319FORGE_VERTEX_BUFFER"></span><span id="_CPPv219FORGE_VERTEX_BUFFER"></span><span class="target" id="ComputeCopy_8h_1adf8e136713c0691010d2bec6ba63e9cfa08d078104055dceac893e4a14c153b2c"></span><code class="sig-name descname">FORGE_VERTEX_BUFFER</code> = 1<a class="headerlink" href="#_CPPv419FORGE_VERTEX_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv319FORGE_VERTEX_BUFFER"></span><span id="_CPPv219FORGE_VERTEX_BUFFER"></span><span class="target" id="compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cfa08d078104055dceac893e4a14c153b2c"></span><code class="sig-name descname">FORGE_VERTEX_BUFFER</code> = 1<a class="headerlink" href="#_CPPv419FORGE_VERTEX_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>OpenGL Vertex Buffer Object. </p>
 </dd></dl>
 
@@ -208,7 +208,7 @@ to use respective compute backend helpers.</p>
 
 <dl class="type">
 <dt id="_CPPv421ComputeResourceHandle">
-<span id="_CPPv321ComputeResourceHandle"></span><span id="_CPPv221ComputeResourceHandle"></span><span id="ComputeResourceHandle"></span><span class="target" id="ComputeCopy_8h_1a160b6c9800d06caf50586d67439790c3"></span><em class="property">typedef </em>void *<code class="sig-name descname">ComputeResourceHandle</code><a class="headerlink" href="#_CPPv421ComputeResourceHandle" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv321ComputeResourceHandle"></span><span id="_CPPv221ComputeResourceHandle"></span><span id="ComputeResourceHandle"></span><span class="target" id="compute__copy_8h_1a160b6c9800d06caf50586d67439790c3"></span><em class="property">typedef </em>void *<code class="sig-name descname">ComputeResourceHandle</code><a class="headerlink" href="#_CPPv421ComputeResourceHandle" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>A backend-agnostic handle to a compute memory resource originating from an OpenGL resource. </p>
 <p><ul class="simple">
 <li><p>cudaGraphicsResource in CUDA</p></li>

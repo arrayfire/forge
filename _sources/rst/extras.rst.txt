@@ -1,7 +1,7 @@
 Interop Helpers
 ===============
 
-The user can include `ComputeCopy.h` header to avoid writing necessary
+The user can include `fg/compute_copy.h` header to avoid writing necessary
 compute backend's OpenGL interoperation code themselves.
 
 Following defines should be declared prior to inclusion of this header
