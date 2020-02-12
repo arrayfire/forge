@@ -23,12 +23,11 @@
 #
 # where ns is the contents of kernel.cl.namespace.
 
-include(CMakeParseArguments)
-
 set(GLSL2CPP_PROGRAM "glsl2cpp")
 
 macro(convert_glsl_shaders_to_headers)
-    CMAKE_PARSE_ARGUMENTS(RTCS "" "VARNAME;EXTENSION;OUTPUT_DIR;TARGETS;NAMESPACE;EOF" "SOURCES" ${ARGN})
+    cmake_parse_arguments(
+        RTCS "" "VARNAME;EXTENSION;OUTPUT_DIR;TARGETS;NAMESPACE;EOF" "SOURCES" ${ARGN})
 
     set(_output_files "")
     foreach(_input_file ${RTCS_SOURCES})

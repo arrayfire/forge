@@ -4,18 +4,16 @@ project(Forge VERSION 1.0.5 LANGUAGES C CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
+list(APPEND CMAKE_PREFIX_PATH "${Forge_BINARY_DIR}/cmake")
 
 include(ForgeBuildType)
-include(ForgeVersion)
-include(FGInstallDirs)
+include(ForgeInstallDirs)
 include(ForgeInternalUtils)
 include(ForgePlatformSetup)
+include(ForgeVersion)
 
-set_policies(
-  TYPE NEW
-  POLICIES CMP0072 CMP0077)
+set_policies(TYPE NEW POLICIES CMP0072 CMP0077)
 
 option(BUILD_SHARED_LIBS "Build shared/static library" ON)
 option(FG_ENABLE_HUNTER  "Use Hunter cmake package handler" OFF)
@@ -126,7 +124,7 @@ write_basic_package_version_file(
 set(INCLUDE_DIRS include)
 set(CMAKE_DIR ${FG_INSTALL_CMAKE_DIR})
 configure_package_config_file(
-    "${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
+    "${Forge_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
     "cmake_install/ForgeConfig.cmake"
     INSTALL_DESTINATION "${FG_INSTALL_CMAKE_DIR}"
     PATH_VARS INCLUDE_DIRS CMAKE_DIR
@@ -146,7 +144,7 @@ install(EXPORT ForgeTargets
 set(INCLUDE_DIRS "${Forge_SOURCE_DIR}/include" "${Forge_BINARY_DIR}/include")
 set(CMAKE_DIR "${Forge_BINARY_DIR}")
 configure_package_config_file(
-    "${PROJECT_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
+    "${Forge_SOURCE_DIR}/CMakeModules/ForgeConfig.cmake.in"
     "ForgeConfig.cmake"
     INSTALL_DESTINATION "${Forge_BINARY_DIR}"
     PATH_VARS INCLUDE_DIRS CMAKE_DIR
