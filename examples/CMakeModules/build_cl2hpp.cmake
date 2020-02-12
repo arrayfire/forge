@@ -6,7 +6,7 @@ if (OpenCL_FOUND)
             "https://github.com/KhronosGroup/OpenCL-CLHPP/releases/download/v2.0.10/cl2.hpp")
         file(DOWNLOAD ${file_url} ${cl2hpp_header}
             EXPECTED_HASH MD5=c38d1b78cd98cc809fa2a49dbd1734a5
-            SHOW_PROGRESS STATUS download_result)
+            STATUS download_result)
         list(GET download_result 0 download_code)
         if (NOT ${download_code} EQUAL 0)
             file(REMOVE ${cl2hpp_header}) #empty file have to be removed

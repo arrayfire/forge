@@ -8,24 +8,23 @@ endif()
 add_library(forge_wtk_interface INTERFACE)
 
 target_include_directories(forge_wtk_interface
-    INTERFACE
-    $<BUILD_INTERFACE: ${CMAKE_SOURCE_DIR}/src/backend/opengl>
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
     )
 
 target_sources(forge_wtk_interface
     INTERFACE
-    $<BUILD_INTERFACE: ${CMAKE_CURRENT_SOURCE_DIR}/window.hpp>
-    $<BUILD_INTERFACE: ${CMAKE_CURRENT_SOURCE_DIR}/window.cpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/window.hpp>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/window.cpp>
     )
 
 target_link_libraries(forge_wtk_interface INTERFACE SDL2::SDL2)
 
-if (NOT BUILD_SHARED_LIBS)
+if(NOT BUILD_SHARED_LIBS)
     install(TARGETS forge_wtk_interface EXPORT ForgeTargets)
-endif ()
+endif()
 
-if (WIN32 AND BUILD_SHARED_LIBS)
+if(WIN32 AND BUILD_SHARED_LIBS)
     install(FILES $<TARGET_FILE:SDL2::SDL2>
     DESTINATION ${FG_INSTALL_BIN_DIR}
     COMPONENT dependencies)
-endif ()
+endif()
