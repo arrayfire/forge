@@ -43,7 +43,10 @@
 #     * https://github.com/ruslo/hunter
 
 cmake_minimum_required(VERSION 3.0) # Minimum for Hunter
-include(CMakeParseArguments) # cmake_parse_arguments
+
+# min cmake required for forge is 3.5, hence
+# no need to include the below module to use cmake_parse_arguments
+# include(CMakeParseArguments)
 
 option(HUNTER_ENABLED "Enable Hunter package manager support" ON)
 option(HUNTER_STATUS_PRINT "Print working status" ON)

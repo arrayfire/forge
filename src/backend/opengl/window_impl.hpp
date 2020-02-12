@@ -9,11 +9,8 @@
 
 #pragma once
 
-#if defined(USE_GLFW)
-#include <glfw/window.hpp>
-#elif defined(USE_SDL)
-#include <sdl/window.hpp>
-#endif
+#include <window.hpp>
+
 #include <chart_impl.hpp>
 #include <colormap_impl.hpp>
 #include <common/defines.hpp>
