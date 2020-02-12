@@ -1,4 +1,4 @@
-add_executable(glsl2cpp "${PROJECT_SOURCE_DIR}/CMakeModules/glsl2cpp.cpp")
+add_executable(glsl2cpp "${Forge_SOURCE_DIR}/CMakeModules/glsl2cpp.cpp")
 
 set_target_properties(glsl2cpp PROPERTIES CXX_STANDARD 11)
 
@@ -17,5 +17,5 @@ convert_glsl_shaders_to_headers(
     OUTPUT_DIR "include/shader_headers"
     TARGETS glsl_shader_targets
     NAMESPACE "glsl"
-    EOD "0"
+    EOF "0"
     )
