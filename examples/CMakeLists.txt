@@ -14,7 +14,7 @@ endif()
 
 find_package(OpenCL 1.2 QUIET)
 find_package(CUDA   QUIET)
-find_package(OpenGL REQUIRED)
+find_package(opengl REQUIRED) #This uses custom module shipped with examples
 find_package(Forge  REQUIRED)
 
 mark_as_advanced(
