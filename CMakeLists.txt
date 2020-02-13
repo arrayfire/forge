@@ -16,36 +16,18 @@ include(ForgeVersion)
 set_policies(TYPE NEW POLICIES CMP0072 CMP0077)
 
 option(BUILD_SHARED_LIBS "Build shared/static library" ON)
-option(FG_ENABLE_HUNTER  "Use Hunter cmake package handler" OFF)
 
-if(FG_ENABLE_HUNTER)
-    set(HUNTER_TLS_VERIFY OFF)
-    set(HUNTER_BUILD_SHARED_LIBS OFF)
-    include(${CMAKE_CURRENT_LIST_DIR}/CMakeModules/HunterGate.cmake)
-    HunterGate(
-        URL "https://github.com/ruslo/hunter/archive/v0.20.60.tar.gz"
-        SHA1 "35a23a3e2f8a2c87f6762c43f3cc64a0bee50943"
-        FILEPATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules/Hunter/config.cmake"
-    )
-    mark_as_advanced(HUNTER_TLS_VERIFY)
-    mark_as_advanced(HUNTER_BUILD_SHARED_LIBS)
-
-    hunter_add_package(freetype)
-    hunter_add_package(Boost)
-
-    find_package(freetype CONFIG    REQUIRED NO_CMAKE_PATH NO_SYSTEM_ENVIRONMENT_PATH)
-    find_package(Boost              REQUIRED NO_CMAKE_PATH NO_SYSTEM_ENVIRONMENT_PATH)
-else()
-    find_package(Freetype   REQUIRED)
-    find_package(Boost      REQUIRED)
-endif()
-
-#packages not available via hunter
+find_package(Boost      REQUIRED)
 find_package(Doxygen    QUIET)
-find_package(Sphinx     QUIET)
+find_package(FontConfig QUIET)
 find_package(FreeImage  QUIET)
+find_package(Freetype   REQUIRED)
+find_package(OpenGL     QUIET)
+find_package(Sphinx     QUIET)
+
 if(UNIX)
-    find_package(FontConfig REQUIRED)
+    dependency_check(FontConfig_FOUND
+        "FontConfig is required on non-windows OS")
 endif()
 
 option(FG_BUILD_DOCS
