@@ -11,7 +11,8 @@ add_library(${BkndTargetName} "")
 add_dependencies(${BkndTargetName} ${glsl_shader_targets})
 
 if(${FG_RENDERING_BACKEND} STREQUAL "OpenGL")
-    find_package(OpenGL REQUIRED)
+    dependency_check(OPENGL_FOUND
+        "OpenGL rendering backend requires platform specific opengl library")
     add_subdirectory(opengl)
     target_include_directories(${BkndTargetName} PUBLIC ${OPENGL_INCLUDE_DIR})
     target_link_libraries(${BkndTargetName} PUBLIC ${OPENGL_gl_LIBRARY})
@@ -70,18 +71,13 @@ endif()
 target_link_libraries(${BkndTargetName}
     PRIVATE
     Boost::boost
+    ${FREETYPE_LIBRARIES}
     forge_backend_interface
     forge_c_api_interface
     forge_cpp_api_interface
     forge_glad_interface
     forge_wtk_interface
     )
-
-if(FG_ENABLE_HUNTER)
-    target_link_libraries(${BkndTargetName} PRIVATE freetype::freetype)
-else()
-    target_link_libraries(${BkndTargetName} PRIVATE ${FREETYPE_LIBRARIES})
-endif()
 
 if(UNIX)
     target_link_libraries(${BkndTargetName}

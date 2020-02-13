@@ -1,9 +1,4 @@
-if(FG_ENABLE_HUNTER)
-    hunter_add_package(glfw)
-    find_package(glfw3 NO_CMAKE_PATH NO_SYSTEM_ENVIRONMENT_PATH)
-else ()
-    find_package(glfw3)
-endif()
+find_package(glfw3)
 
 add_library(forge_wtk_interface INTERFACE)
 
