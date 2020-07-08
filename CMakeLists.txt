@@ -145,4 +145,6 @@ conditional_directory(FG_BUILD_EXAMPLES examples)
 mark_as_advanced(
     pkgcfg_lib_FontConfigPkg_freetype
     pkgcfg_lib_FontConfigPkg_fontconfig
+    Boost_INCLUDE_DIR
+    SPHINX_EXECUTABLE
 )

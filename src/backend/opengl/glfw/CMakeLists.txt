@@ -23,3 +23,5 @@ if(WIN32 AND BUILD_SHARED_LIBS)
     DESTINATION ${FG_INSTALL_BIN_DIR}
     COMPONENT dependencies)
 endif()
+
+mark_as_advanced(glfw3_DIR)
