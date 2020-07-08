@@ -216,7 +216,8 @@ void vector_field_impl::render(const int pWindowId, const int pX, const int pY,
     CheckGL("End vector_field_impl::render");
 }
 
-glm::mat4 vector_field2d_impl::computeModelMatrix(const glm::mat4& pOrient) {
+glm::mat4 vector_field2d_impl::computeModelMatrix(
+    const glm::mat4& /*pOrient*/) {
     float xRange = mRange[1] - mRange[0];
     float yRange = mRange[3] - mRange[2];
 

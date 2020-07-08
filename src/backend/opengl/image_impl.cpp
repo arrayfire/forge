@@ -125,8 +125,8 @@ uint32_t image_impl::pbo() const { return mPBO; }
 uint32_t image_impl::size() const { return (uint32_t)mPBOsize; }
 
 void image_impl::render(const int pWindowId, const int pX, const int pY,
-                        const int pVPW, const int pVPH, const glm::mat4 &pView,
-                        const glm::mat4 &pOrient) {
+                        const int pVPW, const int pVPH, const glm::mat4& pView,
+                        const glm::mat4& /*pOrient*/) {
     CheckGL("Begin image_impl::render");
 
     float xscale = 1.f;
