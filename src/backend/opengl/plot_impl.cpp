@@ -63,8 +63,8 @@ void plot_impl::bindResources(const int pWindowId) {
 
 void plot_impl::unbindResources() const { glBindVertexArray(0); }
 
-glm::mat4 plot_impl::computeTransformMat(const glm::mat4 pView,
-                                         const glm::mat4 pOrient) {
+glm::mat4 plot_impl::computeTransformMat(const glm::mat4& pView,
+                                         const glm::mat4& pOrient) {
     static const glm::mat4 MODEL =
         glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(0, 1, 0)) *
         glm::rotate(glm::mat4(1.0f), -glm::radians(90.f), glm::vec3(1, 0, 0));
@@ -265,8 +265,8 @@ void plot_impl::render(const int pWindowId, const int pX, const int pY,
     CheckGL("End plot_impl::render");
 }
 
-glm::mat4 plot2d_impl::computeTransformMat(const glm::mat4 pView,
-                                           const glm::mat4 pOrient) {
+glm::mat4 plot2d_impl::computeTransformMat(const glm::mat4& pView,
+                                           const glm::mat4& /*pOrient*/) {
     float xRange = mRange[1] - mRange[0];
     float yRange = mRange[3] - mRange[2];
 
