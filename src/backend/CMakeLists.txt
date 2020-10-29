@@ -119,3 +119,7 @@ if(WIN32 AND BUILD_SHARED_LIBS AND
         DESTINATION ${FG_INSTALL_BIN_DIR}
         COMPONENT dependencies)
 endif()
+
+if(NOT BUILD_SHARED_LIBS)
+    install(TARGETS glad_interface EXPORT ForgeTargets)
+endif()
