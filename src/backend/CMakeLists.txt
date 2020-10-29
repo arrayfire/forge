@@ -56,7 +56,7 @@ target_include_directories(${BkndTargetName}
     $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
     SYSTEM PRIVATE
     ${FREETYPE_INCLUDE_DIRS}
-    ${Forge_SOURCE_DIR}/extern/glm
+    ${Forge_SOURCE_DIR}/extern
     )
 
 if(FG_WITH_FREEIMAGE)
@@ -75,7 +75,7 @@ target_link_libraries(${BkndTargetName}
     forge_backend_interface
     forge_c_api_interface
     forge_cpp_api_interface
-    forge_glad_interface
+    glad_interface
     forge_wtk_interface
     )
 
@@ -118,4 +118,8 @@ if(WIN32 AND BUILD_SHARED_LIBS AND
     install(FILES $<TARGET_FILE:FreeImage::FreeImage>
         DESTINATION ${FG_INSTALL_BIN_DIR}
         COMPONENT dependencies)
+endif()
+
+if(NOT BUILD_SHARED_LIBS)
+    install(TARGETS glad_interface EXPORT ForgeTargets)
 endif()
