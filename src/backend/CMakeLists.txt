@@ -75,7 +75,7 @@ target_link_libraries(${BkndTargetName}
     forge_backend_interface
     forge_c_api_interface
     forge_cpp_api_interface
-    forge_glad_interface
+    glad_interface
     forge_wtk_interface
     )
 
