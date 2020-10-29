@@ -56,7 +56,7 @@ target_include_directories(${BkndTargetName}
     $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
     SYSTEM PRIVATE
     ${FREETYPE_INCLUDE_DIRS}
-    ${Forge_SOURCE_DIR}/extern/glm
+    ${Forge_SOURCE_DIR}/extern
     )
 
 if(FG_WITH_FREEIMAGE)
