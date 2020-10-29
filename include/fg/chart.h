@@ -262,6 +262,7 @@ FGAPI fg_err fg_add_surface_to_chart(fg_surface* pSurface, fg_chart pHandle,
 FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field* pField, fg_chart pHandle,
                                           const unsigned pNPoints, const fg_dtype pType);
 
+#if FG_API_VERSION >= 11
 /**
 Remove an Image object from the current chart
 
@@ -314,6 +315,7 @@ Remove a Vector Field object from the current chart
 */
 FGAPI fg_err fg_remove_vector_field_from_chart(fg_chart pHandle,
                                                fg_vector_field pField);
+#endif
 
 /**
    Render the chart to given window
@@ -480,6 +482,7 @@ class Chart {
          */
         FGAPI void add(const VectorField& pVectorField);
 
+#if FG_API_VERSION >= 11
         /**
         Remove an existing Image object to the current chart
 
@@ -514,6 +517,7 @@ class Chart {
         \param[in] pVectorField is the Vectore to remove from the chart
         */
         FGAPI void remove(const VectorField &pVectorField);
+#endif
 
         /**
            Create and add an Image object to the current chart
