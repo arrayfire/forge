@@ -92,7 +92,7 @@ add_subdirectory(src/backend)
 #--------------------------------------------------------------------
 install(DIRECTORY include/
     DESTINATION ${FG_INSTALL_INC_DIR}
-    COMPONENT headers
+    COMPONENT forge_dev
     FILES_MATCHING
     PATTERN "*.h"
     PATTERN "*.hpp"
@@ -100,7 +100,7 @@ install(DIRECTORY include/
 
 install(FILES ${Forge_BINARY_DIR}/include/fg/version.h
     DESTINATION "${FG_INSTALL_INC_DIR}/fg/"
-    COMPONENT headers)
+    COMPONENT forge_dev)
 
 # install the examples irrespective of the FG_BUILD_EXAMPLES value
 # only the examples source files are installed, so the installation of these
@@ -109,7 +109,7 @@ install(FILES ${Forge_BINARY_DIR}/include/fg/version.h
 # building the example executables
 install(DIRECTORY examples/ #NOTE The slash at the end is important
     DESTINATION ${FG_INSTALL_EXAMPLE_DIR}
-    COMPONENT examples)
+    COMPONENT forge_dev)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
@@ -129,12 +129,12 @@ configure_package_config_file(
 install(FILES ${Forge_BINARY_DIR}/cmake_install/ForgeConfig.cmake
     ${Forge_BINARY_DIR}/ForgeConfigVersion.cmake
     DESTINATION ${FG_INSTALL_CMAKE_DIR}
-    COMPONENT cmake
+    COMPONENT forge_dev
 )
 install(EXPORT ForgeTargets
     NAMESPACE Forge::
     DESTINATION ${FG_INSTALL_CMAKE_DIR}
-    COMPONENT forge
+    COMPONENT forge_dev
 )
 
 # export build tree targets config file
