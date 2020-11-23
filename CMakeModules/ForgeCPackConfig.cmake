@@ -14,7 +14,8 @@ include(CPackIFW)
 
 set(VENDOR_NAME "ArrayFire")
 set(APP_NAME "Forge")
-set(APP_URL "www.arrayfire.com")
+string(TOLOWER ${APP_NAME} LC_APP_NAME)
+set(APP_URL "https://github.com/arrayfire/forge")
 
 # Long description of the package
 set(CPACK_PACKAGE_DESCRIPTION
@@ -78,14 +79,12 @@ else()
 endif()
 
 # Set the default components installed in the package
-get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
+#get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
 
 include(CPackComponent)
 
 cpack_add_install_type(Development
   DISPLAY_NAME "Development")
-cpack_add_install_type(Extra
-  DISPLAY_NAME "Extra")
 cpack_add_install_type(Runtime
   DISPLAY_NAME "Runtime")
 
@@ -93,38 +92,29 @@ cpack_add_component_group(backends
   DISPLAY_NAME "Forge"
   DESCRIPTION "Forge libraries")
 
-cpack_add_component(dependencies
-  DISPLAY_NAME "Forge Dependencies"
-  DESCRIPTION "Libraries required by Forge OpenGL backend"
-  PARENT_GROUP backends
-  INSTALL_TYPES Development Runtime)
+# This component usually used for generating graphical installers where upstream
+# dependencies aren't usually managed by some sort of global package manager.
+# This is typically the case with Windows installers
+if(WIN32)
+  cpack_add_component(forge_dependencies
+    DISPLAY_NAME "Forge Dependencies"
+    DESCRIPTION "Libraries required by Forge OpenGL backend"
+    PARENT_GROUP backends
+    INSTALL_TYPES Development Runtime)
+endif()
 
 cpack_add_component(forge
   DISPLAY_NAME "Forge"
   DESCRIPTION "Forge library."
   PARENT_GROUP backends
-  DEPENDS dependencies
   INSTALL_TYPES Development Runtime)
 
-cpack_add_component(documentation
-  DISPLAY_NAME "Documentation"
-  DESCRIPTION "Forge documentation files"
-  INSTALL_TYPES Extra)
-
-cpack_add_component(headers
-  DISPLAY_NAME "C/C++ Headers"
-  DESCRIPTION "Development headers for the Forge library."
+cpack_add_component(forge_dev
+  DISPLAY_NAME "Development files required for forge"
+  DESCRIPTION "Development files include headers,
+               cmake config files and example source files
+               apart from runtime libraries."
   INSTALL_TYPES Development)
-
-cpack_add_component(cmake
-  DISPLAY_NAME "CMake Support"
-  DESCRIPTION "Configuration files to use ArrayFire using CMake."
-  INSTALL_TYPES Development)
-
-cpack_add_component(examples
-  DISPLAY_NAME "Forge Examples"
-  DESCRIPTION "Various examples using Forge."
-  INSTALL_TYPES Extra)
 
 ##
 # IFW CPACK generator
@@ -143,29 +133,40 @@ else ()
   set(CPACK_IFW_ADMIN_TARGET_DIRECTORY "/opt/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
 endif ()
 cpack_ifw_configure_component_group(backends)
-cpack_ifw_configure_component(dependencies)
+if(WIN32)
+  cpack_ifw_configure_component(forge_dependencies)
+endif()
 cpack_ifw_configure_component(forge)
-cpack_ifw_configure_component(documentation)
-cpack_ifw_configure_component(headers)
-cpack_ifw_configure_component(cmake)
-cpack_ifw_configure_component(examples)
+cpack_ifw_configure_component(forge_dev)
 
 ##
 # Debian package
 ##
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 set(CPACK_DEB_COMPONENT_INSTALL ON)
-#set(CMAKE_INSTALL_RPATH /usr/lib;${Forge_BUILD_DIR}/third_party/forge/lib)
-#set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CMAKE_INSTALL_RPATH "/usr/lib;${Forge_BINARY_DIR}/src/backend")
 set(CPACK_DEBIAN_PACKAGE_HOMEPAGE http://www.arrayfire.com)
+set(CPACK_DEBIAN_FORGE_PACKAGE_NAME "lib${LC_APP_NAME}")
+set(CPACK_DEBIAN_FORGE_DEV_PACKAGE_NAME "lib${LC_APP_NAME}-dev")
+## libfreetype6 isn't explicitly mentioned as it is dependency of libfontconfig1
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libglfw3 (>= 3.0), libfreeimage3 (>= 3.15), libfontconfig1 (>= 2.11)")
+set(CPACK_DEBIAN_FORGE_DEV_PACKAGE_DEPENDS "${CPACK_DEBIAN_FORGE_PACKAGE_NAME} (= ${CPACK_PACKAGE_VERSION})")
 
 ##
 # RPM package
 ##
+set(CPACK_RPM_PACKAGE_AUTOREQ NO)
+set(CPACK_RPM_FORGE_PACKAGE_NAME "${LC_APP_NAME}")
+set(CPACK_RPM_FORGE_DEV_PACKAGE_NAME "${LC_APP_NAME}-devel")
+set(CPACK_RPM_FILE_NAME "%{name}-%{version}-%{release}%{?dist}_%{_arch}.rpm")
+set(CPACK_RPM_COMPONENT_INSTALL ON)
 set(CPACK_RPM_PACKAGE_LICENSE "BSD")
-set(CPACK_RPM_PACKAGE_AUTOREQPROV " no")
+set(CPACK_RPM_PACKAGE_GROUP "Development/Libraries")
+set(CPACK_RPM_PACKAGE_URL "${APP_URL}")
+## freetype isn't explicitly mentioned as it is dependency of fontconfig
+set(CPACK_RPM_PACKAGE_REQUIRES "glfw >= 3.2, freeimage >= 3.15, fontconfig >= 2.11")
+set(CPACK_RPM_FORGE_DEV_PACKAGE_REQUIRES "${CPACK_RPM_FORGE_PACKAGE_NAME} == ${CPACK_PACKAGE_VERSION}")
 
-set(CPACK_PACKAGE_GROUP "Development/Libraries")
 ##
 # Source package
 ##

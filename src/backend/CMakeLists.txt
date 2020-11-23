@@ -119,7 +119,7 @@ if(WIN32 AND BUILD_SHARED_LIBS AND
         FG_WITH_FREEIMAGE AND NOT FG_USE_STATIC_FREEIMAGE)
     install(FILES $<TARGET_FILE:FreeImage::FreeImage>
         DESTINATION ${FG_INSTALL_BIN_DIR}
-        COMPONENT dependencies)
+        COMPONENT forge_dependencies)
 endif()
 
 if(NOT BUILD_SHARED_LIBS)
