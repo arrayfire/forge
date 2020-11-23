@@ -57,7 +57,7 @@ add_custom_target(Sphinx ALL DEPENDS ${SPHINX_INDEX_FILE} docs)
 # Install Doxygen documentation
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sphinx
     DESTINATION ${FG_INSTALL_DOC_DIR}
-    COMPONENT documentation
+    COMPONENT forge_dev
     PATTERN "*"
     PATTERN ".git" EXCLUDE
     PATTERN "CMakeFiles" EXCLUDE
