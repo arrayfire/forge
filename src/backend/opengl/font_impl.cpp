@@ -53,16 +53,18 @@ const float MAX_FONT_SIZE = 24.0f;
 #ifdef NDEBUG
 /* Relase Mode */
 #define FT_THROW_ERROR(msg, error) FG_ERROR(msg, error)
-
 #else
 /* Debug Mode */
+#if FREETYPE_MAJOR >= 2 && FREETYPE_MINOR > 8
 #define FT_THROW_ERROR(msg, err)                        \
     do {                                                \
         std::ostringstream ss;                          \
         ss << msg << FT_Error_String(err) << std::endl; \
         FG_ERROR(ss.str().c_str(), err);                \
     } while (0)
-
+#else
+#define FT_THROW_ERROR(msg, error) FG_ERROR(msg, error)
+#endif
 #endif
 
 void font_impl::loadAtlasWithGlyphs(const size_t pFontSize) {
