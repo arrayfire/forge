@@ -28,7 +28,7 @@ ContextHandle getCurrentContextHandle() {
 #elif defined(OS_LNX)
     const auto context = glXGetCurrentContext();
 #else
-    const auto context          = CGLGetCurrentContext();
+    const auto context = CGLGetCurrentContext();
 #endif
     id = reinterpret_cast<ContextHandle>(context);
 

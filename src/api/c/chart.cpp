@@ -7,6 +7,13 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <common/chart.hpp>
+#include <common/chart_renderables.hpp>
+#include <common/err_handling.hpp>
+#include <common/font.hpp>
+#include <common/handle.hpp>
+#include <common/image.hpp>
+#include <common/window.hpp>
 #include <fg/chart.h>
 #include <fg/exception.h>
 #include <fg/font.h>
@@ -15,13 +22,6 @@
 #include <fg/plot.h>
 #include <fg/surface.h>
 #include <fg/window.h>
-#include <common/chart.hpp>
-#include <common/chart_renderables.hpp>
-#include <common/err_handling.hpp>
-#include <common/font.hpp>
-#include <common/handle.hpp>
-#include <common/image.hpp>
-#include <common/window.hpp>
 
 using namespace forge;
 using namespace forge::common;

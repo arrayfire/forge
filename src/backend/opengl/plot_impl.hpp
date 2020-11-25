@@ -81,8 +81,8 @@ class plot_impl : public AbstractRenderable {
     size_t markersSizes() const;
 
     virtual void render(const int pWindowId, const int pX, const int pY,
-                        const int pVPW, const int pVPH, const glm::mat4 &pView,
-                        const glm::mat4 &pOrient);
+                        const int pVPW, const int pVPH, const glm::mat4& pView,
+                        const glm::mat4& pOrient);
 };
 
 class plot2d_impl : public plot_impl {
