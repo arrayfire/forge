@@ -69,7 +69,9 @@ void julia(global unsigned char* out, const unsigned w, const unsigned h) {
 )EOK";
 // clang-format on
 
-inline int divup(int a, int b) { return (a + b - 1) / b; }
+inline int divup(int a, int b) {
+    return (a + b - 1) / b;
+}
 
 void kernel(cl::Buffer& devOut, cl::CommandQueue& queue) {
     static std::once_flag compileFlag;

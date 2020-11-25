@@ -7,6 +7,7 @@
  * http://arrayfire.com/licenses/BSD-3-Clause
  ********************************************************/
 
+#include <error.hpp>
 #include <fg/chart.h>
 #include <fg/font.h>
 #include <fg/histogram.h>
@@ -14,7 +15,6 @@
 #include <fg/plot.h>
 #include <fg/surface.h>
 #include <fg/window.h>
-#include <error.hpp>
 
 #include <utility>
 

@@ -94,5 +94,5 @@ void kernel(float t, float dx, float* dev_out) {
     static const dim3 threads(1024);
     dim3 blocks(divup(ZSIZE, 1024));
 
-    generateCurve<<<blocks, threads>>>(t, dx, dev_out, ZMIN, ZSIZE);
+    generateCurve<<<blocks, threads> > >(t, dx, dev_out, ZMIN, ZSIZE);
 }

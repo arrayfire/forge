@@ -88,5 +88,5 @@ void kernel(float dx, float* dev_out) {
     static const dim3 threads(8, 8);
     dim3 blocks(divup(XSIZE, threads.x), divup(YSIZE, threads.y));
 
-    sincos_surf<<<blocks, threads>>>(dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
+    sincos_surf<<<blocks, threads> > >(dx, dev_out, XMIN, YMIN, XSIZE, YSIZE);
 }

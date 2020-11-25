@@ -99,5 +99,5 @@ void kernel(unsigned char* dev_out) {
     static const dim3 threads(8, 8);
     dim3 blocks(divup(DIMX, threads.x), divup(DIMY, threads.y));
 
-    julia<<<blocks, threads>>>(dev_out);
+    julia<<<blocks, threads> > >(dev_out);
 }

@@ -51,7 +51,9 @@ void generateCurve(global float* out, const float t,
 )EOK";
 // clang-format on
 
-inline int divup(int a, int b) { return (a + b - 1) / b; }
+inline int divup(int a, int b) {
+    return (a + b - 1) / b;
+}
 
 void kernel(cl::Buffer& devOut, cl::CommandQueue& queue, float t) {
     static std::once_flag compileFlag;
