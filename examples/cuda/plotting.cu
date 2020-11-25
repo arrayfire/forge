@@ -144,6 +144,6 @@ void kernel(float* dev_out, int functionCode) {
     static const dim3 threads(1024);
     dim3 blocks(divup(DATA_SIZE, 1024));
 
-    simple_sinf<<<blocks, threads>>>(dev_out, DATA_SIZE, functionCode, dx,
-                                     FRANGE_START);
+    simple_sinf<<<blocks, threads> > >(dev_out, DATA_SIZE, functionCode, dx,
+                                       FRANGE_START);
 }
