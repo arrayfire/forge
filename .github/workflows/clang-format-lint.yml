@@ -17,15 +17,15 @@ jobs:
             uses: actions/checkout@master
 
           - name: Check Sources
-            uses: DoozyX/clang-format-lint-action@v0.5
+            uses: DoozyX/clang-format-lint-action@v0.11
             with:
               source: './src'
               extensions: 'h,cpp,hpp'
-              clangFormatVersion: 9
+              clangFormatVersion: 11
 
           - name: Check Examples
-            uses: DoozyX/clang-format-lint-action@v0.5
+            uses: DoozyX/clang-format-lint-action@v0.11
             with:
               source: './examples'
               extensions: 'h,cpp,hpp'
-              clangFormatVersion: 9
+              clangFormatVersion: 11
