@@ -114,6 +114,8 @@ void generatePoints(float* points, float* dirs) {
     dim3 blocks(divup((int)(NELEMS), threads.x),
                 divup((int)(NELEMS), threads.y));
 
-    pointGenKernel<<<blocks, threads> > >(points, dirs, (int)(NELEMS), MINIMUM,
-                                          STEP);
+    // clang-format off
+    pointGenKernel<<<blocks, threads>>>(points, dirs, (int)(NELEMS), MINIMUM,
+                                        STEP);
+    // clang-format on
 }
