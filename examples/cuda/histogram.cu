@@ -59,7 +59,9 @@ int main(void) {
     Bitmap bmp = createBitmap(IMGW, IMGH);
 
     FORGE_CUDA_CHECK(cudaMalloc((void**)&state, NBINS * sizeof(curandState_t)));
-    setupRandomKernel<<<1, NBINS> > >(state, 314567);
+    // clang-format off
+    setupRandomKernel<<<1, NBINS>>>(state, 314567);
+    // clang-format on
 
     /*
      * First Forge call should be a window creation call
@@ -227,18 +229,24 @@ void PerlinNoise::generateNoise() {
     float amp         = 1.0f;
     float tamp        = 0.0f;
 
-    perlinInitKernel<<<blocks, threads> > >(base, perlin, state);
+    // clang-format off
+    perlinInitKernel<<<blocks, threads>>>(base, perlin, state);
+    // clang-format on
 
     for (int octave = 6; octave >= 0; --octave) {
         int period = 1 << octave;
 
-        perlinComputeKernel<<<blocks, threads> > >(perlin, base, amp, period);
+        // clang-format off
+        perlinComputeKernel<<<blocks, threads>>>(perlin, base, amp, period);
+        // clang-format on
 
         tamp += amp;
         amp *= persistence;
     }
 
-    perlinNormalize<<<blocks, threads> > >(perlin, tamp);
+    // clang-format off
+    perlinNormalize<<<blocks, threads>>>(perlin, tamp);
+    // clang-format on
 }
 
 __global__ void fillImageKernel(unsigned char* ptr, unsigned width,
@@ -268,8 +276,10 @@ void kernel(Bitmap& bmp, PerlinNoise& pn) {
 
     dim3 blocks(divup(bmp.width, threads.x), divup(bmp.height, threads.y));
 
-    fillImageKernel<<<blocks, threads> > >(bmp.ptr, bmp.width, bmp.height,
-                                           pn.perlin);
+    // clang-format off
+    fillImageKernel<<<blocks, threads>>>(bmp.ptr, bmp.width, bmp.height,
+                                         pn.perlin);
+    // clang-format on
 }
 
 __global__ void histogramKernel(const unsigned char* perlinNoise, int* histOut,
@@ -300,7 +310,9 @@ void populateBins(Bitmap& bmp, int* histOut, const unsigned nbins,
 
     cudaMemset(histOut, 0, nbins * sizeof(int));
 
-    histogramKernel<<<blocks, threads> > >(bmp.ptr, histOut, nbins);
+    // clang-format off
+    histogramKernel<<<blocks, threads>>>(bmp.ptr, histOut, nbins);
 
-    histColorsKernel<<<1, nbins> > >(histColors, state);
+    histColorsKernel<<<1, nbins>>>(histColors, state);
+    // clang-format on
 }
