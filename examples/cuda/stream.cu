@@ -103,7 +103,9 @@ void generateColors(float* colors) {
     static const dim3 threads(512);
     dim3 blocks(divup(numElems, threads.x));
 
-    genColorsKernel<<<blocks, threads> > >(colors, numElems);
+    // clang-format off
+    genColorsKernel<<<blocks, threads>>>(colors, numElems);
+    // clang-format on
 }
 
 __global__ void pointGenKernel(float* points, float* dirs, int nBBS0,
@@ -137,6 +139,8 @@ void generatePoints(float* points, float* dirs) {
 
     dim3 blocks(blk_x * NELEMS, blk_y);
 
-    pointGenKernel<<<blocks, threads> > >(points, dirs, blk_x, NELEMS, MINIMUM,
-                                          STEP);
+    // clang-format off
+    pointGenKernel<<<blocks, threads>>>(points, dirs, blk_x, NELEMS, MINIMUM,
+                                        STEP);
+    // clang-format on
 }

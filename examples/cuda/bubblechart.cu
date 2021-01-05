@@ -40,7 +40,9 @@ __global__ void setupRandomKernel(curandState* states,
 int main(void) {
     FORGE_CUDA_CHECK(
         cudaMalloc((void**)&state, DATA_SIZE * sizeof(curandState_t)));
-    setupRandomKernel<<<divup(DATA_SIZE, 32), 32> > >(state, 314567);
+    // clang-format off
+    setupRandomKernel<<<divup(DATA_SIZE, 32), 32>>>(state, 314567);
+    // clang-format on
 
     float* cos_out;
     float* tan_out;
@@ -173,11 +175,13 @@ void kernel(float* dev_out, int functionCode, float* colors, float* alphas,
     static const dim3 threads(32);
     dim3 blocks(divup(DATA_SIZE, 32));
 
-    mapKernel<<<blocks, threads> > >(dev_out, functionCode, FRANGE_START, DX);
+    // clang-format off
+    mapKernel<<<blocks, threads>>>(dev_out, functionCode, FRANGE_START, DX);
 
-    if (colors) colorsKernel<<<blocks, threads> > >(colors, state);
+    if (colors) colorsKernel<<<blocks, threads>>>(colors, state);
 
-    if (alphas) randKernel<<<blocks, threads> > >(alphas, state, 0, 1);
+    if (alphas) randKernel<<<blocks, threads>>>(alphas, state, 0, 1);
 
-    if (radii) randKernel<<<blocks, threads> > >(radii, state, 20, 60);
+    if (radii) randKernel<<<blocks, threads>>>(radii, state, 20, 60);
+    // clang-format on
 }
