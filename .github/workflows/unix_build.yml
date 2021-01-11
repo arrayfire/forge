@@ -1,0 +1,84 @@
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+name: ci
+
+jobs:
+    build_opengl_backend:
+        name: OpenGL
+        runs-on: ${{ matrix.os }}
+        env:
+          CMAKE_VER: 3.5.1
+        strategy:
+            fail-fast: false
+            matrix:
+                window_toolkit: [glfw3, sdl2]
+                os: [ubuntu-18.04, macos-latest]
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@master
+
+            - name: Download CMake 3.5.1 for Linux
+              if: matrix.os != 'macos-latest'
+              env:
+                  OS_NAME: ${{ matrix.os }}
+              run: |
+                  cmake_suffix=$(if [ $OS_NAME == 'macos-latest' ]; then echo "Darwin-x86_64"; else echo "Linux-x86_64"; fi)
+                  cmake_url=$(echo "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VER}/cmake-${CMAKE_VER}-${cmake_suffix}.tar.gz")
+                  wget --quiet "${cmake_url}"
+                  tar -xf ./cmake-${CMAKE_VER}-${cmake_suffix}.tar.gz
+                  cmake_install_dir=$(echo "cmake-${CMAKE_VER}-x86_64")
+                  mv cmake-${CMAKE_VER}-${cmake_suffix} ${cmake_install_dir}
+                  cmake_lnx_dir=$(echo "${cmake_install_dir}/bin")
+                  cmake_osx_dir=$(echo "${cmake_install_dir}/CMake.app/Contents/bin")
+                  cmake_dir=$(if [ $OS_NAME == 'macos-latest' ]; then echo "${cmake_osx_dir}"; else echo "${cmake_lnx_dir}"; fi)
+                  echo "CMAKE_PROGRAM=$(pwd)/${cmake_dir}/cmake" >> $GITHUB_ENV
+
+            - name: Install Dependencies for Macos
+              if: matrix.os == 'macos-latest'
+              run: |
+                  brew install boost fontconfig freeimage
+                  brew cask install xquartz
+                  echo "CMAKE_PROGRAM=cmake" >> $GITHUB_ENV
+
+            - name: Install Common Dependencies for Ubuntu
+              if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-18.04'
+              run: |
+                  sudo apt-get -qq update
+                  sudo apt-get install -y libfreeimage-dev libfontconfig1-dev
+
+            - name: Install Macos Window Toolkit
+              if: matrix.os == 'macos-latest'
+              env:
+                  FG_TOOLKIT: ${{ matrix.window_toolkit }}
+              run: |
+                  pkg=$(if [ $FG_TOOLKIT == 'glfw3' ]; then echo "glfw"; else echo "sdl2"; fi)
+                  brew install $pkg
+
+            - name: Install Linux Window Toolkit
+              if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-18.04'
+              env:
+                  FG_TOOLKIT: ${{ matrix.window_toolkit }}
+              run: |
+                  sudo apt-get -qq update
+                  sudo apt-get install -y lib${FG_TOOLKIT}-dev
+
+            - name: CMake Configure
+              env:
+                  FG_TOOLKIT: ${{ matrix.window_toolkit }}
+              run: |
+                  mkdir build && cd build
+                  ${CMAKE_PROGRAM} \
+                      -DBOOST_ROOT:PATH=${BOOST_ROOT_1_72_0} \
+                      -DFG_USE_WINDOW_TOOLKIT:STRING=${FG_TOOLKIT} ..
+
+            - name: Build
+              run: |
+                  cd ${GITHUB_WORKSPACE}/build
+                  make -j2
