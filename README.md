@@ -3,7 +3,7 @@
 ## Forge - High Performance Visualizations
 | Platform | Linux x86 | Linux aarch64 | Windows | OSX |
 |:--------:|:---------:|:-------------:|:-------:|:---:|
-| Status   | [![Build Status][1]][2] | `Unknown` | [![Build Status][3]][4] | [![Build Status][13]][12] |
+| Status   | [![Build Status][1]][2] | `Unknown` | [![Build Status][3]][4] | [![Build Status][12]][13] |
 
 An OpenGL interop library that can be used with ArrayFire or any other application using CUDA or OpenCL compute backend. The goal of **Forge** is to provide high performance OpenGL visualizations for C/C++ applications that use CUDA/OpenCL. Forge uses OpenGL >=3.3 forward compatible contexts, so please make sure you have capable hardware before trying it out.
 
