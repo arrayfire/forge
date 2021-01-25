@@ -12,6 +12,7 @@ include(ForgeInstallDirs)
 include(ForgeInternalUtils)
 include(ForgePlatformSetup)
 include(ForgeVersion)
+include(ForgeConfigureDepsVars)
 
 set_policies(TYPE NEW POLICIES CMP0072 CMP0077)
 
@@ -65,7 +66,20 @@ if(Boost_FOUND AND NOT TARGET Boost::boost)
         PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif(Boost_FOUND AND NOT TARGET Boost::boost)
 
-add_subdirectory(extern/glad)
+FetchContent_Declare(
+    ${glad_prefix}
+    GIT_REPOSITORY https://github.com/arrayfire/glad.git
+    GIT_TAG master
+)
+FetchContent_Populate(${glad_prefix})
+FetchContent_Declare(
+    ${glm_prefix}
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG 0.9.9.8
+)
+FetchContent_Populate(${glm_prefix})
+
+add_subdirectory(${${glad_prefix}_SOURCE_DIR} ${${glad_prefix}_BINARY_DIR})
 add_subdirectory(src/backend/common)
 add_subdirectory(src/backend/glsl_shaders)
 add_subdirectory(src/api/c)
