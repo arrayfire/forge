@@ -51,7 +51,7 @@ jobs:
               if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-18.04'
               run: |
                   sudo apt-get -qq update
-                  sudo apt-get install -y libfreeimage-dev libfontconfig1-dev
+                  sudo apt-get install -y libfreeimage-dev libfontconfig1-dev nvidia-cuda-toolkit
 
             - name: Install Macos Window Toolkit
               if: matrix.os == 'macos-latest'
@@ -69,7 +69,19 @@ jobs:
                   sudo apt-get -qq update
                   sudo apt-get install -y lib${FG_TOOLKIT}-dev
 
-            - name: CMake Configure
+            - name: CMake Configure on Linux
+              if: matrix.os != 'macos-latest'
+              env:
+                  FG_TOOLKIT: ${{ matrix.window_toolkit }}
+              run: |
+                  mkdir build && cd build
+                  ${CMAKE_PROGRAM} -DCMAKE_C_COMPILER=gcc-6 \
+                      -DCMAKE_CXX_COMPILER=g++-6 \
+                      -DBOOST_ROOT:PATH=${BOOST_ROOT_1_72_0} \
+                      -DFG_USE_WINDOW_TOOLKIT:STRING=${FG_TOOLKIT} ..
+
+            - name: CMake Configure on OSX
+              if: matrix.os == 'macos-latest'
               env:
                   FG_TOOLKIT: ${{ matrix.window_toolkit }}
               run: |
