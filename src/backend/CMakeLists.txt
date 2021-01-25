@@ -52,11 +52,15 @@ target_include_directories(${BkndTargetName}
     $<BUILD_INTERFACE:${Forge_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${Forge_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:${FG_INSTALL_INC_DIR}>
+    )
+target_include_directories(${BkndTargetName}
     PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+    )
+target_include_directories(${BkndTargetName}
     SYSTEM PRIVATE
     ${FREETYPE_INCLUDE_DIRS}
-    ${Forge_SOURCE_DIR}/extern
+    ${${glm_prefix}_SOURCE_DIR}
     )
 
 if(FG_WITH_FREEIMAGE)
