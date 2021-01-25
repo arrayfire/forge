@@ -16,7 +16,4 @@ You can also link to an open issue here
 - [ ] Relevant Examples are added/modified
 - [ ] Relevant Documentation has been added/updated
 
-**Conditional Checks**
-- [ ] Please make sure SDL toolkit changes are tested as CI right now uses GLFW only.
-
 **Other Information**
