@@ -23,7 +23,6 @@ find_package(Doxygen    QUIET)
 find_package(FontConfig QUIET)
 find_package(FreeImage  QUIET)
 find_package(Freetype   REQUIRED)
-find_package(OpenGL     QUIET)
 find_package(Sphinx     QUIET)
 
 if(UNIX)

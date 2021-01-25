@@ -11,12 +11,10 @@ add_library(${BkndTargetName} "")
 add_dependencies(${BkndTargetName} ${glsl_shader_targets})
 
 if(${FG_RENDERING_BACKEND} STREQUAL "OpenGL")
-    dependency_check(OPENGL_FOUND
-        "OpenGL rendering backend requires platform specific opengl library")
+    find_package(OpenGL REQUIRED)
     add_subdirectory(opengl)
-    target_include_directories(${BkndTargetName} PUBLIC ${OPENGL_INCLUDE_DIR})
-    target_link_libraries(${BkndTargetName} PUBLIC ${OPENGL_gl_LIBRARY})
-elseif(${FG_RENDERING_BACKEND} STREQUAL "Vulkan") # arm is not possible now
+    target_link_libraries(${BkndTargetName} PUBLIC OpenGL::GL)
+elseif(${FG_RENDERING_BACKEND} STREQUAL "Vulkan") # vulkan arm is not possible now
     message(FATAL_ERROR "Vulkan rendering support not added yet")
 endif()
 
