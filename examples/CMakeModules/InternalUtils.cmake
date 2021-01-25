@@ -1,4 +1,4 @@
-# Copyright (c) 2018, ArrayFire
+# Copyright (c) 2021, ArrayFire
 # All rights reserved.
 #
 # This file is distributed under 3-clause BSD license.
@@ -26,13 +26,6 @@ function(conditional_directory variable directory)
         add_subdirectory(${directory})
     endif()
 endfunction()
-
-# Includes the cmake script if the variable is NOT true
-macro(include_if_not variable cmake_script)
-    if(NOT ${variable})
-        include(${cmake_script})
-    endif()
-endmacro()
 
 add_library(OSCompileFlags INTERFACE)
 

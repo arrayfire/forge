@@ -14,8 +14,6 @@ endif()
 
 find_package(OpenCL 1.2 QUIET)
 find_package(CUDA   QUIET)
-#FindOpenGL shipped with examples will be picked
-find_package(OpenGL REQUIRED)
 find_package(Forge  REQUIRED)
 
 mark_as_advanced(
@@ -101,7 +99,6 @@ function(add_example target_name source backend)
 
     target_link_libraries(${target}
             OSCompileFlags
-            OpenGL::GL
             Forge::forge
             ${arg_LIBRARIES}
             $<$<PLATFORM_ID:Darwin>:X11::x11>)
