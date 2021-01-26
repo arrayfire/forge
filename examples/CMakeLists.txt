@@ -22,17 +22,6 @@ mark_as_advanced(
     CUDA_rt_LIBRARY
     CMAKE_CUDA_HOST_COMPILER)
 
-if(APPLE)
-    find_package(X11 REQUIRED)
-    if(X11_FOUND AND NOT TARGET X11::x11)
-        add_library(X11::x11 UNKNOWN IMPORTED)
-        set_target_properties(X11::x11 PROPERTIES
-            IMPORTED_LINK_INTERFACE_LANGUAGE "C"
-            IMPORTED_LOCATION "${X11_X11_LIB}"
-            INTEFACE_INCLUDE_DIRECTORIES "${X11_INCLUDE_DIR}")
-    endif()
-endif()
-
 include(CMakeParseArguments)
 include(CMakeDependentOption)
 include(InternalUtils)
@@ -100,8 +89,7 @@ function(add_example target_name source backend)
     target_link_libraries(${target}
             OSCompileFlags
             Forge::forge
-            ${arg_LIBRARIES}
-            $<$<PLATFORM_ID:Darwin>:X11::x11>)
+            ${arg_LIBRARIES})
 endfunction()
 
 add_subdirectory(cpu)
