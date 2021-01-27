@@ -17,12 +17,12 @@
 
 using namespace std;
 
-static const float XMIN = -32.0f;
-static const float XMAX = 32.0f;
-static const float YMIN = -32.0f;
-static const float YMAX = 32.0f;
+static const float XMIN = -8.0f;
+static const float XMAX = 8.0f;
+static const float YMIN = -8.0f;
+static const float YMAX = 8.0f;
 
-const float DX     = 0.25;
+const float DX     = 0.5;
 const size_t XSIZE = (size_t)((XMAX - XMIN) / DX);
 const size_t YSIZE = (size_t)((YMAX - YMIN) / DX);
 
