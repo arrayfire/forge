@@ -60,7 +60,8 @@ int main(void) {
     std::vector<float> radii(tanData.size());
 
     std::generate(colors.begin(), colors.end(), clr);
-    std::generate(radii.begin(), radii.end(), rnd);
+    std::generate(radii.begin(), radii.end(),
+                  [&] { return 20.0f + 60.0f * rnd(); });
     std::generate(alphas.begin(), alphas.end(), alp);
 
     /*
