@@ -12,14 +12,21 @@
 #include <gl_native_handles.hpp>
 #include <glfw/window.hpp>
 
+#include <glm/gtc/epsilon.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-#include <algorithm>
 #include <cmath>
 
+using glm::epsilonNotEqual;
+using glm::make_vec4;
+using glm::mat4;
 using glm::rotate;
 using glm::scale;
 using glm::translate;
+using glm::vec2;
+using glm::vec3;
+
 using namespace forge::common;
 
 #define GLFW_THROW_ERROR(msg, err) FG_ERROR("Windows Constructor: " #msg, err)
@@ -36,11 +43,11 @@ void initWindowToolkit() {
 
 void destroyWindowToolkit() { glfwTerminate(); }
 
-const glm::mat4 Widget::findTransform(const MatrixHashMap& pMap, const float pX,
-                                      const float pY) {
+const mat4 Widget::findTransform(const MatrixHashMap& pMap, const float pX,
+                                 const float pY) {
     for (auto it : pMap) {
         const CellIndex& idx = it.first;
-        const glm::mat4& mat = it.second;
+        const mat4& mat      = it.second;
 
         const int rows = std::get<0>(idx);
         const int cols = std::get<1>(idx);
@@ -57,18 +64,17 @@ const glm::mat4 Widget::findTransform(const MatrixHashMap& pMap, const float pX,
     return IDENTITY;
 }
 
-const glm::mat4 Widget::getCellViewMatrix(const float pXPos,
-                                          const float pYPos) {
+const mat4 Widget::getCellViewMatrix(const float pXPos, const float pYPos) {
     return findTransform(mViewMatrices, pXPos, pYPos);
 }
 
-const glm::mat4 Widget::getCellOrientationMatrix(const float pXPos,
-                                                 const float pYPos) {
+const mat4 Widget::getCellOrientationMatrix(const float pXPos,
+                                            const float pYPos) {
     return findTransform(mOrientMatrices, pXPos, pYPos);
 }
 
 void Widget::setTransform(MatrixHashMap& pMap, const float pX, const float pY,
-                          const glm::mat4& pMat) {
+                          const mat4& pMat) {
     for (auto it : pMap) {
         const CellIndex& idx = it.first;
 
@@ -86,12 +92,12 @@ void Widget::setTransform(MatrixHashMap& pMap, const float pX, const float pY,
 }
 
 void Widget::setCellViewMatrix(const float pXPos, const float pYPos,
-                               const glm::mat4& pMatrix) {
+                               const mat4& pMatrix) {
     return setTransform(mViewMatrices, pXPos, pYPos, pMatrix);
 }
 
 void Widget::setCellOrientationMatrix(const float pXPos, const float pYPos,
-                                      const glm::mat4& pMatrix) {
+                                      const mat4& pMatrix) {
     return setTransform(mOrientMatrices, pXPos, pYPos, pMatrix);
 }
 
@@ -106,15 +112,19 @@ void Widget::resetOrientationMatrices() {
 Widget::Widget()
     : mWindow(NULL)
     , mClose(false)
-    , mLastXPos(0)
-    , mLastYPos(0)
+    , mLastPos(0, 0)
     , mButton(-1)
+    , mRotationFlag(false)
     , mWidth(512)
     , mHeight(512) {}
 
 Widget::Widget(int pWidth, int pHeight, const char* pTitle,
                const std::unique_ptr<Widget>& pWidget, const bool invisible)
-    : mWindow(NULL), mClose(false), mLastXPos(0), mLastYPos(0), mButton(-1) {
+    : mWindow(NULL)
+    , mClose(false)
+    , mLastPos(0, 0)
+    , mButton(-1)
+    , mRotationFlag(false) {
     auto wndErrCallback = [](int errCode, const char* pDescription) {
         fputs(pDescription, stderr);
     };
@@ -175,10 +185,16 @@ Widget::Widget(int pWidth, int pHeight, const char* pTitle,
     glfwSetMouseButtonCallback(mWindow, mouseButtonCallback);
 
     glfwGetFramebufferSize(mWindow, &mWidth, &mHeight);
+
+    // Set Hand cursor for Rotation and Zoom Modes
+    mRotationCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+    mZoomCursor     = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR);
 }
 
 Widget::~Widget() {
     if (mWindow) glfwDestroyWindow(mWindow);
+    if (mRotationCursor) glfwDestroyCursor(mRotationCursor);
+    if (mZoomCursor) glfwDestroyCursor(mZoomCursor);
 }
 
 GLFWwindow* Widget::getNativeHandle() const { return mWindow; }
@@ -235,101 +251,94 @@ void Widget::keyboardHandler(int pKey, int pScancode, int pAction, int pMods) {
 }
 
 void Widget::cursorHandler(const float pXPos, const float pYPos) {
-    static const float SPEED = 0.005f;
+    constexpr auto ZOOM_ENABLER =
+        GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_CONTROL;
 
-    float deltaX = mLastXPos - pXPos;
-    float deltaY = mLastYPos - pYPos;
+    const vec2 currPos(pXPos, pYPos);
 
-    const glm::mat4 viewMat = getCellViewMatrix(pXPos, pYPos);
+    if (mButtonAction == GLFW_PRESS) {
+        auto delta   = mLastPos - currPos;
+        auto viewMat = getCellViewMatrix(pXPos, pYPos);
 
-    if (mButton == GLFW_MOUSE_BUTTON_LEFT) {
-        // Translate
-        glm::mat4 vMat =
-            translate(viewMat, glm::vec3(-deltaX, deltaY, 0.0f) * SPEED);
-
-        setCellViewMatrix(pXPos, pYPos, vMat);
-
-    } else if (mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_ALT ||
-               mButton == GLFW_MOUSE_BUTTON_LEFT + 10 * GLFW_MOD_CONTROL) {
-        // Zoom
-        if (deltaY != 0.0f) {
-            if (deltaY < 0.0f) { deltaY = 1.0f / (-deltaY); }
-            glm::mat4 vMat = scale(viewMat, glm::vec3(pow(deltaY, SPEED)));
+        if (mButton == GLFW_MOUSE_BUTTON_LEFT) {
+            // Translate
+            mat4 vMat = translate(viewMat,
+                                  vec3(-delta[0], delta[1], 0.0f) * MOVE_SPEED);
 
             setCellViewMatrix(pXPos, pYPos, vMat);
-        }
-    } else if (mButton == GLFW_MOUSE_BUTTON_RIGHT) {
-        const glm::mat4 orientationMat = getCellOrientationMatrix(pXPos, pYPos);
+        } else if (mButton == ZOOM_ENABLER) {
+            // Zoom
+            float dy = delta[1];
+            if (!(std::abs(dy) < EPSILON)) {
+                if (dy < 0.0f) { dy = -1.0f / dy; }
+                mat4 vMat = scale(viewMat, vec3(pow(dy, ZOOM_SPEED)));
+                setCellViewMatrix(pXPos, pYPos, vMat);
+            }
+        } else if (mButton == GLFW_MOUSE_BUTTON_RIGHT) {
+            // Rotation
+            auto compCmp = epsilonNotEqual(mLastPos, currPos, vec2(EPSILON));
+            if (compCmp[0] || compCmp[1]) {
+                const mat4 oMat = getCellOrientationMatrix(pXPos, pYPos);
 
-        // Rotation
-        int width, height;
-        glfwGetWindowSize(mWindow, &width, &height);
+                int view[4];
+                glGetIntegerv(GL_VIEWPORT, view);
 
-        if (mLastXPos != pXPos || mLastYPos != pYPos) {
-            glm::vec3 op1 = trackballPoint(mLastXPos, mLastYPos, float(width),
-                                           float(height));
-            glm::vec3 op2 =
-                trackballPoint(pXPos, pYPos, float(width), float(height));
+                auto rotParams =
+                    calcRotationFromArcBall(mLastPos, currPos, make_vec4(view));
 
-            float angle = std::acos(std::min(1.0f, glm::dot(op1, op2)));
-
-            glm::vec3 axisInCamCoord = glm::cross(op1, op2);
-
-            glm::mat3 camera2object  = glm::inverse(glm::mat3(viewMat));
-            glm::vec3 axisInObjCoord = camera2object * axisInCamCoord;
-
-            glm::mat4 oMat = glm::rotate(orientationMat, glm::degrees(angle),
-                                         axisInObjCoord);
-
-            setCellOrientationMatrix(pXPos, pYPos, oMat);
+                setCellOrientationMatrix(
+                    pXPos, pYPos,
+                    rotate(oMat, rotParams.second, rotParams.first));
+            }
         }
     }
-
-    mLastXPos = pXPos;
-    mLastYPos = pYPos;
+    mLastPos = currPos;
 }
 
 void Widget::mouseButtonHandler(int pButton, int pAction, int pMods) {
+    mButton       = pButton;
+    mButtonAction = pAction;
+
+    const bool isZoomModifierOn = pMods == GLFW_MOD_CONTROL;
+
     double x, y;
     glfwGetCursorPos(mWindow, &x, &y);
-    mLastXPos = float(x);
-    mLastYPos = float(y);
+    auto pos = vec2(float(x), float(y));
 
-    mButton = -1;
-    if (pAction == GLFW_PRESS) {
-        switch (pButton) {
-            case GLFW_MOUSE_BUTTON_LEFT:
-                mButton = GLFW_MOUSE_BUTTON_LEFT;
-                break;
-            case GLFW_MOUSE_BUTTON_RIGHT:
-                mButton = GLFW_MOUSE_BUTTON_RIGHT;
-                break;
-            case GLFW_MOUSE_BUTTON_MIDDLE:
-                mButton = GLFW_MOUSE_BUTTON_MIDDLE;
-                break;
+    if (mButtonAction == GLFW_PRESS) {
+        if (mButton == GLFW_MOUSE_BUTTON_RIGHT) {
+            glfwSetCursor(mWindow, mRotationCursor);
+            mRotationFlag = true;
+        } else if (mButton == GLFW_MOUSE_BUTTON_LEFT && isZoomModifierOn) {
+            glfwSetCursor(mWindow, mZoomCursor);
         }
+        mLastPos = pos;
+    } else if (mButtonAction == GLFW_RELEASE) {
+        mRotationFlag = false;
+        glfwSetCursor(mWindow, NULL);
     }
-    if (pMods == GLFW_MOD_ALT || pMods == GLFW_MOD_CONTROL) {
-        mButton += 10 * pMods;
-    }
+    mButton += (10 * pMods * isZoomModifierOn);
+
     // reset UI transforms upon mouse middle click
-    if (pButton == GLFW_MOUSE_BUTTON_MIDDLE && pMods == GLFW_MOD_CONTROL &&
+    if (pMods == GLFW_MOD_CONTROL && pButton == GLFW_MOUSE_BUTTON_MIDDLE &&
         pAction == GLFW_PRESS) {
-        setCellViewMatrix(float(x), float(y), IDENTITY);
-        setCellOrientationMatrix(float(x), float(y), IDENTITY);
+        setCellViewMatrix(pos[0], pos[1], IDENTITY);
+        setCellOrientationMatrix(pos[0], pos[1], IDENTITY);
+        mButton       = -1;
+        mButtonAction = -1;
     }
 }
 
 void Widget::pollEvents() { glfwPollEvents(); }
 
-const glm::mat4 Widget::getViewMatrix(const CellIndex& pIndex) {
+const mat4 Widget::getViewMatrix(const CellIndex& pIndex) {
     if (mViewMatrices.find(pIndex) == mViewMatrices.end()) {
         mViewMatrices.emplace(pIndex, IDENTITY);
     }
     return mViewMatrices[pIndex];
 }
 
-const glm::mat4 Widget::getOrientationMatrix(const CellIndex& pIndex) {
+const mat4 Widget::getOrientationMatrix(const CellIndex& pIndex) {
     if (mOrientMatrices.find(pIndex) == mOrientMatrices.end()) {
         mOrientMatrices.emplace(pIndex, IDENTITY);
     }

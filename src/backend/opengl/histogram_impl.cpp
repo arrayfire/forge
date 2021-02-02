@@ -160,5 +160,7 @@ void histogram_impl::render(const int pWindowId, const int pX, const int pY,
     CheckGL("End histogram_impl::render");
 }
 
+bool histogram_impl::isRotatable() const { return false; }
+
 }  // namespace opengl
 }  // namespace forge

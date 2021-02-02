@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace forge {
@@ -54,9 +55,19 @@ std::string toString(const float pVal, const std::string pFormat);
 /* Print glm::mat4 to std::cout stream */
 std::ostream& operator<<(std::ostream&, const glm::mat4&);
 
-/* get the point of the surface of track ball */
-glm::vec3 trackballPoint(const float pX, const float pY, const float pWidth,
-                         const float pHeight);
+/* Calculate rotation axis and amount of rotation of Arc Ball
+ *
+ * This computation requires previous and current mouse cursor positions
+ * which are the input parameters to this function call
+ *
+ * @lastPos previous mouse position
+ * @currPos current mouse position
+ *
+ * @return Rotation axis vector and the angle of rotation
+ * */
+std::pair<glm::vec3, float> calcRotationFromArcBall(const glm::vec2& lastPos,
+                                                    const glm::vec2& currPos,
+                                                    const glm::vec4& viewport);
 
 }  // namespace common
 }  // namespace forge

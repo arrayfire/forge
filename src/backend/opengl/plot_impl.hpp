@@ -43,6 +43,8 @@ class plot_impl : public AbstractRenderable {
     uint32_t mPlotPointIndex;
     uint32_t mPlotColorIndex;
     uint32_t mPlotAlphaIndex;
+    uint32_t mPlotAssistDrawFlagIndex;
+    uint32_t mPlotLineColorIndex;
 
     uint32_t mMarkerPVCOnIndex;
     uint32_t mMarkerPVAOnIndex;
@@ -72,7 +74,8 @@ class plot_impl : public AbstractRenderable {
    public:
     plot_impl(const uint32_t pNumPoints, const forge::dtype pDataType,
               const forge::PlotType pPlotType,
-              const forge::MarkerType pMarkerType, const int pDimension = 3);
+              const forge::MarkerType pMarkerType, const int pDimension = 3,
+              const bool pIsInternalObject = false);
     ~plot_impl();
 
     void setMarkerSize(const float pMarkerSize);
@@ -83,6 +86,8 @@ class plot_impl : public AbstractRenderable {
     virtual void render(const int pWindowId, const int pX, const int pY,
                         const int pVPW, const int pVPH, const glm::mat4& pView,
                         const glm::mat4& pOrient);
+
+    virtual bool isRotatable() const;
 };
 
 class plot2d_impl : public plot_impl {
@@ -98,6 +103,8 @@ class plot2d_impl : public plot_impl {
                 const forge::PlotType pPlotType,
                 const forge::MarkerType pMarkerType)
         : plot_impl(pNumPoints, pDataType, pPlotType, pMarkerType, 2) {}
+
+    bool isRotatable() const;
 };
 
 }  // namespace opengl
