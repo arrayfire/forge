@@ -29,13 +29,14 @@ class Widget {
    private:
     SDL_Window* mWindow;
     SDL_GLContext mContext;
+    SDL_Cursor* mDefaultCursor;
+    SDL_Cursor* mRotationCursor;
+    SDL_Cursor* mZoomCursor;
+    SDL_Cursor* mMoveCursor;
     bool mClose;
     uint32_t mWindowId;
-    float mLastXPos;
-    float mLastYPos;
-    int mButton;
-    SDL_Keycode mMod;
-    glm::vec3 mLastPos;
+    glm::vec2 mLastPos;
+    bool mRotationFlag;
 
     forge::common::MatrixHashMap mViewMatrices;
     forge::common::MatrixHashMap mOrientMatrices;
@@ -102,6 +103,8 @@ class Widget {
         const forge::common::CellIndex& pIndex);
     void resetViewMatrices();
     void resetOrientationMatrices();
+
+    inline bool isBeingRotated() const { return mRotationFlag; }
 };
 
 }  // namespace wtk

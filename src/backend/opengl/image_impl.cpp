@@ -190,5 +190,7 @@ void image_impl::render(const int pWindowId, const int pX, const int pY,
     CheckGL("End image_impl::render");
 }
 
+bool image_impl::isRotatable() const { return false; }
+
 }  // namespace opengl
 }  // namespace forge

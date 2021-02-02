@@ -11,14 +11,19 @@
 // https://gist.github.com/SnopyDogy/a9a22497a893ec86aa3e
 
 #include <common/err_handling.hpp>
+#include <fg/update_buffer.h>
 #include <gl_helpers.hpp>
 #include <window_impl.hpp>
 
 #include <algorithm>
+#include <cmath>
 #include <mutex>
+#include <vector>
 
 using namespace forge;
 using namespace forge::common;
+
+using std::vector;
 
 namespace forge {
 
@@ -87,6 +92,44 @@ void destroyWtkIfDone() {
 
 namespace opengl {
 
+void window_impl::prepArcBallObjects() {
+    constexpr double angleStep =
+        (2 * PI) / static_cast<double>(ARCBALL_CIRCLE_POINTS);
+
+    vector<float> loop0(3 * (ARCBALL_CIRCLE_POINTS + 1)),
+        loop1(3 * (ARCBALL_CIRCLE_POINTS + 1));
+    int i = 0;
+    while (i < ARCBALL_CIRCLE_POINTS) {
+        loop0[3 * i + 0] = ARC_BALL_RADIUS * cos(i * angleStep);
+        loop0[3 * i + 1] = ARC_BALL_RADIUS * sin(i * angleStep);
+        loop0[3 * i + 2] = 0.0f;
+        loop1[3 * i + 0] = 0.0f;
+        loop1[3 * i + 1] = ARC_BALL_RADIUS * cos(i * angleStep);
+        loop1[3 * i + 2] = ARC_BALL_RADIUS * sin(i * angleStep);
+        i++;
+    }
+    // Since plot_impl's FG_PLOT_LINE is GL_LINE_STRIP
+    // Add the first point again to make it a loop
+    loop0[3 * i + 0] = ARC_BALL_RADIUS;
+    loop0[3 * i + 1] = 0.0f;
+    loop0[3 * i + 2] = 0.0f;
+    loop1[3 * i + 0] = 0.0f;
+    loop1[3 * i + 1] = ARC_BALL_RADIUS;
+    loop1[3 * i + 2] = 0.0f;
+
+    // Set Loop Colors
+    mArcBallLoop0->setRanges(-1.0f, 1.0f, -1.0f, 1.0, -1.0f, 1.0f);
+    mArcBallLoop1->setRanges(-1.0f, 1.0f, -1.0f, 1.0, -1.0f, 1.0f);
+    mArcBallLoop0->setColor(AF_BLUE[0], AF_BLUE[1], AF_BLUE[2], AF_BLUE[3]);
+    mArcBallLoop1->setColor(AF_BLUE[0], AF_BLUE[1], AF_BLUE[2], AF_BLUE[3]);
+
+    // Update the respective plot_impl OpenGL buffers
+    fg_update_vertex_buffer(mArcBallLoop0->vbo(), mArcBallLoop0->vboSize(),
+                            loop0.data());
+    fg_update_vertex_buffer(mArcBallLoop1->vbo(), mArcBallLoop1->vboSize(),
+                            loop1.data());
+}
+
 window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
                          std::weak_ptr<window_impl> pWindow,
                          const bool invisible)
@@ -119,6 +162,13 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     } else {
         mCMap = std::make_shared<colormap_impl>();
     }
+
+    /* Create a plot for rendering Arc Ball orthogonal circles */
+    mArcBallLoop0 = std::make_shared<plot_impl>(
+        ARCBALL_CIRCLE_POINTS + 1, f32, FG_PLOT_LINE, FG_MARKER_NONE, 3, true);
+    mArcBallLoop1 = std::make_shared<plot_impl>(
+        ARCBALL_CIRCLE_POINTS + 1, f32, FG_PLOT_LINE, FG_MARKER_NONE, 3, true);
+    prepArcBallObjects();
 
     /* set the colormap to default */
     mColorMapUBO = mCMap->cmapUniformBufferId(FG_COLOR_MAP_DEFAULT);
@@ -208,7 +258,17 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable) {
     pRenderable->setColorMapUBOParams(mColorMapUBO, mUBOSize);
     pRenderable->render(mID, 0, 0, mWidget->mWidth, mWidget->mHeight,
                         viewMatrix, orientMatrix);
-
+    // Render Arcball
+    if (pRenderable->isRotatable() && mWidget->isBeingRotated()) {
+        // TODO FIXME Figure out a better way to
+        // render arc ball loops to include depth test for any
+        // objects inside it
+        glClear(GL_DEPTH_BUFFER_BIT);
+        mArcBallLoop0->render(mID, 0, 0, mWidget->mWidth, mWidget->mHeight,
+                              IDENTITY, orientMatrix);
+        mArcBallLoop1->render(mID, 0, 0, mWidget->mWidth, mWidget->mHeight,
+                              IDENTITY, orientMatrix);
+    }
     mWidget->swapBuffers();
     mWidget->pollEvents();
     CheckGL("End window_impl::draw");

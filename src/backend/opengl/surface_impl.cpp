@@ -121,6 +121,8 @@ void surface_impl::renderGraph(const int pWindowId,
     glUniform2fv(mSurfRangeIndex, 3, mRange);
     glUniform1i(mSurfPVCIndex, mIsPVCOn);
     glUniform1i(mSurfPVAIndex, mIsPVAOn);
+    glUniform1i(mSurfAssistDrawFlagIndex, false);
+    glUniform4fv(mSurfUniformColorIndex, 1, mColor);
 
     bindResources(pWindowId);
     glDrawElements(GL_TRIANGLE_STRIP, GLsizei(mIBOSize), GL_UNSIGNED_INT,
@@ -174,7 +176,9 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
     , mSurfColorIndex(-1)
     , mSurfAlphaIndex(-1)
     , mSurfPVCIndex(-1)
-    , mSurfPVAIndex(-1) {
+    , mSurfPVAIndex(-1)
+    , mSurfUniformColorIndex(-1)
+    , mSurfAssistDrawFlagIndex(-1) {
     CheckGL("Begin surface_impl::surface_impl");
     setColor(0.9f, 0.5f, 0.6f, 1.0f);
 
@@ -187,13 +191,15 @@ surface_impl::surface_impl(unsigned pNumXPoints, unsigned pNumYPoints,
     mMarkerColorIndex = mMarkerProgram.getAttributeLocation("color");
     mMarkerAlphaIndex = mMarkerProgram.getAttributeLocation("alpha");
 
-    mSurfMatIndex   = mSurfProgram.getUniformLocation("transform");
-    mSurfRangeIndex = mSurfProgram.getUniformLocation("minmaxs");
-    mSurfPVCIndex   = mSurfProgram.getUniformLocation("isPVCOn");
-    mSurfPVAIndex   = mSurfProgram.getUniformLocation("isPVAOn");
-    mSurfPointIndex = mSurfProgram.getAttributeLocation("point");
-    mSurfColorIndex = mSurfProgram.getAttributeLocation("color");
-    mSurfAlphaIndex = mSurfProgram.getAttributeLocation("alpha");
+    mSurfMatIndex            = mSurfProgram.getUniformLocation("transform");
+    mSurfRangeIndex          = mSurfProgram.getUniformLocation("minmaxs");
+    mSurfPVCIndex            = mSurfProgram.getUniformLocation("isPVCOn");
+    mSurfPVAIndex            = mSurfProgram.getUniformLocation("isPVAOn");
+    mSurfPointIndex          = mSurfProgram.getAttributeLocation("point");
+    mSurfColorIndex          = mSurfProgram.getAttributeLocation("color");
+    mSurfAlphaIndex          = mSurfProgram.getAttributeLocation("alpha");
+    mSurfUniformColorIndex   = mSurfProgram.getUniformLocation("lineColor");
+    mSurfAssistDrawFlagIndex = mSurfProgram.getUniformLocation("isAssistDraw");
 
     unsigned totalPoints = mNumXPoints * mNumYPoints;
 

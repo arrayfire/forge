@@ -16,6 +16,7 @@
 #include <common/defines.hpp>
 #include <font_impl.hpp>
 #include <image_impl.hpp>
+#include <plot_impl.hpp>
 
 #include <memory>
 
@@ -31,9 +32,13 @@ class window_impl {
 
     std::shared_ptr<font_impl> mFont;
     std::shared_ptr<colormap_impl> mCMap;
+    std::shared_ptr<plot_impl> mArcBallLoop0;
+    std::shared_ptr<plot_impl> mArcBallLoop1;
 
     uint32_t mColorMapUBO;
     uint32_t mUBOSize;
+
+    void prepArcBallObjects();
 
    public:
     window_impl(int pWidth, int pHeight, const char* pTitle,

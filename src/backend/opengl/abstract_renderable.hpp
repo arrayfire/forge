@@ -36,6 +36,7 @@ class AbstractRenderable {
     std::string mLegend;
     bool mIsPVCOn;
     bool mIsPVAOn;
+    bool mIsInternalObject;
 
     AbstractRenderable()
         : mVBO(0)
@@ -45,7 +46,8 @@ class AbstractRenderable {
         , mCBOSize(0)
         , mABOSize(0)
         , mIsPVCOn(0)
-        , mIsPVAOn(0) {
+        , mIsPVAOn(0)
+        , mIsInternalObject(false) {
         mColor[0] = 0;
         mColor[1] = 0;
         mColor[2] = 0;
@@ -147,6 +149,16 @@ class AbstractRenderable {
     virtual void render(const int pWindowId, const int pX, const int pY,
                         const int pVPW, const int pVPH, const glm::mat4& pView,
                         const glm::mat4& pOrient) = 0;
+
+    /*
+     * Mark the renderable is for internal use for assistive help
+     */
+    inline void markAsInternalObject() { mIsInternalObject = true; }
+
+    /*
+     * Only rotatble renderables need to show 3d dimenionsional helper objects
+     */
+    virtual bool isRotatable() const = 0;
 };
 
 }  // namespace opengl
