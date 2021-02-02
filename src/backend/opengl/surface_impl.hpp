@@ -47,6 +47,8 @@ class surface_impl : public AbstractRenderable {
     uint32_t mSurfAlphaIndex;
     uint32_t mSurfPVCIndex;
     uint32_t mSurfPVAIndex;
+    uint32_t mSurfUniformColorIndex;
+    uint32_t mSurfAssistDrawFlagIndex;
 
     std::map<int, uint32_t> mVAOMap;
 
@@ -75,6 +77,8 @@ class surface_impl : public AbstractRenderable {
     inline void usePerVertexAlphas(const bool pFlag = true) {
         mIsPVAOn = pFlag;
     }
+
+    bool isRotatable() const { return true; }
 };
 
 class scatter3_impl : public surface_impl {

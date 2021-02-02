@@ -20,11 +20,16 @@ namespace common {
 using CellIndex     = std::tuple<int, int, int>;
 using MatrixHashMap = std::unordered_map<CellIndex, glm::mat4>;
 
-constexpr float PI        = 3.14159f;
-constexpr float BLACK[]   = {0.0f, 0.0f, 0.0f, 1.0f};
-constexpr float GRAY[]    = {0.75f, 0.75f, 0.75f, 1.0f};
-constexpr float WHITE[]   = {1.0f, 1.0f, 1.0f, 1.0f};
-constexpr float AF_BLUE[] = {0.0588f, 0.1137f, 0.2745f, 1.0f};
+constexpr int ARCBALL_CIRCLE_POINTS = 100;
+constexpr float MOVE_SPEED          = 0.005f;
+constexpr float ZOOM_SPEED          = 0.0075f;
+constexpr float EPSILON             = 1.0e-6f;
+constexpr float ARC_BALL_RADIUS     = 0.75f;
+constexpr double PI                 = 3.14159265358979323846;
+constexpr float BLACK[]             = {0.0f, 0.0f, 0.0f, 1.0f};
+constexpr float GRAY[]              = {0.75f, 0.75f, 0.75f, 1.0f};
+constexpr float WHITE[]             = {1.0f, 1.0f, 1.0f, 1.0f};
+constexpr float AF_BLUE[]           = {0.0588f, 0.1137f, 0.2745f, 1.0f};
 static const glm::mat4 IDENTITY(1.0f);
 
 #if defined(OS_WIN)

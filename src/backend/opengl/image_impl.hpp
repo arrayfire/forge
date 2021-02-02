@@ -67,6 +67,8 @@ class image_impl : public AbstractRenderable {
     void render(const int pWindowId, const int pX, const int pY, const int pVPW,
                 const int pVPH, const glm::mat4 &pView,
                 const glm::mat4 &pOrient);
+
+    bool isRotatable() const;
 };
 
 }  // namespace opengl
