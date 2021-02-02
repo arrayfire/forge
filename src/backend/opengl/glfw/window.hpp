@@ -29,11 +29,13 @@ void destroyWindowToolkit();
 class Widget {
    private:
     GLFWwindow* mWindow;
+    GLFWcursor* mRotationCursor;
+    GLFWcursor* mZoomCursor;
     bool mClose;
-    float mLastXPos;
-    float mLastYPos;
+    glm::vec2 mLastPos;
     int mButton;
-    glm::vec3 mLastPos;
+    int mButtonAction;
+    bool mRotationFlag;
 
     forge::common::MatrixHashMap mViewMatrices;
     forge::common::MatrixHashMap mOrientMatrices;
@@ -104,6 +106,8 @@ class Widget {
         const forge::common::CellIndex& pIndex);
     void resetViewMatrices();
     void resetOrientationMatrices();
+
+    inline bool isBeingRotated() const { return mRotationFlag; }
 };
 
 }  // namespace wtk

@@ -96,7 +96,8 @@ void plot_impl::bindDimSpecificUniforms() {
 
 plot_impl::plot_impl(const uint32_t pNumPoints, const forge::dtype pDataType,
                      const forge::PlotType pPlotType,
-                     const forge::MarkerType pMarkerType, const int pD)
+                     const forge::MarkerType pMarkerType, const int pD,
+                     const bool pIsInternalObject)
     : mDimension(pD)
     , mMarkerSize(12)
     , mNumPoints(pNumPoints)
@@ -119,6 +120,8 @@ plot_impl::plot_impl(const uint32_t pNumPoints, const forge::dtype pDataType,
     , mPlotPointIndex(-1)
     , mPlotColorIndex(-1)
     , mPlotAlphaIndex(-1)
+    , mPlotAssistDrawFlagIndex(-1)
+    , mPlotLineColorIndex(-1)
     , mMarkerPVCOnIndex(-1)
     , mMarkerPVAOnIndex(-1)
     , mMarkerTypeIndex(-1)
@@ -131,13 +134,17 @@ plot_impl::plot_impl(const uint32_t pNumPoints, const forge::dtype pDataType,
     CheckGL("Begin plot_impl::plot_impl");
 
     setColor(0, 1, 0, 1);
+    if (pIsInternalObject) { markAsInternalObject(); }
 
     if (mDimension == 2) {
         mPlotUColorIndex = mPlotProgram.getUniformLocation("barColor");
         mVBOSize         = 2 * mNumPoints;
     } else {
-        mPlotRangeIndex = mPlotProgram.getUniformLocation("minmaxs");
-        mVBOSize        = 3 * mNumPoints;
+        mPlotRangeIndex     = mPlotProgram.getUniformLocation("minmaxs");
+        mPlotLineColorIndex = mPlotProgram.getUniformLocation("lineColor");
+        mPlotAssistDrawFlagIndex =
+            mPlotProgram.getUniformLocation("isAssistDraw");
+        mVBOSize = 3 * mNumPoints;
     }
 
     mCBOSize = 3 * mNumPoints;
@@ -229,6 +236,8 @@ void plot_impl::render(const int pWindowId, const int pX, const int pY,
                            glm::value_ptr(viewModelMatrix));
         glUniform1i(mPlotPVCOnIndex, mIsPVCOn);
         glUniform1i(mPlotPVAOnIndex, mIsPVAOn);
+        glUniform1i(mPlotAssistDrawFlagIndex, mIsInternalObject);
+        glUniform4fv(mPlotLineColorIndex, 1, mColor);
 
         plot_impl::bindResources(pWindowId);
         glDrawArrays(GL_LINE_STRIP, 0, mNumPoints);
@@ -265,6 +274,8 @@ void plot_impl::render(const int pWindowId, const int pX, const int pY,
     CheckGL("End plot_impl::render");
 }
 
+bool plot_impl::isRotatable() const { return true; }
+
 glm::mat4 plot2d_impl::computeTransformMat(const glm::mat4& pView,
                                            const glm::mat4& /*pOrient*/) {
     float xRange = mRange[1] - mRange[0];
@@ -286,6 +297,8 @@ glm::mat4 plot2d_impl::computeTransformMat(const glm::mat4& pView,
 void plot2d_impl::bindDimSpecificUniforms() {
     glUniform4fv(mPlotUColorIndex, 1, mColor);
 }
+
+bool plot2d_impl::isRotatable() const { return false; }
 
 }  // namespace opengl
 }  // namespace forge

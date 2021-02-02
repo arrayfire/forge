@@ -168,6 +168,8 @@ class chart2d_impl : public AbstractChart {
     void render(const int pWindowId, const int pX, const int pY, const int pVPW,
                 const int pVPH, const glm::mat4& pView,
                 const glm::mat4& pOrient);
+
+    bool isRotatable() const { return false; }
 };
 
 class chart3d_impl : public AbstractChart {
@@ -189,6 +191,8 @@ class chart3d_impl : public AbstractChart {
     void render(const int pWindowId, const int pX, const int pY, const int pVPW,
                 const int pVPH, const glm::mat4& pView,
                 const glm::mat4& pOrient);
+
+    bool isRotatable() const { return true; }
 };
 
 }  // namespace opengl

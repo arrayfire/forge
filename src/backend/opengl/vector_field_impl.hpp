@@ -64,6 +64,8 @@ class vector_field_impl : public AbstractRenderable {
     virtual void render(const int pWindowId, const int pX, const int pY,
                         const int pVPW, const int pVPH, const glm::mat4& pView,
                         const glm::mat4& pOrient);
+
+    virtual bool isRotatable() const;
 };
 
 class vector_field2d_impl : public vector_field_impl {
@@ -73,6 +75,8 @@ class vector_field2d_impl : public vector_field_impl {
    public:
     vector_field2d_impl(const uint32_t pNumPoints, const forge::dtype pDataType)
         : vector_field_impl(pNumPoints, pDataType, 2) {}
+
+    bool isRotatable() const { return false; }
 };
 
 }  // namespace opengl

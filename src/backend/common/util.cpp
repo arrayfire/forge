@@ -20,6 +20,11 @@
 #include <Windows.h>
 #endif
 
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+using std::make_pair;
+using std::pair;
 using std::string;
 
 namespace forge {
@@ -142,20 +147,32 @@ std::ostream& operator<<(std::ostream& pOut, const glm::mat4& pMat) {
     return pOut;
 }
 
-glm::vec3 trackballPoint(const float pX, const float pY, const float pWidth,
-                         const float pHeight) {
-    glm::vec3 P =
-        glm::vec3(1.0 * pX / pWidth * 2 - 1.0, 1.0 * pY / pHeight * 2 - 1.0, 0);
+pair<vec3, float> calcRotationFromArcBall(const vec2& lastPos,
+                                          const vec2& currPos,
+                                          const vec4& viewport) {
+    auto project = [](const float pX, const float pY, const float pWidth,
+                      const float pHeight) {
+        glm::vec3 P     = glm::vec3((2.0f * pX) / pWidth - 1.0f,
+                                (2.0f * pY) / pHeight - 1.0f, 0.0f);
+        float xySqrdSum = P.x * P.x + P.y * P.y;
+        float rSqrd     = (ARC_BALL_RADIUS * ARC_BALL_RADIUS);
+        float rSqrdBy2  = rSqrd / 2.0f;
+        // Project to Hyperbolic Sheet if Sum of X^2 and Y^2 is
+        // greater than (RADIUS^2)/2 ; Otherwise to a sphere
+        P.z = (xySqrdSum > rSqrdBy2 ? rSqrdBy2 / sqrt(xySqrdSum)
+                                    : sqrt(rSqrd - xySqrdSum));
+        return P;
+    };
+    auto ORG = vec2(viewport[0], viewport[1]);
+    // Offset window position to viewport frame of reference
+    auto p1  = lastPos - ORG;
+    auto p2  = currPos - ORG;
+    auto op1 = project(p1.x, p1.y, viewport[2], viewport[3]);
+    auto op2 = project(p2.x, p2.y, viewport[2], viewport[3]);
+    auto n1  = glm::normalize(op1);
+    auto n2  = glm::normalize(op2);
 
-    P.y              = -P.y;
-    float OP_squared = P.x * P.x + P.y * P.y;
-    if (OP_squared <= 1 * 1) {
-        P.z = sqrt(1 * 1 - OP_squared);
-    } else {
-        P.z = 0;
-        P   = glm::normalize(P);
-    }
-    return P;
+    return make_pair(glm::cross(op2, op1), std::acos(glm::dot(n1, n2)));
 }
 
 }  // namespace common
