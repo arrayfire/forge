@@ -45,7 +45,7 @@ jobs:
               run: |
                 $vcpkg_triplet_path = $env:GITHUB_WORKSPACE + "/CMakeModules/ForgeFreetypeVCPKGTriplet.cmake"
                 Copy-Item -Path $vcpkg_triplet_path -Destination C:/vcpkg/triplets/x64-windows.cmake
-                vcpkg install --triplet x64-windows freetype opencl
+                vcpkg install --triplet x64-windows boost-functional freetype opencl
 
             - name: Install GLFW3
               if: matrix.window_toolkit == 'glfw3'
@@ -62,7 +62,6 @@ jobs:
                   mkdir build && cd build
                   cmake `
                     -DCMAKE_TOOLCHAIN_FILE:FILEPATH=C:\vcpkg\scripts\buildsystems\vcpkg.cmake `
-                    -DBOOST_ROOT:PATH=$env:BOOST_ROOT_1_72_0 `
                     -DFreeImage_ROOT:PATH=..\freeimage\Dist\x64 `
                     -DFG_USE_WINDOW_TOOLKIT:STRING=$Env:FG_TOOLKIT ..
                   cmake --build . --parallel --target ALL_BUILD --config Release
