@@ -51,8 +51,12 @@ jobs:
             - name: Install Common Dependencies for Ubuntu
               if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-18.04'
               run: |
+                  sudo add-apt-repository ppa:mhier/libboost-latest
                   sudo apt-get -qq update
-                  sudo apt-get install -y libfreeimage-dev libfontconfig1-dev nvidia-cuda-toolkit
+                  sudo apt-get install -y libboost1.74-dev \
+                                          libfreeimage-dev \
+                                          libfontconfig1-dev \
+                                          nvidia-cuda-toolkit
 
             - name: Install Macos Window Toolkit
               if: matrix.os == 'macos-latest'
@@ -78,7 +82,6 @@ jobs:
                   mkdir build && cd build
                   ${CMAKE_PROGRAM} -DCMAKE_C_COMPILER=gcc-6 \
                       -DCMAKE_CXX_COMPILER=g++-6 \
-                      -DBOOST_ROOT:PATH=${BOOST_ROOT_1_72_0} \
                       -DFG_USE_WINDOW_TOOLKIT:STRING=${FG_TOOLKIT} ..
 
             - name: CMake Configure on OSX
@@ -87,9 +90,7 @@ jobs:
                   FG_TOOLKIT: ${{ matrix.window_toolkit }}
               run: |
                   mkdir build && cd build
-                  ${CMAKE_PROGRAM} \
-                      -DBOOST_ROOT:PATH=${BOOST_ROOT_1_72_0} \
-                      -DFG_USE_WINDOW_TOOLKIT:STRING=${FG_TOOLKIT} ..
+                  ${CMAKE_PROGRAM} -DFG_USE_WINDOW_TOOLKIT:STRING=${FG_TOOLKIT} ..
 
             - name: Build
               run: |
