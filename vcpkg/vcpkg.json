@@ -1,0 +1,16 @@
+{
+  "name": "forge",
+  "version-string": "1.1.0",
+  "supports": "x64",
+  "dependencies": [
+    "boost-functional",
+    "freetype",
+    "freeimage",
+    {
+      "name": "fontconfig",
+      "platform": "!windows"
+    },
+    "glfw3",
+    "sdl2"
+  ]
+}
