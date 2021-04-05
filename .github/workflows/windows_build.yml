@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
     - master
+    - v1.0
 
 name: ci
 
