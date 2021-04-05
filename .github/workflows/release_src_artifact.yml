@@ -1,0 +1,80 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+    - 'v*' # Push events to tag names starting with v
+
+name: ci
+
+jobs:
+    upload_src_tarball:
+        name: Upload release source tarball
+        runs-on: ubuntu-18.04
+        steps:
+            - name: Fetch Repo Info
+              run: |
+                  tag=$(echo ${GITHUB_REF} | awk '{split($0, a, "/"); print a[3]}')
+                  ver=${tag:1}
+                  response=$(curl https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/${tag})
+                  id_line=$(echo "${response}" | grep -m 1 "id.:")
+                  rel_id=$(echo "${id_line}" | awk '{split($0, a, ":"); split(a[2], b, ","); print b[1]}')
+                  trimmed_rel_id=$(echo "${rel_id}" | awk '{gsub(/^[ \t]+/,""); print $0 }')
+                  echo "RELEASE_ID=${trimmed_rel_id}" >> $GITHUB_ENV
+                  echo "FG_TAG=${tag}" >> $GITHUB_ENV
+                  echo "FG_VER=${ver}" >> $GITHUB_ENV
+
+            - name: Checkout Repo
+              run: |
+                  cd ${GITHUB_WORKSPACE}
+                  clone_url="https://github.com/${GITHUB_REPOSITORY}"
+                  git clone --depth 1 -b ${FG_TAG} ${clone_url} forge-full-${FG_VER}
+
+            - name: Install Dependencies
+              run: |
+                  sudo add-apt-repository ppa:mhier/libboost-latest
+                  sudo apt-get -qq update
+                  sudo apt-get install -y libfontconfig1-dev \
+                                          libglfw3-dev \
+                                          libfreeimage-dev \
+                                          libboost1.68-dev
+
+            - name: CMake Configure
+              run: |
+                  cd ${GITHUB_WORKSPACE}/forge-full-${FG_VER}
+                  mkdir build && cd build
+                  cmake .. -DFG_BUILD_FORGE:BOOL=ON
+
+            - name: Create source tarball
+              id: create-src-tarball
+              run: |
+                  cd $GITHUB_WORKSPACE
+                  rm -rf forge-full-${FG_VER}/.git
+                  rm -rf forge-full-${FG_VER}/.github
+                  rm forge-full-${FG_VER}/.gitmodules
+                  cd forge-full-${FG_VER}/build/
+                  shopt -s extglob
+                  rm -r !(extern)
+                  cd ./extern
+                  rm -rf ./*-build
+                  rm -rf ./*-subbuild
+                  declare -a deps
+                  deps=($(ls))
+                  for dep in ${deps[@]}; do
+                    rm -rf ./${dep}/.git
+                    rm -rf ./${dep}/.gitattributes
+                    rm -rf ./${dep}/.gitmodules
+                  done
+                  shopt -u extglob
+                  cd ../../..
+                  tar -cjf forge-full-${FG_VER}.tar.bz2 forge-full-${FG_VER}/
+                  echo "UPLOAD_FILE=forge-full-${FG_VER}.tar.bz2" >> $GITHUB_ENV
+
+            - name: Upload source tarball
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}/assets{?name,label}
+                  asset_path: ${{ env.UPLOAD_FILE }}
+                  asset_name: ${{ env.UPLOAD_FILE }}
+                  asset_content_type: application/x-bzip2
