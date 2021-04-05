@@ -1,40 +1,43 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Functions &mdash; Forge 1.0.4 documentation</title>
   
 
   
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="../_static/arrayfire.ico"/>
   
+
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Macros" href="macros.html" />
@@ -82,6 +85,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -122,6 +126,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -156,18 +161,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Functions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/rst/functions.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -189,12 +196,12 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 <h2>Chart Functions<a class="headerlink" href="#chart-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="group">
 <dt>
-<span class="target" id="group__chart__functions"></span><em>group</em> <code class="sig-name descname">chart_functions</code></dt>
+<span class="target" id="group__chart__functions"></span><em><span class="pre">group</span></em> <code class="sig-name descname"><span class="pre">chart_functions</span></code></dt>
 <dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1gae1fe8e0b411f7c721f8974b65f2c9d2f"></span><code class="sig-name descname">FGAPI fg_err fg_create_chart(fg_chart  * pHandle, const  fg_chart_type pChartType)</code></dt>
+<span class="target" id="group__chart__functions_1gae1fe8e0b411f7c721f8974b65f2c9d2f"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_create_chart</span> <span class="pre">(fg_chart</span> <span class="pre">*pHandle,</span> <span class="pre">const</span> <span class="pre">fg_chart_type</span> <span class="pre">pChartType)</span></code></dt>
 <dd><p>Create a Chart object with given dimensional property. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -208,9 +215,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga72d39706b47f6e0c70f32749941f7b21"></span><code class="sig-name descname">FGAPI fg_err fg_retain_chart(fg_chart  * pOut, fg_chart pChart)</code></dt>
+<span class="target" id="group__chart__functions_1ga72d39706b47f6e0c70f32749941f7b21"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_retain_chart</span> <span class="pre">(fg_chart</span> <span class="pre">*pOut,</span> <span class="pre">fg_chart</span> <span class="pre">pChart)</span></code></dt>
 <dd><p>Increase reference count for the chart resource. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -224,9 +231,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga768e43bbb4f6f09afbc89d79f42d2194"></span><code class="sig-name descname">FGAPI fg_err fg_release_chart(fg_chart pHandle)</code></dt>
+<span class="target" id="group__chart__functions_1ga768e43bbb4f6f09afbc89d79f42d2194"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_release_chart</span> <span class="pre">(fg_chart</span> <span class="pre">pHandle)</span></code></dt>
 <dd><p>Destroy the chart object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -239,9 +246,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga3bbd2143ac3411a1506db3a385d795e4"></span><code class="sig-name descname">FGAPI fg_err fg_set_chart_axes_titles(fg_chart pHandle, const char * pX, const char * pY, const char * pZ)</code></dt>
+<span class="target" id="group__chart__functions_1ga3bbd2143ac3411a1506db3a385d795e4"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_chart_axes_titles</span> <span class="pre">(fg_chart</span> <span class="pre">pHandle,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pX,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pY,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pZ)</span></code></dt>
 <dd><p>Set axes titles for the chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -257,9 +264,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga56e5ebe48d9a12ea144ca5d9e877de4a"></span><code class="sig-name descname">FGAPI fg_err fg_set_chart_axes_limits(fg_chart pHandle, const float pXmin, const float pXmax, const float pYmin, const float pYmax, const float pZmin, const float pZmax)</code></dt>
+<span class="target" id="group__chart__functions_1ga56e5ebe48d9a12ea144ca5d9e877de4a"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_chart_axes_limits</span> <span class="pre">(fg_chart</span> <span class="pre">pHandle,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pXmin,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pXmax,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pYmin,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pYmax,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pZmin,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pZmax)</span></code></dt>
 <dd><p>Set axes data ranges. </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -276,9 +283,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1gaad6eb8e263d9fdf2f367d4cf0270b3e5"></span><code class="sig-name descname">FGAPI fg_err fg_set_chart_label_format(fg_chart pHandle, const char * pXFormat, const char * pYFormat, const char * pZFormat)</code></dt>
+<span class="target" id="group__chart__functions_1gaad6eb8e263d9fdf2f367d4cf0270b3e5"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_chart_label_format</span> <span class="pre">(fg_chart</span> <span class="pre">pHandle,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pXFormat,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pYFormat,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pZFormat)</span></code></dt>
 <dd><p>Set the format for display of axes labels in a chart. </p>
 <p><p>Display format string follows printf style formating for numbers </p>
 <dl class="simple">
@@ -293,9 +300,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga73ad91fed9606354f17e212c154cb47c"></span><code class="sig-name descname">FGAPI fg_err fg_get_chart_axes_limits(float * pXmin, float * pXmax, float * pYmin, float * pYmax, float * pZmin, float * pZmax, const  fg_chart pHandle)</code></dt>
+<span class="target" id="group__chart__functions_1ga73ad91fed9606354f17e212c154cb47c"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_chart_axes_limits</span> <span class="pre">(float</span> <span class="pre">*pXmin,</span> <span class="pre">float</span> <span class="pre">*pXmax,</span> <span class="pre">float</span> <span class="pre">*pYmin,</span> <span class="pre">float</span> <span class="pre">*pYmax,</span> <span class="pre">float</span> <span class="pre">*pZmin,</span> <span class="pre">float</span> <span class="pre">*pZmax,</span> <span class="pre">const</span> <span class="pre">fg_chart</span> <span class="pre">pHandle)</span></code></dt>
 <dd><p>Get axes data ranges. </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -312,9 +319,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga2f3d24e869176566d5443677b005c555"></span><code class="sig-name descname">FGAPI fg_err fg_set_chart_legend_position(fg_chart pHandle, const float pX, const float pY)</code></dt>
+<span class="target" id="group__chart__functions_1ga2f3d24e869176566d5443677b005c555"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_chart_legend_position</span> <span class="pre">(fg_chart</span> <span class="pre">pHandle,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pX,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pY)</span></code></dt>
 <dd><p>Set legend position for Chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code</p>
@@ -331,9 +338,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1gaa98b3156ca539bad66b7b2bdc84f4aa7"></span><code class="sig-name descname">FGAPI fg_err fg_append_image_to_chart(fg_chart pChart, fg_image pImage)</code></dt>
+<span class="target" id="group__chart__functions_1gaa98b3156ca539bad66b7b2bdc84f4aa7"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_append_image_to_chart</span> <span class="pre">(fg_chart</span> <span class="pre">pChart,</span> <span class="pre">fg_image</span> <span class="pre">pImage)</span></code></dt>
 <dd><p>Add an existing image object to chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -347,9 +354,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1gaccda3d70881a171f781b5c4d901983db"></span><code class="sig-name descname">FGAPI fg_err fg_append_histogram_to_chart(fg_chart pChart, fg_histogram pHistogram)</code></dt>
+<span class="target" id="group__chart__functions_1gaccda3d70881a171f781b5c4d901983db"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_append_histogram_to_chart</span> <span class="pre">(fg_chart</span> <span class="pre">pChart,</span> <span class="pre">fg_histogram</span> <span class="pre">pHistogram)</span></code></dt>
 <dd><p>Add an existing histogram object to chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -363,9 +370,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga05dbe6e4c0cf1fb3b2134d0516d216ad"></span><code class="sig-name descname">FGAPI fg_err fg_append_plot_to_chart(fg_chart pChart, fg_plot pPlot)</code></dt>
+<span class="target" id="group__chart__functions_1ga05dbe6e4c0cf1fb3b2134d0516d216ad"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_append_plot_to_chart</span> <span class="pre">(fg_chart</span> <span class="pre">pChart,</span> <span class="pre">fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Add an existing plot object to chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -379,9 +386,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga89119aba2c7f57e2bf7c87fb5bb0611d"></span><code class="sig-name descname">FGAPI fg_err fg_append_surface_to_chart(fg_chart pChart, fg_surface pSurface)</code></dt>
+<span class="target" id="group__chart__functions_1ga89119aba2c7f57e2bf7c87fb5bb0611d"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_append_surface_to_chart</span> <span class="pre">(fg_chart</span> <span class="pre">pChart,</span> <span class="pre">fg_surface</span> <span class="pre">pSurface)</span></code></dt>
 <dd><p>Add an existing surface object to chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -395,9 +402,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga86701141703bce75e609894fc3172ea6"></span><code class="sig-name descname">FGAPI fg_err fg_append_vector_field_to_chart(fg_chart pChart, fg_vector_field pField)</code></dt>
+<span class="target" id="group__chart__functions_1ga86701141703bce75e609894fc3172ea6"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_append_vector_field_to_chart</span> <span class="pre">(fg_chart</span> <span class="pre">pChart,</span> <span class="pre">fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Add an existing vector field object to chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -411,9 +418,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga53f3e8c2287a4c10cd915bb3576d79f8"></span><code class="sig-name descname">FGAPI fg_err fg_add_image_to_chart(fg_image  * pImage, fg_chart pHandle, const unsigned pWidth, const unsigned pHeight, const  fg_channel_format pFormat, const  fg_dtype pType)</code></dt>
+<span class="target" id="group__chart__functions_1ga53f3e8c2287a4c10cd915bb3576d79f8"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_add_image_to_chart</span> <span class="pre">(fg_image</span> <span class="pre">*pImage,</span> <span class="pre">fg_chart</span> <span class="pre">pHandle,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pWidth,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pHeight,</span> <span class="pre">const</span> <span class="pre">fg_channel_format</span> <span class="pre">pFormat,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pType)</span></code></dt>
 <dd><p>Create and add an Image object to the current chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -431,9 +438,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga55ea9205ae88fac37b603f8530ee9279"></span><code class="sig-name descname">FGAPI fg_err fg_add_histogram_to_chart(fg_histogram  * pHistogram, fg_chart pHandle, const unsigned pNBins, const  fg_dtype pType)</code></dt>
+<span class="target" id="group__chart__functions_1ga55ea9205ae88fac37b603f8530ee9279"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_add_histogram_to_chart</span> <span class="pre">(fg_histogram</span> <span class="pre">*pHistogram,</span> <span class="pre">fg_chart</span> <span class="pre">pHandle,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pNBins,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pType)</span></code></dt>
 <dd><p>Create and add an Histogram object to the current chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -449,9 +456,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga0521fbe605fb661c5bd40df5fedaecc9"></span><code class="sig-name descname">FGAPI fg_err fg_add_plot_to_chart(fg_plot  * pPlot, fg_chart pHandle, const unsigned pNPoints, const  fg_dtype pType, const  fg_plot_type pPlotType, const  fg_marker_type pMarkerType)</code></dt>
+<span class="target" id="group__chart__functions_1ga0521fbe605fb661c5bd40df5fedaecc9"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_add_plot_to_chart</span> <span class="pre">(fg_plot</span> <span class="pre">*pPlot,</span> <span class="pre">fg_chart</span> <span class="pre">pHandle,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pNPoints,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pType,</span> <span class="pre">const</span> <span class="pre">fg_plot_type</span> <span class="pre">pPlotType,</span> <span class="pre">const</span> <span class="pre">fg_marker_type</span> <span class="pre">pMarkerType)</span></code></dt>
 <dd><p>Create and add an Plot object to the current chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -469,9 +476,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1gacff0057f33285880a5e72c46f15f6a06"></span><code class="sig-name descname">FGAPI fg_err fg_add_surface_to_chart(fg_surface  * pSurface, fg_chart pHandle, const unsigned pXPoints, const unsigned pYPoints, const  fg_dtype pType, const  fg_plot_type pPlotType, const  fg_marker_type pMarkerType)</code></dt>
+<span class="target" id="group__chart__functions_1gacff0057f33285880a5e72c46f15f6a06"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_add_surface_to_chart</span> <span class="pre">(fg_surface</span> <span class="pre">*pSurface,</span> <span class="pre">fg_chart</span> <span class="pre">pHandle,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pXPoints,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pYPoints,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pType,</span> <span class="pre">const</span> <span class="pre">fg_plot_type</span> <span class="pre">pPlotType,</span> <span class="pre">const</span> <span class="pre">fg_marker_type</span> <span class="pre">pMarkerType)</span></code></dt>
 <dd><p>Create and add an Plot object to the current chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -490,9 +497,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1gaeb7137a74760446fcd4ddf7ef7c564c5"></span><code class="sig-name descname">FGAPI fg_err fg_add_vector_field_to_chart(fg_vector_field  * pField, fg_chart pHandle, const unsigned pNPoints, const  fg_dtype pType)</code></dt>
+<span class="target" id="group__chart__functions_1gaeb7137a74760446fcd4ddf7ef7c564c5"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_add_vector_field_to_chart</span> <span class="pre">(fg_vector_field</span> <span class="pre">*pField,</span> <span class="pre">fg_chart</span> <span class="pre">pHandle,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pNPoints,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pType)</span></code></dt>
 <dd><p>Create and add an Vector Field object to the current chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -508,9 +515,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1gaf41b9a3479dcdcc8ba0f0dd17693e2c1"></span><code class="sig-name descname">FGAPI fg_err fg_render_chart(const  fg_window pWindow, const  fg_chart pChart, const int pX, const int pY, const int pWidth, const int pHeight)</code></dt>
+<span class="target" id="group__chart__functions_1gaf41b9a3479dcdcc8ba0f0dd17693e2c1"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_render_chart</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">fg_chart</span> <span class="pre">pChart,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pX,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pY,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pWidth,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pHeight)</span></code></dt>
 <dd><p>Render the chart to given window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -528,9 +535,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__chart__functions_1ga95ccb4af965dcd04fd7b094e78281d52"></span><code class="sig-name descname">FGAPI fg_err fg_get_chart_type(fg_chart_type  * pChartType, const  fg_chart pChart)</code></dt>
+<span class="target" id="group__chart__functions_1ga95ccb4af965dcd04fd7b094e78281d52"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_chart_type</span> <span class="pre">(fg_chart_type</span> <span class="pre">*pChartType,</span> <span class="pre">const</span> <span class="pre">fg_chart</span> <span class="pre">pChart)</span></code></dt>
 <dd><p>Render the type of a chart. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -552,12 +559,12 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 <h2>Font Functions<a class="headerlink" href="#font-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="group">
 <dt>
-<span class="target" id="group__font__functions"></span><em>group</em> <code class="sig-name descname">font_functions</code></dt>
+<span class="target" id="group__font__functions"></span><em><span class="pre">group</span></em> <code class="sig-name descname"><span class="pre">font_functions</span></code></dt>
 <dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__font__functions_1gab4fd5c0e224cde413fbd33d1f506cbaf"></span><code class="sig-name descname">FGAPI fg_err fg_create_font(fg_font  * pFont)</code></dt>
+<span class="target" id="group__font__functions_1gab4fd5c0e224cde413fbd33d1f506cbaf"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_create_font</span> <span class="pre">(fg_font</span> <span class="pre">*pFont)</span></code></dt>
 <dd><p>Create a Font object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -570,9 +577,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__font__functions_1ga796b1afd5d03c91043e485d4b24d7f00"></span><code class="sig-name descname">FGAPI fg_err fg_retain_font(fg_font  * pOut, fg_font pIn)</code></dt>
+<span class="target" id="group__font__functions_1ga796b1afd5d03c91043e485d4b24d7f00"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_retain_font</span> <span class="pre">(fg_font</span> <span class="pre">*pOut,</span> <span class="pre">fg_font</span> <span class="pre">pIn)</span></code></dt>
 <dd><p>Increase reference count of the resource. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -586,9 +593,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__font__functions_1gaaf85efc3e423c25d0e5a9363c8c43ec2"></span><code class="sig-name descname">FGAPI fg_err fg_release_font(fg_font pFont)</code></dt>
+<span class="target" id="group__font__functions_1gaaf85efc3e423c25d0e5a9363c8c43ec2"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_release_font</span> <span class="pre">(fg_font</span> <span class="pre">pFont)</span></code></dt>
 <dd><p>Destroy font object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -601,9 +608,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__font__functions_1ga7c71ca2ce6c6f0d74d4600e0562d4f9d"></span><code class="sig-name descname">FGAPI fg_err fg_load_font_file(fg_font pFont, const char *const pFileFullPath)</code></dt>
+<span class="target" id="group__font__functions_1ga7c71ca2ce6c6f0d74d4600e0562d4f9d"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_load_font_file</span> <span class="pre">(fg_font</span> <span class="pre">pFont,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*const</span> <span class="pre">pFileFullPath)</span></code></dt>
 <dd><p>Load a given font file. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -617,9 +624,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__font__functions_1gaebe6b54dcfcb33571e002081f5a21a7f"></span><code class="sig-name descname">FGAPI fg_err fg_load_system_font(fg_font pFont, const char *const pFontName)</code></dt>
+<span class="target" id="group__font__functions_1gaebe6b54dcfcb33571e002081f5a21a7f"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_load_system_font</span> <span class="pre">(fg_font</span> <span class="pre">pFont,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*const</span> <span class="pre">pFontName)</span></code></dt>
 <dd><p>Load a system font based on the name. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -641,12 +648,12 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 <h2>Histogram Functions<a class="headerlink" href="#histogram-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="group">
 <dt>
-<span class="target" id="group__hist__functions"></span><em>group</em> <code class="sig-name descname">hist_functions</code></dt>
+<span class="target" id="group__hist__functions"></span><em><span class="pre">group</span></em> <code class="sig-name descname"><span class="pre">hist_functions</span></code></dt>
 <dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1ga65b8bf8fa60c2e2569e977427bfb492c"></span><code class="sig-name descname">FGAPI fg_err fg_create_histogram(fg_histogram  * pHistogram, const unsigned pNBins, const  fg_dtype pDataType)</code></dt>
+<span class="target" id="group__hist__functions_1ga65b8bf8fa60c2e2569e977427bfb492c"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_create_histogram</span> <span class="pre">(fg_histogram</span> <span class="pre">*pHistogram,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pNBins,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pDataType)</span></code></dt>
 <dd><p>Creates a Histogram object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -661,9 +668,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1ga6c0d84b42b53ede77d6820cfe8d18154"></span><code class="sig-name descname">FGAPI fg_err fg_retain_histogram(fg_histogram  * pOut, fg_histogram pIn)</code></dt>
+<span class="target" id="group__hist__functions_1ga6c0d84b42b53ede77d6820cfe8d18154"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_retain_histogram</span> <span class="pre">(fg_histogram</span> <span class="pre">*pOut,</span> <span class="pre">fg_histogram</span> <span class="pre">pIn)</span></code></dt>
 <dd><p>Increase reference count of the resource. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -677,9 +684,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1ga36fa7fcf28c673a6d6e74058129fc5d8"></span><code class="sig-name descname">FGAPI fg_err fg_release_histogram(fg_histogram pHistogram)</code></dt>
+<span class="target" id="group__hist__functions_1ga36fa7fcf28c673a6d6e74058129fc5d8"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_release_histogram</span> <span class="pre">(fg_histogram</span> <span class="pre">pHistogram)</span></code></dt>
 <dd><p>Destroy Histogram object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -692,9 +699,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1ga967a76cfbf41cc46a43bd9349e11a8b9"></span><code class="sig-name descname">FGAPI fg_err fg_set_histogram_color(fg_histogram pHistogram, const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<span class="target" id="group__hist__functions_1ga967a76cfbf41cc46a43bd9349e11a8b9"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_histogram_color</span> <span class="pre">(fg_histogram</span> <span class="pre">pHistogram,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pRed,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pGreen,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pBlue,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pAlpha)</span></code></dt>
 <dd><p>Set the color of bar in the bar graph(histogram) </p>
 <p>This is global alpha value for the histogram rendering that takes effect if individual bar alphas are not set by calling the following member functions<ul class="simple">
 <li><p>Histogram::alphas()</p></li>
@@ -716,9 +723,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1ga0dce330773da81cd714e7b113930fbd1"></span><code class="sig-name descname">FGAPI fg_err fg_set_histogram_legend(fg_histogram pHistogram, const char * pLegend)</code></dt>
+<span class="target" id="group__hist__functions_1ga0dce330773da81cd714e7b113930fbd1"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_histogram_legend</span> <span class="pre">(fg_histogram</span> <span class="pre">pHistogram,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pLegend)</span></code></dt>
 <dd><p>Set legend for histogram plot. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -732,9 +739,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1ga01b34f7a7de5d66840d19d6da3a37066"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_vertex_buffer(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<span class="target" id="group__hist__functions_1ga01b34f7a7de5d66840d19d6da3a37066"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_histogram_vertex_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_histogram</span> <span class="pre">pHistogram)</span></code></dt>
 <dd><p>Get the resource identifier for vertices buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -748,9 +755,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1gaafc0bcccf09af5fbfea7fb22463b4de7"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_color_buffer(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<span class="target" id="group__hist__functions_1gaafc0bcccf09af5fbfea7fb22463b4de7"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_histogram_color_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_histogram</span> <span class="pre">pHistogram)</span></code></dt>
 <dd><p>Get the resource identifier for colors buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -764,9 +771,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1ga5574b44a0a8ac799053dc8e41e0b8b68"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_alpha_buffer(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<span class="target" id="group__hist__functions_1ga5574b44a0a8ac799053dc8e41e0b8b68"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_histogram_alpha_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_histogram</span> <span class="pre">pHistogram)</span></code></dt>
 <dd><p>Get the resource identifier for alpha values buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -780,9 +787,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1ga4dcc07c2f609ad05bbe65cd9ec161deb"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_vertex_buffer_size(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<span class="target" id="group__hist__functions_1ga4dcc07c2f609ad05bbe65cd9ec161deb"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_histogram_vertex_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_histogram</span> <span class="pre">pHistogram)</span></code></dt>
 <dd><p>Get the vertices buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -796,9 +803,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1gaa0676cabd971bc0ac80f03d9963017e5"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_color_buffer_size(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<span class="target" id="group__hist__functions_1gaa0676cabd971bc0ac80f03d9963017e5"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_histogram_color_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_histogram</span> <span class="pre">pHistogram)</span></code></dt>
 <dd><p>Get the colors buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -812,9 +819,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__hist__functions_1ga5a3d84d84918a9a8ed8236679cc5ebb0"></span><code class="sig-name descname">FGAPI fg_err fg_get_histogram_alpha_buffer_size(unsigned * pOut, const  fg_histogram pHistogram)</code></dt>
+<span class="target" id="group__hist__functions_1ga5a3d84d84918a9a8ed8236679cc5ebb0"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_histogram_alpha_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_histogram</span> <span class="pre">pHistogram)</span></code></dt>
 <dd><p>Get the alpha values buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -836,12 +843,12 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 <h2>Image Functions<a class="headerlink" href="#image-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="group">
 <dt>
-<span class="target" id="group__image__functions"></span><em>group</em> <code class="sig-name descname">image_functions</code></dt>
+<span class="target" id="group__image__functions"></span><em><span class="pre">group</span></em> <code class="sig-name descname"><span class="pre">image_functions</span></code></dt>
 <dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1ga96a5b5f6f8033a04f8ff3b8d35a6ef6d"></span><code class="sig-name descname">FGAPI fg_err fg_create_image(fg_image  * pImage, const unsigned pWidth, const unsigned pHeight, const  fg_channel_format pFormat, const  fg_dtype pType)</code></dt>
+<span class="target" id="group__image__functions_1ga96a5b5f6f8033a04f8ff3b8d35a6ef6d"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_create_image</span> <span class="pre">(fg_image</span> <span class="pre">*pImage,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pWidth,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pHeight,</span> <span class="pre">const</span> <span class="pre">fg_channel_format</span> <span class="pre">pFormat,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pType)</span></code></dt>
 <dd><p>Create a Image object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -858,9 +865,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1ga2370e2fab2884223061b093413b63979"></span><code class="sig-name descname">FGAPI fg_err fg_retain_image(fg_image  * pOut, fg_image pImage)</code></dt>
+<span class="target" id="group__image__functions_1ga2370e2fab2884223061b093413b63979"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_retain_image</span> <span class="pre">(fg_image</span> <span class="pre">*pOut,</span> <span class="pre">fg_image</span> <span class="pre">pImage)</span></code></dt>
 <dd><p>Increment the internal reference counter for image resource. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -874,9 +881,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1ga6a625ac14f9dae788042841d02de73e1"></span><code class="sig-name descname">FGAPI fg_err fg_release_image(fg_image pImage)</code></dt>
+<span class="target" id="group__image__functions_1ga6a625ac14f9dae788042841d02de73e1"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_release_image</span> <span class="pre">(fg_image</span> <span class="pre">pImage)</span></code></dt>
 <dd><p>Destroy image object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -889,9 +896,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1ga7cc53bb04467bf6adac606ae36daebfe"></span><code class="sig-name descname">FGAPI fg_err fg_set_image_alpha(fg_image pImage, const float pAlpha)</code></dt>
+<span class="target" id="group__image__functions_1ga7cc53bb04467bf6adac606ae36daebfe"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_image_alpha</span> <span class="pre">(fg_image</span> <span class="pre">pImage,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pAlpha)</span></code></dt>
 <dd><p>Set a global alpha value for rendering the image. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -905,9 +912,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1ga38ee70f9a95d3eee9ad7b6d722db4cc4"></span><code class="sig-name descname">FGAPI fg_err fg_set_image_aspect_ratio(fg_image pImage, const bool pKeepRatio)</code></dt>
+<span class="target" id="group__image__functions_1ga38ee70f9a95d3eee9ad7b6d722db4cc4"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_image_aspect_ratio</span> <span class="pre">(fg_image</span> <span class="pre">pImage,</span> <span class="pre">const</span> <span class="pre">bool</span> <span class="pre">pKeepRatio)</span></code></dt>
 <dd><p>Set option to inform whether to maintain aspect ratio of original image. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -921,9 +928,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1gaa901be2f89f1e38afda3838aba6acc48"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_width(unsigned * pOut, const  fg_image pImage)</code></dt>
+<span class="target" id="group__image__functions_1gaa901be2f89f1e38afda3838aba6acc48"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_image_width</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_image</span> <span class="pre">pImage)</span></code></dt>
 <dd><p>Get the width of the image. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -937,9 +944,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1ga92f5e5990d268ce8bfa1ed5aed00e69a"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_height(unsigned * pOut, const  fg_image pImage)</code></dt>
+<span class="target" id="group__image__functions_1ga92f5e5990d268ce8bfa1ed5aed00e69a"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_image_height</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_image</span> <span class="pre">pImage)</span></code></dt>
 <dd><p>Get the height of the image. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -953,9 +960,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1gadf1bdb5e66281e49cd6b98ef2d4dfd58"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_pixelformat(fg_channel_format  * pOut, const  fg_image pImage)</code></dt>
+<span class="target" id="group__image__functions_1gadf1bdb5e66281e49cd6b98ef2d4dfd58"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_image_pixelformat</span> <span class="pre">(fg_channel_format</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_image</span> <span class="pre">pImage)</span></code></dt>
 <dd><p>Get the channel format of the image. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -969,9 +976,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1gab5a02f3bceaec6b2be6bfe8ab615d7db"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_type(fg_dtype  * pOut, const  fg_image pImage)</code></dt>
+<span class="target" id="group__image__functions_1gab5a02f3bceaec6b2be6bfe8ab615d7db"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_image_type</span> <span class="pre">(fg_dtype</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_image</span> <span class="pre">pImage)</span></code></dt>
 <dd><p>Get the pixel data type of the image. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -985,9 +992,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1gada4d0d584fdf9f362cba1d01b61eb6b9"></span><code class="sig-name descname">FGAPI fg_err fg_get_pixel_buffer(unsigned * pOut, const  fg_image pImage)</code></dt>
+<span class="target" id="group__image__functions_1gada4d0d584fdf9f362cba1d01b61eb6b9"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_pixel_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_image</span> <span class="pre">pImage)</span></code></dt>
 <dd><p>Get the image buffer resource identifier. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1001,9 +1008,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1gacd9454d2c848440fa15b0f0a0af9f400"></span><code class="sig-name descname">FGAPI fg_err fg_get_image_size(unsigned * pOut, const  fg_image pImage)</code></dt>
+<span class="target" id="group__image__functions_1gacd9454d2c848440fa15b0f0a0af9f400"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_image_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_image</span> <span class="pre">pImage)</span></code></dt>
 <dd><p>Get the image buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1017,9 +1024,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__image__functions_1gaa192b1595f21acb3fc140223344049ab"></span><code class="sig-name descname">FGAPI fg_err fg_render_image(const  fg_window pWindow, const  fg_image pImage, const int pX, const int pY, const int pWidth, const int pHeight)</code></dt>
+<span class="target" id="group__image__functions_1gaa192b1595f21acb3fc140223344049ab"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_render_image</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">fg_image</span> <span class="pre">pImage,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pX,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pY,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pWidth,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pHeight)</span></code></dt>
 <dd><p>Render the image to given window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1045,12 +1052,12 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 <h2>Plot Functions<a class="headerlink" href="#plot-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="group">
 <dt>
-<span class="target" id="group__plot__functions"></span><em>group</em> <code class="sig-name descname">plot_functions</code></dt>
+<span class="target" id="group__plot__functions"></span><em><span class="pre">group</span></em> <code class="sig-name descname"><span class="pre">plot_functions</span></code></dt>
 <dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1gaffa0499614393c088aebb973e28b95b2"></span><code class="sig-name descname">FGAPI fg_err fg_create_plot(fg_plot  * pPlot, const unsigned pNPoints, const  fg_dtype pType, const  fg_chart_type pChartType, const  fg_plot_type pPlotType, const  fg_marker_type pMarkerType)</code></dt>
+<span class="target" id="group__plot__functions_1gaffa0499614393c088aebb973e28b95b2"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_create_plot</span> <span class="pre">(fg_plot</span> <span class="pre">*pPlot,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pNPoints,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pType,</span> <span class="pre">const</span> <span class="pre">fg_chart_type</span> <span class="pre">pChartType,</span> <span class="pre">const</span> <span class="pre">fg_plot_type</span> <span class="pre">pPlotType,</span> <span class="pre">const</span> <span class="pre">fg_marker_type</span> <span class="pre">pMarkerType)</span></code></dt>
 <dd><p>Create a Plot object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1068,9 +1075,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1gaa03c29b5d6b80ce2e2a1ac138fca8c3a"></span><code class="sig-name descname">FGAPI fg_err fg_retain_plot(fg_plot  * pOut, fg_plot pIn)</code></dt>
+<span class="target" id="group__plot__functions_1gaa03c29b5d6b80ce2e2a1ac138fca8c3a"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_retain_plot</span> <span class="pre">(fg_plot</span> <span class="pre">*pOut,</span> <span class="pre">fg_plot</span> <span class="pre">pIn)</span></code></dt>
 <dd><p>Increase reference count of the resource. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1084,9 +1091,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1gafe78b77407cd80f8b546bd59f5e2633c"></span><code class="sig-name descname">FGAPI fg_err fg_release_plot(fg_plot pPlot)</code></dt>
+<span class="target" id="group__plot__functions_1gafe78b77407cd80f8b546bd59f5e2633c"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_release_plot</span> <span class="pre">(fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Destroy plot object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1099,9 +1106,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1ga0a884cc68f6d1d829d3657d689f5a12a"></span><code class="sig-name descname">FGAPI fg_err fg_set_plot_color(fg_plot pPlot, const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<span class="target" id="group__plot__functions_1ga0a884cc68f6d1d829d3657d689f5a12a"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_plot_color</span> <span class="pre">(fg_plot</span> <span class="pre">pPlot,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pRed,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pGreen,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pBlue,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pAlpha)</span></code></dt>
 <dd><p>Set the color of line graph(plot) </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1118,9 +1125,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1ga0307e6fb1fdc358a1c097ec6eb568aed"></span><code class="sig-name descname">FGAPI fg_err fg_set_plot_legend(fg_plot pPlot, const char * pLegend)</code></dt>
+<span class="target" id="group__plot__functions_1ga0307e6fb1fdc358a1c097ec6eb568aed"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_plot_legend</span> <span class="pre">(fg_plot</span> <span class="pre">pPlot,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pLegend)</span></code></dt>
 <dd><p>Set plot legend. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1134,9 +1141,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1ga7988d5ebd327350e1c42ac773219d655"></span><code class="sig-name descname">FGAPI fg_err fg_set_plot_marker_size(fg_plot pPlot, const float pMarkerSize)</code></dt>
+<span class="target" id="group__plot__functions_1ga7988d5ebd327350e1c42ac773219d655"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_plot_marker_size</span> <span class="pre">(fg_plot</span> <span class="pre">pPlot,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pMarkerSize)</span></code></dt>
 <dd><p>Set global marker size. </p>
 <p>This size will be used for rendering markers if no per vertex marker sizes are provided. This value defaults to 10</p>
 <p><dl class="simple">
@@ -1151,9 +1158,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1ga65255ddeb22d8dc44c4ddfad3dcc001c"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_vertex_buffer(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<span class="target" id="group__plot__functions_1ga65255ddeb22d8dc44c4ddfad3dcc001c"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_plot_vertex_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Get the resource identifier for vertices buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1167,9 +1174,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1gaf885a4b0109bb50cad30d3e127a4c458"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_color_buffer(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<span class="target" id="group__plot__functions_1gaf885a4b0109bb50cad30d3e127a4c458"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_plot_color_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Get the resource identifier for colors buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1183,9 +1190,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1ga76c63f4c418c340c23bc454557f6adf9"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_alpha_buffer(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<span class="target" id="group__plot__functions_1ga76c63f4c418c340c23bc454557f6adf9"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_plot_alpha_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Get the resource identifier for alpha values buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1199,9 +1206,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1gac0a0420d8b02bb04978b33d6a3dba4f2"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_radii_buffer(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<span class="target" id="group__plot__functions_1gac0a0420d8b02bb04978b33d6a3dba4f2"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_plot_radii_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Get the resource identifier for markers radii buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1215,9 +1222,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1ga87d05602861e08b58f6d49f29feaeea4"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_vertex_buffer_size(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<span class="target" id="group__plot__functions_1ga87d05602861e08b58f6d49f29feaeea4"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_plot_vertex_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Get the vertices buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1231,9 +1238,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1ga4dd623edea423baf0060e54bc8122a52"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_color_buffer_size(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<span class="target" id="group__plot__functions_1ga4dd623edea423baf0060e54bc8122a52"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_plot_color_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Get the colors buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1247,9 +1254,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1gad3ff811f6821ce8cecc9cecfb6968851"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_alpha_buffer_size(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<span class="target" id="group__plot__functions_1gad3ff811f6821ce8cecc9cecfb6968851"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_plot_alpha_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Get the alpha values buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1263,9 +1270,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__plot__functions_1ga10d0d43c29ac5a4db19886d661eb29a2"></span><code class="sig-name descname">FGAPI fg_err fg_get_plot_radii_buffer_size(unsigned * pOut, const  fg_plot pPlot)</code></dt>
+<span class="target" id="group__plot__functions_1ga10d0d43c29ac5a4db19886d661eb29a2"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_plot_radii_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_plot</span> <span class="pre">pPlot)</span></code></dt>
 <dd><p>Get the markers buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1287,12 +1294,12 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 <h2>Surface Functions<a class="headerlink" href="#surface-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="group">
 <dt>
-<span class="target" id="group__surf__functions"></span><em>group</em> <code class="sig-name descname">surf_functions</code></dt>
+<span class="target" id="group__surf__functions"></span><em><span class="pre">group</span></em> <code class="sig-name descname"><span class="pre">surf_functions</span></code></dt>
 <dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1ga1aa96efbe12f60ee5240da45d7cf83ab"></span><code class="sig-name descname">FGAPI fg_err fg_create_surface(fg_surface  * pSurface, const unsigned pXPoints, const unsigned pYPoints, const  fg_dtype pType, const  fg_plot_type pPlotType, const  fg_marker_type pMarkerType)</code></dt>
+<span class="target" id="group__surf__functions_1ga1aa96efbe12f60ee5240da45d7cf83ab"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_create_surface</span> <span class="pre">(fg_surface</span> <span class="pre">*pSurface,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pXPoints,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pYPoints,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pType,</span> <span class="pre">const</span> <span class="pre">fg_plot_type</span> <span class="pre">pPlotType,</span> <span class="pre">const</span> <span class="pre">fg_marker_type</span> <span class="pre">pMarkerType)</span></code></dt>
 <dd><p>Create a Surface object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1310,9 +1317,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1gad3b729c28ac2425c396186deafa392f1"></span><code class="sig-name descname">FGAPI fg_err fg_retain_surface(fg_surface  * pOut, fg_surface pIn)</code></dt>
+<span class="target" id="group__surf__functions_1gad3b729c28ac2425c396186deafa392f1"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_retain_surface</span> <span class="pre">(fg_surface</span> <span class="pre">*pOut,</span> <span class="pre">fg_surface</span> <span class="pre">pIn)</span></code></dt>
 <dd><p>Increase reference count of the resource. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1326,9 +1333,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1ga0dd9ec44628624555ef6f6c815de6325"></span><code class="sig-name descname">FGAPI fg_err fg_release_surface(fg_surface pSurface)</code></dt>
+<span class="target" id="group__surf__functions_1ga0dd9ec44628624555ef6f6c815de6325"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_release_surface</span> <span class="pre">(fg_surface</span> <span class="pre">pSurface)</span></code></dt>
 <dd><p>Destroy surface object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1341,9 +1348,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1ga07485f9baf7058ab08a8df9108880a4b"></span><code class="sig-name descname">FGAPI fg_err fg_set_surface_color(fg_surface pSurface, const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<span class="target" id="group__surf__functions_1ga07485f9baf7058ab08a8df9108880a4b"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_surface_color</span> <span class="pre">(fg_surface</span> <span class="pre">pSurface,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pRed,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pGreen,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pBlue,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pAlpha)</span></code></dt>
 <dd><p>Set the color of surface. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1360,9 +1367,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1gae40dd79a4cf4b072a1e96db1d74483c5"></span><code class="sig-name descname">FGAPI fg_err fg_set_surface_legend(fg_surface pSurface, const char * pLegend)</code></dt>
+<span class="target" id="group__surf__functions_1gae40dd79a4cf4b072a1e96db1d74483c5"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_surface_legend</span> <span class="pre">(fg_surface</span> <span class="pre">pSurface,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pLegend)</span></code></dt>
 <dd><p>Set surface legend. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1376,9 +1383,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1ga1b524434b28e223e22e8a7d8275fef0d"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_vertex_buffer(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<span class="target" id="group__surf__functions_1ga1b524434b28e223e22e8a7d8275fef0d"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_surface_vertex_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_surface</span> <span class="pre">pSurface)</span></code></dt>
 <dd><p>Get the resource identifier for vertices buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1392,9 +1399,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1gaa0a7dc2fdf21db567ce7c26682b32390"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_color_buffer(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<span class="target" id="group__surf__functions_1gaa0a7dc2fdf21db567ce7c26682b32390"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_surface_color_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_surface</span> <span class="pre">pSurface)</span></code></dt>
 <dd><p>Get the resource identifier for colors buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1408,9 +1415,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1gab310a49edd0dab0d56d436846545ac7c"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_alpha_buffer(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<span class="target" id="group__surf__functions_1gab310a49edd0dab0d56d436846545ac7c"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_surface_alpha_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_surface</span> <span class="pre">pSurface)</span></code></dt>
 <dd><p>Get the resource identifier for alpha values buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1424,9 +1431,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1ga7e72cd9174bab308c8df4e9594192e00"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_vertex_buffer_size(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<span class="target" id="group__surf__functions_1ga7e72cd9174bab308c8df4e9594192e00"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_surface_vertex_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_surface</span> <span class="pre">pSurface)</span></code></dt>
 <dd><p>Get the vertices buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1440,9 +1447,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1ga7faf1881724c2e8cc0c3d7d341b1365f"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_color_buffer_size(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<span class="target" id="group__surf__functions_1ga7faf1881724c2e8cc0c3d7d341b1365f"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_surface_color_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_surface</span> <span class="pre">pSurface)</span></code></dt>
 <dd><p>Get the colors buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1456,9 +1463,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__surf__functions_1ga36155cd2b8edd5bda5a1f3ecdaa285b8"></span><code class="sig-name descname">FGAPI fg_err fg_get_surface_alpha_buffer_size(unsigned * pOut, const  fg_surface pSurface)</code></dt>
+<span class="target" id="group__surf__functions_1ga36155cd2b8edd5bda5a1f3ecdaa285b8"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_surface_alpha_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_surface</span> <span class="pre">pSurface)</span></code></dt>
 <dd><p>Get the alpha values buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1480,12 +1487,12 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 <h2>Vector Field Functions<a class="headerlink" href="#vector-field-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="group">
 <dt>
-<span class="target" id="group__vfield__functions"></span><em>group</em> <code class="sig-name descname">vfield_functions</code></dt>
+<span class="target" id="group__vfield__functions"></span><em><span class="pre">group</span></em> <code class="sig-name descname"><span class="pre">vfield_functions</span></code></dt>
 <dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1gac6bfde9209925e211e7fbbe3b2a6fc3f"></span><code class="sig-name descname">FGAPI fg_err fg_create_vector_field(fg_vector_field  * pField, const unsigned pNPoints, const  fg_dtype pType, const  fg_chart_type pChartType)</code></dt>
+<span class="target" id="group__vfield__functions_1gac6bfde9209925e211e7fbbe3b2a6fc3f"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_create_vector_field</span> <span class="pre">(fg_vector_field</span> <span class="pre">*pField,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pNPoints,</span> <span class="pre">const</span> <span class="pre">fg_dtype</span> <span class="pre">pType,</span> <span class="pre">const</span> <span class="pre">fg_chart_type</span> <span class="pre">pChartType)</span></code></dt>
 <dd><p>Create a Vector field object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1501,9 +1508,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1ga1d010e91dfe57decb96ff1a740a92e39"></span><code class="sig-name descname">FGAPI fg_err fg_retain_vector_field(fg_vector_field  * pOut, fg_vector_field pIn)</code></dt>
+<span class="target" id="group__vfield__functions_1ga1d010e91dfe57decb96ff1a740a92e39"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_retain_vector_field</span> <span class="pre">(fg_vector_field</span> <span class="pre">*pOut,</span> <span class="pre">fg_vector_field</span> <span class="pre">pIn)</span></code></dt>
 <dd><p>Increase reference count of the resource. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1517,9 +1524,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1ga11f9c084ceef8efa4add1e1a92c07770"></span><code class="sig-name descname">FGAPI fg_err fg_release_vector_field(fg_vector_field pField)</code></dt>
+<span class="target" id="group__vfield__functions_1ga11f9c084ceef8efa4add1e1a92c07770"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_release_vector_field</span> <span class="pre">(fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Destroy vector field object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1532,9 +1539,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1ga787b766f81c00dbf101d26291d8fb048"></span><code class="sig-name descname">FGAPI fg_err fg_set_vector_field_color(fg_vector_field pField, const float pRed, const float pGreen, const float pBlue, const float pAlpha)</code></dt>
+<span class="target" id="group__vfield__functions_1ga787b766f81c00dbf101d26291d8fb048"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_vector_field_color</span> <span class="pre">(fg_vector_field</span> <span class="pre">pField,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pRed,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pGreen,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pBlue,</span> <span class="pre">const</span> <span class="pre">float</span> <span class="pre">pAlpha)</span></code></dt>
 <dd><p>Set the color of vector field. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1551,9 +1558,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1ga24c5012238ce7736b21c69e235287e90"></span><code class="sig-name descname">FGAPI fg_err fg_set_vector_field_legend(fg_vector_field pField, const char * pLegend)</code></dt>
+<span class="target" id="group__vfield__functions_1ga24c5012238ce7736b21c69e235287e90"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_vector_field_legend</span> <span class="pre">(fg_vector_field</span> <span class="pre">pField,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pLegend)</span></code></dt>
 <dd><p>Set vector field legend. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1567,9 +1574,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1ga3ba17a8d91e66773febb8a0f65a6ece3"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_vertex_buffer(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<span class="target" id="group__vfield__functions_1ga3ba17a8d91e66773febb8a0f65a6ece3"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_vector_field_vertex_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Get the resource identifier for vertices buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1583,9 +1590,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1gaaa4694ba1e9b063fc6db549bf4f41440"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_color_buffer(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<span class="target" id="group__vfield__functions_1gaaa4694ba1e9b063fc6db549bf4f41440"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_vector_field_color_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Get the resource identifier for colors buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1599,9 +1606,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1gabb991edfe780383f4c74c1e23198f3a1"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_alpha_buffer(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<span class="target" id="group__vfield__functions_1gabb991edfe780383f4c74c1e23198f3a1"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_vector_field_alpha_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Get the resource identifier for alpha values buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1615,9 +1622,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1ga8d3b14e81c1f1b88052189e759f6a451"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_direction_buffer(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<span class="target" id="group__vfield__functions_1ga8d3b14e81c1f1b88052189e759f6a451"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_vector_field_direction_buffer</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Get the resource identifier for directions buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1631,9 +1638,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1gac3cbe1afe4376e956909a33967695aa2"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_vertex_buffer_size(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<span class="target" id="group__vfield__functions_1gac3cbe1afe4376e956909a33967695aa2"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_vector_field_vertex_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Get the vertices buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1647,9 +1654,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1ga02a1ab6afad24d535f8c2d9c6493a1ee"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_color_buffer_size(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<span class="target" id="group__vfield__functions_1ga02a1ab6afad24d535f8c2d9c6493a1ee"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_vector_field_color_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Get the colors buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1663,9 +1670,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1ga893d2112b0d0e2cac4f856a1183845f0"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_alpha_buffer_size(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<span class="target" id="group__vfield__functions_1ga893d2112b0d0e2cac4f856a1183845f0"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_vector_field_alpha_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Get the alpha values buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1679,9 +1686,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__vfield__functions_1ga4f2ba1303b612c540062c2e76085e1d8"></span><code class="sig-name descname">FGAPI fg_err fg_get_vector_field_direction_buffer_size(unsigned * pOut, const  fg_vector_field pField)</code></dt>
+<span class="target" id="group__vfield__functions_1ga4f2ba1303b612c540062c2e76085e1d8"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_vector_field_direction_buffer_size</span> <span class="pre">(unsigned</span> <span class="pre">*pOut,</span> <span class="pre">const</span> <span class="pre">fg_vector_field</span> <span class="pre">pField)</span></code></dt>
 <dd><p>Get the directions buffer size in bytes. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1703,12 +1710,12 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 <h2>Window Functions<a class="headerlink" href="#window-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="group">
 <dt>
-<span class="target" id="group__win__functions"></span><em>group</em> <code class="sig-name descname">win_functions</code></dt>
+<span class="target" id="group__win__functions"></span><em><span class="pre">group</span></em> <code class="sig-name descname"><span class="pre">win_functions</span></code></dt>
 <dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga3e658dbc45e6c0a2e7588014e02a0b53"></span><code class="sig-name descname">FGAPI fg_err fg_create_window(fg_window  * pWindow, const int pWidth, const int pHeight, const char * pTitle, const  fg_window pShareWindow, const bool pInvisible)</code></dt>
+<span class="target" id="group__win__functions_1ga3e658dbc45e6c0a2e7588014e02a0b53"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_create_window</span> <span class="pre">(fg_window</span> <span class="pre">*pWindow,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pWidth,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pHeight,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pTitle,</span> <span class="pre">const</span> <span class="pre">fg_window</span> <span class="pre">pShareWindow,</span> <span class="pre">const</span> <span class="pre">bool</span> <span class="pre">pInvisible)</span></code></dt>
 <dd><p>Create a Window object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1726,9 +1733,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga792869c2709d1793a47a6c97eb8e0387"></span><code class="sig-name descname">FGAPI fg_err fg_retain_window(fg_window  * pOut, fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1ga792869c2709d1793a47a6c97eb8e0387"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_retain_window</span> <span class="pre">(fg_window</span> <span class="pre">*pOut,</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Increment the internal reference count for Window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1742,9 +1749,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gafe2f94bad6c3b1971eece047284bb39e"></span><code class="sig-name descname">FGAPI fg_err fg_release_window(fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1gafe2f94bad6c3b1971eece047284bb39e"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_release_window</span> <span class="pre">(fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Destroy Window Object. </p>
 <p>Decrements the reference count to the shared window object.</p>
 <p><dl class="simple">
@@ -1758,9 +1765,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gafc60abec8097b16c74269c924ffe347b"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_font(fg_window pWindow, const  fg_font pFont)</code></dt>
+<span class="target" id="group__win__functions_1gafc60abec8097b16c74269c924ffe347b"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_window_font</span> <span class="pre">(fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">fg_font</span> <span class="pre">pFont)</span></code></dt>
 <dd><p>Set font object to be used by Window Object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1774,9 +1781,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gabe594e9d3dd275b3a80d510a96d72c8b"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_title(fg_window pWindow, const char * pTitle)</code></dt>
+<span class="target" id="group__win__functions_1gabe594e9d3dd275b3a80d510a96d72c8b"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_window_title</span> <span class="pre">(fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pTitle)</span></code></dt>
 <dd><p>Set the title of Window Object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1790,9 +1797,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gad50c051a15e13876956d102537f88760"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY)</code></dt>
+<span class="target" id="group__win__functions_1gad50c051a15e13876956d102537f88760"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_window_position</span> <span class="pre">(fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pX,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pY)</span></code></dt>
 <dd><p>Set the window origin of Window Object w.r.t screen origin. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1807,9 +1814,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gac3d066b2f5fc7aa19256bc5b047986ea"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const unsigned pHeight)</code></dt>
+<span class="target" id="group__win__functions_1gac3d066b2f5fc7aa19256bc5b047986ea"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_window_size</span> <span class="pre">(fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pWidth,</span> <span class="pre">const</span> <span class="pre">unsigned</span> <span class="pre">pHeight)</span></code></dt>
 <dd><p>Set the window dimensions of Window Object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1824,9 +1831,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga3f55573ddec8e8981c8de43aafac9374"></span><code class="sig-name descname">FGAPI fg_err fg_set_window_colormap(fg_window pWindow, const  fg_color_map pColorMap)</code></dt>
+<span class="target" id="group__win__functions_1ga3f55573ddec8e8981c8de43aafac9374"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_set_window_colormap</span> <span class="pre">(fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">fg_color_map</span> <span class="pre">pColorMap)</span></code></dt>
 <dd><p>Set the colormap to be used by the Window Object. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1840,9 +1847,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga805617678f5dc01bafb8bac8da0dc657"></span><code class="sig-name descname">FGAPI fg_err fg_get_window_context_handle(long long * pContext, const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1ga805617678f5dc01bafb8bac8da0dc657"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_window_context_handle</span> <span class="pre">(long</span> <span class="pre">long</span> <span class="pre">*pContext,</span> <span class="pre">const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Get the backend specific context handle of Window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1856,9 +1863,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gab10730dec8a60624e91bb1013f218c93"></span><code class="sig-name descname">FGAPI fg_err fg_get_window_display_handle(long long * pDisplay, const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1gab10730dec8a60624e91bb1013f218c93"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_window_display_handle</span> <span class="pre">(long</span> <span class="pre">long</span> <span class="pre">*pDisplay,</span> <span class="pre">const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Get the display device handle of Window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1872,9 +1879,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga1d6e1ce37f3e3e30f06c8af46429e447"></span><code class="sig-name descname">FGAPI fg_err fg_get_window_width(int * pWidth, const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1ga1d6e1ce37f3e3e30f06c8af46429e447"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_window_width</span> <span class="pre">(int</span> <span class="pre">*pWidth,</span> <span class="pre">const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Get the width of Window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1888,9 +1895,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gae791094a195f197551743fb5560d1868"></span><code class="sig-name descname">FGAPI fg_err fg_get_window_height(int * pHeight, const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1gae791094a195f197551743fb5560d1868"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_get_window_height</span> <span class="pre">(int</span> <span class="pre">*pHeight,</span> <span class="pre">const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Get the height of Window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1904,9 +1911,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga4c83e16832fabcd1ee98b2c90387a209"></span><code class="sig-name descname">FGAPI fg_err fg_make_window_current(const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1ga4c83e16832fabcd1ee98b2c90387a209"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_make_window_current</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Make the window’s backend specific context the active context in given thread. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1919,9 +1926,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gae5297426a910bf775cc695405fac7289"></span><code class="sig-name descname">FGAPI fg_err fg_hide_window(const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1gae5297426a910bf775cc695405fac7289"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_hide_window</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Hide the Window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1934,9 +1941,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga6728e9f4384b93e2d43a789525cb1066"></span><code class="sig-name descname">FGAPI fg_err fg_show_window(const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1ga6728e9f4384b93e2d43a789525cb1066"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_show_window</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Show the Window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1949,9 +1956,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga478e108fe8612075467f0c55c57e58cd"></span><code class="sig-name descname">FGAPI fg_err fg_close_window(bool * pIsClosed, const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1ga478e108fe8612075467f0c55c57e58cd"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_close_window</span> <span class="pre">(bool</span> <span class="pre">*pIsClosed,</span> <span class="pre">const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Check if the Window is closed. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1965,9 +1972,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gae1f0287666d57005c26c32f1106ed656"></span><code class="sig-name descname">FGAPI fg_err fg_draw_image(const  fg_window pWindow, const  fg_image pImage, const bool pKeepAspectRatio)</code></dt>
+<span class="target" id="group__win__functions_1gae1f0287666d57005c26c32f1106ed656"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_draw_image</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">fg_image</span> <span class="pre">pImage,</span> <span class="pre">const</span> <span class="pre">bool</span> <span class="pre">pKeepAspectRatio)</span></code></dt>
 <dd><p>Render given image to Window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1982,9 +1989,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga61211cc484b0bf8ca217b8b2d02343c7"></span><code class="sig-name descname">FGAPI fg_err fg_draw_chart(const  fg_window pWindow, const  fg_chart pChart)</code></dt>
+<span class="target" id="group__win__functions_1ga61211cc484b0bf8ca217b8b2d02343c7"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_draw_chart</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">fg_chart</span> <span class="pre">pChart)</span></code></dt>
 <dd><p>Render given chart to Window. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -1998,9 +2005,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gab01edfd22cb1e2df0d269666be4f642c"></span><code class="sig-name descname">FGAPI fg_err fg_draw_image_to_cell(const  fg_window pWindow, const int pRows, const int pCols, const int pIndex, const  fg_image pImage, const char * pTitle, const bool pKeepAspectRatio)</code></dt>
+<span class="target" id="group__win__functions_1gab01edfd22cb1e2df0d269666be4f642c"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_draw_image_to_cell</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pRows,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pCols,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pIndex,</span> <span class="pre">const</span> <span class="pre">fg_image</span> <span class="pre">pImage,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pTitle,</span> <span class="pre">const</span> <span class="pre">bool</span> <span class="pre">pKeepAspectRatio)</span></code></dt>
 <dd><p>Render given image to Window’s particular sub-view. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code</p>
@@ -2021,9 +2028,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga3e3582c40488cf127ac3132f7bc6db03"></span><code class="sig-name descname">FGAPI fg_err fg_draw_chart_to_cell(const  fg_window pWindow, const int pRows, const int pCols, const int pIndex, const  fg_chart pChart, const char * pTitle)</code></dt>
+<span class="target" id="group__win__functions_1ga3e3582c40488cf127ac3132f7bc6db03"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_draw_chart_to_cell</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pRows,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pCols,</span> <span class="pre">const</span> <span class="pre">int</span> <span class="pre">pIndex,</span> <span class="pre">const</span> <span class="pre">fg_chart</span> <span class="pre">pChart,</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*pTitle)</span></code></dt>
 <dd><p>Render given chart to Window’s particular sub-view. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code</p>
@@ -2043,9 +2050,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1gab72f93dadcde7ce021c0d777895f9aa3"></span><code class="sig-name descname">FGAPI fg_err fg_swap_window_buffers(const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1gab72f93dadcde7ce021c0d777895f9aa3"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_swap_window_buffers</span> <span class="pre">(const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Swap back buffer with front buffer. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -2058,9 +2065,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__win__functions_1ga5bed7d67d5f777aa220c7af87333468d"></span><code class="sig-name descname">FGAPI fg_err fg_save_window_framebuffer(const char * pFullPath, const  fg_window pWindow)</code></dt>
+<span class="target" id="group__win__functions_1ga5bed7d67d5f777aa220c7af87333468d"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_save_window_framebuffer</span> <span class="pre">(const</span> <span class="pre">char</span> <span class="pre">*pFullPath,</span> <span class="pre">const</span> <span class="pre">fg_window</span> <span class="pre">pWindow)</span></code></dt>
 <dd><p>Save the current frame buffer to a file at provided path. </p>
 <p>The frame buffer stored to the disk is saved in the image format based on the extension provided in the full file path string.</p>
 <p><dl class="simple">
@@ -2083,24 +2090,24 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 <h2>Utility Functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="group">
 <dt>
-<span class="target" id="group__util__functions"></span><em>group</em> <code class="sig-name descname">util_functions</code></dt>
+<span class="target" id="group__util__functions"></span><em><span class="pre">group</span></em> <code class="sig-name descname"><span class="pre">util_functions</span></code></dt>
 <dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__util__functions_1gab03b5979fac90230276f4d5f0c3cc013"></span><code class="sig-name descname">FGAPI void fg_get_last_error(char ** msg, int * len)</code></dt>
+<span class="target" id="group__util__functions_1gab03b5979fac90230276f4d5f0c3cc013"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">void</span> <span class="pre">fg_get_last_error</span> <span class="pre">(char</span> <span class="pre">**msg,</span> <span class="pre">int</span> <span class="pre">*len)</span></code></dt>
 <dd><p>Fetch the last error’s error code. </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__util__functions_1ga3c743d6525160e8a0231bb54ba6d7317"></span><code class="sig-name descname">const FGAPI char* fg_err_to_string(const  fg_err err)</code></dt>
+<span class="target" id="group__util__functions_1gae497e3d834f5865d14fcef6743af5c18"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">const</span> <span class="pre">char</span> <span class="pre">*</span> <span class="pre">fg_err_to_string</span> <span class="pre">(const</span> <span class="pre">fg_err</span> <span class="pre">err)</span></code></dt>
 <dd><p>Fetch the string message associated to given error code. </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__util__functions_1ga94e9af1762f3102ba4c2f3cea2540aea"></span><code class="sig-name descname">FGAPI fg_err fg_update_vertex_buffer(const unsigned pBufferId, const size_t pBufferSize, const void * pBufferData)</code></dt>
+<span class="target" id="group__util__functions_1ga94e9af1762f3102ba4c2f3cea2540aea"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_update_vertex_buffer</span> <span class="pre">(const</span> <span class="pre">unsigned</span> <span class="pre">pBufferId,</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">pBufferSize,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*pBufferData)</span></code></dt>
 <dd><p>Update backend specific vertex buffer from given host side memory. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -2115,9 +2122,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__util__functions_1gabdbef8d2b1d49718baafd6ef374007e9"></span><code class="sig-name descname">FGAPI fg_err fg_update_pixel_buffer(const unsigned pBufferId, const size_t pBufferSize, const void * pBufferData)</code></dt>
+<span class="target" id="group__util__functions_1gabdbef8d2b1d49718baafd6ef374007e9"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_update_pixel_buffer</span> <span class="pre">(const</span> <span class="pre">unsigned</span> <span class="pre">pBufferId,</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">pBufferSize,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*pBufferData)</span></code></dt>
 <dd><p>Update backend specific pixel buffer from given host side memory. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -2132,9 +2139,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__util__functions_1gae06c0e84df206dcbb06916b004fca3b9"></span><code class="sig-name descname">FGAPI fg_err fg_finish()</code></dt>
+<span class="target" id="group__util__functions_1gae06c0e84df206dcbb06916b004fca3b9"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">fg_err</span> <span class="pre">fg_finish</span> <span class="pre">()</span></code></dt>
 <dd><p>Sync all rendering operations till this point. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="enums.html#defines_8h_1a4ee782f922694c98a5d10822dedeabf0"><span class="std std-ref">fg_err</span></a> error code </p>
@@ -2143,9 +2150,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__util__functions_1ga91ff0e16d91df9f1c5f33d0a60fe5e03"></span><code class="sig-name descname">FGAPI void forge::updateVertexBuffer(const unsigned pBufferId, const size_t pBufferSize, const void * pBufferData)</code></dt>
+<span class="target" id="group__util__functions_1ga91ff0e16d91df9f1c5f33d0a60fe5e03"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">void</span> <span class="pre">updateVertexBuffer</span> <span class="pre">(const</span> <span class="pre">unsigned</span> <span class="pre">pBufferId,</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">pBufferSize,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*pBufferData)</span></code></dt>
 <dd><p>Update backend specific vertex buffer from given host side memory. </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -2158,9 +2165,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__util__functions_1gaf00cea8807116812f82c738d32d7fdb0"></span><code class="sig-name descname">FGAPI void forge::updatePixelBuffer(const unsigned pBufferId, const size_t pBufferSize, const void * pBufferData)</code></dt>
+<span class="target" id="group__util__functions_1gaf00cea8807116812f82c738d32d7fdb0"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">void</span> <span class="pre">updatePixelBuffer</span> <span class="pre">(const</span> <span class="pre">unsigned</span> <span class="pre">pBufferId,</span> <span class="pre">const</span> <span class="pre">size_t</span> <span class="pre">pBufferSize,</span> <span class="pre">const</span> <span class="pre">void</span> <span class="pre">*pBufferData)</span></code></dt>
 <dd><p>Update backend specific pixel buffer from given host side memory. </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -2173,9 +2180,9 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt>
-<span class="target" id="group__util__functions_1ga72dafd0af9b2db19e2aa754f76fcc786"></span><code class="sig-name descname">FGAPI void forge::finish()</code></dt>
+<span class="target" id="group__util__functions_1ga72dafd0af9b2db19e2aa754f76fcc786"></span><code class="sig-name descname"><span class="pre">FGAPI</span> <span class="pre">void</span> <span class="pre">finish</span> <span class="pre">()</span></code></dt>
 <dd><p>Sync all rendering operations till this point. </p>
 </dd></dl>
 
@@ -2190,29 +2197,29 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="macros.html" class="btn btn-neutral float-right" title="Macros" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="typedefs.html" class="btn btn-neutral float-left" title="C API typdefs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="macros.html" class="btn btn-neutral float-right" title="Macros" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="typedefs.html" class="btn btn-neutral float-left" title="C API typdefs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019 ArrayFire
+        &#169; Copyright 2019 ArrayFire.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -2220,7 +2227,6 @@ of forge library. Forge’s C++ API is built on top of this C API.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

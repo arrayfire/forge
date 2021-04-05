@@ -1,40 +1,43 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Interop Helpers &mdash; Forge 1.0.4 documentation</title>
   
 
   
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="../_static/arrayfire.ico"/>
   
+
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Examples" href="examples.html" />
@@ -82,6 +85,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -111,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -145,18 +150,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Interop Helpers</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/rst/extras.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -181,34 +188,34 @@ to use respective compute backend helpers.</p>
 <li><p><cite>USE_FORGE_CUDA_COPY_HELPERS</cite></p></li>
 <li><p><cite>USE_FORGE_OPENCL_COPY_HELPERS</cite></p></li>
 </ul>
-<dl class="class">
+<dl class="cpp struct">
 <dt id="_CPPv49GfxHandle">
-<span id="_CPPv39GfxHandle"></span><span id="_CPPv29GfxHandle"></span><span id="GfxHandle"></span><span class="target" id="structGfxHandle"></span><em class="property">struct </em><code class="sig-name descname">GfxHandle</code><a class="headerlink" href="#_CPPv49GfxHandle" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv39GfxHandle"></span><span id="_CPPv29GfxHandle"></span><span id="GfxHandle"></span><span class="target" id="structGfxHandle"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">GfxHandle</span></code><a class="headerlink" href="#_CPPv49GfxHandle" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>A tuple object of GfxResourceHandle and <a class="reference internal" href="#compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cf"><span class="std std-ref">BufferType</span></a>. </p>
 </dd></dl>
 
-<dl class="enum">
+<dl class="cpp enum">
 <dt id="_CPPv410BufferType">
-<span id="_CPPv310BufferType"></span><span id="_CPPv210BufferType"></span><span class="target" id="compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cf"></span><em class="property">enum </em><code class="sig-name descname">BufferType</code><a class="headerlink" href="#_CPPv410BufferType" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv310BufferType"></span><span id="_CPPv210BufferType"></span><span class="target" id="compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cf"></span><em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">BufferType</span></code><a class="headerlink" href="#_CPPv410BufferType" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enum to indicate if OpenCL buffer is a PBO or VBO. </p>
 <p><em>Values:</em></p>
-<dl class="enumerator">
-<dt id="_CPPv418FORGE_IMAGE_BUFFER">
-<span id="_CPPv318FORGE_IMAGE_BUFFER"></span><span id="_CPPv218FORGE_IMAGE_BUFFER"></span><span class="target" id="compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cfa11ea1ee65fc38c2123afa0a33c6ef04a"></span><code class="sig-name descname">FORGE_IMAGE_BUFFER</code> = 0<a class="headerlink" href="#_CPPv418FORGE_IMAGE_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="cpp enumerator">
+<dt id="_CPPv4N10BufferType18FORGE_IMAGE_BUFFERE">
+<span id="_CPPv3N10BufferType18FORGE_IMAGE_BUFFERE"></span><span id="_CPPv2N10BufferType18FORGE_IMAGE_BUFFERE"></span><span class="target" id="compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cfa11ea1ee65fc38c2123afa0a33c6ef04a"></span><em class="property"><span class="pre">enumerator</span> </em><code class="sig-name descname"><span class="pre">FORGE_IMAGE_BUFFER</span></code><a class="headerlink" href="#_CPPv4N10BufferType18FORGE_IMAGE_BUFFERE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>OpenGL Pixel Buffer Object. </p>
 </dd></dl>
 
-<dl class="enumerator">
-<dt id="_CPPv419FORGE_VERTEX_BUFFER">
-<span id="_CPPv319FORGE_VERTEX_BUFFER"></span><span id="_CPPv219FORGE_VERTEX_BUFFER"></span><span class="target" id="compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cfa08d078104055dceac893e4a14c153b2c"></span><code class="sig-name descname">FORGE_VERTEX_BUFFER</code> = 1<a class="headerlink" href="#_CPPv419FORGE_VERTEX_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="cpp enumerator">
+<dt id="_CPPv4N10BufferType19FORGE_VERTEX_BUFFERE">
+<span id="_CPPv3N10BufferType19FORGE_VERTEX_BUFFERE"></span><span id="_CPPv2N10BufferType19FORGE_VERTEX_BUFFERE"></span><span class="target" id="compute__copy_8h_1adf8e136713c0691010d2bec6ba63e9cfa08d078104055dceac893e4a14c153b2c"></span><em class="property"><span class="pre">enumerator</span> </em><code class="sig-name descname"><span class="pre">FORGE_VERTEX_BUFFER</span></code><a class="headerlink" href="#_CPPv4N10BufferType19FORGE_VERTEX_BUFFERE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>OpenGL Vertex Buffer Object. </p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="type">
+<dl class="cpp type">
 <dt id="_CPPv421ComputeResourceHandle">
-<span id="_CPPv321ComputeResourceHandle"></span><span id="_CPPv221ComputeResourceHandle"></span><span id="ComputeResourceHandle"></span><span class="target" id="compute__copy_8h_1a160b6c9800d06caf50586d67439790c3"></span><em class="property">typedef </em>void *<code class="sig-name descname">ComputeResourceHandle</code><a class="headerlink" href="#_CPPv421ComputeResourceHandle" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv321ComputeResourceHandle"></span><span id="_CPPv221ComputeResourceHandle"></span><span id="ComputeResourceHandle"></span><span class="target" id="compute__copy_8h_1a160b6c9800d06caf50586d67439790c3"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ComputeResourceHandle</span></code><a class="headerlink" href="#_CPPv421ComputeResourceHandle" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>A backend-agnostic handle to a compute memory resource originating from an OpenGL resource. </p>
 <p><ul class="simple">
 <li><p>cudaGraphicsResource in CUDA</p></li>
@@ -241,29 +248,29 @@ at compile time.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="macros.html" class="btn btn-neutral float-left" title="Macros" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="macros.html" class="btn btn-neutral float-left" title="Macros" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019 ArrayFire
+        &#169; Copyright 2019 ArrayFire.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -271,7 +278,6 @@ at compile time.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
