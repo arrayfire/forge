@@ -58,3 +58,49 @@ macro(set_policies)
         endif()
     endforeach()
 endmacro()
+
+# This function sets all common compilation flags, include directoriesm
+# cmake target properties that are common to all OBJECT libraries and the
+# finaly forge SHARED/STATIC library. Do not add any target specific options
+# inside this function.
+function(fg_set_target_compilation_props target)
+    set_target_properties(${target}
+        PROPERTIES
+        FOLDER ${PROJECT_NAME}
+        POSITION_INDEPENDENT_CODE ON
+        CXX_STANDARD 14
+        CXX_STANDARD_REQUIRED ON
+        CXX_VISIBILITY_PRESET hidden
+        CXX_VISIBILITY_INLINES_HIDDEN YES
+        LINKER_LANGUAGE CXX
+        )
+
+    if(WIN32)
+        target_compile_definitions(${target}
+            PRIVATE FGDLL OS_WIN WIN32_MEAN_AND_LEAN)
+
+        # C4068: Warnings about unknown pragmas
+        # C4275: Warnings about using non-exported classes as base class of an
+        #        exported class
+        set_target_properties(${target} PROPERTIES COMPILE_FLAGS "/wd4068 /wd4275")
+    elseif(APPLE)
+        target_compile_definitions(${target} PRIVATE OS_MAC)
+    else(WIN32)
+        target_compile_definitions(${target} PRIVATE OS_LNX)
+    endif(WIN32)
+
+    target_include_directories(${target}
+        SYSTEM PRIVATE
+        ${${glm_prefix}_SOURCE_DIR}
+        $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:glad_obj_lib,INTERFACE_INCLUDE_DIRECTORIES>
+        )
+    target_include_directories(${target}
+        PUBLIC
+        $<INSTALL_INTERFACE:${FG_INSTALL_INC_DIR}>
+        $<BUILD_INTERFACE:${Forge_SOURCE_DIR}/include> # build-tree public headers
+        $<BUILD_INTERFACE:${Forge_BINARY_DIR}/include> # build-tree generated headers
+        PRIVATE
+        ${Forge_SOURCE_DIR}/src/backend # common headers
+        )
+endfunction()

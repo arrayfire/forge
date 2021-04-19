@@ -59,7 +59,7 @@ fg_deprecate(WITH_FREEIMAGE FG_WITH_FREEIMAGE)
 fg_deprecate(USE_STATIC_FREEIMAGE FG_USE_STATIC_FREEIMAGE)
 fg_deprecate(WITH_TOOLKIT FG_USE_WINDOW_TOOLKIT)
 
-message(STATUS "FreeImage Support turned ON. Using ${FreeImage_ROOT}")
+message(STATUS "FreeImage Support turned ON")
 
 if(Boost_FOUND AND NOT TARGET Boost::boost)
     add_library(Boost::boost INTERFACE IMPORTED)
@@ -70,7 +70,7 @@ endif(Boost_FOUND AND NOT TARGET Boost::boost)
 FetchContent_Declare(
     ${glad_prefix}
     GIT_REPOSITORY https://github.com/arrayfire/glad.git
-    GIT_TAG master
+    GIT_TAG obj_lib
 )
 FetchContent_Populate(${glad_prefix})
 FetchContent_Declare(
