@@ -8,57 +8,44 @@ string(TOLOWER ${PROJECT_NAME} BkndTargetName)
 # at same level or one level above in cmakelists-file-tree
 add_library(${BkndTargetName} "")
 
-add_dependencies(${BkndTargetName} ${glsl_shader_targets})
+fg_set_target_compilation_props(${BkndTargetName})
+set_target_properties(${BkndTargetName}
+    PROPERTIES
+    VERSION ${Forge_VERSION}
+    SOVERSION ${Forge_VERSION_MAJOR}
+    )
 
 if(${FG_RENDERING_BACKEND} STREQUAL "OpenGL")
     find_package(OpenGL REQUIRED)
     add_subdirectory(opengl)
     target_link_libraries(${BkndTargetName} PUBLIC OpenGL::GL)
+    if(${FG_USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
+        include(opengl/glfw/CMakeLists.txt)
+        target_link_libraries(${BkndTargetName} PRIVATE glfw)
+    elseif(${FG_USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
+        include(opengl/sdl/CMakeLists.txt)
+        target_link_libraries(${BkndTargetName} PRIVATE SDL2::SDL2)
+    endif()
 elseif(${FG_RENDERING_BACKEND} STREQUAL "Vulkan") # vulkan arm is not possible now
     message(FATAL_ERROR "Vulkan rendering support not added yet")
 endif()
 
-set_target_properties(${BkndTargetName}
-    PROPERTIES
-    FOLDER ${PROJECT_NAME}
-    POSITION_INDEPENDENT_CODE ON
-    CXX_STANDARD 14
-    CXX_STANDARD_REQUIRED ON
-    CXX_VISIBILITY_PRESET hidden
-    CXX_VISIBILITY_INLINES_HIDDEN YES
-    LINKER_LANGUAGE CXX
-    VERSION ${Forge_VERSION}
-    SOVERSION ${Forge_VERSION_MAJOR}
+add_dependencies(${BkndTargetName} ${glsl_shader_targets})
+
+target_sources(${BkndTargetName}
+    PRIVATE
+    $<TARGET_OBJECTS:glad_obj_lib>
+    $<TARGET_OBJECTS:forge_wtk>
+    $<TARGET_OBJECTS:forge_common_obj_lib>
+    $<TARGET_OBJECTS:forge_c_api_obj_lib>
+    $<TARGET_OBJECTS:forge_cpp_api_obj_lib>
     )
 
-if(WIN32)
-    target_compile_definitions(${BkndTargetName}
-        PRIVATE FGDLL OS_WIN WIN32_MEAN_AND_LEAN)
-
-    # C4068: Warnings about unknown pragmas
-    # C4275: Warnings about using non-exported classes as base class of an
-    #        exported class
-    set_target_properties(${BkndTargetName} PROPERTIES COMPILE_FLAGS "/wd4068 /wd4275")
-elseif(APPLE)
-    target_compile_definitions(${BkndTargetName} PRIVATE OS_MAC)
-else(WIN32)
-    target_compile_definitions(${BkndTargetName} PRIVATE OS_LNX)
-endif(WIN32)
-
-target_include_directories(${BkndTargetName}
-    PUBLIC
-    $<BUILD_INTERFACE:${Forge_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${Forge_BINARY_DIR}/include>
-    $<INSTALL_INTERFACE:${FG_INSTALL_INC_DIR}>
-    )
+target_include_directories(${BkndTargetName} SYSTEM PRIVATE ${FREETYPE_INCLUDE_DIRS})
 target_include_directories(${BkndTargetName}
     PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
-    )
-target_include_directories(${BkndTargetName}
-    SYSTEM PRIVATE
-    ${FREETYPE_INCLUDE_DIRS}
-    ${${glm_prefix}_SOURCE_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}
+    $<TARGET_PROPERTY:forge_wtk,INTERFACE_INCLUDE_DIRECTORIES>
     )
 
 if(FG_WITH_FREEIMAGE)
@@ -70,15 +57,12 @@ if(FG_WITH_FREEIMAGE)
     endif()
 endif()
 
+
 target_link_libraries(${BkndTargetName}
     PRIVATE
     Boost::boost
     ${FREETYPE_LIBRARIES}
-    forge_backend_interface
-    forge_c_api_interface
-    forge_cpp_api_interface
-    glad_interface
-    forge_wtk_interface
+    ${CMAKE_DL_LIBS}
     )
 
 if(UNIX)
@@ -100,6 +84,19 @@ source_group("backend"
     REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/common/*)
 source_group("backend\\shaders"
     REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/glsl_shaders/*)
+source_group("backend"
+    REGULAR_EXPRESSION ${CMAKE_CURRENT_LIST_DIR}/*)
+if(${FG_RENDERING_BACKEND} STREQUAL "OpenGL")
+    if(${FG_USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
+        source_group("backend\\glfw"
+            REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/glfw/*)
+    elseif(${FG_USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
+        source_group("backend\\sdl2"
+            REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/sdl/*)
+    endif()
+elseif(${FG_RENDERING_BACKEND} STREQUAL "Vulkan") # vulkan arm is not possible now
+    message(FATAL_ERROR "Vulkan rendering support not added yet")
+endif()
 
 #--------------------------------------------------------------------
 # Install forge target
@@ -115,13 +112,20 @@ install(TARGETS ${BkndTargetName}
     INCLUDES DESTINATION ${FG_INSTALL_INC_DIR})
 
 # install dependencies
-if(WIN32 AND BUILD_SHARED_LIBS AND
-        FG_WITH_FREEIMAGE AND NOT FG_USE_STATIC_FREEIMAGE)
-    install(FILES $<TARGET_FILE:FreeImage::FreeImage>
-        DESTINATION ${FG_INSTALL_BIN_DIR}
-        COMPONENT forge_dependencies)
+if(WIN32 AND BUILD_SHARED_LIBS)
+    if(FG_WITH_FREEIMAGE AND NOT FG_USE_STATIC_FREEIMAGE)
+        install(FILES $<TARGET_FILE:FreeImage::FreeImage>
+            DESTINATION ${FG_INSTALL_BIN_DIR}
+            COMPONENT forge_dependencies)
+    endif()
+    if(${FG_USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
+        install(FILES $<TARGET_FILE:glfw>
+            DESTINATION ${FG_INSTALL_BIN_DIR}
+            COMPONENT forge_dependencies)
+    elseif(${FG_USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
+        install(FILES $<TARGET_FILE:SDL2::SDL2>
+            DESTINATION ${FG_INSTALL_BIN_DIR}
+            COMPONENT forge_dependencies)
+    endif()
 endif()
 
-if(NOT BUILD_SHARED_LIBS)
-    install(TARGETS glad_interface EXPORT ForgeTargets)
-endif()
