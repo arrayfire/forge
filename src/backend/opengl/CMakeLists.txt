@@ -1,6 +1,4 @@
-target_include_directories(${BkndTargetName}
-    PRIVATE ${CMAKE_CURRENT_LIST_DIR}
-    )
+target_include_directories(${BkndTargetName} PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
 target_sources(${BkndTargetName}
     PRIVATE
@@ -34,19 +32,3 @@ target_sources(${BkndTargetName}
     ${CMAKE_CURRENT_LIST_DIR}/window_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/window_impl.cpp
     )
-
-if(${FG_USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
-    include(glfw/CMakeLists.txt)
-elseif(${FG_USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
-    include(sdl/CMakeLists.txt)
-endif()
-
-source_group("backend"
-    REGULAR_EXPRESSION ${CMAKE_CURRENT_LIST_DIR}/*)
-if(${FG_USE_WINDOW_TOOLKIT} STREQUAL "glfw3")
-    source_group("backend\\glfw"
-        REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/glfw/*)
-elseif(${FG_USE_WINDOW_TOOLKIT} STREQUAL "sdl2")
-    source_group("backend\\sdl2"
-        REGULAR_EXPRESSION ${Forge_SOURCE_DIR}/src/backend/opengl/sdl/*)
-endif()
