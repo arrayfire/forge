@@ -24,6 +24,8 @@ find_package(FontConfig QUIET)
 find_package(FreeImage  QUIET)
 find_package(Freetype   REQUIRED)
 find_package(Sphinx     QUIET)
+find_package(glad CONFIG QUIET)
+find_package(glm CONFIG QUIET)
 
 if(UNIX)
     dependency_check(FontConfig_FOUND
@@ -67,20 +69,38 @@ if(Boost_FOUND AND NOT TARGET Boost::boost)
         PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif(Boost_FOUND AND NOT TARGET Boost::boost)
 
-FetchContent_Declare(
-    ${glad_prefix}
-    GIT_REPOSITORY https://github.com/arrayfire/glad.git
-    GIT_TAG obj_lib
-)
-FetchContent_Populate(${glad_prefix})
-FetchContent_Declare(
-    ${glm_prefix}
-    GIT_REPOSITORY https://github.com/g-truc/glm.git
-    GIT_TAG 0.9.9.8
-)
-FetchContent_Populate(${glm_prefix})
+if(NOT TARGET glad::glad) # find_package(glad) failed
+    FetchContent_Declare(
+        ${glad_prefix}
+        GIT_REPOSITORY https://github.com/arrayfire/glad.git
+        GIT_TAG obj_lib
+        )
+    fg_check_and_populate(${glad_prefix})
+    add_subdirectory(${${glad_prefix}_SOURCE_DIR} ${${glad_prefix}_BINARY_DIR})
 
-add_subdirectory(${${glad_prefix}_SOURCE_DIR} ${${glad_prefix}_BINARY_DIR})
+    add_library(forge_glad STATIC $<TARGET_OBJECTS:glad_obj_lib>)
+    target_link_libraries(forge_glad PUBLIC ${CMAKE_DL_LIBS})
+    target_include_directories(forge_glad
+        PUBLIC
+        $<BUILD_INTERFACE:$<TARGET_PROPERTY:glad_obj_lib,INTERFACE_INCLUDE_DIRECTORIES>>
+        )
+else()
+    add_library(forge_glad ALIAS glad::glad)
+endif()
+
+if(NOT TARGET glm::glm AND NOT TARGET glm) # find_package(glm) failed
+    FetchContent_Declare(
+        ${glm_prefix}
+        GIT_REPOSITORY https://github.com/g-truc/glm.git
+        GIT_TAG 0.9.9.8
+        )
+    fg_check_and_populate(${glm_prefix})
+    add_library(glm INTERFACE IMPORTED)
+    set_target_properties(glm PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${${glm_prefix}_SOURCE_DIR}"
+        )
+endif()
+
 add_subdirectory(src/backend/common)
 add_subdirectory(src/backend/glsl_shaders)
 add_subdirectory(src/api/c)
@@ -175,6 +195,8 @@ mark_as_advanced(
     Z_VCPKG_PWSH_PATH
     Z_VCPKG_CL
     _VCPKG_INSTALLED_DIR
+    glm_DIR
+    glad_DIR
 )
 
 include(ForgeCPackConfig)
