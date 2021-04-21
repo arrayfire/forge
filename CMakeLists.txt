@@ -152,8 +152,6 @@ export(EXPORT ForgeTargets
     FILE ForgeTargets.cmake
 )
 
-include(ForgeCPackConfig)
-
 conditional_directory(FG_BUILD_DOCS docs)
 conditional_directory(FG_BUILD_EXAMPLES examples)
 
@@ -178,3 +176,5 @@ mark_as_advanced(
     Z_VCPKG_CL
     _VCPKG_INSTALLED_DIR
 )
+
+include(ForgeCPackConfig)
