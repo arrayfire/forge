@@ -34,7 +34,6 @@ add_dependencies(${BkndTargetName} ${glsl_shader_targets})
 
 target_sources(${BkndTargetName}
     PRIVATE
-    $<TARGET_OBJECTS:glad_obj_lib>
     $<TARGET_OBJECTS:forge_wtk>
     $<TARGET_OBJECTS:forge_common_obj_lib>
     $<TARGET_OBJECTS:forge_c_api_obj_lib>
@@ -61,6 +60,7 @@ endif()
 target_link_libraries(${BkndTargetName}
     PRIVATE
     Boost::boost
+    forge_glad
     ${FREETYPE_LIBRARIES}
     ${CMAKE_DL_LIBS}
     )
