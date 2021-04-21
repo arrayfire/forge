@@ -16,15 +16,10 @@ find_package(OpenCL 1.2 QUIET)
 find_package(CUDA   QUIET)
 find_package(Forge  REQUIRED)
 
-mark_as_advanced(
-    CUDA_HOST_COMPILER
-    CUDA_USE_STATIC_CUDA_RUNTIME
-    CUDA_rt_LIBRARY
-    CMAKE_CUDA_HOST_COMPILER)
-
 include(CMakeParseArguments)
 include(CMakeDependentOption)
 include(InternalUtils)
+include(build_cl2hpp)
 
 cmake_dependent_option(FG_BUILD_OPENCL_EXAMPLES
   "Build opencl examples" ON
@@ -33,12 +28,6 @@ cmake_dependent_option(FG_BUILD_OPENCL_EXAMPLES
 cmake_dependent_option(FG_BUILD_CUDA_EXAMPLES
   "Build cuda examples" ON
   "CUDA_FOUND;FG_BUILD_EXAMPLES" OFF)
-
-include(build_cl2hpp)
-mark_as_advanced(
-    FG_BUILD_CUDA_EXAMPLES
-    FG_BUILD_OPENCL_EXAMPLES
-    )
 
 fg_deprecate(BUILD_EXAMPLES_CUDA FG_BUILD_CUDA_EXAMPLES)
 fg_deprecate(BUILD_EXAMPLES_OPENCL FG_BUILD_OPENCL_EXAMPLES)
@@ -84,14 +73,33 @@ function(add_example target_name source backend)
         set_target_properties(${target} PROPERTIES CXX_STANDARD 11)
     endif (${arg_CXX11})
 
-    target_include_directories(${target} PRIVATE ${arg_INCLUDE_DIRS})
+    if(WIN32)
+        target_compile_definitions(${target} PRIVATE OS_WIN WIN32_MEAN_AND_LEAN)
+    elseif(APPLE)
+        target_compile_definitions(${target} PRIVATE OS_MAC)
+    else(WIN32)
+        target_compile_definitions(${target} PRIVATE OS_LNX)
+    endif(WIN32)
 
-    target_link_libraries(${target}
-            OSCompileFlags
-            Forge::forge
-            ${arg_LIBRARIES})
+    target_include_directories(${target} PRIVATE ${arg_INCLUDE_DIRS})
+    if(${lowerCaseBackend} STREQUAL "cuda")
+        # CUDA backend examples need same LINK keyword(PRIVATE|PUBLIC) used for
+        # example targets i.e. used by FindCUDA which is empty by default
+        target_link_libraries(${target} Forge::forge ${arg_LIBRARIES})
+    else()
+        target_link_libraries(${target} PRIVATE Forge::forge ${arg_LIBRARIES})
+    endif()
 endfunction()
 
 add_subdirectory(cpu)
 conditional_directory(FG_BUILD_CUDA_EXAMPLES cuda)
 conditional_directory(FG_BUILD_OPENCL_EXAMPLES opencl)
+
+mark_as_advanced(
+    CUDA_HOST_COMPILER
+    CUDA_USE_STATIC_CUDA_RUNTIME
+    CUDA_rt_LIBRARY
+    CMAKE_CUDA_HOST_COMPILER
+    FG_BUILD_CUDA_EXAMPLES
+    FG_BUILD_OPENCL_EXAMPLES
+    )
