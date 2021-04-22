@@ -50,7 +50,7 @@ target_include_directories(${BkndTargetName}
 if(FG_WITH_FREEIMAGE)
     target_compile_definitions(${BkndTargetName} PRIVATE USE_FREEIMAGE)
     if(FG_USE_STATIC_FREEIMAGE)
-        target_link_libraries(${BkndTargetName} PRIVATE FreeImage::FreeImage_STATIC)
+        target_link_libraries(${BkndTargetName} PUBLIC FreeImage::FreeImage_STATIC)
     else()
         target_link_libraries(${BkndTargetName} PRIVATE FreeImage::FreeImage)
     endif()
