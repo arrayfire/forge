@@ -61,8 +61,6 @@ fg_deprecate(WITH_FREEIMAGE FG_WITH_FREEIMAGE)
 fg_deprecate(USE_STATIC_FREEIMAGE FG_USE_STATIC_FREEIMAGE)
 fg_deprecate(WITH_TOOLKIT FG_USE_WINDOW_TOOLKIT)
 
-message(STATUS "FreeImage Support turned ON")
-
 if(Boost_FOUND AND NOT TARGET Boost::boost)
     add_library(Boost::boost INTERFACE IMPORTED)
     set_property(TARGET Boost::boost
