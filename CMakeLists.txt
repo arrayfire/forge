@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Forge VERSION 1.0.6 LANGUAGES C CXX)
+project(Forge VERSION 1.0.7 LANGUAGES C CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
