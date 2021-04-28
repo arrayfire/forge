@@ -16,6 +16,11 @@ Build instructions for forge can be found on our [GitHub wiki page][11].
 | <img src="./docs/images/plot31.png" width=150 height=100>3d Plot</img> | <img src="./docs/images/plot32.png" width=150 height=100>Rotated 3d Plot</img> |
 | <img src="./docs/images/hist.png" width=150 height=100>histogram</img> | <img src="./docs/images/surface.png" width=150 height=100>Surface</img> |
 
+
+|     |     |
+|-----|-----|
+| <img src="./docs/images/pan_and_scale.gif" width=256 height=256 /> <br/> <figcaption>Fig.1 - Pan and Scale</figcaption> | <img src="./docs/images/per_grid_rotation_hints.gif" width=256 height=256 /> <br/> <figcaption>Fig.2 - Per Cell Rotation in Grid Layour</figcaption>  |
+
 [1]: https://travis-ci.com/arrayfire/forge.svg?branch=master
 [2]: https://travis-ci.com/arrayfire/forge
 [5]: https://travis-ci.com/arrayfire/forge.svg?branch=master
