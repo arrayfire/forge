@@ -318,6 +318,27 @@ void window_impl::draw(const int pRows, const int pCols, const int pIndex,
     glDisable(GL_SCISSOR_TEST);
     glViewport(x, y, cellWidth, cellHeight);
 
+    // Render Arcball if cursor position matches current cell
+    glm::vec2 mpos = mWidget->getCursorPos();
+
+    int wcx =
+        static_cast<int>(std::floor(mpos[0] / static_cast<double>(cellWidth)));
+    int wcy =
+        static_cast<int>(std::floor(mpos[1] / static_cast<double>(cellHeight)));
+
+    const bool isRotInCurrCell =
+        (c == wcx && wcy == r && pRenderable->isRotatable());
+    if (isRotInCurrCell && mWidget->isBeingRotated()) {
+        // TODO FIXME Figure out a better way to
+        // render arc ball loops to include depth test for any
+        // objects inside it
+        glClear(GL_DEPTH_BUFFER_BIT);
+        mArcBallLoop0->render(mID, x, y, cellWidth, cellHeight, IDENTITY,
+                              orientMatrix);
+        mArcBallLoop1->render(mID, x, y, cellWidth, cellHeight, IDENTITY,
+                              orientMatrix);
+    }
+
     float pos[2] = {0.0, 0.0};
     if (pTitle != NULL) {
         mFont->setOthro2D(cellWidth, cellHeight);

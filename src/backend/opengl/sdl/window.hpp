@@ -43,16 +43,17 @@ class Widget {
 
     Widget();
 
+    const glm::vec4 getCellViewport(const glm::vec2& pos);
     const glm::mat4 findTransform(const forge::common::MatrixHashMap& pMap,
-                                  const float pX, const float pY);
-    const glm::mat4 getCellViewMatrix(const float pXPos, const float pYPos);
-    const glm::mat4 getCellOrientationMatrix(const float pXPos,
-                                             const float pYPos);
-    void setTransform(forge::common::MatrixHashMap& pMap, const float pX,
-                      const float pY, const glm::mat4& pMat);
-    void setCellViewMatrix(const float pXPos, const float pYPos,
+                                  const double pX, const double pY);
+    const glm::mat4 getCellViewMatrix(const double pXPos, const double pYPos);
+    const glm::mat4 getCellOrientationMatrix(const double pXPos,
+                                             const double pYPos);
+    void setTransform(forge::common::MatrixHashMap& pMap, const double pX,
+                      const double pY, const glm::mat4& pMat);
+    void setCellViewMatrix(const double pXPos, const double pYPos,
                            const glm::mat4& pMatrix);
-    void setCellOrientationMatrix(const float pXPos, const float pYPos,
+    void setCellOrientationMatrix(const double pXPos, const double pYPos,
                                   const glm::mat4& pMatrix);
 
    public:
@@ -105,6 +106,8 @@ class Widget {
     void resetOrientationMatrices();
 
     inline bool isBeingRotated() const { return mRotationFlag; }
+
+    glm::vec2 getCursorPos() const;
 };
 
 }  // namespace wtk

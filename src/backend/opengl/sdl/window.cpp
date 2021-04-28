@@ -26,6 +26,11 @@ using glm::scale;
 using glm::translate;
 using glm::vec2;
 using glm::vec3;
+using glm::vec4;
+using std::floor;
+using std::get;
+using std::make_tuple;
+using std::tuple;
 
 using namespace forge::common;
 
@@ -43,60 +48,74 @@ void initWindowToolkit() {
 
 void destroyWindowToolkit() { SDL_Quit(); }
 
-const mat4 Widget::findTransform(const MatrixHashMap& pMap, const float pX,
-                                 const float pY) {
+tuple<vec3, vec2> getCellCoordsDims(const vec2& pos, const CellIndex& idx,
+                                    const vec2& dims) {
+    const int rows = get<0>(idx);
+    const int cols = get<1>(idx);
+    const int cw   = dims[0] / cols;
+    const int ch   = dims[1] / rows;
+    const int x    = static_cast<int>(floor(pos[0] / static_cast<double>(cw)));
+    const int y    = static_cast<int>(floor(pos[1] / static_cast<double>(ch)));
+    return make_tuple(vec3(x * cw, y * ch, x + y * cols), vec2(cw, ch));
+}
+
+const vec4 Widget::getCellViewport(const vec2& pos) {
+    // Either of the transformation matrix maps are fine for figuring
+    // out the viewport corresponding to the current mouse position
+    // Here I am using mOrientMatrices map
+    vec4 retVal(0, 0, mWidth, mHeight);
+    for (auto& it : mOrientMatrices) {
+        const CellIndex& idx = it.first;
+        auto coordsAndDims = getCellCoordsDims(pos, idx, vec2(mWidth, mHeight));
+        if (get<0>(coordsAndDims)[2] == std::get<2>(idx)) {
+            retVal = vec4(get<0>(coordsAndDims)[0], get<0>(coordsAndDims)[1],
+                          get<1>(coordsAndDims));
+            break;
+        }
+    }
+    return retVal;
+}
+
+const mat4 Widget::findTransform(const MatrixHashMap& pMap, const double pX,
+                                 const double pY) {
     for (auto it : pMap) {
         const CellIndex& idx = it.first;
         const mat4& mat      = it.second;
-
-        const int rows = std::get<0>(idx);
-        const int cols = std::get<1>(idx);
-
-        const int cellWidth  = mWidth / cols;
-        const int cellHeight = mHeight / rows;
-
-        const int x = int(pX) / cellWidth;
-        const int y = int(pY) / cellHeight;
-        const int i = x + y * cols;
-        if (i == std::get<2>(idx)) { return mat; }
+        auto coordsAndDims =
+            getCellCoordsDims(vec2(pX, pY), idx, vec2(mWidth, mHeight));
+        if (get<0>(coordsAndDims)[2] == std::get<2>(idx)) { return mat; }
     }
-
     return IDENTITY;
 }
 
-const mat4 Widget::getCellViewMatrix(const float pXPos, const float pYPos) {
+const mat4 Widget::getCellViewMatrix(const double pXPos, const double pYPos) {
     return findTransform(mViewMatrices, pXPos, pYPos);
 }
 
-const mat4 Widget::getCellOrientationMatrix(const float pXPos,
-                                            const float pYPos) {
+const mat4 Widget::getCellOrientationMatrix(const double pXPos,
+                                            const double pYPos) {
     return findTransform(mOrientMatrices, pXPos, pYPos);
 }
 
-void Widget::setTransform(MatrixHashMap& pMap, const float pX, const float pY,
+void Widget::setTransform(MatrixHashMap& pMap, const double pX, const double pY,
                           const mat4& pMat) {
     for (auto it : pMap) {
         const CellIndex& idx = it.first;
-
-        const int rows = std::get<0>(idx);
-        const int cols = std::get<1>(idx);
-
-        const int cellWidth  = mWidth / cols;
-        const int cellHeight = mHeight / rows;
-
-        const int x = int(pX) / cellWidth;
-        const int y = int(pY) / cellHeight;
-        const int i = x + y * cols;
-        if (i == std::get<2>(idx)) { pMap[idx] = pMat; }
+        auto coordsAndDims =
+            getCellCoordsDims(vec2(pX, pY), idx, vec2(mWidth, mHeight));
+        if (get<0>(coordsAndDims)[2] == std::get<2>(idx)) {
+            pMap[idx] = pMat;
+            return;
+        }
     }
 }
 
-void Widget::setCellViewMatrix(const float pXPos, const float pYPos,
+void Widget::setCellViewMatrix(const double pXPos, const double pYPos,
                                const mat4& pMatrix) {
     return setTransform(mViewMatrices, pXPos, pYPos, pMatrix);
 }
 
-void Widget::setCellOrientationMatrix(const float pXPos, const float pYPos,
+void Widget::setCellOrientationMatrix(const double pXPos, const double pYPos,
                                       const mat4& pMatrix) {
     return setTransform(mOrientMatrices, pXPos, pYPos, pMatrix);
 }
@@ -265,7 +284,7 @@ void Widget::pollEvents() {
                     auto delta   = mLastPos - currPos;
                     if (isCtrl) {
                         // Zoom
-                        float dy = delta[1];
+                        double dy = delta[1];
                         if (!(std::abs(dy) < EPSILON)) {
                             if (dy < 0.0f) { dy = -1.0 / dy; }
                             mat4 vMat =
@@ -286,11 +305,9 @@ void Widget::pollEvents() {
                     if (compCmp[0] || compCmp[1]) {
                         const mat4 oMat =
                             getCellOrientationMatrix(currPos[0], currPos[1]);
-                        int view[4];
-                        glGetIntegerv(GL_VIEWPORT, view);
-
-                        auto rotParams = calcRotationFromArcBall(
-                            mLastPos, currPos, make_vec4(view));
+                        const vec4 vprt = getCellViewport(currPos);
+                        auto rotParams =
+                            calcRotationFromArcBall(mLastPos, currPos, vprt);
 
                         setCellOrientationMatrix(
                             currPos[0], currPos[1],
@@ -339,6 +356,12 @@ const mat4 Widget::getOrientationMatrix(const CellIndex& pIndex) {
         mOrientMatrices.emplace(pIndex, IDENTITY);
     }
     return mOrientMatrices[pIndex];
+}
+
+glm::vec2 Widget::getCursorPos() const {
+    int xp, yp;
+    SDL_GetMouseState(&xp, &yp);
+    return {xp, yp};
 }
 
 }  // namespace wtk
