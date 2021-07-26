@@ -1,0 +1,120 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "ninja-gl-glfw3-debug",
+      "description": "Forge build with OpenGL backend using GLFW in Debug configuration",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": {
+          "type": "String",
+          "value": "Debug"
+        },
+        "FG_RENDERING_BACKEND": {
+          "type": "String",
+          "value": "OpenGL"
+        },
+        "FG_USE_WINDOW_TOOLKIT": {
+          "type": "String",
+          "value": "glfw3"
+        },
+        "FG_BUILD_DOCS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "FG_BUILD_EXAMPLES": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "FG_WITH_FREEIMAGE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "CMAKE_INSTALL_PREFIX": {
+          "type": "PATH",
+          "value": "${sourceDir}/build/${presetName}/pkg"
+        }
+      }
+    },
+    {
+      "name": "ninja-gl-glfw3-relwithdebinfo",
+      "description": "Build Forge using OpenGL backend and GLFW in RelWithDebInfo Configuration",
+      "inherits": "ninja-gl-glfw3-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "ninja-gl-sdl2-debug",
+      "description": "Build Forge using OpenGL backend and SDL2 in Debug Configuration",
+      "inherits": "ninja-gl-glfw3-debug",
+      "cacheVariables": {
+        "FG_USE_WINDOW_TOOLKIT": "sdl2"
+      }
+    },
+    {
+      "name": "ninja-gl-sdl2-relwithdebinfo",
+      "description": "Build Forge using OpenGL backend and SDL2 in RelWithDebInfo Configuration",
+      "inherits": "ninja-gl-sdl2-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "ninja-docs",
+      "description": "Build Forge Documentation, needs doxygen installed",
+      "inherits": "ninja-gl-glfw3-debug",
+      "cacheVariables": {
+          "FG_BUILD_EXAMPLES": "OFF",
+          "FG_BUILD_DOCS": "ON"
+      }
+    },
+    {
+      "name": "msvc2019-gl-glfw3",
+      "description": "Forge build with OpenGL backend using GLFW",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "generator": "Visual Studio 16 2019",
+      "architecture": "x64",
+      "cacheVariables": {
+        "FG_RENDERING_BACKEND": {
+          "type": "String",
+          "value": "OpenGL"
+        },
+        "FG_USE_WINDOW_TOOLKIT": {
+          "type": "String",
+          "value": "glfw3"
+        },
+        "FG_BUILD_DOCS": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
+        "FG_BUILD_EXAMPLES": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "FG_WITH_FREEIMAGE": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "CMAKE_INSTALL_PREFIX": {
+          "type": "PATH",
+          "value": "${sourceDir}/build/${presetName}/pkg"
+        }
+      }
+    },
+    {
+      "name": "msvc2019-gl-sdl2",
+      "description": "Forge build with OpenGL backend using SDL",
+      "inherits": "msvc2019-gl-glfw3",
+      "cacheVariables": {
+        "FG_USE_WINDOW_TOOLKIT": "sdl2"
+      }
+    }
+  ]
+}
