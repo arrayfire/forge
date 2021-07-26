@@ -36,7 +36,9 @@ jobs:
                   sudo apt-get install -y libfontconfig1-dev \
                                           libglfw3-dev \
                                           libfreeimage-dev \
-                                          libboost1.68-dev
+                                          libboost1.68-dev \
+                                          opencl-headers \
+                                          ocl-icd-opencl-dev
 
             - name: CMake Configure
               run: |
@@ -51,8 +53,9 @@ jobs:
                   rm -rf forge-full-${FG_VER}/.git
                   rm -rf forge-full-${FG_VER}/.github
                   rm forge-full-${FG_VER}/.gitmodules
+                  mkdir -p forge-full-${FG_VER}/extern/cl2hpp
                   cd forge-full-${FG_VER}/build/
-                  cp -r ./examples/third_party/cl2hpp ../extern/cl2hpp
+                  cp -r ./examples/third_party/cl2hpp/* ../extern/cl2hpp/
                   shopt -s extglob
                   rm -r !(extern)
                   cd ./extern
@@ -66,7 +69,10 @@ jobs:
                     rm -rf ./${dep}/.gitmodules
                   done
                   shopt -u extglob
-                  cd ../../..
+                  cp -r ./* ../../extern/
+                  cd ../../
+                  rm -r build
+                  cd ..
                   tar -cjf forge-full-${FG_VER}.tar.bz2 forge-full-${FG_VER}/
                   echo "UPLOAD_FILE=forge-full-${FG_VER}.tar.bz2" >> $GITHUB_ENV
 
