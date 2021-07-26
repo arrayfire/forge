@@ -93,24 +93,8 @@ function(fg_set_target_compilation_props target)
         SYSTEM PRIVATE
         $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:forge_glad,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:forge_glm,INTERFACE_INCLUDE_DIRECTORIES>
         )
-    # As imported targets can't be aliased until CMake 3.11, below is a temporary
-    # work around until we move to a CMake version >= 3.11
-    if(TARGET glm::glm)
-        target_include_directories(${target}
-            SYSTEM PRIVATE
-            $<TARGET_PROPERTY:glm::glm,INTERFACE_INCLUDE_DIRECTORIES>
-            )
-    elseif(TARGET glm)
-        target_include_directories(${target}
-            SYSTEM PRIVATE
-            $<TARGET_PROPERTY:glm,INTERFACE_INCLUDE_DIRECTORIES>
-            )
-    else()
-        # Ideally it wouldn't reach here, just in case of corner case
-        # I couldn't think of or someother cmake bug
-        message(FATAL_ERROR "Please install glm dependency")
-    endif()
     target_include_directories(${target}
         PUBLIC
         $<INSTALL_INTERFACE:${FG_INSTALL_INC_DIR}>
