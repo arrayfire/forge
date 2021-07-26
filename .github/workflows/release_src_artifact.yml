@@ -52,6 +52,7 @@ jobs:
                   rm -rf forge-full-${FG_VER}/.github
                   rm forge-full-${FG_VER}/.gitmodules
                   cd forge-full-${FG_VER}/build/
+                  cp -r ./examples/third_party/cl2hpp ../extern/cl2hpp
                   shopt -s extglob
                   rm -r !(extern)
                   cd ./extern
