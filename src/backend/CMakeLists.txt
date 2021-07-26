@@ -56,14 +56,18 @@ if(FG_WITH_FREEIMAGE)
     endif()
 endif()
 
-
 target_link_libraries(${BkndTargetName}
     PRIVATE
     Boost::boost
-    forge_glad
     ${FREETYPE_LIBRARIES}
     ${CMAKE_DL_LIBS}
     )
+
+if(TARGET glad::glad)
+    target_link_libraries(${BkndTargetName} PRIVATE glad::glad)
+else()
+    target_link_libraries(${BkndTargetName} PRIVATE forge_glad)
+endif()
 
 if(UNIX)
     target_link_libraries(${BkndTargetName}

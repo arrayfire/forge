@@ -68,12 +68,10 @@ if(Boost_FOUND AND NOT TARGET Boost::boost)
 endif(Boost_FOUND AND NOT TARGET Boost::boost)
 
 if(NOT TARGET glad::glad) # find_package(glad) failed
-    FetchContent_Declare(
-        ${glad_prefix}
-        GIT_REPOSITORY https://github.com/arrayfire/glad.git
-        GIT_TAG obj_lib
-        )
-    fg_check_and_populate(${glad_prefix})
+    fg_dep_check_and_populate(${glad_prefix}
+        URI https://github.com/arrayfire/glad.git
+        REF obj_lib
+    )
     add_subdirectory(${${glad_prefix}_SOURCE_DIR} ${${glad_prefix}_BINARY_DIR})
 
     add_library(forge_glad STATIC $<TARGET_OBJECTS:glad_obj_lib>)
@@ -86,17 +84,18 @@ else()
     add_library(forge_glad ALIAS glad::glad)
 endif()
 
-if(NOT TARGET glm::glm AND NOT TARGET glm) # find_package(glm) failed
-    FetchContent_Declare(
-        ${glm_prefix}
-        GIT_REPOSITORY https://github.com/g-truc/glm.git
-        GIT_TAG 0.9.9.8
-        )
-    fg_check_and_populate(${glm_prefix})
-    add_library(glm INTERFACE IMPORTED)
-    set_target_properties(glm PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${${glm_prefix}_SOURCE_DIR}"
-        )
+add_library(forge_glm INTERFACE)
+if(TARGET glm::glm)
+    target_include_directories(forge_glm
+        SYSTEM INTERFACE
+        $<TARGET_PROPERTY:glm::glm,INTERFACE_INCLUDE_DIRECTORIES>
+    )
+else() # find_package(glm) failed
+    fg_dep_check_and_populate(${glm_prefix}
+        URI https://github.com/g-truc/glm.git
+        REF 0.9.9.8
+    )
+    target_include_directories(forge_glm INTERFACE "${${glm_prefix}_SOURCE_DIR}")
 endif()
 
 add_subdirectory(src/backend/common)
