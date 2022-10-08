@@ -204,6 +204,15 @@ fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow) {
     return FG_ERR_NONE;
 }
 
+fg_err fg_draw_text(const fg_window pWindow, float pPos[], char* text, int font_size, float pColor[]) {
+    try {
+        ARG_ASSERT(0, (pWindow != 0));
+        getWindow(pWindow)->draw_text(pPos, text, font_size, pColor);
+    }
+    CATCHALL
+    return FG_ERR_NONE;
+}
+
 fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage,
                      const bool pKeepAspectRatio) {
     try {

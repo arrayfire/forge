@@ -193,7 +193,18 @@ FGAPI fg_err fg_show_window(const fg_window pWindow);
    \return \ref fg_err error code
  */
 FGAPI fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow);
+/**
+   Render text to Window
 
+   \param[in] pWindow is Window handle
+   \param[in] pPos is text position(x,y)
+   \param[in] text is char array
+   \param[in] font_size is font size
+   \param[in] pColor is color array{r,g,b,a}
+
+   \return \ref fg_err error code
+ */
+FGAPI fg_err fg_draw_text(const fg_window pWindow, float pPos[], char* text, int font_size, float pColor[]);
 /**
    Render given image to Window
 
@@ -416,7 +427,7 @@ class Window {
            \return true | false
          */
         FGAPI bool close();
-
+        FGAPI void draw_text(float pPos[], char* text, int font_size, float pColor[]);
         /**
            Render an Image to Window
 

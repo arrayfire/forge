@@ -84,6 +84,10 @@ class Window {
         mWindow->draw(pImage->impl());
     }
 
+    inline void draw_text(float pPos[], char* text, int font_size, float pColor[]) {
+        return mWindow->draw_text(pPos, text, font_size, pColor);
+    }
+
     inline void draw(const Chart* pChart) { mWindow->draw(pChart->impl()); }
 
     inline void swapBuffers() { mWindow->swapBuffers(); }

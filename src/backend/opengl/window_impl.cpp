@@ -274,6 +274,14 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable) {
     CheckGL("End window_impl::draw");
 }
 
+void window_impl::draw_text(float pPos[], char* text, int font_size, float pColor[]) {
+    // makeContextCurrent();
+    // mWidget->resetCloseFlag();
+    // mFont->setOthro2D(mWidget->mWidth, mWidget->mHeight);
+    // std::cout << "drawing text" << std::endl;
+    mFont->render(mID, pPos, pColor, text, font_size);
+}
+
 void window_impl::draw(const int pRows, const int pCols, const int pIndex,
                        const std::shared_ptr<AbstractRenderable>& pRenderable,
                        const char* pTitle) {
@@ -346,7 +354,7 @@ void window_impl::draw(const int pRows, const int pCols, const int pIndex,
         pos[1] = cellHeight * 0.94f;
         mFont->render(mID, pos, AF_BLUE, pTitle, 18);
     }
-
+    // std::cout << "xxxxxxxxxxx" << std::endl;
     CheckGL("End draw(rows, columns, index)");
 }
 

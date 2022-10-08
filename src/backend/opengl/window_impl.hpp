@@ -65,7 +65,7 @@ class window_impl {
     void hide();
     void show();
     bool close();
-
+    void draw_text(float pPos[], char* text, int font_size, float pColor[]);
     void draw(const std::shared_ptr<AbstractRenderable>& pRenderable);
 
     void draw(const int pRows, const int pCols, const int pIndex,
