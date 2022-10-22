@@ -92,14 +92,19 @@ bool Window::close() {
     return isClosed;
 }
 
-void Window::draw_text(float pPos[], char* text, int font_size, float pColor[]) {
+void Window::draw_text(float pPos[], char* text, int font_size,
+                       float pColor[]) {
     FG_THROW(fg_draw_text(get(), pPos, text, font_size, pColor));
+}
+
+int Window::getLastKeyIn() {
+    int mLastKeyIn;
+    FG_THROW(fg_get_last_keyin(get(), &mLastKeyIn));
 }
 
 void Window::draw(const Image& pImage, const bool pKeepAspectRatio) {
     FG_THROW(fg_draw_image(get(), pImage.get(), pKeepAspectRatio));
 }
-
 
 void Window::draw(const Chart& pChart) {
     FG_THROW(fg_draw_chart(get(), pChart.get()));

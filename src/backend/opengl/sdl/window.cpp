@@ -269,7 +269,14 @@ void Widget::pollEvents() {
             if (evnt.type == SDL_KEYDOWN) {
                 switch (evnt.key.keysym.sym) {
                     case SDLK_ESCAPE: mClose = true; break;
-                    default: break;
+                    default:
+                        int mKeyIn = evnt.key.keysym.sym;
+                        if (mLastKeyIn != mKeyIn) {
+                            std::cout << "[@sdl]keyin = " << mLastKeyIn
+                                      << std::endl;
+                            mLastKeyIn = mKeyIn;
+                        }
+                        break;
                 }
             }
             // Mouse Events

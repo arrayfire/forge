@@ -9,13 +9,12 @@
 
 #pragma once
 
+#include <fg/chart.h>
 #include <fg/defines.h>
 #include <fg/font.h>
-#include <fg/image.h>
-#include <fg/chart.h>
-#include <fg/surface.h>
 #include <fg/histogram.h>
-
+#include <fg/image.h>
+#include <fg/surface.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,15 +31,14 @@ extern "C" {
    \param[in] pWidth Width of the display window
    \param[in] pHeight Height of the display window
    \param[in] pTitle window Title
-   \param[in] pShareWindow is an already existing window with which the window to
-              be created should share the rendering context.
-   \param[in] pInvisible indicates if the window is created in invisible mode.
+   \param[in] pShareWindow is an already existing window with which the window
+   to be created should share the rendering context. \param[in] pInvisible
+   indicates if the window is created in invisible mode.
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_create_window(fg_window *pWindow,
-                              const int pWidth, const int pHeight,
-                              const char* pTitle,
+FGAPI fg_err fg_create_window(fg_window *pWindow, const int pWidth,
+                              const int pHeight, const char *pTitle,
                               const fg_window pShareWindow,
                               const bool pInvisible);
 
@@ -83,7 +81,7 @@ FGAPI fg_err fg_set_window_font(fg_window pWindow, const fg_font pFont);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_set_window_title(fg_window pWindow, const char* pTitle);
+FGAPI fg_err fg_set_window_title(fg_window pWindow, const char *pTitle);
 
 /**
    Set the window origin of Window Object w.r.t screen origin
@@ -94,7 +92,8 @@ FGAPI fg_err fg_set_window_title(fg_window pWindow, const char* pTitle);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_set_window_position(fg_window pWindow, const int pX, const int pY);
+FGAPI fg_err fg_set_window_position(fg_window pWindow, const int pX,
+                                    const int pY);
 
 /**
    Set the window dimensions of Window Object
@@ -105,7 +104,8 @@ FGAPI fg_err fg_set_window_position(fg_window pWindow, const int pX, const int p
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const unsigned pHeight);
+FGAPI fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth,
+                                const unsigned pHeight);
 
 /**
    Set the colormap to be used by the Window Object
@@ -115,7 +115,8 @@ FGAPI fg_err fg_set_window_size(fg_window pWindow, const unsigned pWidth, const 
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_set_window_colormap(fg_window pWindow, const fg_color_map pColorMap);
+FGAPI fg_err fg_set_window_colormap(fg_window pWindow,
+                                    const fg_color_map pColorMap);
 
 /**
    Get the backend specific context handle of Window
@@ -125,7 +126,8 @@ FGAPI fg_err fg_set_window_colormap(fg_window pWindow, const fg_color_map pColor
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_window_context_handle(long long *pContext, const fg_window pWindow);
+FGAPI fg_err fg_get_window_context_handle(long long *pContext,
+                                          const fg_window pWindow);
 
 /**
    Get the display device handle of Window
@@ -135,7 +137,8 @@ FGAPI fg_err fg_get_window_context_handle(long long *pContext, const fg_window p
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_get_window_display_handle(long long *pDisplay, const fg_window pWindow);
+FGAPI fg_err fg_get_window_display_handle(long long *pDisplay,
+                                          const fg_window pWindow);
 
 /**
    Get the width of Window
@@ -192,7 +195,7 @@ FGAPI fg_err fg_show_window(const fg_window pWindow);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow);
+FGAPI fg_err fg_close_window(bool *pIsClosed, const fg_window pWindow);
 /**
    Render text to Window
 
@@ -204,17 +207,22 @@ FGAPI fg_err fg_close_window(bool* pIsClosed, const fg_window pWindow);
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_draw_text(const fg_window pWindow, float pPos[], char* text, int font_size, float pColor[]);
+FGAPI fg_err fg_draw_text(const fg_window pWindow, float pPos[], char *text,
+                          int font_size, float pColor[]);
 /**
    Render given image to Window
 
    \param[in] pWindow is Window handle
    \param[in] pImage is Image handle
-   \param[in] pKeepAspectRatio is boolean indicating if the image aspect ratio has to be maintained while rendering the image
+   \param[in] pKeepAspectRatio is boolean indicating if the image aspect ratio
+   has to be maintained while rendering the image
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage, const bool pKeepAspectRatio);
+FGAPI fg_err fg_get_last_keyin(const fg_window pWindow, int *mLastKeyIn);
+
+FGAPI fg_err fg_draw_image(const fg_window pWindow, const fg_image pImage,
+                           const bool pKeepAspectRatio);
 
 /**
    Render given chart to Window
@@ -232,21 +240,23 @@ FGAPI fg_err fg_draw_chart(const fg_window pWindow, const fg_chart pChart);
    \param[in] pWindow is Window handle
    \param[in] pRows indicates the number of rows in grid layout
    \param[in] pCols indicates the number of columns in grid layout
-   \param[in] pIndex indicates the index of cell in the layout represented by \p pRows and \p pCols
-   \param[in] pImage is image handle
-   \param[in] pTitle is the title of the sub-view
-   \param[in] pKeepAspectRatio is boolean indicating if the image aspect ratio has to be maintained while rendering the image
+   \param[in] pIndex indicates the index of cell in the layout represented by \p
+   pRows and \p pCols \param[in] pImage is image handle \param[in] pTitle is the
+   title of the sub-view \param[in] pKeepAspectRatio is boolean indicating if
+   the image aspect ratio has to be maintained while rendering the image
 
    \return \ref fg_err error code
 
    \note this draw call doesn't automatically swap back buffer
    with front buffer (double buffering mechanism) since it doesn't have the
    knowledge of which sub-regions already got rendered. We should call
-   fg_swap_window_buffers once all draw calls corresponding to all sub-regions are called
-   when in multiview mode.
+   fg_swap_window_buffers once all draw calls corresponding to all sub-regions
+   are called when in multiview mode.
  */
-FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, const int pRows, const int pCols, const int pIndex,
-                                   const fg_image pImage, const char* pTitle, const bool pKeepAspectRatio);
+FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, const int pRows,
+                                   const int pCols, const int pIndex,
+                                   const fg_image pImage, const char *pTitle,
+                                   const bool pKeepAspectRatio);
 
 /**
    Render given chart to Window's particular sub-view
@@ -254,20 +264,21 @@ FGAPI fg_err fg_draw_image_to_cell(const fg_window pWindow, const int pRows, con
    \param[in] pWindow is Window handle
    \param[in] pRows indicates the number of rows in grid layout
    \param[in] pCols indicates the number of columns in grid layout
-   \param[in] pIndex indicates the index of cell in the layout represented by \p pRows and \p pCols
-   \param[in] pChart is chart handle
-   \param[in] pTitle is the title of the sub-view
+   \param[in] pIndex indicates the index of cell in the layout represented by \p
+   pRows and \p pCols \param[in] pChart is chart handle \param[in] pTitle is the
+   title of the sub-view
 
    \return \ref fg_err error code
 
    \note this draw call doesn't automatically swap back buffer
    with front buffer (double buffering mechanism) since it doesn't have the
    knowledge of which sub-regions already got rendered. We should call
-   fg_swap_window_buffers once all draw calls corresponding to all sub-regions are called
-   when in multiview mode.
+   fg_swap_window_buffers once all draw calls corresponding to all sub-regions
+   are called when in multiview mode.
  */
-FGAPI fg_err fg_draw_chart_to_cell(const fg_window pWindow, const int pRows, const int pCols, const int pIndex,
-                                   const fg_chart pChart, const char* pTitle);
+FGAPI fg_err fg_draw_chart_to_cell(const fg_window pWindow, const int pRows,
+                                   const int pCols, const int pIndex,
+                                   const fg_chart pChart, const char *pTitle);
 
 /**
    Swap back buffer with front buffer
@@ -281,15 +292,16 @@ FGAPI fg_err fg_swap_window_buffers(const fg_window pWindow);
 /**
    Save the current frame buffer to a file at provided path.
 
-   The frame buffer stored to the disk is saved in the image format based on the extension
-   provided in the full file path string.
+   The frame buffer stored to the disk is saved in the image format based on the
+   extension provided in the full file path string.
 
    \param[in] pFullPath is the path at which frame buffer is stored.
    \param[in] pWindow is Window handle
 
    \return \ref fg_err error code
  */
-FGAPI fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window pWindow);
+FGAPI fg_err fg_save_window_framebuffer(const char *pFullPath,
+                                        const fg_window pWindow);
 
 /** @} */
 
@@ -297,220 +309,219 @@ FGAPI fg_err fg_save_window_framebuffer(const char* pFullPath, const fg_window p
 }
 #endif
 
-
 #ifdef __cplusplus
 
-namespace forge
-{
+namespace forge {
 
 /// \brief Window is where objects such as Images, Plots etc. are rendered.
 class Window {
-    private:
-        fg_window mValue;
+private:
+  fg_window mValue;
 
-        Window() {}
+  Window() {}
 
-    public:
-        /**
-           Creates a Window object.
+public:
+  /**
+     Creates a Window object.
 
-           \param[in] pWidth Width of the display window
-           \param[in] pHeight Height of the display window
-           \param[in] pTitle window Title
-           \param[in] pWindow An already existing window with which the window to
-                      be created should share the rendering context.
-           \param[in] invisible window is created in invisible mode.
-                      User has to call Window::show() when they decide
-                      to actually display the window
-         */
-        FGAPI Window(const int pWidth, const int pHeight, const char* pTitle,
-                    const Window* pWindow=0, const bool invisible = false);
+     \param[in] pWidth Width of the display window
+     \param[in] pHeight Height of the display window
+     \param[in] pTitle window Title
+     \param[in] pWindow An already existing window with which the window to
+                be created should share the rendering context.
+     \param[in] invisible window is created in invisible mode.
+                User has to call Window::show() when they decide
+                to actually display the window
+   */
+  FGAPI Window(const int pWidth, const int pHeight, const char *pTitle,
+               const Window *pWindow = 0, const bool invisible = false);
 
-        /**
-           Copy constructor for Window
+  /**
+     Copy constructor for Window
 
-           \param[in] other is the Window of which we make a copy of.
-         */
-        FGAPI Window(const Window& other);
+     \param[in] other is the Window of which we make a copy of.
+   */
+  FGAPI Window(const Window &other);
 
-        /**
-           Window Destructor
+  /**
+     Window Destructor
 
-           Decrements the reference count to the shared window object.
-         */
-        FGAPI ~Window();
+     Decrements the reference count to the shared window object.
+   */
+  FGAPI ~Window();
 
-        /**
-           Set font to be used by the window to draw text
+  /**
+     Set font to be used by the window to draw text
 
-           \param[in] pFont Font object pointer
-         */
-        FGAPI void setFont(Font* pFont);
+     \param[in] pFont Font object pointer
+   */
+  FGAPI void setFont(Font *pFont);
 
-        /**
-           Set the window title
+  /**
+     Set the window title
 
-           \param[in] pTitle is the window title
-         */
-        FGAPI void setTitle(const char* pTitle);
+     \param[in] pTitle is the window title
+   */
+  FGAPI void setTitle(const char *pTitle);
 
-        /**
-           Set the start position where the window will appear
+  /**
+     Set the start position where the window will appear
 
-           \param[in] pX is horizontal coordinate
-           \param[in] pY is vertical coordinate
-         */
-        FGAPI void setPos(const int pX, const int pY);
+     \param[in] pX is horizontal coordinate
+     \param[in] pY is vertical coordinate
+   */
+  FGAPI void setPos(const int pX, const int pY);
 
-        /**
-           Set the size of the window programmatically
+  /**
+     Set the size of the window programmatically
 
-           \param[in] pWidth target width
-           \param[in] pHeight target height
-         */
-        FGAPI void setSize(const unsigned pWidth, const unsigned pHeight);
+     \param[in] pWidth target width
+     \param[in] pHeight target height
+   */
+  FGAPI void setSize(const unsigned pWidth, const unsigned pHeight);
 
-        /**
-           Set the colormap to be used for subsequent rendering calls
+  /**
+     Set the colormap to be used for subsequent rendering calls
 
-           \param[in] cmap should be one of the enum values from \ref ColorMap
-         */
-        FGAPI void setColorMap(const ColorMap cmap);
+     \param[in] cmap should be one of the enum values from \ref ColorMap
+   */
+  FGAPI void setColorMap(const ColorMap cmap);
 
-        /**
-           Get rendering backend context handle
-           \return Context handle for the window's rendering context
-         */
-        FGAPI long long context() const;
+  /**
+     Get rendering backend context handle
+     \return Context handle for the window's rendering context
+   */
+  FGAPI long long context() const;
 
-        /**
-           Get Native Window display handle
-           \return Display handle of the native window implemenation of Window
-         */
-        FGAPI long long display() const;
+  /**
+     Get Native Window display handle
+     \return Display handle of the native window implemenation of Window
+   */
+  FGAPI long long display() const;
 
-        /**
-           \return window width
-         */
-        FGAPI int width() const;
+  /**
+     \return window width
+   */
+  FGAPI int width() const;
 
-        /**
-           \return window height
-         */
-        FGAPI int height() const;
+  /**
+     \return window height
+   */
+  FGAPI int height() const;
 
-        /**
-           \return internal handle for window implementation
-         */
-        FGAPI fg_window get() const;
+  /**
+     \return internal handle for window implementation
+   */
+  FGAPI fg_window get() const;
 
-        /**
-           Make the current window's rendering context active context
-         */
-        FGAPI void makeCurrent();
+  /**
+     Make the current window's rendering context active context
+   */
+  FGAPI void makeCurrent();
 
-        /**
-           Hide the window
-         */
-        FGAPI void hide();
+  /**
+     Hide the window
+   */
+  FGAPI void hide();
 
-        /**
-           Show the window if hidden, otherwise no effect
-         */
-        FGAPI void show();
+  /**
+     Show the window if hidden, otherwise no effect
+   */
+  FGAPI void show();
 
-        /**
-           Check if the window is ready for close. This happens when an user
-           presses `ESC` key while the window is in focus or clicks on the close
-           button of the window
+  /**
+     Check if the window is ready for close. This happens when an user
+     presses `ESC` key while the window is in focus or clicks on the close
+     button of the window
 
-           \return true | false
-         */
-        FGAPI bool close();
-        FGAPI void draw_text(float pPos[], char* text, int font_size, float pColor[]);
-        /**
-           Render an Image to Window
+     \return true | false
+   */
+  FGAPI bool close();
+  FGAPI void draw_text(float pPos[], char *text, int font_size, float pColor[]);
+  FGAPI int getLastKeyIn();
+  /**
+     Render an Image to Window
 
-           \param[in] pImage is an object of class Image
-           \param[in] pKeepAspectRatio when set to true keeps the aspect ratio
-                      of the input image constant.
+     \param[in] pImage is an object of class Image
+     \param[in] pKeepAspectRatio when set to true keeps the aspect ratio
+                of the input image constant.
 
-           \note this draw call automatically swaps back buffer
-           with front buffer (double buffering mechanism).
-         */
-        FGAPI void draw(const Image& pImage, const bool pKeepAspectRatio=true);
+     \note this draw call automatically swaps back buffer
+     with front buffer (double buffering mechanism).
+   */
+  FGAPI void draw(const Image &pImage, const bool pKeepAspectRatio = true);
 
-        /**
-           Render a chart to Window
+  /**
+     Render a chart to Window
 
-           \param[in] pChart is an chart object
+     \param[in] pChart is an chart object
 
-           \note this draw call automatically swaps back buffer
-           with front buffer (double buffering mechanism).
-         */
-        FGAPI void draw(const Chart& pChart);
+     \note this draw call automatically swaps back buffer
+     with front buffer (double buffering mechanism).
+   */
+  FGAPI void draw(const Chart &pChart);
 
-        /**
-           Render Image to given sub-region of the window in multiview mode
+  /**
+     Render Image to given sub-region of the window in multiview mode
 
-           \param[in] pRows indicates the number of rows in grid layout
-           \param[in] pCols indicates the number of columns in grid layout
-           \param[in] pIndex indicates the index of cell in the layout represented by \p pRows and \p pCols
-           \param[in] pImage is an object of class Image
-           \param[in] pTitle is the title that will be displayed for the cell represented
-                      by \p pColId and \p pRowId
-           \param[in] pKeepAspectRatio when set to true keeps the aspect ratio
-                      of the input image constant.
+     \param[in] pRows indicates the number of rows in grid layout
+     \param[in] pCols indicates the number of columns in grid layout
+     \param[in] pIndex indicates the index of cell in the layout represented by
+     \p pRows and \p pCols \param[in] pImage is an object of class Image
+     \param[in] pTitle is the title that will be displayed for the cell
+     represented by \p pColId and \p pRowId \param[in] pKeepAspectRatio when set
+     to true keeps the aspect ratio of the input image constant.
 
-           \note this draw call doesn't automatically swap back buffer
-           with front buffer (double buffering mechanism) since it doesn't have the
-           knowledge of which sub-regions already got rendered. We should call
-           Window::draw() once all draw calls corresponding to all sub-regions are called
-           when in multiview mode.
-         */
-        FGAPI void draw(const int pRows, const int pCols, const int pIndex,
-                        const Image& pImage, const char* pTitle=0, const bool pKeepAspectRatio=true);
+     \note this draw call doesn't automatically swap back buffer
+     with front buffer (double buffering mechanism) since it doesn't have the
+     knowledge of which sub-regions already got rendered. We should call
+     Window::draw() once all draw calls corresponding to all sub-regions are
+     called when in multiview mode.
+   */
+  FGAPI void draw(const int pRows, const int pCols, const int pIndex,
+                  const Image &pImage, const char *pTitle = 0,
+                  const bool pKeepAspectRatio = true);
 
-        /**
-           Render the chart to given sub-region of the window in multiview mode
+  /**
+     Render the chart to given sub-region of the window in multiview mode
 
-           \param[in] pRows indicates the number of rows in grid layout
-           \param[in] pCols indicates the number of columns in grid layout
-           \param[in] pIndex indicates the index of cell in the layout represented by \p pRows and \p pCols
-           \param[in] pChart is a Chart with one or more plottable renderables
-           \param[in] pTitle is the title that will be displayed for the cell represented
-                      by \p pColId and \p pRowId
+     \param[in] pRows indicates the number of rows in grid layout
+     \param[in] pCols indicates the number of columns in grid layout
+     \param[in] pIndex indicates the index of cell in the layout represented by
+     \p pRows and \p pCols \param[in] pChart is a Chart with one or more
+     plottable renderables \param[in] pTitle is the title that will be displayed
+     for the cell represented by \p pColId and \p pRowId
 
-           \note this draw call doesn't automatically swap back buffer
-           with front buffer (double buffering mechanism) since it doesn't have the
-           knowledge of which sub-regions already got rendered. We should call
-           Window::draw() once all draw calls corresponding to all sub-regions are called
-           when in multiview mode.
-         */
-        FGAPI void draw(const int pRows, const int pCols, const int pIndex,
-                        const Chart& pChart, const char* pTitle = 0);
+     \note this draw call doesn't automatically swap back buffer
+     with front buffer (double buffering mechanism) since it doesn't have the
+     knowledge of which sub-regions already got rendered. We should call
+     Window::draw() once all draw calls corresponding to all sub-regions are
+     called when in multiview mode.
+   */
+  FGAPI void draw(const int pRows, const int pCols, const int pIndex,
+                  const Chart &pChart, const char *pTitle = 0);
 
-        /**
-           Swaps background buffer with front buffer
+  /**
+     Swaps background buffer with front buffer
 
-           This draw call should only be used when the window is displaying
-           something in multiview mode
-         */
-        FGAPI void swapBuffers();
+     This draw call should only be used when the window is displaying
+     something in multiview mode
+   */
+  FGAPI void swapBuffers();
 
-        /**
-           Save window frame buffer to give location in provided image format
+  /**
+     Save window frame buffer to give location in provided image format
 
-           The image format to be saved in is inferred from the file extension
-           provided in the path string.
+     The image format to be saved in is inferred from the file extension
+     provided in the path string.
 
-           \param[in] pFullPath should be the absolute path of the target location
-                      where the framebuffer should be stored. The target image format
-                      is inferred from the file extension.
-         */
-        FGAPI void saveFrameBuffer(const char* pFullPath);
+     \param[in] pFullPath should be the absolute path of the target location
+                where the framebuffer should be stored. The target image format
+                is inferred from the file extension.
+   */
+  FGAPI void saveFrameBuffer(const char *pFullPath);
 };
 
-}
+} // namespace forge
 
 #endif

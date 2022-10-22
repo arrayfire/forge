@@ -267,7 +267,17 @@ void Widget::resizeHandler(int pWidth, int pHeight) {
 }
 
 void Widget::keyboardHandler(int pKey, int pScancode, int pAction, int pMods) {
-    if (pKey == GLFW_KEY_ESCAPE && pAction == GLFW_PRESS) { hide(); }
+    if (pAction == GLFW_PRESS) {
+        if (pKey == GLFW_KEY_ESCAPE) {
+            hide();
+        } else {
+            int mKeyIn = pKey;
+            if (mLastKeyIn != mKeyIn) {
+                std::cout << "[@glfw]keyin = " << mLastKeyIn << std::endl;
+                mLastKeyIn = mKeyIn;
+            }
+        }
+    }
 }
 
 void Widget::cursorHandler(const double pXPos, const double pYPos) {

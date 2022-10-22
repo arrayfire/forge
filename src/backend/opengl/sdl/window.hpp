@@ -60,6 +60,7 @@ class Widget {
     /* public variables */
     int mWidth;   // Framebuffer width
     int mHeight;  // Framebuffer height
+    int mLastKeyIn = 0;
 
     /* Constructors and methods */
     Widget(int pWidth, int pHeight, const char* pTitle,

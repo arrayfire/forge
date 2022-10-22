@@ -64,6 +64,7 @@ int main(void) {
                    plot3.verticesSize());
     float pPos[] = {0, 10};
     float AF_BLUE[] = {0.0588f, 0.1137f, 0.2745f, 1.0f};
+    int mLastKeyIn = 0;
     do {
         t += 0.01f;
         kernel(t, DX, dev_out);
@@ -71,6 +72,11 @@ int main(void) {
                        plot3.verticesSize());
         wnd.draw(1, 1, 0, chart, "Plot3");
         wnd.draw_text(pPos, (char *)"p.s. generating a spinning spiral", 1, AF_BLUE);
+        int mKeyIn = wnd.getLastKeyIn();
+        if (mLastKeyIn != mKeyIn) {
+            std::cout << "[@plot3.cu]keyin = " << mLastKeyIn << std::endl;
+            mLastKeyIn = mKeyIn;
+        }
         wnd.swapBuffers();
         //wnd.draw(chart);
     } while (!wnd.close());

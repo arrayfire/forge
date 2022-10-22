@@ -71,7 +71,8 @@ class window_impl {
     void draw(const int pRows, const int pCols, const int pIndex,
               const std::shared_ptr<AbstractRenderable>& pRenderable,
               const char* pTitle);
-
+    int mLastKeyIn = 0;
+    int getLastKeyIn();
     void swapBuffers();
 
     void saveFrameBuffer(const char* pFullPath);

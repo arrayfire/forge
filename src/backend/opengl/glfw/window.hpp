@@ -59,7 +59,7 @@ class Widget {
     /* public variables */
     int mWidth;   // Framebuffer width
     int mHeight;  // Framebuffer height
-
+    int mLastKeyIn;
     /* Constructors and methods */
     Widget(int pWidth, int pHeight, const char* pTitle,
            const std::unique_ptr<Widget>& pWidget, const bool invisible);

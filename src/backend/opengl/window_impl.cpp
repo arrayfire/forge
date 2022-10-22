@@ -274,7 +274,8 @@ void window_impl::draw(const std::shared_ptr<AbstractRenderable>& pRenderable) {
     CheckGL("End window_impl::draw");
 }
 
-void window_impl::draw_text(float pPos[], char* text, int font_size, float pColor[]) {
+void window_impl::draw_text(float pPos[], char* text, int font_size,
+                            float pColor[]) {
     // makeContextCurrent();
     // mWidget->resetCloseFlag();
     // mFont->setOthro2D(mWidget->mWidth, mWidget->mHeight);
@@ -356,6 +357,15 @@ void window_impl::draw(const int pRows, const int pCols, const int pIndex,
     }
     // std::cout << "xxxxxxxxxxx" << std::endl;
     CheckGL("End draw(rows, columns, index)");
+}
+
+int window_impl::getLastKeyIn() {
+    int mKeyIn = mWidget->mLastKeyIn;
+    if (mLastKeyIn != mKeyIn) {
+        std::cout << "[@impl]keyin = " << mLastKeyIn << std::endl;
+        mLastKeyIn = mKeyIn;
+    }
+    return mKeyIn;
 }
 
 void window_impl::swapBuffers() {
