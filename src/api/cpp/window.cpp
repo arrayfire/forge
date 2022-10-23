@@ -98,8 +98,9 @@ void Window::draw_text(float pPos[], char* text, int font_size,
 }
 
 int Window::getLastKeyIn() {
-    int mLastKeyIn;
+    int mLastKeyIn=0;
     FG_THROW(fg_get_last_keyin(get(), &mLastKeyIn));
+    return mLastKeyIn;
 }
 
 void Window::draw(const Image& pImage, const bool pKeepAspectRatio) {
