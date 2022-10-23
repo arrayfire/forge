@@ -52,9 +52,7 @@ int main(void) {
 
     GfxHandle* handle;
     createGLBuffer(&handle, plot3.vertices(), FORGE_VERTEX_BUFFER);
-
-    std::cout << "handle->mTarget =" << handle->mTarget << std::endl;
-    std::cout << "FORGE_IMAGE_BUFFER= " << FORGE_IMAGE_BUFFER << std::endl;
+    // dev_out -> handle
     /* copy your data into the vertex buffer object exposed by
      * forge::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
@@ -70,7 +68,13 @@ int main(void) {
     int mLastKeyIn  = 0;
 
     do {
-        wnd.draw(1, 1, 0, chart, "Plot3");
+        wnd.draw_text(pPos, (char*)"p.s. generating a spinning spiral.....", 1,
+                      AF_BLUE);
+        wnd.draw(1, 3, 1, chart, "Plot3");
+        wnd.draw_text(pPos, (char*)"p.s. generating a spinning spiral.....", 1,
+                      AF_BLUE);
+
+        wnd.draw(1, 3, 2, chart, "Plot3");
         wnd.draw_text(pPos, (char*)"p.s. generating a spinning spiral.....", 1,
                       AF_BLUE);
         t += 0.01f;

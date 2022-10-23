@@ -396,7 +396,10 @@ void font_impl::render(int pWindowId, const float pPos[], const float pColor[],
     static const glm::mat4 I(1);
 
     CheckGL("Begin font_impl::render ");
-    if (!mIsFontLoaded) { return; }
+    if (!mIsFontLoaded) {
+        std::cout << "cannot load font!!!" << std::endl;
+        return;
+    }
 
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_ALWAYS);
@@ -460,6 +463,12 @@ void font_impl::render(int pWindowId, const float pPos[], const float pColor[],
     glDepthFunc(GL_LESS);
 
     CheckGL("End font_impl::render ");
+    // std::cout << "loc_x=" << loc_x << std::endl;
+    // std::cout << "loc_y=" << loc_y << std::endl;
+    // std::cout << "pFontSize=" << pFontSize << std::endl;
+    // std::cout << "done with font rendering" << std::endl;
+    // std::cout << "pText=" << pText << std::endl;
+    // std::cout << "pColor=" << pColor << std::endl;
 }
 
 }  // namespace opengl

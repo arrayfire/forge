@@ -272,8 +272,8 @@ void Widget::pollEvents() {
                     default:
                         int mKeyIn = evnt.key.keysym.sym;
                         if (mLastKeyIn != mKeyIn) {
-                            std::cout << "[@sdl]keyin = " << mLastKeyIn
-                                      << std::endl;
+                            // std::cout << "[@sdl]keyin = " << mLastKeyIn
+                            //           << std::endl;
                             mLastKeyIn = mKeyIn;
                         }
                         break;

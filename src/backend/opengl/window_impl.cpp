@@ -79,7 +79,8 @@ void initWtkIfNotDone() {
 
     initCallCount++;
 
-    if (initCallCount == 0) forge::wtk::initWindowToolkit();
+    if (initCallCount == 0) forge::/*  */
+    wtk::initWindowToolkit();
 }
 
 void destroyWtkIfDone() {
@@ -179,6 +180,7 @@ window_impl::window_impl(int pWidth, int pHeight, const char* pTitle,
     mWidget->resetOrientationMatrices();
 
     /* setup default window font */
+    // std::cout << "settting font here!!!!" << std::endl;
     mFont = std::make_shared<font_impl>();
 #if defined(OS_WIN)
     mFont->loadSystemFont("Arial");
@@ -279,7 +281,7 @@ void window_impl::draw_text(float pPos[], char* text, int font_size,
     // makeContextCurrent();
     // mWidget->resetCloseFlag();
     // mFont->setOthro2D(mWidget->mWidth, mWidget->mHeight);
-    // std::cout << "drawing text" << std::endl;
+    // std::cout << "[forge]drawing text@window_impl_cpp" << std::endl;
     mFont->render(mID, pPos, pColor, text, font_size);
 }
 

@@ -273,7 +273,7 @@ void Widget::keyboardHandler(int pKey, int pScancode, int pAction, int pMods) {
         } else {
             int mKeyIn = pKey;
             if (mLastKeyIn != mKeyIn) {
-                std::cout << "[@glfw]keyin = " << mLastKeyIn << std::endl;
+                // std::cout << "[@glfw]keyin = " << mLastKeyIn << std::endl;
                 mLastKeyIn = mKeyIn;
             }
         }
