@@ -129,6 +129,7 @@ int main(void) {
         } while (!wnd.close());
 
         releaseGLBuffer(handle);
+	context = cl::Context();
 
     } catch (forge::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;

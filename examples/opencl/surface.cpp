@@ -147,6 +147,7 @@ int main(void) {
         do { wnd.draw(chart); } while (!wnd.close());
 
         releaseGLBuffer(handle);
+	context = cl::Context();
     } catch (forge::Error err) {
         std::cout << err.what() << "(" << err.err() << ")" << std::endl;
     } catch (cl::Error err) {
