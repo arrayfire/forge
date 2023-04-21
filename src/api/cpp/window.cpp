@@ -92,17 +92,6 @@ bool Window::close() {
     return isClosed;
 }
 
-void Window::draw_text(float pPos[], char* text, int font_size,
-                       float pColor[]) {
-    FG_THROW(fg_draw_text(get(), pPos, text, font_size, pColor));
-}
-
-int Window::getLastKeyIn() {
-    int mLastKeyIn=0;
-    FG_THROW(fg_get_last_keyin(get(), &mLastKeyIn));
-    return mLastKeyIn;
-}
-
 void Window::draw(const Image& pImage, const bool pKeepAspectRatio) {
     FG_THROW(fg_draw_image(get(), pImage.get(), pKeepAspectRatio));
 }

@@ -49,46 +49,26 @@ int main(void) {
 
     static float t = 0;
     FORGE_CUDA_CHECK(cudaMalloc((void**)&dev_out, ZSIZE * 3 * sizeof(float)));
+    kernel(t, DX, dev_out);
 
     GfxHandle* handle;
     createGLBuffer(&handle, plot3.vertices(), FORGE_VERTEX_BUFFER);
-    // dev_out -> handle
+
     /* copy your data into the vertex buffer object exposed by
      * forge::Plot class and then proceed to rendering.
      * To help the users with copying the data from compute
      * memory to display memory, Forge provides copy headers
      * along with the library to help with this task
-     *
-     *     copyToGLBuffer(handle,
-     *      (ComputeResourceHandle)dev_out,plot3.verticesSize());
      */
-
-    float pPos[]    = {0, 10};
-    float AF_BLUE[] = {0.0588f, 0.1137f, 0.2745f, 1.0f};
-    int mLastKeyIn  = 0;
+    copyToGLBuffer(handle, (ComputeResourceHandle)dev_out,
+                   plot3.verticesSize());
 
     do {
-        wnd.draw_text(pPos, (char*)"p.s. generating a spinning spiral.....", 1,
-                      AF_BLUE);
-        wnd.draw(1, 3, 1, chart, "Plot3");
-        wnd.draw_text(pPos, (char*)"p.s. generating a spinning spiral.....", 1,
-                      AF_BLUE);
-
-        wnd.draw(1, 3, 2, chart, "Plot3");
-        wnd.draw_text(pPos, (char*)"p.s. generating a spinning spiral.....", 1,
-                      AF_BLUE);
         t += 0.01f;
         kernel(t, DX, dev_out);
         copyToGLBuffer(handle, (ComputeResourceHandle)dev_out,
                        plot3.verticesSize());
-
-        int mKeyIn = wnd.getLastKeyIn();
-        if (mLastKeyIn != mKeyIn) {
-            std::cout << "[@plot3.cu]keyin = " << mLastKeyIn << std::endl;
-            mLastKeyIn = mKeyIn;
-        }
-        wnd.swapBuffers();
-        // wnd.draw(chart);
+        wnd.draw(chart);
     } while (!wnd.close());
 
     FORGE_CUDA_CHECK(cudaFree(dev_out));

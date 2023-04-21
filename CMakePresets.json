@@ -22,7 +22,7 @@
         },
         "FG_USE_WINDOW_TOOLKIT": {
           "type": "String",
-          "value": "sdl2"
+          "value": "glfw3"
         },
         "FG_BUILD_DOCS": {
           "type": "BOOL",
