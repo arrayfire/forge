@@ -23,12 +23,16 @@ jobs:
             - name: Checkout Repository
               uses: actions/checkout@master
 
+            - name: Setup vcpkg
+              uses: lukka/run-vcpkg@v11
+
             - name: Configure and Build
               env:
                   FG_TOOLKIT: ${{ matrix.window_toolkit }}
               run: |
                   mkdir build && cd build
                   cmake `
+                    -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake" `
                     -DFG_USE_WINDOW_TOOLKIT:STRING=$Env:FG_TOOLKIT ..
                   cmake --build . --parallel --target ALL_BUILD --config Release
                   cmake --build . --parallel --target INSTALL --config Release
