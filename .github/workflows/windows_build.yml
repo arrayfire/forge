@@ -13,47 +13,15 @@ name: ci
 jobs:
     build_opengl_backend:
         name: OpenGL
-        runs-on: ${{ matrix.os }}
-        env:
-            FREEIMAGE_VER: 3.18.0
-            FREEIMAGE_VER_STR: 3180
         strategy:
             fail-fast: false
             matrix:
                 window_toolkit: [glfw3, sdl2]
                 os: [windows-latest]
+        runs-on: ${{ matrix.os }}
         steps:
             - name: Checkout Repository
               uses: actions/checkout@master
-
-            - name: FreeImage Cache
-              uses: actions/cache@v1
-              id: freeimage-cache
-              with:
-                path: freeimage
-                key: freeimage-${{ env.FREEIMAGE_VER }}
-
-            - name: FreeImage Download
-              if: steps.freeimage-cache.outputs.cache-hit != 'true'
-              run: |
-                $url = 'https://nchc.dl.sourceforge.net/project/freeimage/Binary%20Distribution/{0}/FreeImage{1}Win32Win64.zip' -f $env:FREEIMAGE_VER, $env:FREEIMAGE_VER_STR
-                Invoke-WebRequest -Uri $url -OutFile freeimage.zip
-                Expand-Archive .\freeimage.zip -DestinationPath .\
-                Remove-Item -Path .\freeimage.zip
-
-            - name: Install Common Dependencies
-              run: |
-                $vcpkg_triplet_path = $env:GITHUB_WORKSPACE + "/CMakeModules/ForgeFreetypeVCPKGTriplet.cmake"
-                Copy-Item -Path $vcpkg_triplet_path -Destination C:/vcpkg/triplets/x64-windows.cmake
-                vcpkg install --triplet x64-windows boost-functional freetype opencl
-
-            - name: Install GLFW3
-              if: matrix.window_toolkit == 'glfw3'
-              run: vcpkg install glfw3:x64-windows
-
-            - name: Install SDL2
-              if: matrix.window_toolkit == 'sdl2'
-              run: vcpkg install sdl2:x64-windows
 
             - name: Configure and Build
               env:
@@ -61,8 +29,6 @@ jobs:
               run: |
                   mkdir build && cd build
                   cmake `
-                    -DCMAKE_TOOLCHAIN_FILE:FILEPATH=C:\vcpkg\scripts\buildsystems\vcpkg.cmake `
-                    -DFreeImage_ROOT:PATH=..\freeimage\Dist\x64 `
                     -DFG_USE_WINDOW_TOOLKIT:STRING=$Env:FG_TOOLKIT ..
                   cmake --build . --parallel --target ALL_BUILD --config Release
                   cmake --build . --parallel --target INSTALL --config Release
