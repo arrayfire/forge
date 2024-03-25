@@ -1,10 +1,10 @@
 on:
   push:
     branches:
-    - master
+    - main
   pull_request:
     branches:
-    - master
+    - main
 
 name: ci
 
@@ -13,18 +13,18 @@ jobs:
         name: OpenGL
         runs-on: ${{ matrix.os }}
         env:
-          CMAKE_VER: 3.5.1
+          CMAKE_VER: 3.16.3
         strategy:
             fail-fast: false
             matrix:
                 window_toolkit: [glfw3, sdl2]
-                os: [ubuntu-18.04, macos-latest]
+                os: [ubuntu-latest, macos-latest]
 
         steps:
             - name: Checkout Repository
               uses: actions/checkout@master
 
-            - name: Download CMake 3.5.1 for Linux
+            - name: Download CMake for Linux
               if: matrix.os != 'macos-latest'
               env:
                   OS_NAME: ${{ matrix.os }}
@@ -48,7 +48,7 @@ jobs:
                   echo "CMAKE_PROGRAM=cmake" >> $GITHUB_ENV
 
             - name: Install Common Dependencies for Ubuntu
-              if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-18.04'
+              if: matrix.os == 'ubuntu-latest'
               run: |
                   sudo add-apt-repository ppa:mhier/libboost-latest
                   sudo apt-get -qq update
@@ -66,7 +66,7 @@ jobs:
                   brew install $pkg
 
             - name: Install Linux Window Toolkit
-              if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-18.04'
+              if: matrix.os == 'ubuntu-latest'
               env:
                   FG_TOOLKIT: ${{ matrix.window_toolkit }}
               run: |
@@ -79,9 +79,7 @@ jobs:
                   FG_TOOLKIT: ${{ matrix.window_toolkit }}
               run: |
                   mkdir build && cd build
-                  ${CMAKE_PROGRAM} -DCMAKE_C_COMPILER=gcc-6 \
-                      -DCMAKE_CXX_COMPILER=g++-6 \
-                      -DFG_USE_WINDOW_TOOLKIT:STRING=${FG_TOOLKIT} ..
+                  ${CMAKE_PROGRAM} -DFG_USE_WINDOW_TOOLKIT:STRING=${FG_TOOLKIT} ..
 
             - name: CMake Configure on OSX
               if: matrix.os == 'macos-latest'

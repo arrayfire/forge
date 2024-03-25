@@ -29,7 +29,7 @@ class Histogram : public ChartRenderableBase<detail::histogram_impl> {
 
     Histogram(const fg_histogram pOther)
         : ChartRenderableBase<detail::histogram_impl>(
-              reinterpret_cast<Histogram*>(pOther)->impl()) {}
+              reinterpret_cast<Histogram *>(pOther)->impl()) {}
 };
 
 class Plot : public ChartRenderableBase<detail::plot_impl> {
@@ -48,7 +48,7 @@ class Plot : public ChartRenderableBase<detail::plot_impl> {
 
     Plot(const fg_plot pOther)
         : ChartRenderableBase<detail::plot_impl>(
-              reinterpret_cast<Plot*>(pOther)->impl()) {}
+              reinterpret_cast<Plot *>(pOther)->impl()) {}
 
     inline void setMarkerSize(const float pMarkerSize) {
         mShrdPtr->setMarkerSize(pMarkerSize);
@@ -82,7 +82,7 @@ class Surface : public ChartRenderableBase<detail::surface_impl> {
 
     Surface(const fg_surface pOther)
         : ChartRenderableBase<detail::surface_impl>(
-              reinterpret_cast<Surface*>(pOther)->impl()) {}
+              reinterpret_cast<Surface *>(pOther)->impl()) {}
 };
 
 class VectorField : public ChartRenderableBase<detail::vector_field_impl> {
@@ -100,7 +100,7 @@ class VectorField : public ChartRenderableBase<detail::vector_field_impl> {
 
     VectorField(const fg_vector_field pOther)
         : ChartRenderableBase<detail::vector_field_impl>(
-              reinterpret_cast<VectorField*>(pOther)->impl()) {}
+              reinterpret_cast<VectorField *>(pOther)->impl()) {}
 
     inline unsigned dbo() const { return mShrdPtr->directions(); }
 

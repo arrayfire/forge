@@ -1,9 +1,9 @@
 {
-  "version": 2,
+  "version": 6,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 20,
-    "patch": 0
+    "minor": 28,
+    "patch": 4
   },
   "configurePresets": [
     {
@@ -11,6 +11,11 @@
       "description": "Forge build with OpenGL backend using GLFW in Debug configuration",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "generator": "Ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": {
           "type": "String",
@@ -76,12 +81,21 @@
       }
     },
     {
-      "name": "msvc2019-gl-glfw3",
+      "name": "msvc-gl-glfw3",
       "description": "Forge build with OpenGL backend using GLFW",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "architecture": "x64",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
       "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": {
+          "type": "PATH",
+          "value": "%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake"
+        },
         "FG_RENDERING_BACKEND": {
           "type": "String",
           "value": "OpenGL"
@@ -109,9 +123,9 @@
       }
     },
     {
-      "name": "msvc2019-gl-sdl2",
+      "name": "msvc-gl-sdl2",
       "description": "Forge build with OpenGL backend using SDL",
-      "inherits": "msvc2019-gl-glfw3",
+      "inherits": "msvc-gl-glfw3",
       "cacheVariables": {
         "FG_USE_WINDOW_TOOLKIT": "sdl2"
       }

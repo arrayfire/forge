@@ -2,8 +2,9 @@
   "name": "forge",
   "version": "1.1.0",
   "supports": "x64",
+  "builtin-baseline": "898b728edc5e0d12b50015f9cd18247c4257a3eb",
   "dependencies": [
-    "boost-functional",
+    "boost-container-hash",
     "freetype",
     "freeimage",
     {
