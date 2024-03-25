@@ -14,3 +14,5 @@ GPATH
 include/fg/version.h
 src/backend/common/version.hpp
 docs/details/examples.dox
+.vs/
+CMakeUserPresets.CMake
