@@ -94,7 +94,7 @@ GLuint screenQuadVAO(const int pWindowId) {
 
     if (svaoMap.find(pWindowId) == svaoMap.end()) {
         static const float texcords[8]   = {0.0, 1.0, 1.0, 1.0,
-                                          1.0, 0.0, 0.0, 0.0};
+                                            1.0, 0.0, 0.0, 0.0};
         static const uint32_t indices[6] = {0, 1, 2, 0, 2, 3};
 
         GLuint tbo = createBuffer(GL_ARRAY_BUFFER, 8, texcords, GL_STATIC_DRAW);

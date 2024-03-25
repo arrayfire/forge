@@ -153,7 +153,7 @@ pair<vec3, float> calcRotationFromArcBall(const vec2& lastPos,
     auto project = [](const float pX, const float pY, const float pWidth,
                       const float pHeight) {
         glm::vec3 P     = glm::vec3((2.0f * pX) / pWidth - 1.0f,
-                                (2.0f * pY) / pHeight - 1.0f, 0.0f);
+                                    (2.0f * pY) / pHeight - 1.0f, 0.0f);
         float xySqrdSum = P.x * P.x + P.y * P.y;
         float rSqrd     = (ARC_BALL_RADIUS * ARC_BALL_RADIUS);
         float rSqrdBy2  = rSqrd / 2.0f;
